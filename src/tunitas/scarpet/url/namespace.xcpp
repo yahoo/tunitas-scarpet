@@ -1,0 +1,19 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet {
+  //
+  // preferred  namespace uri (i as in iPad)
+  // deprecated namespace url (l as in llama)
+  //
+  namespace [[deprecated("instead use tunitas::scarpet::uri ... with an 'i' as in iPad, not 'l' as in llama")]] url { }
+}
+namespace tunitas::scarpet::uri {
+  //
+  // The URI parser
+  //
+  //   /prefix/{ID}  ->  ( /prefix, ID )
+  //
+}
+#endiv

@@ -36,7 +36,7 @@ This is a C++ project.  The project approaches the upcoming C++20 standard, wher
 
 ##  Components
 
-This section enumerates is a best-estimate abstraction of the component dependencies for [Tunitas Apanolio](https://github.com/yahoo/tunitas-apanolio).  A master list of dependencies for the Tunitas family of components and services can be found in the [packaging](https://github.com/yahoo/tunitas-packaging/blob/master/PACKAGES.md).
+This section enumerates is a best-estimate abstraction of the component dependencies for [Tunitas Scarpet](https://github.com/yahoo/tunitas-scarpet).  A master list of dependencies for the Tunitas family of components and services can be found in the [packaging](https://github.com/yahoo/tunitas-packaging/blob/master/PACKAGES.md).
 
 These packages are available via `dnf` or `yum`, if your machine is configured appropriately.
 

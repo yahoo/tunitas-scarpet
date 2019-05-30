@@ -1,0 +1,26 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+lib_libtunitas_scarpet_la = lib/libtunitas-scarpet.la
+lib_libtunitas_scarpet_la_LIBADD = \
+  $(lib_libwant_la) \
+  -ltunitas \
+  $(end)
+lib_libtunitas_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+lib_libtunitas_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_la_SOURCES))
+lib_libtunitas_scarpet_la_SOURCES = \
+  obj/src/tunitas/scarpet/namespace.cpp \
+  obj/src/tunitas/scarpet/exception.Version.cpp \
+  obj/src/tunitas/scarpet/url/namespace.cpp \
+  obj/src/tunitas/scarpet/url/Parser.cpp \
+  obj/src/tunitas/scarpet/url/URI.cpp \
+  $(end)
+$(scold_cxxdir)/tunitas/scarpet/dependencies.mk:
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_la_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_la_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/tunitas/scarpet/dependencies.mk
+clean-dependencies::
+	rm -f $(scold_cxxdir)/tunitas/scarpet/dependencies.mk

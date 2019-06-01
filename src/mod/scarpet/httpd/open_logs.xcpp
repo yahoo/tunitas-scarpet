@@ -4,7 +4,7 @@
 #divert <hpp>
 #import apache.runtime.pool_t
 #import apache.httpd.server_rec
-namespace mod::scarpet {
+namespace mod::scarpet::httpd {
   //
   // The open_logs callback
   //
@@ -51,15 +51,14 @@ namespace mod::scarpet {
 #import apache.httpd.log // APLOG_MARK is from <httpd/http_log.h>
 #import apache.httpd.module_config.get
 #import autotools.autoconf.Config.mod.scarpet.CONFIG
-#import mod.scarpet.httpd
-#import mod.scarpet.module
-#import mod.scarpet.config.Specification
+#import mod.scarpet.httpd.module
+#import mod.scarpet.server.State
 #import std.exception
 #import sys.posix.stat
 #import sys.posix.isdir
-#import mod.scarpet.module // presents ::scarpet_module
-auto mod::scarpet::open_logs(apache::runtime::pool_t *config, apache::runtime::pool_t *logging, apache::runtime::pool_t *temporary, apache::httpd::server_rec *server) noexcept -> int try {
-  auto const *spec = apache::httpd::module_config::get<config::Specification>(server, scarpet_module);
+#import mod.scarpet.httpd.module // presents ::scarpet_module
+auto mod::scarpet::httpd::open_logs(apache::runtime::pool_t *config, apache::runtime::pool_t *logging, apache::runtime::pool_t *temporary, apache::httpd::server_rec *server) noexcept -> int try {
+  auto const *state = apache::httpd::module_config::get<server::State>(server, scarpet_module);
 
   // If you don't protect in this manner then the second 'start' directive will fail
   static bool is_started = false;

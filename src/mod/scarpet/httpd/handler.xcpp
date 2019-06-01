@@ -2,9 +2,8 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <hpp>
-#import mod.scarpet.httpd
 #import apache.httpd.status.constants
-namespace mod::scarpet {
+namespace mod::scarpet::httpd {
   //
   // The standard handler callback interface
   //
@@ -24,8 +23,8 @@ namespace mod::scarpet {
 #import apache.httpd.io.keywords
 #import apache.httpd.module_config.get
 #import autotools.autoconf.Config.mod.scarpet.CONFIG
-#import mod.scarpet.module
-#import mod.scarpet.config.Specification
+#import mod.scarpet.httpd.module
+#import mod.scarpet.server.State
 #import nonstd.exception.Unreachable
 #import mod.scarpet.method.Getter
 #import mod.scarpet.method.Poster
@@ -37,7 +36,7 @@ namespace mod::scarpet {
 #import std.runtime_error
 #import std.string
 #import want.null_maybe
-auto mod::scarpet::packaging::handler::function::handler(request_rec *r) noexcept -> int try {
+auto mod::scarpet::httpd::packaging::handler::function::handler(request_rec *r) noexcept -> int try {
   //
   // reminder: the word "scarpet: is the name of the declared module
   // and appears in configuration files and also in variables herein
@@ -60,10 +59,10 @@ auto mod::scarpet::packaging::handler::function::handler(request_rec *r) noexcep
   }
   ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "%s (accepted %s)", HANDLER_NAME, r->uri);
   namespace module_config = apache::httpd::module_config;
-  auto const *spec = module_config::get<config::Specification>(r->server, scarpet_module);
-  if (nullptr == spec) {
+  auto const *state = module_config::get<server::State>(r->server, scarpet_module);
+  if (nullptr == state) {
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "null server config");
-    throw std::runtime_error("null server config");
+    throw std::runtime_error("null server state");
   }
   namespace io = apache::httpd::io;
   io::Stream rs(r);
@@ -75,7 +74,7 @@ auto mod::scarpet::packaging::handler::function::handler(request_rec *r) noexcep
     // ...ignored...
     //
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "GET");
-    method::Getter GET(r, spec);
+    method::Getter GET(r, state);
     return GET();
   } else if (method::POST == r->method_number) {
     //
@@ -83,7 +82,7 @@ auto mod::scarpet::packaging::handler::function::handler(request_rec *r) noexcep
     // ...document...
     //
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "POST");
-    method::Poster POST(r, spec);
+    method::Poster POST(r, state);
     return POST();
   } else if (method::PUT == r->method_number) {
     //
@@ -91,7 +90,7 @@ auto mod::scarpet::packaging::handler::function::handler(request_rec *r) noexcep
     // ...document...
     //
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "PUT");
-    method::Putter PUT(r, spec);
+    method::Putter PUT(r, state);
     return PUT();
   } else {
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "otherwise");

@@ -42,7 +42,7 @@ protected:
 #import nonstd.exception.Unimplemented
 #import std.string
 auto mod::scarpet::method::Poster::operator()() -> apache::httpd::status::Code {
-  if (std::string{this->req->uri} != spec->location_prefix.value) {
+  if (std::string{this->req->uri} != state->specification->location_prefix.value) {
     // How then, did this get routed here?
     return HTTP::NOT_FOUND;
   }

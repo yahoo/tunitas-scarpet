@@ -20,24 +20,36 @@ namespace mod::scarpet::method {
 }
 #endiv
 #divert <hpp>
+#import mod.scarpet.httpd.module
+namespace mod::scarpet::method {
+  //
+  // The HTTPd module index ... every descendant of Prototype will need to have this lexically visible
+  //
+  // Else ...
+  //
+  //   src/mod/scarpet/method/Getter.xcpp:56:19: error: ‘aplog_module_index’ was not declared in this scope
+  //   ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "returning did_status=%d", (int) did_status);
+  //
+  using httpd::aplog_module_index;
+}
 #import apache.httpd.io.Stream
 #import apache.httpd.status.Code
 #import apache.httpd.request_rec
-#import mod.scarpet.config.Specification
+#import mod.scarpet.server.State
 #import tunitas.scarpet.url.Parser
 #import tunitas.scarpet.did.Parser
 class mod::scarpet::method::Prototype {
 protected:
   ~Prototype() = default;
 public:
-  inline Prototype(apache::httpd::request_rec *, config::Specification const *);
+  inline Prototype(apache::httpd::request_rec *, server::State const *);
   // The descendant must implement (the non-virtual)
   //   auto operator()() -> apache::httpd::status::Code;
 protected:
   // Of course, the containing apache request record must have a longer lifetime than the method
   apache::httpd::request_rec *req;
   // Of course, the Specification must have a longer lifetime than the method (descendant)
-  config::Specification const *spec;
+  server::State const *state;
   // ... because parsing occurs.
   tunitas::scarpet::url::Parser uri_parser;
   // ... because more parsing occurs.
@@ -47,10 +59,11 @@ protected:
 };
 #endiv
 #divert <ipp>
-mod::scarpet::method::Prototype::Prototype(apache::httpd::request_rec *req, config::Specification const *spec)
+mod::scarpet::method::Prototype::Prototype(apache::httpd::request_rec *req, server::State const *state)
   : req{req}
-  , spec{spec}
-  , uri_parser{spec->location_prefix.value}
+  , state{state}
+  , uri_parser{state->specification->location_prefix.value}
+  , did_parser{}
   , rs{req}
 { }
 #endiv

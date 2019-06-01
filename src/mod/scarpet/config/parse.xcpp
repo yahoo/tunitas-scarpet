@@ -30,8 +30,8 @@ char const mod::scarpet::config::DESCRIPTION[] = "The mod_scarpet Configuration 
 #import apache.httpd.module_config.get
 #import apache.httpd.server.root
 #import boost.lexical_cast
-#import mod.scarpet.config.Specification
-#import mod.scarpet.module
+#import mod.scarpet.server.State
+#import mod.scarpet.httpd.module
 #import path.filename.workbench
 #import std.all_of
 #import std.cerr
@@ -48,7 +48,10 @@ auto mod::scarpet::config::parse(httpd::cmd_parms *cmd, void */*???*/, char cons
   // </Scarpet>
   //
   apache::httpd::config::Parser parser(cmd, NAME, ENDNAME);
-  Specification *specification = apache::httpd::module_config::get<Specification>(cmd, scarpet_module);
+  Specification *specification = [&cmd]() {
+                                   auto *state = apache::httpd::module_config::get<server::State>(cmd, scarpet_module);
+                                   return nullptr == state ? nullptr : state->specification.get();
+                                 }();
   if (nullptr == specification) {
     return parser.pstrcat(" (internal error?) no specification object for ", &NAME[0], ">");
   }

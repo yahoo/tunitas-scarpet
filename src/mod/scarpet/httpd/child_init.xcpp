@@ -4,7 +4,7 @@
 #divert <hpp>
 #import apache.runtime.pool_t
 #import apache.httpd.server_rec
-namespace mod::scarpet {
+namespace mod::scarpet::httpd {
   //
   // See the pointed function in module.xcpp
   //
@@ -13,12 +13,12 @@ namespace mod::scarpet {
 #endiv
 #divert <cpp>
 #import mod.scarpet.httpd
-#import mod.scarpet.module
+#import mod.scarpet.httpd.module
 #import apache.httpd.log.Level
 #import apache.httpd.log.Stream
 #import apache.httpd.status.Code
 #import std.exception
-auto mod::scarpet::child_init(apache::runtime::pool_t *, apache::httpd::server_rec *server) noexcept -> void try {
+auto mod::scarpet::httpd::child_init(apache::runtime::pool_t *, apache::httpd::server_rec *server) noexcept -> void try {
   apache::httpd::log::Stream<apache::httpd::server_rec> log(server);
   // We're in the (new) child.
   //

@@ -95,7 +95,7 @@ TF_PACKAGE_VARIABLES
 #
 #    char const *const HANDLER_NAME = autotools::autoconf::Config<CONFIG>::module_name();
 #
-AC_DEFINE_UNQUOTED([MODULE_NAME], "mod_${PACKAGE_NAME}", [The Apache HTTPd module name as seen from the andler])
+AC_DEFINE_UNQUOTED([MODULE_NAME], "mod_${PACKAGE_NAME}", [The Apache HTTPd module name as seen from the handler])
 
 AC_ARG_ENABLE([storage-directory],
               AS_HELP_STRING([--enable-storage-directory=DIRECTORY],

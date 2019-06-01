@@ -9,19 +9,33 @@ namespace tests::unit::scarpet { class Fixture; }
 #import cppunit.test.Fixture
 class tests::unit::scarpet::Fixture : public cppunit::test::Fixture {
 public:
-  auto test_something() -> void;
+  auto test_Program() -> void;
+  auto test_Configuration() -> void;
   static auto suite() -> cppunit::Test *;
+protected:
+  struct Configuration;
 };
 #endiv
 #divert <cpp>
-auto tests::unit::scarpet::Fixture::test_something() -> void {
-  CPPUNIT_ASSERT(true);
+#import tunitas.scarpet.Program
+auto tests::unit::scarpet::Fixture::test_Program() -> void {
+  auto program = tunitas::scarpet::Program{"a.out"};
+  CPPUNIT_ASSERT(0 != program.size());
+}
+#import tests.unit.scarpet.Fixture.Configuration
+auto tests::unit::scarpet::Fixture::test_Configuration() -> void {
+  auto program = tunitas::scarpet::Program{"a.out"};
+  auto cfg = Configuration{program};
+  CPPUNIT_ASSERT(!cfg.debug_mode);
+  cfg.warning_mode = true;
+  CPPUNIT_ASSERT(cfg.warning_mode);
 }
 #import rigging.suite.io
 auto tests::unit::scarpet::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series("scarpet");
-  series << call("something", &Fixture::test_something)
+  series << call("Program", &Fixture::test_Program)
+         << call("Configuration", &Fixture::test_Configuration)
     ;
   return finalize(series);
 }

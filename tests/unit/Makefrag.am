@@ -1,7 +1,11 @@
 tests_unit_TESTS = \
   tests/unit/list.test \
   \
+  tests/unit/error.test \
+  tests/unit/exception.test \
+  tests/unit/options.test \
   tests/unit/scarpet.test \
+  tests/unit/url.test \
   \
   tests/unit/all.test \
   $(end)

@@ -1,0 +1,55 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::error { class Category; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tunitas.scarpet.error.Category
+class tests::unit::error::Category : public cppunit::test::Fixture {
+public:
+  using Subject = ::tunitas::scarpet::error::Category;
+  auto test_name() -> void;
+  auto test_default_error_condition() -> void;
+  auto test_message() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.error.category
+auto tests::unit::error::Category::test_name() -> void {
+  using namespace ::tunitas::scarpet::error;
+  auto const &c = category();
+  CPPUNIT_ASSERT(nullptr != c.name());
+}
+#import tunitas.scarpet.error.Code
+#import tunitas.scarpet.error.Condition
+auto tests::unit::error::Category::test_default_error_condition() -> void {
+  using namespace ::tunitas::scarpet::error;
+  auto const &c = category();
+  CPPUNIT_ASSERT(Condition::SUCCESS == c.default_error_condition((int)Code::SUCCESS));
+  CPPUNIT_ASSERT(Condition::FAILURE == c.default_error_condition((int)Code::FAILURE));
+  CPPUNIT_ASSERT(Condition::FAILURE == c.default_error_condition((int)Code::OPTIONS));
+}
+auto tests::unit::error::Category::test_message() -> void {
+  using ::tunitas::scarpet::error::Code;
+  for (int ii{-100}, e{100}; e != ii; ++ii) {
+    auto cc = Code{ii};
+    auto ec = std::error_code{cc};
+    auto ss = ec.message();
+    CPPUNIT_ASSERT(!ss.empty());
+  }
+}
+#import rigging.suite.io
+auto tests::unit::error::Category::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series("error");
+  series << call("name", &Category::test_name)
+         << call("default_error_condition", &Category::test_default_error_condition)
+         << call("message", &Category::test_message)
+    ;
+  return finalize(series);
+}
+#endiv

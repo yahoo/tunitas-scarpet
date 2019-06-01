@@ -1,0 +1,24 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tzonegenas-scarpet/blob/master/LICENSE for terms.
+
+bin_did_zonegen = bin/did-zonegen
+bin_did_zonegen_LDADD = \
+  $(lib_libapp_la) \
+  $(lib_libtunitas_scarpet_module_la) \
+  $(end)
+bin_did_zonegen_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+bin_did_zonegen_MODULES = $(call TF_SOURCEStoMODULES, $(bin_did_zonegen_SOURCES))
+bin_did_zonegen_SOURCES = \
+  obj/src/app/zonegen/namespace.cpp \
+  obj/src/app/zonegen/main.cpp \
+  $(end)
+
+$(scold_cxxdir)/app/zonegen/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(bin_did_zonegen_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(bin_did_zonegen_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/app/zonegen/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/app/zonegen/dependencies.mk

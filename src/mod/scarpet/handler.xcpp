@@ -70,22 +70,22 @@ auto mod::scarpet::packaging::handler::function::handler(request_rec *r) noexcep
   if (false) {
   } else if (method::GET == r->method_number) {
     //
-    // GET /{ID} HTTP/5.0
-    // ...stuff...
+    // GET /{DID} HTTP/5.0
+    // ...ignored...
     //
     method::Getter GET(r, spec);
     return GET();
   } else if (method::POST == r->method_number) {
     //
-    // POST / HTTP/5.0       no {ID} in the URL path
-    // ...stuff...
+    // POST / HTTP/5.0       no {DID} in the URL path
+    // ...document...
     //
     method::Poster POST(r, spec);
     return POST();
   } else if (method::PUT == r->method_number) {
     //
-    // PUT /{ID} HTTP/6.7
-    // ...stuff...
+    // PUT /{DID} HTTP/6.7
+    // ...document...
     //
     method::Putter PUT(r, spec);
     return PUT();

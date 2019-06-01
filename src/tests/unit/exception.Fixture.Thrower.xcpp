@@ -1,0 +1,34 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+//
+// Perform the construction and the throwing of EXCEPTION
+//
+// The default implementation expects the exception to have
+//   a single-argument conversion constructor (that accepts a string program name)
+//   be throwable (of course)
+//
+// Usage:
+//
+//   Thrower<EXCEOPTION> thrower;
+//   thrower();
+//
+#include <hpp/tests.unit.exception.Fixture>
+#endiv
+#divert <hpp>
+namespace tests::unit::exception {
+  template<typename EXCEPTION> struct Fixture::Thrower {
+    using Exception = EXCEPTION;
+    auto operator()() -> void;
+  };
+}
+#endiv
+#divert <tpp>
+namespace tests::unit::exception {
+  template<typename _> auto Fixture::Thrower<_>::operator()() -> void {
+    Exception subject{"a.out"};
+    throw subject;
+  }
+}
+#endiv

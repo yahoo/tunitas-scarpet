@@ -1,0 +1,20 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.app.Program
+namespace tunitas::scarpet {
+  //
+  // The convenience ...
+  //
+  // The controversy:
+  //   so is it scarpet::options::Program ... because the Program is part of the options parsing?
+  //   or is it scarpet::Program ............ being a sibling of the Configuration; which is what tunitas::app did.
+  //
+  // Usage:
+  //
+  //   Program program{av};
+  //
+  using Program = tunitas::app::Program;
+}
+#endiv

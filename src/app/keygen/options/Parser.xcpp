@@ -1,0 +1,132 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace app::keygen::options {
+  //
+  // The keygen option parser
+  //
+  // Usage:
+  //
+  //   auto av = Args{...somehow...};
+  //   auto cfg = Configuration{...somehow...};
+  //   auto specification = Specification{...somehow...};
+  //
+  //   auto parser = Parser{specification, cfg};
+  //   auto parsed = parse(av);
+  //   if (ok(parsed)) {
+  //      ...yay!...
+  //   } else {
+  //      ...sad...
+  //   }
+  //
+  class Parser;
+}
+#endiv
+#divert <hpp>
+#import app.options.Parser
+#import tunitas.Success
+#import app.keygen.Configuration
+#import tunitas.app.options.Args
+class app::keygen::options::Parser : public app::options::Parser {
+  using ancestor = app::options::Parser;
+public:
+  inline explicit Parser(Specification const &, Configuration &);
+  Parser(Specification &&) = delete;
+  using Result = tunitas::Success; // not ancestor::Result
+  auto operator()(Args) -> Result;
+protected:
+  Configuration &cfg;
+};
+#endiv
+#divert <ipp>
+namespace app::keygen::options {
+  Parser::Parser(Specification const &spc, Configuration &cfg)
+    : ancestor{spc}
+    , cfg{cfg}
+  { }
+}
+#endiv
+#divert <cpp>
+#import app.keygen.exception.Usage
+#import app.keygen.options.indicator.constants
+#import app.keygen.options.Specification
+#import app.keygen.exception.Bad_Filepath
+#import options.longish.Getter
+#import options.longish.Step
+#import std.error_code
+#import std.logic_error
+#import sys.exits.constants
+#import tunitas.app.options.get_filepath
+#import tunitas.scarpet.error.Code
+#import tunitas.scarpet.exception.Version
+#import tunitas.scarpet.error.Code
+namespace app::keygen::options {
+  auto Parser::operator()(Args av) -> Result {
+    namespace error = tunitas::scarpet::error;
+    // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::app::optoins
+    using ::options::longish::Getter;
+    using ::options::longish::Step;
+    Getter get{spc.shortish(), spc.longish(), av};
+    for (Step step=get(); more(step); step=get()) {
+      try {
+        switch (code(step)) {
+          namespace oi = options::indicator;
+        case oi::CHR_h:
+        case oi::USAGE_SUBCOMMAND:
+          throw exception::Usage{cfg.NAME, sys::exits::OK};
+        case oi::CHR_V:
+        case oi::VERSION_SUBCOMMAND:
+          throw exception::Version{cfg.NAME};
+        case oi::CHR_w:
+        case oi::WARNING_MODE:
+          cfg.warning_mode = true;
+          break;
+        case oi::CHR_q:
+        case oi::QUIET_MODE:
+          cfg.quiet_mode = true;
+          break;
+        case oi::CHR_v:
+        case oi::VERBOSE_MODE:
+          cfg.verbose_mode = true;
+          break;
+        case oi::CHR_d:
+        case oi::DEBUG_MODE:
+          cfg.debug_mode = true;
+          break;
+        case oi::CHR_y:
+        case oi::DRY_RUN_MODE:
+          cfg.dry_run_mode = true;
+          break;
+        case oi::PRIVATE_KEY:
+          cfg.private_side = get_filepath<exception::Bad_Filepath>(cfg, step);
+          break;
+        case oi::PUBLIC_KEY:
+          cfg.public_side = get_filepath<exception::Bad_Filepath>(cfg, step);
+          break;
+        case oi::MISSING:
+          ::options::error(cfg) << "missing value on " << word_in_error(step) << '\n';
+          return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+        case oi::UNKNOWN:
+          ::options::error(cfg) << "invalid option " << word_in_error(step) << '\n';
+          return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+        default:
+          // This is a programmer error.
+          // It means that the specification of the option parser is wider than this switch statement.
+          // Someone (you) forgot to take care of some eventuality.
+          throw std::logic_error{"Specification"};
+        }
+      } catch (exception::Bad_Filepath const &e) {
+        ::options::error(cfg) << "invalid file path " << required(step) << " value on " << word_in_error(step) << 'n';
+        return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+      }
+    }
+    auto const remaining = Arguments{get.begin(), get.end()};
+    if (!std::empty(remaining)) {
+      ::options::error(cfg) << "there are extra words after the options\n";
+      return Result{std::error_code{error::Code::OPTIONS}};
+    }
+    return Result{tunitas::SUCCESS};
+  }
+}
+#endiv

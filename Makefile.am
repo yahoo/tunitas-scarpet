@@ -52,17 +52,26 @@ module_SOURCE_SET = \
   $(lib_libwant_la_SOURCES) \
   $(end)
 
+include src/app/keygen/Makefrag.am
+include src/app/Makefrag.am
+include src/app/publish/Makefrag.am
+include src/app/zonegen/Makefrag.am
 include src/autotools/autoconf/Makefrag.am
 include src/mod/scarpet/Makefrag.am
+include src/tests/unit/Makefrag.am
 include src/tunitas/scarpet/Makefrag.am
 include src/want/Makefrag.am
-include src/tests/unit/Makefrag.am
 
 bin_PROGRAMS = \
+  $(bin_did_keygen) \
+  $(bin_did_publish) \
+  $(bin_did_zonegen) \
   $(end)
 noinst_LTLIBRARIES = \
   $(lib_libautotools_autoconf_la) \
+  $(lib_libautotools_autoconf_a_b_la) \
   $(lib_libwant_la) \
+  $(lib_libapp_la) \
   $(end)
 lib_LTLIBRARIES = \
   $(lib_libmod_scarpet_la) \
@@ -74,7 +83,30 @@ check_PROGRAMS = \
 check_LTLIBRARIES = \
   $(end)
 
+autotools_autoconf_DEPENDENT_OBJECTS_SET = \
+  $(lib_libtunitas_scarpet_la_OBJECTS) \
+  $(lib_libwant_la_OBJECTS) \
+  $(bin_unit_OBJECTS) \
+  $(end)
+autotools_autoconf_DEPENDENT_MODULES_SET = \
+  $(lib_libtunitas_scarpet_la_MODULES) \
+  $(lib_libwant_la_MODULES) \
+  $(end)
+$(autotools_autoconf_DEPENDENT_OBJECTS_SET) : $(autotools_autoconf_DEPENDENT_MODULES_SET)
+autotools_autoconf_DEPENDENT_GENERATED_SET = \
+  $(scold_cxxdir)/autotools/autoconf/Config/tunitas/scarpet/CONFIG.cpp \
+  $(scold_cxx_modulesdir)/autotools.autoconf.Config.tunitas.scarpet.CONFIG \
+  \
+  $(scold_cxxdir)/autotools/autoconf/Config/mod/scarpet/CONFIG.cpp \
+  $(scold_cxx_modulesdir)/autotools.autoconf.Config.mod.scarpet.CONFIG \
+  $(end)
+  $(end)
+$(autotools_autoconf_DEPENDENT_OBJECTS_SET) : $(autotools_autoconf_DEPENDENT_GENERATED_SET)
+
 include tests/unit/Makefrag.am
+include tests/keygen/Makefrag.am
+include tests/publish/Makefrag.am
+include tests/zonegen/Makefrag.am
 
 if ENABLE_SERVER_TESTS
 ENABLED_SERVER_TESTS = \
@@ -86,10 +118,16 @@ endif
 
 XFAIL_TESTS = \
   $(tests_unit_XFAIL_TESTS) \
+  $(tests_keygen_XFAIL_TESTS) \
+  $(tests_publish_XFAIL_TESTS) \
+  $(tests_zonegen_XFAIL_TESTS) \
   $(ENABLED_SERVER_XFAIL_TESTS)
   $(end)
 TESTS = \
   $(tests_unit_TESTS) \
+  $(tests_keygen_TESTS) \
+  $(tests_publish_TESTS) \
+  $(tests_zonegen_TESTS) \
   $(ENABLED_SERVER_TESTS)
   $(end)
 

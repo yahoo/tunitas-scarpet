@@ -1,0 +1,53 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::error {
+  //
+  // The error category explainer
+  //
+  // Usage:
+  //
+  //   auto const &c = category();
+  //   as per usual
+  //
+  class Category;
+}
+#endiv
+#divert <hpp>
+#import std.error_condition
+#import std.string
+#import tunitas.scarpet.error.category
+class tunitas::scarpet::error::Category : public std::error_category {
+  friend auto error::category() -> Category const &;
+  Category() = default;
+public:
+  auto name() const noexcept -> char const * final;
+  auto default_error_condition(int code) const noexcept -> std::error_condition final;
+  auto message(int code) const -> std::string final;
+};
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.error.Code
+#import std.to_string
+namespace tunitas::scarpet::error {
+  auto Category::name() const noexcept -> char const * {
+    return "scarpet";
+  }
+  auto Category::default_error_condition(int code) const noexcept -> std::error_condition {
+    return std::error_condition{0 != code, *this};
+  }
+  auto Category::message(int code) const -> std::string {
+    switch (Code(code)) {
+    case Code::SUCCESS:
+      return "success";
+    case Code::FAILURE:
+      return "failure";
+    case Code::OPTIONS:
+      return "options";
+    default:
+      return "error " + std::to_string(code);
+    }
+  }
+}
+#endiv

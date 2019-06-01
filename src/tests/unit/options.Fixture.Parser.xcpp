@@ -1,0 +1,46 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+//
+// Parser - provide a descendant for the generalist one.
+//
+#include <hpp/tests.unit.options.Fixture>
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.options.Parser
+#import tunitas.scarpet.Configuration
+#import tunitas.scarpet.options.Specification
+namespace tests::unit::options {
+  class Fixture::Parser : public ::tunitas::scarpet::options::Parser {
+    using ancestor = ::tunitas::scarpet::options::Parser;
+  public:
+    struct Configuration : public ::tunitas::scarpet::Configuration {
+      inline explicit Configuration(Program const &p) : ::tunitas::scarpet::Configuration{p} { }
+    };
+    class Specification : public ::tunitas::scarpet::options::Specification {
+      using ancestor = ::tunitas::scarpet::options::Specification;
+    public:
+      Specification();
+    };
+    Parser(Specification const &, Configuration &);
+  protected:
+    Configuration &cfg;
+  };
+}
+#endiv
+#divert <cpp>
+#import options.argument.constants
+#import options.indicator.constants
+namespace tests::unit::options {
+  Fixture::Parser::Parser(Specification const &spc, Configuration &cfg)
+    : ancestor{spc}
+    , cfg{cfg}
+  { }
+  Fixture::Parser::Specification::Specification()
+    : ancestor{"hV",
+               {{"usage", ::options::argument::NO, ::options::indicator::Code::CHR_h},
+                {"version", ::options::argument::NO, ::options::indicator::Code::CHR_V}}}
+  { }
+}
+#endiv

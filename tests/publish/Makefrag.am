@@ -1,0 +1,25 @@
+tests_publish_TESTS = $(tests_publish_XFAIL_TESTS)
+tests_publish_XFAIL_TESTS = \
+  tests/publish/option.help.test \
+  tests/publish/option.dry-run.test \
+  tests/publish/option.dryrun.test \
+  tests/publish/option.d.test \
+  tests/publish/option.help.test \
+  tests/publish/option.h.test \
+  tests/publish/option.q.test \
+  tests/publish/option.quiet.test \
+  tests/publish/option.usage.test \
+  tests/publish/option.verbose.test \
+  tests/publish/option.version.test \
+  tests/publish/option.v.test \
+  tests/publish/option.V.test \
+  tests/publish/option.warnings.test \
+  tests/publish/option.warning.test \
+  tests/publish/option.w.test \
+  tests/publish/option.y.test \
+  $(end)
+
+tests_publish_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/publish/*.test)
+tests_publish_TESTS_SELFCHECK_EXPECTED = $(tests_publish_TESTS)
+tests_publish_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_publish_TESTS_SELFCHECK_EXPECTED), $(tests_publish_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_publish_TESTS_SELFCHECK_ORPHANS),$(error Orphaned tests: $(tests_publish_TESTS_SELFCHECK_ORPHANS)))

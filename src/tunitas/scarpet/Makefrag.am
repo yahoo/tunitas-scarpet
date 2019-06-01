@@ -6,13 +6,35 @@
 lib_libtunitas_scarpet_la = lib/libtunitas-scarpet.la
 lib_libtunitas_scarpet_la_LIBADD = \
   $(lib_libwant_la) \
-  -ltunitas \
+  -ltunitas-app \
   $(end)
 lib_libtunitas_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 lib_libtunitas_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_la_SOURCES))
 lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/namespace.cpp \
-  obj/src/tunitas/scarpet/exception.Version.cpp \
+  obj/src/tunitas/scarpet/Configuration.cpp \
+  obj/src/tunitas/scarpet/Program.cpp \
+  \
+  obj/src/tunitas/scarpet/error/namespace.cpp \
+  obj/src/tunitas/scarpet/error/Condition.cpp \
+  obj/src/tunitas/scarpet/error/Code.cpp \
+  obj/src/tunitas/scarpet/error/Category.cpp \
+  obj/src/tunitas/scarpet/error/category.cpp \
+  \
+  obj/src/tunitas/scarpet/exception/namespace.cpp \
+  obj/src/tunitas/scarpet/exception/Aspect.cpp \
+  obj/src/tunitas/scarpet/exception/aspect.Exiting.cpp \
+  obj/src/tunitas/scarpet/exception/Version.cpp \
+  obj/src/tunitas/scarpet/exception/Quitting.cpp \
+  \
+  obj/src/tunitas/scarpet/options/namespace.cpp \
+  obj/src/tunitas/scarpet/options/indicator.cpp \
+  obj/src/tunitas/scarpet/options/indicator.constants.cpp \
+  obj/src/tunitas/scarpet/options/Arguments.cpp \
+  obj/src/tunitas/scarpet/options/Parser.cpp \
+  obj/src/tunitas/scarpet/options/parser.Result.cpp \
+  obj/src/tunitas/scarpet/options/Specification.cpp \
+  \
   obj/src/tunitas/scarpet/url/namespace.cpp \
   obj/src/tunitas/scarpet/url/Parser.cpp \
   obj/src/tunitas/scarpet/url/URI.cpp \

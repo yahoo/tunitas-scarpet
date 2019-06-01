@@ -1,3 +1,6 @@
 # yes bin should exist
 .libs
+did-keygen
+did-publish
+did-zonegen
 #end

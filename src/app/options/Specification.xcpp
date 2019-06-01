@@ -1,0 +1,30 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace app::options {
+  //
+  // The generalities of the options specification among all the applications.
+  // Descendants only.
+  //
+  // Usage:
+  //
+  //   class my::Specification : public app::options::Specification {
+  //     using ancestor = app::options::Specification;
+  //   public:
+  //     Specification() ; ancestor{Shortspec::Initializer{...}, Longspec::Initializer{...}} { }
+  //   };
+  //
+  class Specification;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.options.Specification
+class app::options::Specification : public tunitas::scarpet::options::Specification {
+  using ancestor = tunitas::scarpet::options::Specification;
+protected:
+  ~Specification() = default;
+public:
+  inline Specification(Shortish::Initializer s, Longish::Initializer l) : ancestor{s, l} { }
+};
+#endiv

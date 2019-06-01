@@ -5,7 +5,8 @@
 
 check_bin_unit = check/bin/unit
 check_bin_unit_LDADD = \
-  $(lib_libmod_scarpet_module_la) \
+  $(lib_libmod_scarpet_la) \
+  $(lib_libtunitas_scarpet_la) \
   -lrigging-httpd-module \
   -lrigging-bench-module \
   $(end)
@@ -14,7 +15,15 @@ check_bin_unit_MODULES = $(call TF_SOURCEStoMODULES, $(check_bin_unit_SOURCES))
 check_bin_unit_SOURCES = \
   obj/src/tests/unit/namespace.cpp \
   obj/src/tests/unit/main.cpp \
+  obj/src/tests/unit/error.Fixture.cpp \
+  obj/src/tests/unit/error.Category.cpp \
+  obj/src/tests/unit/exception.Fixture.cpp \
+  obj/src/tests/unit/exception.Fixture.Thrower.cpp \
+  obj/src/tests/unit/options.Fixture.cpp \
+  obj/src/tests/unit/options.Fixture.Parser.cpp \
+  obj/src/tests/unit/options.Fixture.Specification.cpp \
   obj/src/tests/unit/scarpet.Fixture.cpp \
+  obj/src/tests/unit/scarpet.Fixture.Configuration.cpp \
   obj/src/tests/unit/url.Fixture.cpp \
   obj/src/tests/unit/url.Parser.cpp \
   obj/src/tests/unit/want.Fixture.cpp \

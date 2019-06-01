@@ -1,0 +1,59 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::exception {
+  //
+  // The Scarpet-flavored quitting exception
+  // Just like nonstd::exception::Quitting, except Scarpet-friendly.
+  //
+  // Usage:
+  //
+  //   throw Quitting{NAME, sys::exits::FAIL};
+  //   throw Quitting{NAME};
+  //
+  class Quitting;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.exception.Aspect
+#import tunitas.app.exception.aspect.Quitting
+#import nonstd.exception.Quitting
+#import sys.exits.Code
+#import sys.exits.constants
+class tunitas::scarpet::exception::Quitting : public Aspect, public tunitas::app::exception::aspect::Quitting, public nonstd::exception::Quitting {
+  struct ancestors {
+    struct aspects {
+      using Scarpet = scarpet::exception::Aspect;
+      using Quitting = app::exception::aspect::Quitting;
+    };
+    using Exception = nonstd::exception::Quitting;
+  };
+public:
+  inline explicit Quitting(std::string const &NAME, sys::exits::Code = sys::exits::FAIL);
+  auto what() const noexcept -> char const * final;
+  auto stream() const noexcept -> std::ostream & final;
+  auto code() const noexcept -> sys::exits::Code final;
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::exception {
+  Quitting::Quitting(std::string const &NAME, sys::exits::Code code)
+    : ancestors::aspects::Quitting{code}
+    , ancestors::Exception{NAME, code}
+  { }
+}
+#endiv
+#divert <cpp>
+namespace tunitas::scarpet::exception {
+  auto Quitting::what() const noexcept -> char const * {
+    return ancestors::Exception::what();
+  }
+  auto Quitting::stream() const noexcept -> std::ostream & {
+    return ancestors::Exception::stream();
+  }
+  auto Quitting::code() const noexcept -> sys::exits::Code {
+    return ancestors::Exception::code();
+  }
+}
+#endiv

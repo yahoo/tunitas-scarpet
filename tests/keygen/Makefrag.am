@@ -1,0 +1,24 @@
+tests_keygen_TESTS = \
+  tests/keygen/option.help.test \
+  tests/keygen/option.dry-run.test \
+  tests/keygen/option.dryrun.test \
+  tests/keygen/option.d.test \
+  tests/keygen/option.help.test \
+  tests/keygen/option.h.test \
+  tests/keygen/option.q.test \
+  tests/keygen/option.quiet.test \
+  tests/keygen/option.usage.test \
+  tests/keygen/option.verbose.test \
+  tests/keygen/option.version.test \
+  tests/keygen/option.v.test \
+  tests/keygen/option.V.test \
+  tests/keygen/option.warnings.test \
+  tests/keygen/option.warning.test \
+  tests/keygen/option.w.test \
+  tests/keygen/option.y.test \
+  $(end)
+
+tests_keygen_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/keygen/*.test)
+tests_keygen_TESTS_SELFCHECK_EXPECTED = $(tests_keygen_TESTS)
+tests_keygen_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_keygen_TESTS_SELFCHECK_EXPECTED), $(tests_keygen_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_keygen_TESTS_SELFCHECK_ORPHANS),$(error Orphaned tests: $(tests_keygen_TESTS_SELFCHECK_ORPHANS)))

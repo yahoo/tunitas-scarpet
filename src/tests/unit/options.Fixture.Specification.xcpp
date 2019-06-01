@@ -1,0 +1,40 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+//
+// Specification - provide a descendant for the generalist one.
+//
+#include <hpp/tests.unit.options.Fixture>
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.options.Specification
+namespace tests::unit::options {
+  class Fixture::Specification : public ::tunitas::scarpet::options::Specification {
+    using ancestor = ::tunitas::scarpet::options::Specification;
+  public:
+    Specification();
+  };
+}
+#endiv
+#divert <cpp>
+#import options.argument.constants
+#import options.indicator.constants
+namespace tests::unit::options {
+  namespace ai = ::options::argument;
+  namespace oi = ::options::indicator;
+  Fixture::Specification::Specification()
+    : ancestor{":hVwqvd",
+               {{"usage", ai::NO, oi::USAGE_SUBCOMMAND},
+                {"help", ai::NO, oi::USAGE_SUBCOMMAND},
+                {"version", ai::NO, oi::VERSION_SUBCOMMAND},
+                {"warning", ai::NO, oi::WARNING_MODE},
+                {"warnings", ai::NO, oi::WARNING_MODE},
+                {"quiet", ai::NO, oi::QUIET_MODE},
+                {"verbose", ai::NO, oi::VERBOSE_MODE},
+                {"debug", ai::NO, oi::DEBUG_MODE},
+                {"dry-run", ai::NO, oi::DRY_RUN_MODE},
+                {"dryrun", ai::NO, oi::DRY_RUN_MODE}}}
+  { }
+}
+#endiv

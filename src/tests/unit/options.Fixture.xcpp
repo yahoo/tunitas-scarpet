@@ -1,0 +1,59 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::options { class Fixture; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+class tests::unit::options::Fixture : public cppunit::test::Fixture {
+public:
+  auto test_Arguments() -> void;
+  auto test_Parser() -> void;
+  auto test_parser_Result() -> void;
+  auto test_Specification() -> void;
+  static auto suite() -> cppunit::Test *;
+protected:
+  struct Parser;
+  struct Specification;
+};
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.options.Arguments
+#import std.empty
+auto tests::unit::options::Fixture::test_Arguments() -> void {
+  auto subject = ::tunitas::scarpet::options::Arguments{};
+  CPPUNIT_ASSERT(std::empty(subject));
+}
+#import tests.unit.options.Fixture.Parser
+auto tests::unit::options::Fixture::test_Parser() -> void {
+  auto spc = Parser::Specification{};
+  auto cfg = Parser::Configuration{Parser::Configuration::Program{"a.out"}};
+  auto subject = Fixture::Parser{spc, cfg};
+  CPPUNIT_ASSERT(sizeof (subject));
+}
+#import tunitas.scarpet.options.parser.Result
+auto tests::unit::options::Fixture::test_parser_Result() -> void {
+  using namespace ::tunitas::scarpet::options;
+  auto subject = parser::Result{Arguments{"apple", "banana", "cherry"}};
+  CPPUNIT_ASSERT(!std::empty(value(subject)));
+}
+#import tests.unit.options.Fixture.Specification
+auto tests::unit::options::Fixture::test_Specification() -> void {
+  auto spc = Specification{};
+  CPPUNIT_ASSERT(0 != spc.shortish().size());
+  CPPUNIT_ASSERT(0 != spc.longish().size());
+}
+#import rigging.suite.io
+auto tests::unit::options::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series("options");
+  series << call("Arguments", &Fixture::test_Arguments)
+         << call("Parser", &Fixture::test_Parser)
+         << call("parser::Result", &Fixture::test_parser_Result)
+         << call("Specification", &Fixture::test_Specification)
+    ;
+  return finalize(series);
+}
+#endiv

@@ -1,0 +1,38 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace app {
+  //
+  // The generalities of the Configuration among all the applications.
+  // Descendants only.
+  //
+  // This isn't really different than tunitas::scarpet::Configuration
+  // But this interface does add the logging capability which is unique to the application (txui) layer.
+  //
+  // Usage:
+  //
+  //   struct my::Configuration : public app::Configuration {
+  //      ...any new fields...
+  //   };
+  //
+  //   error(cfg) << "this is bad";
+  //   warning(cfg) << "do not do that";
+  //   notice(cfg) << "no trespassing";
+  //   verbose(cfg) << "fillibuster";
+  //   debug(cfg) << "mosquito, moth, mothra";
+  //
+  class Configuration;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.Configuration
+class app::Configuration : public ::tunitas::scarpet::Configuration {
+  using ancestor = ::tunitas::scarpet::Configuration;
+protected:
+  ~Configuration() = default;
+public:
+  inline explicit Configuration(Program const &program) : ancestor{program} { }
+};
+#import options.logging
+#endiv

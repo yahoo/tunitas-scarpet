@@ -1,0 +1,24 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tpublishas-scarpet/blob/master/LICENSE for terms.
+
+bin_did_publish = bin/did-publish
+bin_did_publish_LDADD = \
+  $(lib_libapp_la) \
+  $(lib_libtunitas_scarpet_module_la) \
+  $(end)
+bin_did_publish_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+bin_did_publish_MODULES = $(call TF_SOURCEStoMODULES, $(bin_did_publish_SOURCES))
+bin_did_publish_SOURCES = \
+  obj/src/app/publish/namespace.cpp \
+  obj/src/app/publish/main.cpp \
+  $(end)
+
+$(scold_cxxdir)/app/publish/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(bin_did_publish_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(bin_did_publish_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/app/publish/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/app/publish/dependencies.mk

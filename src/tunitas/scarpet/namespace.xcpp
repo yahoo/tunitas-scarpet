@@ -2,5 +2,7 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace tunitas::scarpet { }
+namespace tunitas::scarpet {
+  enum CONFIG { };
+}
 #endiv

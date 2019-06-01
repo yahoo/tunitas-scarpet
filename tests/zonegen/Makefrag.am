@@ -1,0 +1,25 @@
+tests_zonegen_TESTS = $(tests_zonegen_XFAIL_TESTS)
+tests_zonegen_XFAIL_TESTS = \
+  tests/zonegen/option.help.test \
+  tests/zonegen/option.dry-run.test \
+  tests/zonegen/option.dryrun.test \
+  tests/zonegen/option.d.test \
+  tests/zonegen/option.help.test \
+  tests/zonegen/option.h.test \
+  tests/zonegen/option.q.test \
+  tests/zonegen/option.quiet.test \
+  tests/zonegen/option.usage.test \
+  tests/zonegen/option.verbose.test \
+  tests/zonegen/option.version.test \
+  tests/zonegen/option.v.test \
+  tests/zonegen/option.V.test \
+  tests/zonegen/option.warnings.test \
+  tests/zonegen/option.warning.test \
+  tests/zonegen/option.w.test \
+  tests/zonegen/option.y.test \
+  $(end)
+
+tests_zonegen_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/zonegen/*.test)
+tests_zonegen_TESTS_SELFCHECK_EXPECTED = $(tests_zonegen_TESTS)
+tests_zonegen_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_zonegen_TESTS_SELFCHECK_EXPECTED), $(tests_zonegen_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_zonegen_TESTS_SELFCHECK_ORPHANS),$(error Orphaned tests: $(tests_zonegen_TESTS_SELFCHECK_ORPHANS)))

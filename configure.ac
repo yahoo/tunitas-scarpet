@@ -84,32 +84,13 @@ TF_CHECK_STD_FILESYSTEM
 
 TF_PACKAGE_VARIABLES
 
-#
-# Apache HTTPd Configuration file availability
-#
-#    <Location /scarpet>
-#         SetHandler mod_scarpet <-------- MODULE_NAME in Apache HTTPd culture traditionally begins with "mod_"
-#    </Location>
-#
-# S.C.O.L.D C++ availability in autotools::autoconf::Config<CONFIG>
-#
-#    char const *const HANDLER_NAME = autotools::autoconf::Config<CONFIG>::module_name();
-#
-AC_DEFINE_UNQUOTED([MODULE_NAME], "mod_${PACKAGE_NAME}", [The Apache HTTPd module name as seen from the handler])
+m4_include([ac/define-module.m4])
+SCARPET_DEFINE_MODULE_NAME
 
-AC_ARG_ENABLE([storage-directory],
-              AS_HELP_STRING([--enable-storage-directory=DIRECTORY],
-                             [Choose the storage directory for mod_resting]),
-              [if test xno = x$enable_storage_directory; then
-                  AC_MSG_ERROR([--disable-storage-directory is not meaningful, for mod_resting])
-               fi],
-              [
-               enable_storage_directory="${t_prefix}/var"])
-eval storagedir="${enable_storage_directory}"
-eval storagedir="${storagedir}"
-eval storagedir="${storagedir}"
-eval storagedir="${storagedir}"
-TF_MSG_VERBOSE([STORAGE_DIRECTORY=$storagedir])
-AC_DEFINE_UNQUOTED([STORAGE_DIRECTORY], "$storagedir", [Default storage directory for the host-local database])
+m4_include([ac/enable-club.m4])
+SCARPET_ENABLE_DID_CLUB_NAME
+
+m4_include([ac/enable-method.m4])
+SCARPET_ENABLE_DID_METHOD_NAME
 
 TF_FINALIZE

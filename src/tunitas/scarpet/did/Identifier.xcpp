@@ -1,0 +1,37 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.char_traits
+#import std.basic_string
+namespace tunitas::scarpet::did {
+  //
+  // A DID NSI (Namespace-Specific Identifier) is a longer string.
+  //
+  // There are not a lot of constraints on the limits of those things other than that they must be reasonable and undangerous characters.
+  // For each DID Method, there are rules and regulations which are published in its specification document.
+  //
+  // Here, we allow the characters of the NSI string to be from that certain and reasonable character set.
+  // See the specification docments that are recited nearby in namespace.xcpp and incorporated herein by reference.
+  //
+  // The Scarpet NSI requires an unqualified DNS name 
+  // tl;dr -> 1-63 characters of alnum+dash+underscore, with no dots or slashes.
+  //
+  // https://tools.ietf.org/html/rfc1034 - Domain Names - concepts and facilities
+  // https://tools.ietf.org/html/rfc1035 - Domain Names - implementation and specification
+  // https://tools.ietf.org/html/rfc1123
+  // https://tools.ietf.org/html/rfc2181 - 
+  // https://tools.ietf.org/html/rfc4592 - 
+  // https://tools.ietf.org/html/rfc5892
+  // https://en.wikipedia.org/wiki/Domain_Name_System Summary
+  //
+  // Usage:
+  //
+  //   oh come on
+  //
+  namespace identifier {
+    class Traits : public std::char_traits<char> { };
+  }
+  using Identifier = std::basic_string<char, identifier::Traits>;
+}
+#endiv

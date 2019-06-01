@@ -37,7 +37,13 @@ lib_libtunitas_scarpet_la_SOURCES = \
   \
   obj/src/tunitas/scarpet/url/namespace.cpp \
   obj/src/tunitas/scarpet/url/Parser.cpp \
-  obj/src/tunitas/scarpet/url/URI.cpp \
+  obj/src/tunitas/scarpet/url/Path.cpp \
+  \
+  obj/src/tunitas/scarpet/did/namespace.cpp \
+  obj/src/tunitas/scarpet/did/Parser.cpp \
+  obj/src/tunitas/scarpet/did/parser.Result.cpp \
+  obj/src/tunitas/scarpet/did/Method.cpp \
+  obj/src/tunitas/scarpet/did/Identifier.cpp \
   $(end)
 $(scold_cxxdir)/tunitas/scarpet/dependencies.mk:
 	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_la_SOURCES))

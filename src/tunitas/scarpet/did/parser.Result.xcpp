@@ -1,0 +1,59 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did::parser {
+  //
+  // The result of DID parsing
+  // Shaped like an outcome, sortof.
+  //
+  //   did:method:identifier -> { bool, method, identifier }
+  //
+  // The method must be non-empty and of "reasonable" length and of those certain "reasonable" characters (this is unchecked)
+  // The identifier must be non-empty and of "reasonable" length and of those certain "reasonable" characters (this is unchecked)
+  // The Result (Indicator) is in the did (ell as in Llama)
+  //
+  // Usage:
+  //
+  //   see Parser.cpp, nearby
+  //
+  class Result;
+}
+#endiv
+#divert <hpp>
+#import std.string
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.did.Identifier
+namespace tunitas::scarpet::did::parser {
+  inline auto ok(Result const &) -> bool;
+  //
+  inline auto method(Result const &) -> Method const &;
+  inline auto method(Result &) -> Method &;
+  inline auto method(Result &&) -> Method;
+  //
+  inline auto identifier(Result const &) -> Identifier const &;
+  inline auto identifier(Result &) -> Identifier &;
+  inline auto identifier(Result &&) -> Identifier;
+}
+#import std.tuple
+class tunitas::scarpet::did::parser::Result : public std::tuple<bool, Method, Identifier> {
+  using ancestor = std::tuple<bool, Method, Identifier>;
+public:
+  using Tuple = ancestor;
+  Result() = default;
+  using ancestor::tuple;
+};
+#endiv
+#divert <ipp>
+#import std.get
+#import std.forward
+namespace tunitas::scarpet::did {
+  auto parser::ok(Result const &u) -> bool { return std::get<0>(static_cast<Result::Tuple const &>(u)); }
+  auto parser::method(Result const &u) -> Method const & { return std::get<1>(static_cast<Result::Tuple const &>(u)); }
+  auto parser::method(Result &u) -> Method &             { return std::get<1>(static_cast<Result::Tuple &>(u)); }
+  auto parser::method(Result &&anon) -> Method           { return std::get<1>(std::forward<Result::Tuple>(anon)); }
+  auto parser::identifier(Result const &u) -> Identifier const & { return std::get<2>(static_cast<Result::Tuple const &>(u)); }
+  auto parser::identifier(Result &u) -> Identifier &             { return std::get<2>(static_cast<Result::Tuple &>(u)); }
+  auto parser::identifier(Result &&u) -> Identifier              { return std::get<2>(std::forward<Result::Tuple>(u)); }
+}
+#endiv

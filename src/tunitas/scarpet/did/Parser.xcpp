@@ -1,0 +1,92 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did {
+  //
+  // The DID parser
+  //
+  // Operation
+  //
+  //   did:method:identifier  ->  ( method, identifier )
+  //
+  // Validation: identifier is any character at all
+  // Real validation must be done elsewhere, once the method has been recovered.
+  //
+  // References
+  // 
+  // https://w3c-ccg.github.io/did-spec/ - Decentalized Identifiers (DIDs), v0.13, updated constantly
+  //
+  // Examples:
+  //
+  //   did:example:a0096d98-2919-4a48-9b69-b8e7a8891d40
+  //   did:artisanal:d41d8cd98f00b204e9800998ecf8427e  -
+  //   did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  -
+  //   did:flannel:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e 
+  //
+  // Usage:
+  //
+  //   did = ...somehow... see ../did/Parser.xcpp
+  //   auto parsed = did_parser(did);
+  //   if (!ok(parsed)) {
+  //     return HTTP::BAD_REQUEST;
+  //   } else if (method(parsed) != "mumblecore") {
+  //     return HTTP::BAD_REQUEST;
+  //   } else {
+  //      auto nsi = identifier(std::move(parsed));
+  //      ...validate the namespace-specific-identifier in detail...
+  //      ...use the validated identifier...
+  //   }
+  //
+  class Parser;
+}
+#endiv
+#divert <hpp>
+#import std.string
+#import tunitas.scarpet.did.parser.Result
+class tunitas::scarpet::did::Parser {
+public:
+  Parser() = default;
+  inline auto operator()(std::string const &syntax) -> parser::Result;
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet {
+  auto did::Parser::operator()(std::string const &syntax) -> parser::Result {
+    //
+    // Requires the prefix of "did:"
+    // Requires a non-trivial method (name)
+    // Requires a colon.
+    // Anything non-empty after that colon is the MSI.
+    //
+    // Grammar:
+    //
+    //   "did" ':' <method> ':' <namespace-specific-identifier>
+    //
+    // Both <method> and <NSI> must be at least 1 character.
+    if (syntax.size() >= 7) {
+      auto pos = syntax.begin();
+      auto const end = syntax.end();
+      if ('d' == *pos++) {
+        if ('i' == *pos++) {
+          if ('d' == *pos++) {
+            if (':' == *pos++) {
+              for (auto method_start=pos; pos < end; ++pos) {
+                if (':' == *pos && method_start < pos) {
+                  auto method_end = pos;
+                  if (2+pos <= end) {
+                    auto identifier_start = 1+pos;
+                    auto identifier_end = end;
+                    return parser::Result{true, Method{method_start, method_end}, Identifier{identifier_start, identifier_end}};
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return parser::Result{false, Method{}, Identifier{}};
+  }
+}
+#endiv

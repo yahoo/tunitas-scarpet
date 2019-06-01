@@ -1,0 +1,43 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did {
+  //
+  // The DID (Decentralized Identifier [ID]) ... is just the identity indicator
+  // This is the primary key that is used to look up the DID Document (thingy)
+  //
+  // The DID syntax follows the specified form
+  //
+  //   did : method : namespace-specific-identifier
+  //
+  // NSI = namespace-specific-identifier
+  // DID = ...you know...
+  //
+  // References
+  // 
+  //   General
+  //     https://www.ietf.org/rfc/rfc2141.txt - URN Syntax, 1997-05
+  //     https://www.iana.org/assignments/uri-schemes/uri-schemes.xhtml
+  //     https://tools.ietf.org/html/rfc3986 - Uniform Resource Identifier (URI), 2005-01
+  //     https://tools.ietf.org/html/rfc4122 - A Universally Unique IDentifier (UUID) URN Namespace, 2005-07.
+  //
+  //   DID Theory
+  //     https://w3c-ccg.github.io/did-spec/ - Decentalized Identifiers (DIDs), v0.13, updated constantly
+  //     https://w3c-ccg.github.io/did-method-registry/ - DID Method Registry (a central registry of decentralized identifier schemes)
+  //
+  //   DID Specifications
+  //     https://dhh1128.github.io/peer-did-method-spec/index.html Peer DID Method Specification
+  //     https://github.com/dhuseby/did-git-spec/blob/master/did-git-spec.md Git DID Method 1.0
+  //
+  // A DID's payload syntax can be made up of any of those certain and reasonable characters
+  //
+  // Examples:
+  //
+  //   did:example:a0096d98-2919-4a48-9b69-b8e7a8891d40
+  //   did:artisanal:d41d8cd98f00b204e9800998ecf8427e  -
+  //   did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  -
+  //   did:flannel:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e 
+  //
+}
+#endiv

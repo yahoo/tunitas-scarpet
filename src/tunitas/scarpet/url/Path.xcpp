@@ -1,0 +1,64 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::url {
+  //
+  // The Path is analysis of the path component
+  //
+  //   /prefix/{ID}  ->  ( /prefix, ID )
+  //
+  // The Path (Indicator) is in the url (ell as in Llama)
+  //
+  // Usage:
+  //
+  //   req = apache::httpd::request_rec *{...somehow...};
+  //   std::string uri{req->uri};
+  //   auto parsed = uri_parser(uri);
+  //   if (!ok(parsed)) {
+  //     return HTTP::BAD_REQUEST;
+  //   } else if (prefix(parsed) != spec->location_prefix.value) {
+  //     return HTTP::NOT_FOUND;
+  //   } else {
+  //     auto id = identifier(std::move(parsed));
+  //     ...use it...
+  //   }
+  //
+  class Path;
+}
+#endiv
+#divert <hpp>
+#import std.string
+namespace tunitas::scarpet::url {
+  inline auto ok(Path const &) -> bool;
+  //
+  inline auto prefix(Path const &) -> std::string const &;
+  inline auto prefix(Path &) -> std::string &;
+  inline auto prefix(Path &&) -> std::string;
+  //
+  inline auto identifier(Path const &) -> std::string const &;
+  inline auto identifier(Path &) -> std::string &;
+  inline auto identifier(Path &&) -> std::string;
+}
+#import std.tuple
+class tunitas::scarpet::url::Path : public std::tuple<bool, std::string, std::string> {
+  using ancestor = std::tuple<bool, std::string, std::string>;
+public:
+  using Tuple = ancestor;
+  Path() = default;
+  using ancestor::tuple;
+};
+#endiv
+#divert <ipp>
+#import std.get
+#import std.forward
+namespace tunitas::scarpet {
+  auto url::ok(Path const &u) -> bool { return std::get<0>(static_cast<Path::Tuple const &>(u)); }
+  auto url::prefix(Path const &u) -> std::string const & { return std::get<1>(static_cast<Path::Tuple const &>(u)); }
+  auto url::prefix(Path &u) -> std::string &             { return std::get<1>(static_cast<Path::Tuple &>(u)); }
+  auto url::prefix(Path &&anon) -> std::string           { return std::get<1>(std::forward<Path::Tuple>(anon)); }
+  auto url::identifier(Path const &u) -> std::string const & { return std::get<2>(static_cast<Path::Tuple const &>(u)); }
+  auto url::identifier(Path &u) -> std::string &             { return std::get<2>(static_cast<Path::Tuple &>(u)); }
+  auto url::identifier(Path &&u) -> std::string              { return std::get<2>(std::forward<Path::Tuple>(u)); }
+}
+#endiv

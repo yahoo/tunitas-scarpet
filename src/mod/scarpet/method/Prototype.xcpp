@@ -25,6 +25,7 @@ namespace mod::scarpet::method {
 #import apache.httpd.request_rec
 #import mod.scarpet.config.Specification
 #import tunitas.scarpet.url.Parser
+#import tunitas.scarpet.did.Parser
 class mod::scarpet::method::Prototype {
 protected:
   ~Prototype() = default;
@@ -39,6 +40,8 @@ protected:
   config::Specification const *spec;
   // ... because parsing occurs.
   tunitas::scarpet::url::Parser uri_parser;
+  // ... because more parsing occurs.
+  tunitas::scarpet::did::Parser did_parser;
   // ... because every method handler will need to respond onto an html stream.
   apache::httpd::io::Stream rs;
 };

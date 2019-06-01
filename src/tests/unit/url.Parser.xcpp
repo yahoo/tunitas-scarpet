@@ -28,6 +28,12 @@ public:
   auto test_bad_identifier_1_with_slash() -> void;
   auto test_bad_identifier_2_with_slash() -> void;
   auto test_bad_identifier_3_not_isidentifier() -> void;
+  auto test_case_01() -> void;
+  auto test_case_02() -> void;
+  auto test_case_03() -> void;
+  auto test_case_04() -> void;
+  auto test_case_05() -> void;
+  auto test_case_06() -> void;
   static auto suite() -> cppunit::Test *;
 };
 #endiv
@@ -122,16 +128,52 @@ auto tests::unit::url::Parser::test_bad_identifier_2_with_slash() -> void {
 }
 auto tests::unit::url::Parser::test_bad_identifier_3_not_isidentifier() -> void {
   Subject parser("/prefix");
-  { auto u = parser("/prefix/!@#$%^^&*&"); // <--- malformed identifier
-    CPPUNIT_ASSERT(!ok(u)); }
-  { auto u = parser("/prefix/%20"); // <--- malformed identifier
-    CPPUNIT_ASSERT(!ok(u)); }
-  { auto u = parser("/prefix/$(date)"); // <--- malformed identifier
-    CPPUNIT_ASSERT(!ok(u)); }
-  { auto u = parser("/prefix/|date"); // <--- malformed identifier
-    CPPUNIT_ASSERT(!ok(u)); }
+  { auto u = parser("/prefix/!@#$%^^&*&"); // <----- WELL FORMED identifier (merely:does not contain '/')
+    CPPUNIT_ASSERT(ok(u)); }
+  { auto u = parser("/prefix/%20"); // <------------ WELL FORMED identifier
+    CPPUNIT_ASSERT(ok(u)); }
+  { auto u = parser("/prefix/$(date)"); // <-------- WELL FORMED identifier
+    CPPUNIT_ASSERT(ok(u)); }
+  { auto u = parser("/prefix/|date"); // <---------- WELL FORMED identifier
+    CPPUNIT_ASSERT(ok(u)); }
   { auto u = parser("/prefix/|/home/you"); // <--- malformed identifier (with slashe)
     CPPUNIT_ASSERT(!ok(u)); }
+}
+auto tests::unit::url::Parser::test_case_01() -> void {
+  Subject parser("/");
+  auto parsed = parser("/did:example:123456789abcdefghi");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:example:123456789abcdefghi"s, identifier(parsed));
+}
+auto tests::unit::url::Parser::test_case_02() -> void {
+  Subject parser("/scarpet");
+  auto parsed = parser("/scarpet/did:example:123456789abcdefghi");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:example:123456789abcdefghi"s, identifier(parsed));
+}
+auto tests::unit::url::Parser::test_case_03() -> void {
+  Subject parser("/scarpet");
+  auto parsed = parser("/scarpet/did:example:a0096d98-2919-4a48-9b69-b8e7a8891d40");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:example:a0096d98-2919-4a48-9b69-b8e7a8891d40"s, identifier(parsed));
+}
+auto tests::unit::url::Parser::test_case_04() -> void {
+  Subject parser("/scarpet");
+  auto parsed = parser("/scarpet/did:artisanal:d41d8cd98f00b204e9800998ecf8427e");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:artisanal:d41d8cd98f00b204e9800998ecf8427e"s, identifier(parsed));
+}
+auto tests::unit::url::Parser::test_case_05() -> void {
+  Subject parser("/scarpet");
+  auto parsed = parser("/scarpet/did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"s, identifier(parsed));
+}
+auto tests::unit::url::Parser::test_case_06() -> void {
+  Subject parser("/scarpet");
+  auto parsed = parser("/scarpet/did:flannel:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:flannel:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"s, identifier(parsed));
 }
 #import unit.rigging.suite.Stream
 #import unit.rigging.suite.add
@@ -157,6 +199,17 @@ auto tests::unit::url::Parser::suite() -> cppunit::Test * {
          << call("bad_identifier_2_with_slash", &Parser::test_bad_identifier_2_with_slash)
          << call("bad_identifier_3_not_identifier", &Parser::test_bad_identifier_3_not_isidentifier)
     ;
+  {
+    Stream cas("case");
+    cas << call("01", &Parser::test_case_01)
+        << call("02", &Parser::test_case_02)
+        << call("03", &Parser::test_case_03)
+        << call("04", &Parser::test_case_04)
+        << call("05", &Parser::test_case_05)
+        << call("06", &Parser::test_case_06)
+      ;
+    series << move(cas);
+  }
   return series.release();
 }
 #endiv

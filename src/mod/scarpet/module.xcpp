@@ -12,6 +12,7 @@ namespace mod::scarpet {
 #import mod.scarpet.config
 #import mod.scarpet.config.Specification
 #import mod.scarpet.config.parse
+#import mod.scarpet.child_init
 #import mod.scarpet.handler
 #import mod.scarpet.open_logs
 #include "httpd/httpd.h" // All their macros in all their CPP glory.
@@ -39,6 +40,7 @@ namespace {
     AP_INIT_TAKE1(nullptr, nullptr, nullptr, 0, nullptr),
   };
   auto register_hooks(apr_pool_t *pool) -> void {
+    ap_hook_child_init(mod::scarpet::child_init, nullptr, nullptr, APR_HOOK_MIDDLE);
     ap_hook_open_logs(mod::scarpet::open_logs, nullptr, nullptr, APR_HOOK_LAST);
     ap_hook_handler(mod::scarpet::handler, nullptr, nullptr, APR_HOOK_LAST);
   }

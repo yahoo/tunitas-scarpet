@@ -7,7 +7,7 @@ namespace mod::scarpet::method {
   // GET / HTTP/X.Y
   // <body is ignored>
   //
-  // GET /{ID} HTTP/X.Y
+  // GET /{DID} HTTP/X.Y
   // <body is ignored>
   //
   // Expectations of URL routing consistency are enforced
@@ -22,29 +22,41 @@ namespace mod::scarpet::method {
 #divert <hpp>
 #import apache.httpd.status.Code
 #import mod.scarpet.method.Prototype
+#import std.string
+#import std.tuple
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.did.Identifier
 class mod::scarpet::method::Getter : public method::Prototype {
   using ancestor = Prototype;
+  using Code = apache::httpd::status::Code;
 public:
   using ancestor::Prototype;
-  auto operator()() -> apache::httpd::status::Code;
+  auto operator()() -> Code;
 protected:
   auto banner_failure(std::string const &) -> void;
+  auto get_did(std::string const &uri) -> std::tuple<Code, std::string>;
+  using Method = tunitas::scarpet::did::Method;
+  using Identifier = tunitas::scarpet::did::Identifier;
+  auto get_dns(std::string const &did) -> std::tuple<Code, Method, Identifier>;
 };
 #endiv
 #divert <cpp>
 #import autotools.autoconf.Config.mod.scarpet.CONFIG
+#import c.str
+#import mod.scarpet.module
 #import nonstd.exception.Unimplemented
-#import std.string
-auto mod::scarpet::method::Getter::operator()() -> apache::httpd::status::Code {
-  std::string uri{req->uri};
-  auto parsed = uri_parser(uri);
-  if (!ok(parsed)) {
-    return HTTP::BAD_REQUEST;
+auto mod::scarpet::method::Getter::operator()() -> Code {
+  auto [url_status, url_identifier] = get_did(req->uri);
+  if (HANDLER::OK != url_status) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "returning url_status=%d", (int) url_status);
+    return url_status;
   }
-  if (prefix(parsed) != spec->location_prefix.value) {
-    // How then, did this get routed here?
-    return HTTP::NOT_FOUND;
+  auto [did_status, did_method, did_identifier] = get_dns(url_identifier);
+  if (HANDLER::OK != did_status) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "returning did_status=%d", (int) did_status);
+    return did_status;
   }
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "use this method=%s, did=%s", c::str(did_method), c::str(did_identifier));
   //
   // [[TODO]] recover up the data item so named.
   throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
@@ -63,5 +75,40 @@ auto mod::scarpet::method::Getter::banner_failure(std::string const &identifier)
      << "of some really good reasons"
      << _p << _body
      << _html;
+}
+#import c.str
+#import std.string
+auto mod::scarpet::method::Getter::get_did(std::string const &uri) -> std::tuple<Code, std::string> {
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "uri %s", c::str(uri));
+  auto parsed = uri_parser(uri);
+  if (!ok(parsed)) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "unparsable uri %s", c::str(uri));
+    return {HTTP::BAD_REQUEST, {}};
+  }
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "prefix: found=%s, configured=%s", c::str(prefix(parsed)), c::str(spec->location_prefix.value));
+  if (prefix(parsed) != spec->location_prefix.value) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "inappropriate routing prefix: found=%s, configured=%s", c::str(prefix(parsed)), c::str(spec->location_prefix.value));
+    // How then, did this get routed here?
+    return {HTTP::NOT_FOUND, {}};
+  }
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "good identifier %s", c::str(identifier(parsed)));
+  return {HANDLER::OK, identifier(move(parsed))};
+}
+auto mod::scarpet::method::Getter::get_dns(std::string const &did) -> std::tuple<Code, Method, Identifier> {
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "did %s", c::str(did));
+  auto parsed = did_parser(did);
+  if (!ok(parsed)) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "unparsable did %s", c::str(did));
+    return {HTTP::BAD_REQUEST, {}, {}};
+  }
+  using tunitas::scarpet::did::parser::method;
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "did: found=%s, configured=%s", c::str(method(parsed)), c::str(spec->did_method_name.value));
+  if (method(parsed) != spec->did_method_name.value) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "inappropriate did_method: found=%s, configured=%s", c::str(method(parsed)), c::str(spec->did_method_name.value));
+    // How then, did this get routed here?
+    return {HTTP::NOT_FOUND, {}, {}};
+  }
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "good did %s identifier %s", c::str(method(parsed)), c::str(identifier(parsed)));
+  return {HANDLER::OK, method(move(parsed)), identifier(move(parsed))};
 }
 #endiv

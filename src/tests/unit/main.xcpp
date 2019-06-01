@@ -3,6 +3,7 @@
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <cpp>
 #import rigging.bench.Main
+#import tests.unit.did.Fixture
 #import tests.unit.error.Fixture
 #import tests.unit.exception.Fixture
 #import tests.unit.options.Fixture
@@ -12,7 +13,8 @@
 auto main(int argc, char **argv) -> int {
   using namespace rigging::bench;
   using namespace tests::unit;
-  Main remain(error::Fixture::suite(),
+  Main remain(did::Fixture::suite(),
+              error::Fixture::suite(),
               exception::Fixture::suite(),
               options::Fixture::suite(),
               scarpet::Fixture::suite(),

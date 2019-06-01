@@ -2,7 +2,8 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <hpp>
-#import mod.scarpet.httpd
+#import apache.runtime.pool_t
+#import apache.httpd.server_rec
 namespace mod::scarpet {
   //
   // The open_logs callback
@@ -50,13 +51,15 @@ namespace mod::scarpet {
 #import apache.httpd.log // APLOG_MARK is from <httpd/http_log.h>
 #import apache.httpd.module_config.get
 #import autotools.autoconf.Config.mod.scarpet.CONFIG
+#import mod.scarpet.httpd
+#import mod.scarpet.module
 #import mod.scarpet.config.Specification
 #import std.exception
 #import sys.posix.stat
 #import sys.posix.isdir
 #import mod.scarpet.module // presents ::scarpet_module
-auto mod::scarpet::open_logs(apache::runtime::pool_t *config, apache::runtime::pool_t *logging, apache::runtime::pool_t *temporary, apache::httpd::server_rec *s) noexcept -> int try {
-  auto const *spec = apache::httpd::module_config::get<config::Specification>(s, scarpet_module);
+auto mod::scarpet::open_logs(apache::runtime::pool_t *config, apache::runtime::pool_t *logging, apache::runtime::pool_t *temporary, apache::httpd::server_rec *server) noexcept -> int try {
+  auto const *spec = apache::httpd::module_config::get<config::Specification>(server, scarpet_module);
 
   // If you don't protect in this manner then the second 'start' directive will fail
   static bool is_started = false;
@@ -65,17 +68,14 @@ auto mod::scarpet::open_logs(apache::runtime::pool_t *config, apache::runtime::p
     // start something
   }
 
-  auto statted = sys::posix::stat(spec->storage_directory.value);
-  if (!ok(statted)) {
-    ap_log_error(APLOG_MARK, APLOG_ERR, /*status*/0, s, "the %s upload storage directory %s is missing", autotools::autoconf::Config<CONFIG>::package_name(), spec->storage_directory.value.data());
-    // but try to continue to OK (maybe the directory will show up later)
-  } else if (!sys::posix::isdir(value(statted))) {
-    ap_log_error(APLOG_MARK, APLOG_ERR, /*status*/0, s, "the %s upload storage directory %s is not a directory", autotools::autoconf::Config<CONFIG>::package_name(), spec->storage_directory.value.data());
-    // but try to continue to OK (maybe the directory will show up later)
-  }
+  //
+  // Do something
   return httpd::OK;
 } catch (std::exception const &e) {
-  ap_log_error(APLOG_MARK, APLOG_CRIT, /*status*/0, s, "could not start something at %%s at %%s because %s", e.what());
-  return httpd::INTERNAL_SERVER_ERROR;
+  ap_log_error(APLOG_MARK, APLOG_CRIT, /*status*/0, server, "could not open the logs because %s", e.what());
+  return apache::httpd::status::HTTP::INTERNAL_SERVER_ERROR;
+} catch (...) {
+  // (C++) exceptions cannot escape back out into the C runtime.
+  // [[FIXTHIS]] shouldn't we log something into the C API?
 }
 #endiv

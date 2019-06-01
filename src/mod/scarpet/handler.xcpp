@@ -62,6 +62,7 @@ auto mod::scarpet::packaging::handler::function::handler(request_rec *r) noexcep
   namespace module_config = apache::httpd::module_config;
   auto const *spec = module_config::get<config::Specification>(r->server, scarpet_module);
   if (nullptr == spec) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "null server config");
     throw std::runtime_error("null server config");
   }
   namespace io = apache::httpd::io;
@@ -73,6 +74,7 @@ auto mod::scarpet::packaging::handler::function::handler(request_rec *r) noexcep
     // GET /{DID} HTTP/5.0
     // ...ignored...
     //
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "GET");
     method::Getter GET(r, spec);
     return GET();
   } else if (method::POST == r->method_number) {
@@ -80,6 +82,7 @@ auto mod::scarpet::packaging::handler::function::handler(request_rec *r) noexcep
     // POST / HTTP/5.0       no {DID} in the URL path
     // ...document...
     //
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "POST");
     method::Poster POST(r, spec);
     return POST();
   } else if (method::PUT == r->method_number) {
@@ -87,9 +90,11 @@ auto mod::scarpet::packaging::handler::function::handler(request_rec *r) noexcep
     // PUT /{DID} HTTP/6.7
     // ...document...
     //
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "PUT");
     method::Putter PUT(r, spec);
     return PUT();
   } else {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "otherwise");
     using namespace io::keywords;
     rs << html << br
        << head << HANDLER_NAME << _head << br

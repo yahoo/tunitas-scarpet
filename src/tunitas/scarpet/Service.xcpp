@@ -28,13 +28,13 @@ namespace tunitas::scarpet {
 #endiv
 #divert <hpp>
 #import std.string_view
-namespace tunitas::scarpet::club {
+namespace tunitas::scarpet::service {
   inline auto view(Service const &) -> std::string_view;
 }
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet {
-  auto club::view(Service const &old) -> std::string_view {
+  auto service::view(Service const &old) -> std::string_view {
     return std::string_view{old.data(), old.size()};
   }
 }

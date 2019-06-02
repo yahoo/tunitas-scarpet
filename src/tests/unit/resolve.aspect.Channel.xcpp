@@ -1,0 +1,56 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::resolve::aspect {
+  //
+  // A test artifice to set up a channel.
+  // Descendants only; as a mixin to a Fixture
+  // Works within the cppunit::test::Fixture system
+  //
+  // Look, this is a test rig, so the design of the agglomeration and APIs can be ugly and barely documented.
+  // Using the magic of mixins and default constructors.
+  //
+  // Usage:
+  //
+  //   by inheritance, see resolve::Fixture
+  //
+  class Channel;
+}
+#endiv
+#divert <hpp>
+#import ares.Library
+#import ares.Channel
+#import std.unique_ptr
+namespace tests::unit::resolve {
+  class aspect::Channel {
+  protected:
+    virtual ~Channel() = default;
+    Channel() = default;
+  public:
+    // Unifies with the cppunit::test::Fixture virtuals of the same name.
+    virtual auto setUp() -> void;
+    virtual auto tearDown() -> void;
+  protected:
+    // The library may be constructed/deconstructed (sic) multiple times; it apparently reference counts.
+    // But the ares library must be constructed and operable before the channel is started.
+    std::unique_ptr<ares::Library> library;
+    std::unique_ptr<ares::Channel> channel;
+  };
+}
+#endiv
+#divert <cpp>
+#import std.make_unique
+namespace tests::unit::resolve::aspect {
+  auto Channel::setUp() -> void {
+    library = std::make_unique<ares::Library>();
+    channel = std::make_unique<ares::Channel>();
+  }
+  auto Channel::tearDown() -> void {
+    // in inverse order from setUp.
+    channel->cancel();
+    channel.reset();
+    library.reset();
+  }
+}
+#endiv

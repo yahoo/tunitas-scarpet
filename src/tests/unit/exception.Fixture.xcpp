@@ -45,12 +45,12 @@ auto tests::unit::exception::Fixture::test_Version() -> void {
 #import rigging.suite.io
 auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
-  Stream series("exception");
+  Stream series{"exception"};
   series << call("Quitting", &Fixture::test_Quitting)
          << call("Version", &Fixture::test_Version)
     ;
   {
-    Stream asp("Aspect");
+    Stream asp{"Aspect"};
     namespace subjecting = ::tunitas::scarpet::exception;
     asp << call("Version", &Fixture::test_Aspect<subjecting::Version>)
       ;

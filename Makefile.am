@@ -22,6 +22,7 @@ DEVELOPMENT_AREAS = \
   $(module_c_prefix) \
   $(module_format_prefix) \
   $(module_ip_prefix) \
+  $(module_json_prefix) \
   $(module_nonstd_prefix) \
   $(module_options_prefix) \
   $(module_posix_prefix) \

@@ -3,11 +3,11 @@
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
 #import ares.Channel
-#import tunitas.scarpet.did.Method
-#import tunitas.scarpet.did.Identifier
-#import tunitas.scarpet.Service
-#import tunitas.scarpet.Club
-#import tunitas.scarpet.dns.Name
+#forward tunitas.scarpet.did.Method
+#forward tunitas.scarpet.did.Identifier
+#forward tunitas.scarpet.Service
+#forward tunitas.scarpet.Club
+#forward tunitas.scarpet.dns.Name
 namespace tunitas::scarpet::resolve {
   using ares::Channel;
   using did::Method;
@@ -18,7 +18,16 @@ namespace tunitas::scarpet::resolve {
 #import std.string_literals
 #import std.string_view_literals
 #import std.chrono_literals
+#import ares.count.literals
 namespace tunitas::scarpet::resolve {
   using namespace std::literals;
+  using namespace ares::count::literals;
 }
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.Service
+#import tunitas.scarpet.Club
+#import tunitas.scarpet.dns.Name
 #endiv

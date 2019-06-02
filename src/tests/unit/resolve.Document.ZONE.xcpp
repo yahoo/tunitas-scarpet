@@ -1,0 +1,47 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tests.unit.resolve.Document.declaration
+namespace tests::unit::resolve {
+  template<> class Document<ZONE>;
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+namespace tests::unit::resolve {
+  template<> class Document<ZONE> : public cppunit::test::Fixture {
+  public:
+    auto test_case_01() -> void;
+    auto test_case_02() -> void;
+    static auto suite() -> cppunit::Test *;
+  };
+}
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.resolve.document.ZONE
+namespace tests::unit::resolve {
+  auto Document<ZONE>::test_case_01() -> void {
+#warning WRITETHIS auto Document<ZONE>::test_case_01() -> void
+    CPPUNIT_ASSERT(true);
+  }
+  auto Document<ZONE>::test_case_02() -> void {
+#warning WRITETHIS auto Document<ZONE>::test_case_02() -> void
+    CPPUNIT_ASSERT(true);
+  }
+}
+#import rigging.suite.io
+auto tests::unit::resolve::Document<tests::unit::resolve::ZONE>::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"document<ZONE>"};
+  {
+    Stream cas{"case"};
+    cas << call("01", &Document::test_case_01)
+        << call("02", &Document::test_case_02)
+      ;
+    series << move(cas);
+  }
+  return finalize(series);
+}
+#endiv

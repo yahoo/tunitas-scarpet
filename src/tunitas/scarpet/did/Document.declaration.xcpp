@@ -1,0 +1,22 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did {
+  //
+  // There are several implementations of the DID Document
+  // Each is tuned (optimized) towards some use case and away from some other.
+  // Choose wisely; but convert among them as necessary.
+  //
+  enum Model {
+    DOME, // a Document Object Model (DOM), Extensible
+    JSON, // just that.
+    ZONE, // simple, just the RR, as tuples; substantially uninterpreted.
+  };
+  template<Model> struct Document;
+}
+#endiv
+#divert <hpp>
+// Every specialization needs this
+#import tunitas.scarpet.did.document.Prototype
+#endiv

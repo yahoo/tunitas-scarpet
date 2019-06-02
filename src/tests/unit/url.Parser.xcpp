@@ -180,7 +180,7 @@ auto tests::unit::url::Parser::test_case_06() -> void {
 #import unit.rigging.suite.call
 auto tests::unit::url::Parser::suite() -> cppunit::Test * {
   using namespace ::unit::rigging::suite;
-  Stream series("Parser");
+  Stream series{"Parser"};
   series << call("empty", &Parser::test_empty)
          << call("slash", &Parser::test_slash)
          << call("more", &Parser::test_more)
@@ -200,7 +200,7 @@ auto tests::unit::url::Parser::suite() -> cppunit::Test * {
          << call("bad_identifier_3_not_identifier", &Parser::test_bad_identifier_3_not_isidentifier)
     ;
   {
-    Stream cas("case");
+    Stream cas{"case"};
     cas << call("01", &Parser::test_case_01)
         << call("02", &Parser::test_case_02)
         << call("03", &Parser::test_case_03)

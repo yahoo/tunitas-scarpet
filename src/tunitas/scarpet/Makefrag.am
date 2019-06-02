@@ -8,6 +8,7 @@ lib_libtunitas_scarpet_la_LIBADD = \
   $(lib_libwant_la) \
   -ltunitas-app \
   -lares-module \
+  -ljson-module \
   $(end)
 lib_libtunitas_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 lib_libtunitas_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_la_SOURCES))
@@ -18,14 +19,20 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/Club.cpp \
   obj/src/tunitas/scarpet/Service.cpp \
   \
-  obj/src/tunitas/scarpet/dns/namespace.cpp \
-  obj/src/tunitas/scarpet/dns/Name.cpp \
-  \
   obj/src/tunitas/scarpet/did/namespace.cpp \
   obj/src/tunitas/scarpet/did/Parser.cpp \
   obj/src/tunitas/scarpet/did/parser.Result.cpp \
   obj/src/tunitas/scarpet/did/Method.cpp \
   obj/src/tunitas/scarpet/did/Identifier.cpp \
+  obj/src/tunitas/scarpet/did/document.Prototype.cpp \
+  obj/src/tunitas/scarpet/did/Document.declaration.cpp \
+  obj/src/tunitas/scarpet/did/Document.DOME.cpp \
+  obj/src/tunitas/scarpet/did/Document.JSON.cpp \
+  obj/src/tunitas/scarpet/did/Document.ZONE.cpp \
+  obj/src/tunitas/scarpet/did/Document.cpp \
+  \
+  obj/src/tunitas/scarpet/dns/namespace.cpp \
+  obj/src/tunitas/scarpet/dns/Name.cpp \
   \
   obj/src/tunitas/scarpet/error/namespace.cpp \
   obj/src/tunitas/scarpet/error/Condition.cpp \
@@ -40,6 +47,12 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/exception/Quitting.cpp \
   \
   obj/src/tunitas/scarpet/resolve/namespace.cpp \
+  obj/src/tunitas/scarpet/resolve/document.declaration.cpp \
+  obj/src/tunitas/scarpet/resolve/document.DRRS.cpp \
+  obj/src/tunitas/scarpet/resolve/document.FILE.cpp \
+  obj/src/tunitas/scarpet/resolve/document.REST.cpp \
+  obj/src/tunitas/scarpet/resolve/document.ZONE.cpp \
+  obj/src/tunitas/scarpet/resolve/document.cpp \
   obj/src/tunitas/scarpet/resolve/lookup.declaration.cpp \
   obj/src/tunitas/scarpet/resolve/lookup.NA.cpp \
   obj/src/tunitas/scarpet/resolve/lookup.DA.cpp \

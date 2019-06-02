@@ -14,14 +14,8 @@ namespace tunitas::scarpet::did {
   // NSI = namespace-specific-identifier
   // DID = ...you know...
   //
-  // References
+  // References [[FIXTHIS]] too much erudition for a commentariat; put this in a wiki
   // 
-  //   General
-  //     https://www.ietf.org/rfc/rfc2141.txt - URN Syntax, 1997-05
-  //     https://www.iana.org/assignments/uri-schemes/uri-schemes.xhtml
-  //     https://tools.ietf.org/html/rfc3986 - Uniform Resource Identifier (URI), 2005-01
-  //     https://tools.ietf.org/html/rfc4122 - A Universally Unique IDentifier (UUID) URN Namespace, 2005-07.
-  //
   //   DID Theory
   //     https://w3c-ccg.github.io/did-spec/ - Decentalized Identifiers (DIDs), v0.13, updated constantly
   //     https://w3c-ccg.github.io/did-method-registry/ - DID Method Registry (a central registry of decentralized identifier schemes)
@@ -29,6 +23,27 @@ namespace tunitas::scarpet::did {
   //   DID Specifications
   //     https://dhh1128.github.io/peer-did-method-spec/index.html Peer DID Method Specification
   //     https://github.com/dhuseby/did-git-spec/blob/master/did-git-spec.md Git DID Method 1.0
+  //
+  //   General
+  //     RFC 1736 - Functional Recommendations for Internet Resource Locators, 1995-02
+  //     RFC 1738 - Functional Requirements for Uniform Resource Names, 1994-12
+  //     RFC 173?   Uniform Resource Locators (URL), 1994-12.
+  //     RFC ???? - Namespace Identifier Requirements for URN
+  //     RFC 2141 - URN Syntax, 1997-05; https://www.ietf.org/rfc/rfc2141.txt
+  //     RFC 2168 - obsoleted by RFC 3401
+  //     RFC 2276 - Architectural Principles of Uniform Resource Name Resolution, 1998-01; see RFC 3401.
+  //     RFC 2915 - The Naming Authority Pointer (NAPTR) DNS Resource Record, 2000; obsoleted by RFC 3401.
+  //     RFC 3401 - Dynamic Delegation Discovery System (DDDS) Part One: The Comprehensive DDDS, 2002-10.
+  //     RFC 3402 - Dynamic Delegation Discovery System (DDDS) Part Two: The Algorithm, 2002-10.
+  //     RFC 3403 - Dynamic Delegation Discovery System (DDDS) Part Three: The Domain Name System (DNS) Database, 2002-10.
+  //     RFC 3404 - Dynamic Delegation Discovery System (DDDS) Part Four: The Uniform Resource Identifiers (URI) Resolution, 2002-10.
+  //     RFC 3405 - Dynamic Delegation Discovery System (DDDS) Part Five: URI.ARPA Assignment Procedures, 2002-10.
+  //     RFC 3986 - Uniform Resource Identifier (URI), 2005-01, https://tools.ietf.org/html/rfc3986.
+  //     RFC 4122 - A Universally Unique IDentifier (UUID) URN Namespace, 2005-07, https://tools.ietf.org/html/rfc4122.
+  //
+  //     https://www.iana.org/assignments/uri-schemes/uri-schemes.xhtml
+  //     Edward C. Slottow, Engineering a Global Resoluttion Service, M.S. Thesis, MIT-LCS-TR712, MIT, 1997-06, 100 pages.
+  //        https://dspace.mit.edu/bitstream/handle/1721.1/43506/38164306-MIT.pdf
   //
   // A DID's payload syntax can be made up of any of those certain and reasonable characters
   //

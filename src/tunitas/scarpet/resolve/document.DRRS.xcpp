@@ -1,0 +1,41 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.resolve.document.declaration
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::resolve {
+  //
+  // Fish around the DSSZ and get the RR interest.
+  //
+  // DRRS - Disaggregated Resource Records Splattered
+  // DSSZ - Document Storage Service Zone
+  //  SSZ - Storage Service Zone
+  //
+  // These use a "R" flag to indicate the use of a collection of resource records.
+  // (elsewhere) "Z" to indicate the use of a whole zone in toto; which is not DRRS, but ZONE.
+  //
+  // DID Document Storage Service Zone (DSSZ), a (F)QDN -------------------------\ (here)
+  //                                                                             |      
+  //            DID Method -------------------------------------\---\            |
+  //                                                            |   |            |
+  // Mumblecore DID Document Storage Flags -----------------\   |   |            |
+  //                                                        |   |   |            |
+  // /-----------reversed DID---------------\               |   |   |            |
+  // |           |        |                 |               |   |   |            |
+  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv               v   v   v            v
+  // ... 9b-7d80-46c0-bc2a-76a84bf848ef.lo-fi    NAPTR 1 1 "R" "did+lo-fi"    "" gurdon.fd20-1e92-49c7.net.
+  // ... 0e-233a-496c-aebd-79ca7c6efe9a.affogato NAPTR 1 1 "R" "did+affogato" "" will-o-the-wisp.fd20-1e92-49c7.net.
+  //
+  template<> auto document<DRRS>(Channel &, dns::Name const &) -> Outcome<did::Document<did::DOME>>;
+}
+#endiv
+#divert <cpp>
+#import nonstd.exception.Unimplemented
+namespace tunitas::scarpet::resolve {
+  template<> auto document<DRRS>(Channel &, dns::Name const &) -> Outcome<did::Document<did::DOME>> {
+    throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+  }
+}
+#endiv

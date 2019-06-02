@@ -8,7 +8,7 @@ dnl SCARPET_ENABLE_DID_METHOD_NAME     (no arguments)
 dnl
 dnl The DID MEthod Name is a tag that provides uniqueness with the genre, culture, cohort of other DID schemes.
 dnl See https://w3c-ccg.github.io/did-method-registry/ - DID Method Registry
-dnl The DID Method is a simple word like "mumblecore"
+dnl The DID Method is a simple word like "mumblecore" or among the many: austin, brunch, chia, distillery, enamel, franzen, goth, health, irony, jackalope, kitsch, listicle, meggings, next-level, organic, plaid, quinoa, raclette, scenester, tbh, ugh, vaporware, worke, yuccie, z-something
 dnl
 AC_DEFUN([SCARPET_ENABLE_DID_METHOD_NAME], [
     default_did_method_name="mumblecore"

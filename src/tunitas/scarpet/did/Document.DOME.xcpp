@@ -1,0 +1,31 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.did.Document.declaration
+namespace tunitas::scarpet::did {
+  //
+  // The DID document is a model ... with operable operations for operating.
+  // Whereas operating on JSON is ... fraught ... goodness, this is what we've come to?  The JSON?
+  // and opeating on ZONE RR tuples is too flat and, ahem, non-abstract.
+  //
+  // Usage:
+  //
+  //   auto zdoc = Document<DOME>{};
+  //   zdoc.push_back(...somehow...);
+  //   for (auto const &rr : zdoc) {
+  //      ...use the resource record (rr)...
+  //   }
+  //
+  template<> class Document<DOME>;
+}
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::did {
+  template<> class Document<DOME> : public document::Prototype {
+    using ancestor = document::Prototype;
+  public:
+    Document() = default;
+  };
+}
+#endiv

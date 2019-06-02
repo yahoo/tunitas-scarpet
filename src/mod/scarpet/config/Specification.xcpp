@@ -37,10 +37,10 @@ namespace mod::scarpet::config {
   //     return status::ERROR;
   //   }
   // 
-  enum DID_CLUB_NAME { };
-  enum DID_METHOD_NAME { };
-  enum DID_SERVICE_NAME { };
-  enum LOCATION_PREFIX { };
+  enum CLUB { };
+  enum METHOD { };
+  enum SERVICE { };
+  enum LOCATION { };
   class Specification;
 }
 #endiv
@@ -53,29 +53,29 @@ namespace mod::scarpet::config {
 class mod::scarpet::config::Specification {
 public:
   Specification();
-  using Club = apache::httpd::config::Value<DID_CLUB_NAME,tunitas::scarpet::Club>;
+  using Club = apache::httpd::config::Value<CLUB, tunitas::scarpet::Club>;
   Club did_club_name;
-  using Method = apache::httpd::config::Value<DID_METHOD_NAME, tunitas::scarpet::did::Method>;
+  using Method = apache::httpd::config::Value<METHOD, tunitas::scarpet::did::Method>;
   Method did_method_name;
-  using Service = apache::httpd::config::Value<DID_SERVICE_NAME, tunitas::scarpet::Service>;
+  using Service = apache::httpd::config::Value<SERVICE, tunitas::scarpet::Service>;
   Service resolver_service_name;
-  using Location = apache::httpd::config::Value<LOCATION_PREFIX>;
+  using Location = apache::httpd::config::Value<LOCATION>;
   Location location_prefix;
 };
 namespace apache::httpd::config {
   // The DID Club (a DNS FQDN, but a Service, a business, a Consortium) being used at this REST endpoint.
-  template<> char const Value<mod::scarpet::config::DID_CLUB_NAME, tunitas::scarpet::Club>::NAME[];
-  template<> char const Value<mod::scarpet::config::DID_CLUB_NAME, tunitas::scarpet::Club>::DESCRIPTION[];
+  template<> char const Value<mod::scarpet::config::CLUB, tunitas::scarpet::Club>::NAME[];
+  template<> char const Value<mod::scarpet::config::CLUB, tunitas::scarpet::Club>::DESCRIPTION[];
   // The DID Method Name which is serviced at this REST endpoint.
-  template<> char const Value<mod::scarpet::config::DID_METHOD_NAME, tunitas::scarpet::did::Method>::NAME[];
-  template<> char const Value<mod::scarpet::config::DID_METHOD_NAME, tunitas::scarpet::did::Method>::DESCRIPTION[];
+  template<> char const Value<mod::scarpet::config::METHOD, tunitas::scarpet::did::Method>::NAME[];
+  template<> char const Value<mod::scarpet::config::METHOD, tunitas::scarpet::did::Method>::DESCRIPTION[];
   // The DID Resolver Service expected at this REST endpoint (not passed ot the endpoint)
   // This is the required value of the NAPTR service field.
-  template<> char const Value<mod::scarpet::config::DID_SERVICE_NAME, tunitas::scarpet::Service>::NAME[];
-  template<> char const Value<mod::scarpet::config::DID_SERVICE_NAME, tunitas::scarpet::Service>::DESCRIPTION[];
+  template<> char const Value<mod::scarpet::config::SERVICE, tunitas::scarpet::Service>::NAME[];
+  template<> char const Value<mod::scarpet::config::SERVICE, tunitas::scarpet::Service>::DESCRIPTION[];
   // The location prefix in the REST sense
-  template<> char const Value<mod::scarpet::config::LOCATION_PREFIX>::NAME[];
-  template<> char const Value<mod::scarpet::config::LOCATION_PREFIX>::DESCRIPTION[];
+  template<> char const Value<mod::scarpet::config::LOCATION>::NAME[];
+  template<> char const Value<mod::scarpet::config::LOCATION>::DESCRIPTION[];
 }
 namespace apache::httpd::config::detail {
   template<> inline auto coerce<tunitas::scarpet::Club>(std::string const &) -> tunitas::scarpet::Club;
@@ -104,30 +104,31 @@ mod::scarpet::config::Specification::Specification()
   ;
 }
 
-template<> char const apache::httpd::config::Value<mod::scarpet::config::DID_CLUB_NAME, tunitas::scarpet::Club>::NAME[] = "Club";
-template<> char const apache::httpd::config::Value<mod::scarpet::config::DID_CLUB_NAME, tunitas::scarpet::Club>::DESCRIPTION[] =
-R"DESCRIPTION(DID Club Name; defaults to ")DESCRIPTION" "scarpet.club" "\"";
+#include "config.h" // which has the #defines that paste in string literals
+template<> char const apache::httpd::config::Value<mod::scarpet::config::CLUB, tunitas::scarpet::Club>::NAME[] = "Club";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::CLUB, tunitas::scarpet::Club>::DESCRIPTION[] =
+R"DESCRIPTION(DID Club Name; defaults to ")DESCRIPTION" DID_CLUB_NAME "\"";
 //                                                    ^ ^
 //                                                    | |
 // C++ macro and string literal concatenation --------/-/ (here)
 // [[FIXTHIS]] acquire the #define (ahem) string literals from config.h
 
-template<> char const apache::httpd::config::Value<mod::scarpet::config::DID_METHOD_NAME, tunitas::scarpet::did::Method>::NAME[] = "Method";
-template<> char const apache::httpd::config::Value<mod::scarpet::config::DID_METHOD_NAME, tunitas::scarpet::did::Method>::DESCRIPTION[] =
-R"DESCRIPTION(The DID Method Name defaults to ")DESCRIPTION" "mumblecore" "\"";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::METHOD, tunitas::scarpet::did::Method>::NAME[] = "Method";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::METHOD, tunitas::scarpet::did::Method>::DESCRIPTION[] =
+R"DESCRIPTION(The DID Method Name defaults to ")DESCRIPTION" DID_METHOD_NAME "\"";
 //                                                         ^ ^
 //                                                         | |
 // C++ macro and string literal concatenation -------------/-/ (here)
 // [[FIXTHIS]] acquire the #define (ahem) string literals from config.h
-template<> char const apache::httpd::config::Value<mod::scarpet::config::DID_SERVICE_NAME, tunitas::scarpet::Service>::NAME[] = "Service";
-template<> char const apache::httpd::config::Value<mod::scarpet::config::DID_SERVICE_NAME, tunitas::scarpet::Service>::DESCRIPTION[] =
-R"DESCRIPTION(The DID Resolver Service Name; defaults to ")DESCRIPTION" "did+w3id+v1" "\"";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::SERVICE, tunitas::scarpet::Service>::NAME[] = "Service";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::SERVICE, tunitas::scarpet::Service>::DESCRIPTION[] =
+R"DESCRIPTION(The DID Resolver Service Name; defaults to ")DESCRIPTION" DID_SERVICE_NAME "\"";
 //                                                                    ^ ^
 //                                                                    | |
 // C++ macro and string literal concatenation ------------------------/-/ (here)
 // [[FIXTHIS]] acquire the #define (ahem) string literals from config.h
 
-template<> char const apache::httpd::config::Value<mod::scarpet::config::LOCATION_PREFIX>::NAME[] = "Location";
-template<> char const apache::httpd::config::Value<mod::scarpet::config::LOCATION_PREFIX>::DESCRIPTION[] =
+template<> char const apache::httpd::config::Value<mod::scarpet::config::LOCATION>::NAME[] = "Location";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::LOCATION>::DESCRIPTION[] =
 R"DESCRIPTION(The Location prefix of the handler, defaults to "/")DESCRIPTION";
 #endiv

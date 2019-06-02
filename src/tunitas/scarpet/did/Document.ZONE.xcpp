@@ -1,0 +1,33 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.did.Document.declaration
+namespace tunitas::scarpet::did {
+  //
+  // The DID document is a DNS Zone.
+  // A DNS Zone is a set of Resource Record (RR), managed as (typed) tuples of fields.
+  //
+  // Usage:
+  //
+  //   auto zdoc = Document<ZONE>{};
+  //   zdoc.push_back(...somehow...);
+  //   for (auto const &rr : zdoc) {
+  //      ...use the resource record (rr)...
+  //   }
+  //
+  template<> class Document<ZONE>;
+}
+#endiv
+#divert <hpp>
+#import std.vector
+#import std.unique_ptr
+// #import tunitas.scarpet.drrs
+namespace tunitas::scarpet::did {
+  template<> class Document<ZONE> : public document::Prototype {
+    using ancestor = document::Prototype;
+  public:
+    Document() = default;
+  };
+}
+#endiv

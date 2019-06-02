@@ -1,0 +1,73 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tests.unit.resolve.Lookup.declaration
+namespace tests::unit::resolve {
+  template<> class Lookup<NA>;
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tests.unit.resolve.aspect.Channel
+namespace tests::unit::resolve {
+  template<> class Lookup<NA> : public cppunit::test::Fixture, aspect::Channel {
+  public:
+    auto setUp() -> void final { Channel::setUp(); }
+    auto tearDown() -> void final { Channel::tearDown(); }
+    auto test_case_01() -> void;
+    auto test_case_02() -> void;
+    static auto suite() -> cppunit::Test *;
+  };
+}
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.resolve.lookup.NA
+#import tunitas.scarpet.Club
+#import tunitas.scarpet.Service
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.resolve.lookup
+#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
+#import std.cerr
+namespace tests::unit::resolve {
+  auto Lookup<NA>::test_case_01() -> void {
+    using ac = autotools::autoconf::Config<::tunitas::scarpet::CONFIG>;
+    using namespace ::tunitas::scarpet;
+    namespace did = ::tunitas::scarpet::did;
+    namespace subjecting = ::tunitas::scarpet::resolve;
+    auto const method = did::Method{"example"};
+    auto const identifier = did::Identifier{"123456789abcdefghi"};
+    auto const service = Service{"did+w3id+v1"};
+    auto const club = Club{ac::did_club_name()};
+    auto lookedup = subjecting::lookup<resolve::NA>(*this->channel, method, identifier, service, club);
+    CPPUNIT_ASSERT(ok(lookedup) || !ok(lookedup));
+    std::ostream &outbound{std::cerr};
+    outbound << "lookup<NA>(" << view(method) << ", " << view(identifier) << ", " << view(service) << ", " << view(club) << ")\n";
+    if (ok(lookedup)) {
+      outbound << "FOUND: " << view(value(lookedup));
+    } else {
+      outbound << "failed: " << error_code(lookedup).message();
+    }
+    outbound << '\n';
+  }
+  auto Lookup<NA>::test_case_02() -> void {
+#warning WRITETHIS auto Lookup<NA>::test_case_02() -> void
+    CPPUNIT_ASSERT(true);
+  }
+}
+#import rigging.suite.io
+auto tests::unit::resolve::Lookup<tests::unit::resolve::NA>::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"lookup<NA>"};
+  {
+    Stream cas{"case"};
+    cas << call("01", &Lookup::test_case_01)
+        << call("02", &Lookup::test_case_02)
+      ;
+    series << move(cas);
+  }
+  return finalize(series);
+}
+#endiv

@@ -74,7 +74,7 @@ auto tests::unit::url::Fixture::test_Parser_slashprefix() -> void {
 #import unit.rigging.suite.call
 auto tests::unit::url::Fixture::suite() -> cppunit::Test * {
   using namespace ::unit::rigging::suite;
-  Stream series("url");
+  Stream series{"url"};
   series << call("Parser_slash", &Fixture::test_Parser_slash)
          << call("Parser_slashprefix", &Fixture::test_Parser_slashprefix)
          << add(Parser::suite())

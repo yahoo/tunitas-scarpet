@@ -43,11 +43,15 @@ namespace tunitas::scarpet::resolve {
 #import ares.dns.class.constants
 #import ares.dns.type.constants
 #import ares.error.Code
+#if 1
+#import ares.run
+#else
 #import ares.count
-#import ares.query
 #import ares.select
 #import ares.process
 #import ares.timeout
+#endif
+#import ares.query
 #import ares.reply.Record
 #import ares.reply.parse
 #import format.q
@@ -81,15 +85,14 @@ namespace tunitas::scarpet::resolve {
                              failure = error_code(parsed);
                              return;
                            }
+                           using Awkward = nonstd::span<char const>;
                            for (auto const &record : records) {
                              auto const found_service = [record]() {
-                                                          using Awkward = nonstd::span<char const>;
                                                           auto spun = record.service<Awkward>();
                                                           return Service{spun.data(), spun.data()+spun.size()};
                                                         }();
                              if (found_service == configured_service) {
                                success = [record]() {
-                                           using Awkward = nonstd::span<char const>;
                                            auto spun = record.replacement<Awkward>();
                                            return dns::Name{spun.data(), spun.data()+spun.size()};
                                          }();
@@ -99,11 +102,14 @@ namespace tunitas::scarpet::resolve {
                            // and maybe we finish up setting either failure or success (that will be recorded as a failure)
                          };
     qq(channel, qdn, dnsclass, dnstype, receive);
+    run(channel, 5_count, 500ms);
+#if 0
     ares::fd::Sets readies;
-    for (auto ccc=count(channel, readies); !zero(ccc); ccc=count(channel, readies)) {
+    for (auto ccc=ares::fd::count(channel, readies); !zero(ccc); ccc=count(channel, readies)) {
       select(ccc, readies, timeout(channel, 3s));
       process(channel, readies);
     }
+#endif
     if (failure) {
       return Outcome<dns::Name>{*failure};
     } else if (success) {

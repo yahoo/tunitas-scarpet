@@ -48,7 +48,7 @@ auto tests::unit::options::Fixture::test_Specification() -> void {
 #import rigging.suite.io
 auto tests::unit::options::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
-  Stream series("options");
+  Stream series{"options"};
   series << call("Arguments", &Fixture::test_Arguments)
          << call("Parser", &Fixture::test_Parser)
          << call("parser::Result", &Fixture::test_parser_Result)

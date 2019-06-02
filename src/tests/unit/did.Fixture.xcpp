@@ -57,6 +57,9 @@ auto tests::unit::did::Fixture::test_Parser_bad() -> void {
   { auto u = parser("did:m:");
     CPPUNIT_ASSERT(!ok(u)); }
 }
+#import tests.unit.did.Document.DOME
+#import tests.unit.did.Document.JSON
+#import tests.unit.did.Document.ZONE
 #import tests.unit.did.Parser
 #import unit.rigging.suite.Stream
 #import unit.rigging.suite.add
@@ -77,7 +80,12 @@ auto tests::unit::did::Fixture::suite() -> cppunit::Test * {
       ;
     series << add(par.release());
   }
+  namespace testing = tests::unit::did;
+  namespace subjecting = ::tunitas::scarpet::did;
   series << add(Parser::suite())
+         << add(testing::Document<subjecting::Document<subjecting::DOME>>::suite())
+         << add(testing::Document<subjecting::Document<subjecting::JSON>>::suite())
+         << add(testing::Document<subjecting::Document<subjecting::ZONE>>::suite())
     ;
   return series.release();
 }

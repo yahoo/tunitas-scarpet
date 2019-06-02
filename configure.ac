@@ -26,6 +26,7 @@ TF_WITH_MODULE([boost])
 TF_WITH_MODULE([c])
 TF_WITH_MODULE([format])
 TF_WITH_MODULE([ip])
+TF_WITH_MODULE([json])
 TF_WITH_MODULE([nonstd])
 TF_WITH_MODULE([options])
 TF_WITH_MODULE([posix])
@@ -94,5 +95,8 @@ SCARPET_ENABLE_DID_CLUB_NAME
 
 m4_include([ac/enable-method.m4])
 SCARPET_ENABLE_DID_METHOD_NAME
+
+m4_include([ac/enable-service.m4])
+SCARPET_ENABLE_DID_SERVICE_NAME
 
 TF_FINALIZE

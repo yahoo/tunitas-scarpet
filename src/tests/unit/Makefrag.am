@@ -15,19 +15,41 @@ check_bin_unit_MODULES = $(call TF_SOURCEStoMODULES, $(check_bin_unit_SOURCES))
 check_bin_unit_SOURCES = \
   obj/src/tests/unit/namespace.cpp \
   obj/src/tests/unit/main.cpp \
+  \
   obj/src/tests/unit/did.Fixture.cpp \
   obj/src/tests/unit/did.Parser.cpp \
+  obj/src/tests/unit/did.Document.declaration.cpp \
+  obj/src/tests/unit/did.Document.DOME.cpp \
+  obj/src/tests/unit/did.Document.JSON.cpp \
+  obj/src/tests/unit/did.Document.ZONE.cpp \
+  \
   obj/src/tests/unit/error.Fixture.cpp \
   obj/src/tests/unit/error.Category.cpp \
+  \
   obj/src/tests/unit/exception.Fixture.cpp \
   obj/src/tests/unit/exception.Fixture.Thrower.cpp \
+  \
   obj/src/tests/unit/options.Fixture.cpp \
   obj/src/tests/unit/options.Fixture.Parser.cpp \
   obj/src/tests/unit/options.Fixture.Specification.cpp \
+  \
+  obj/src/tests/unit/resolve.aspect.Channel.cpp \
+  obj/src/tests/unit/resolve.Fixture.cpp \
+  obj/src/tests/unit/resolve.Document.declaration.cpp \
+  obj/src/tests/unit/resolve.Document.DRRS.cpp \
+  obj/src/tests/unit/resolve.Document.FILE.cpp \
+  obj/src/tests/unit/resolve.Document.REST.cpp \
+  obj/src/tests/unit/resolve.Document.ZONE.cpp \
+  obj/src/tests/unit/resolve.Lookup.declaration.cpp \
+  obj/src/tests/unit/resolve.Lookup.DA.cpp \
+  obj/src/tests/unit/resolve.Lookup.NA.cpp \
+  \
   obj/src/tests/unit/scarpet.Fixture.cpp \
   obj/src/tests/unit/scarpet.Fixture.Configuration.cpp \
+  \
   obj/src/tests/unit/url.Fixture.cpp \
   obj/src/tests/unit/url.Parser.cpp \
+  \
   obj/src/tests/unit/want.Fixture.cpp \
   $(end)
 

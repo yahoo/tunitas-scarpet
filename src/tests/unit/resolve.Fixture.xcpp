@@ -1,0 +1,74 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::resolve { class Fixture; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tests.unit.resolve.aspect.Channel
+class tests::unit::resolve::Fixture : public cppunit::test::Fixture, aspect::Channel {
+public:
+  auto setUp() -> void override { Channel::setUp(); }
+  auto tearDown() -> void override { Channel::tearDown(); }
+  auto test_lookup_something() -> void;
+  auto test_document_something() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.resolve.lookup
+#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
+auto tests::unit::resolve::Fixture::test_lookup_something() -> void {
+  using ac = autotools::autoconf::Config<::tunitas::scarpet::CONFIG>;
+  using namespace ::tunitas::scarpet::resolve;
+  auto method = ::tunitas::scarpet::did::Method{"example"};
+  auto identifier = ::tunitas::scarpet::did::Identifier{"123456789acdefghi"};
+  auto service = ::tunitas::scarpet::Service{"did+w3id+v1"};
+  auto club = ::tunitas::scarpet::Club{ac::did_club_name()};
+  auto looked = lookup<NA>(*this->channel, method, identifier, service, club);
+  //
+  // Of course this lookup will fail if you operate the unit tests in a realm where
+  // (a) there is no DNS service at all; e.g. in a buildfarm jail
+  // (b) where there is no definition of id.123456789acdefghi.example.$CLUB for $CLUB; e.g. scarpet.club.
+  //
+  CPPUNIT_ASSERT(ok(looked) || !ok(looked));
+  if (ok(looked)) {
+    auto name = value(std::move(looked));
+    CPPUNIT_ASSERT(!name.empty());
+  }
+}
+#import tunitas.scarpet.resolve.document
+auto tests::unit::resolve::Fixture::test_document_something() -> void {
+  CPPUNIT_ASSERT(true);
+}
+#import tests.unit.resolve.Lookup.DA
+#import tests.unit.resolve.Lookup.NA
+#import tests.unit.resolve.Document.DRRS
+#import tests.unit.resolve.Document.FILE
+#import tests.unit.resolve.Document.REST
+#import tests.unit.resolve.Document.ZONE
+#import rigging.suite.io
+auto tests::unit::resolve::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"resolve"};
+  {
+    Stream some{"something"};
+    some << call("lookup", &Fixture::test_lookup_something)
+         << call("document", &Fixture::test_document_something)
+    ;
+    series << move(some);
+  }
+  namespace testing = ::tests::unit::resolve;
+  namespace subjecting = ::tunitas::scarpet::resolve;
+  series << add(testing::Lookup<subjecting::NA>::suite())
+         << add(testing::Lookup<subjecting::DA>::suite())
+         << add(testing::Document<subjecting::DRRS>::suite())
+         << add(testing::Document<subjecting::FILE>::suite())
+         << add(testing::Document<subjecting::REST>::suite())
+         << add(testing::Document<subjecting::ZONE>::suite())
+    ;
+  return finalize(series);
+}
+#endiv

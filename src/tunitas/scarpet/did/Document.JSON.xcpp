@@ -1,0 +1,27 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.did.Document.declaration
+namespace tunitas::scarpet::did {
+  //
+  // The DID document is a JSON Object.
+  //
+  // Usage:
+  //
+  //   auto jdoc = Document<JSON>{};
+  //   ... operate on it like you would a json::Value of type OBJECT.
+  //
+  template<> class Document<JSON>;
+}
+#endiv
+#divert <hpp>
+#import json.Value
+namespace tunitas::scarpet::did {
+  template<> class Document<JSON> : public document::Prototype {
+    using ancestor = document::Prototype;
+  public:
+    Document() = default;
+  };
+}
+#endiv

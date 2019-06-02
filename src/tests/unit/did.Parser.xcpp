@@ -177,7 +177,7 @@ auto tests::unit::did::Parser::test_case_06() -> void {
 #import unit.rigging.suite.call
 auto tests::unit::did::Parser::suite() -> cppunit::Test * {
   using namespace ::unit::rigging::suite;
-  Stream series("Parser");
+  Stream series{"Parser"};
   series << call("empty", &Parser::test_empty)
          << call("slash", &Parser::test_slash)
          << call("did", &Parser::test_did)

@@ -20,7 +20,7 @@ auto tests::unit::want::Fixture::test_something() -> void {
 #import rigging.suite.io
 auto tests::unit::want::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
-  Stream series("want");
+  Stream series{"want"};
   series << call("something", &Fixture::test_something)
     ;
   return finalize(series);

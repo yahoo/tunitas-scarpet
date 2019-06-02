@@ -1,0 +1,32 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did::document {
+  //
+  // The prototype of a DID Document.
+  // Descendants only.
+  //
+  // Only move semantics because these zone things are big and heavy.
+  //
+  // Usage:
+  //
+  //    See the specializations of Document<MODEL>
+  //
+  class Prototype;
+}
+#endiv
+#divert <hpp>
+class tunitas::scarpet::did::document::Prototype {
+protected:
+  ~Prototype() = default;
+  Prototype() = default;
+public:
+  Prototype(Prototype const &) = delete;
+  auto operator=(Prototype const &) -> Prototype & = delete;
+  Prototype(Prototype &&) = default;
+  auto operator=(Prototype &&) -> Prototype & = default;
+  //
+  // What else?
+};
+#endiv

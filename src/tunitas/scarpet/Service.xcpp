@@ -1,0 +1,41 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.char_traits
+#import std.basic_string
+namespace tunitas::scarpet {
+  //
+  // A (DID Resolver) Service (Name).
+  // These are the sorts of service names that you might find in a NAPTR.
+  //
+  // With variants separated by '+'
+  //
+  // Examples:
+  //
+  //    (from the mumblecore lexicon)   did+affogato    did+biodiesel      did+chia                   did+lo-fo      ...etc...
+  //    (from the w3c did-spec)         did+w3id+v1     did+example.org    did+example.org+inline     did+context    ...etc...
+  //
+  // Usage:
+  //
+  //   oh come on (it's a string)
+  //
+  namespace service {
+    class Traits : public std::char_traits<char> { };
+  }
+  using Service = std::basic_string<char, service::Traits>;
+}
+#endiv
+#divert <hpp>
+#import std.string_view
+namespace tunitas::scarpet::club {
+  inline auto view(Service const &) -> std::string_view;
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet {
+  auto club::view(Service const &old) -> std::string_view {
+    return std::string_view{old.data(), old.size()};
+  }
+}
+#endiv

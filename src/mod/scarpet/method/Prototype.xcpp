@@ -42,14 +42,15 @@ class mod::scarpet::method::Prototype {
 protected:
   ~Prototype() = default;
 public:
-  inline Prototype(apache::httpd::request_rec *, server::State const *);
+  inline Prototype(apache::httpd::request_rec *, server::State *);
   // The descendant must implement (the non-virtual)
   //   auto operator()() -> apache::httpd::status::Code;
 protected:
   // Of course, the containing apache request record must have a longer lifetime than the method
   apache::httpd::request_rec *req;
   // Of course, the Specification must have a longer lifetime than the method (descendant)
-  server::State const *state;
+  // Even GET requires non-const state; e.g. to operate the channel
+  server::State *state;
   // ... because parsing occurs.
   tunitas::scarpet::url::Parser uri_parser;
   // ... because more parsing occurs.
@@ -59,10 +60,10 @@ protected:
 };
 #endiv
 #divert <ipp>
-mod::scarpet::method::Prototype::Prototype(apache::httpd::request_rec *req, server::State const *state)
+mod::scarpet::method::Prototype::Prototype(apache::httpd::request_rec *req, server::State *state)
   : req{req}
   , state{state}
-  , uri_parser{state->specification->location_prefix.value}
+  , uri_parser{state->specification.location_prefix.value}
   , did_parser{}
   , rs{req}
 { }

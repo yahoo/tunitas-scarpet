@@ -43,7 +43,7 @@ auto mod::scarpet::method::Putter::operator()() -> apache::httpd::status::Code {
   if (!ok(parsed)) {
     return HTTP::BAD_REQUEST;
   }
-  if (prefix(parsed) != state->specification->location_prefix.value) {
+  if (prefix(parsed) != state->specification.location_prefix.value) {
     // How then, did this get routed here?
     return HTTP::NOT_FOUND;
   }

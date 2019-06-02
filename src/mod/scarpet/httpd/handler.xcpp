@@ -59,7 +59,7 @@ auto mod::scarpet::httpd::packaging::handler::function::handler(request_rec *r) 
   }
   ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "%s (accepted %s)", HANDLER_NAME, r->uri);
   namespace module_config = apache::httpd::module_config;
-  auto const *state = module_config::get<server::State>(r->server, scarpet_module);
+  auto *state = module_config::get<server::State>(r->server, scarpet_module);
   if (nullptr == state) {
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "null server config");
     throw std::runtime_error("null server state");

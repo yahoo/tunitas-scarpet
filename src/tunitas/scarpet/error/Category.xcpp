@@ -45,6 +45,8 @@ namespace tunitas::scarpet::error {
       return "failure";
     case Code::OPTIONS:
       return "options";
+    case Code::NOT_FOUND:
+      return "not found";
     default:
       return "error " + std::to_string(code);
     }

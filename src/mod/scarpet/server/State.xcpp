@@ -15,21 +15,27 @@ namespace mod::scarpet::server {
 #divert <hpp>
 #import mod.scarpet.config.Specification
 #import std.unique_ptr
+#import mod.scarpet.dns.Channel
 struct mod::scarpet::server::State {
   inline State();
   State(State const &) = delete;
   auto operator=(State const &) -> State & = delete;
   State(State &&) = delete;
   auto operator=(State &&) -> State & = delete;
-  std::unique_ptr<config::Specification> specification;
+  //
+  // We won't need a channel::Guard because the channel lives for the lifetime of the service
+  //
+  dns::Channel channel;
+  // std::unique_ptr<config::Specification> specification;
+  config::Specification specification;
 };
 #endiv
 #divert <ipp>
 #import std.make_unique
 namespace mod::scarpet::server {
   State::State()
-    : specification{std::make_unique<config::Specification>()}
+    : channel{}
+    , specification{} // std::make_unique<config::Specification>()}
   { }
 }
 #endiv
-

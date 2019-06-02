@@ -9,6 +9,7 @@ lib_libmod_scarpet_la_LIBADD = \
   $(lib_libautotools_autoconf_la) \
   $(lib_libwant_la) \
   -lapache-httpd-module \
+  -lares-module \
   -lsys-posix-module \
   $(end)
 lib_libmod_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
@@ -26,6 +27,10 @@ lib_libmod_scarpet_la_SOURCES = \
   obj/src/mod/scarpet/config/namespace.cpp \
   obj/src/mod/scarpet/config/parse.cpp \
   obj/src/mod/scarpet/config/Specification.cpp \
+  \
+  obj/src/mod/scarpet/dns/namespace.cpp \
+  obj/src/mod/scarpet/dns/Channel.cpp \
+  obj/src/mod/scarpet/dns/library.cpp \
   \
   obj/src/mod/scarpet/method/namespace.cpp \
   obj/src/mod/scarpet/method/Prototype.cpp \

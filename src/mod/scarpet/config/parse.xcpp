@@ -50,7 +50,7 @@ auto mod::scarpet::config::parse(httpd::cmd_parms *cmd, void */*???*/, char cons
   apache::httpd::config::Parser parser(cmd, NAME, ENDNAME);
   Specification *specification = [&cmd]() {
                                    auto *state = apache::httpd::module_config::get<server::State>(cmd, scarpet_module);
-                                   return nullptr == state ? nullptr : state->specification.get();
+                                   return nullptr == state ? nullptr : &state->specification;
                                  }();
   if (nullptr == specification) {
     return parser.pstrcat(" (internal error?) no specification object for ", &NAME[0], ">");

@@ -58,8 +58,9 @@ namespace mod::scarpet::httpd {
 #import sys.posix.isdir
 #import mod.scarpet.httpd.module // presents ::scarpet_module
 auto mod::scarpet::httpd::open_logs(apache::runtime::pool_t *config, apache::runtime::pool_t *logging, apache::runtime::pool_t *temporary, apache::httpd::server_rec *server) noexcept -> int try {
+#if 0
   auto const *state = apache::httpd::module_config::get<server::State>(server, scarpet_module);
-
+#endif
   // If you don't protect in this manner then the second 'start' directive will fail
   static bool is_started = false;
   if ( ! is_started ) {

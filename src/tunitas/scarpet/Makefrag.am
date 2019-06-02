@@ -7,6 +7,7 @@ lib_libtunitas_scarpet_la = lib/libtunitas-scarpet.la
 lib_libtunitas_scarpet_la_LIBADD = \
   $(lib_libwant_la) \
   -ltunitas-app \
+  -lares-module \
   $(end)
 lib_libtunitas_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 lib_libtunitas_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_la_SOURCES))
@@ -14,6 +15,17 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/namespace.cpp \
   obj/src/tunitas/scarpet/Configuration.cpp \
   obj/src/tunitas/scarpet/Program.cpp \
+  obj/src/tunitas/scarpet/Club.cpp \
+  obj/src/tunitas/scarpet/Service.cpp \
+  \
+  obj/src/tunitas/scarpet/dns/namespace.cpp \
+  obj/src/tunitas/scarpet/dns/Name.cpp \
+  \
+  obj/src/tunitas/scarpet/did/namespace.cpp \
+  obj/src/tunitas/scarpet/did/Parser.cpp \
+  obj/src/tunitas/scarpet/did/parser.Result.cpp \
+  obj/src/tunitas/scarpet/did/Method.cpp \
+  obj/src/tunitas/scarpet/did/Identifier.cpp \
   \
   obj/src/tunitas/scarpet/error/namespace.cpp \
   obj/src/tunitas/scarpet/error/Condition.cpp \
@@ -27,6 +39,12 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/exception/Version.cpp \
   obj/src/tunitas/scarpet/exception/Quitting.cpp \
   \
+  obj/src/tunitas/scarpet/resolve/namespace.cpp \
+  obj/src/tunitas/scarpet/resolve/lookup.declaration.cpp \
+  obj/src/tunitas/scarpet/resolve/lookup.NA.cpp \
+  obj/src/tunitas/scarpet/resolve/lookup.DA.cpp \
+  obj/src/tunitas/scarpet/resolve/lookup.cpp \
+  \
   obj/src/tunitas/scarpet/options/namespace.cpp \
   obj/src/tunitas/scarpet/options/indicator.cpp \
   obj/src/tunitas/scarpet/options/indicator.constants.cpp \
@@ -38,12 +56,6 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/url/namespace.cpp \
   obj/src/tunitas/scarpet/url/Parser.cpp \
   obj/src/tunitas/scarpet/url/Path.cpp \
-  \
-  obj/src/tunitas/scarpet/did/namespace.cpp \
-  obj/src/tunitas/scarpet/did/Parser.cpp \
-  obj/src/tunitas/scarpet/did/parser.Result.cpp \
-  obj/src/tunitas/scarpet/did/Method.cpp \
-  obj/src/tunitas/scarpet/did/Identifier.cpp \
   $(end)
 $(scold_cxxdir)/tunitas/scarpet/dependencies.mk:
 	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_la_SOURCES))

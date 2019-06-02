@@ -14,6 +14,7 @@ namespace mod::scarpet::httpd {
 #import mod.scarpet.httpd.child_init
 #import mod.scarpet.httpd.handler
 #import mod.scarpet.httpd.open_logs
+#import mod.scarpet.dns.library
 #import mod.scarpet.server.State
 #include "httpd/httpd.h" // All their macros in all their CPP glory.
 namespace {
@@ -45,6 +46,8 @@ namespace {
     ap_hook_handler(mod::scarpet::httpd::handler, nullptr, nullptr, APR_HOOK_LAST);
   }
   auto register_server_config(apr_pool_t *p, server_rec *s) ->  void * {
+    // The dns library initialization is idempotent.
+    mod::scarpet::dns::library::initialize();
     // TODO - FIXME - can this be [must this be?] allocated in the pool itself?
     return new mod::scarpet::server::State();
   }

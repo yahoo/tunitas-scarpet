@@ -1,0 +1,16 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.Outcome
+namespace tunitas::scarpet::resolve {
+  //
+  // The various types of lookups according to their Pointer Resource Record
+  //
+  enum Ptr {
+    NA, // Name Authority
+    DA, // DID Authority
+  };
+  template<Ptr> auto lookup(Channel &, Method const &, Identifier const &, Service const &, Club const &) -> Outcome<dns::Name> = delete;
+}
+#endiv

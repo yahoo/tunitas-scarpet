@@ -23,7 +23,9 @@ namespace tunitas::scarpet::did {
 }
 #endiv
 #divert <hpp>
+#import std.string_view
 namespace tunitas::scarpet::did {
+  inline auto view(Method const &) -> std::string_view;
   //
   // Just the bare minimum of checking.
   // Not ensuring that it is a reasonable method name, just a legal one.
@@ -49,6 +51,11 @@ namespace tunitas::scarpet {
 }
 #endiv
 #divert <ipp>
+namespace tunitas::scarpet {
+  auto did::view(Method const &old) -> std::string_view {
+    return std::string_view{old.data(), old.size()};
+  }
+}
 #import std.empty
 #import std.all_of
 namespace tunitas::scarpet {

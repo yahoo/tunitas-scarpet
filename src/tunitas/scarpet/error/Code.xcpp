@@ -16,6 +16,7 @@ namespace tunitas::scarpet::error {
     SUCCESS = (int) Condition::SUCCESS,
     FAILURE = (int) Condition::FAILURE,
     OPTIONS, // ........................ there was a problem with the options (parser)
+    NOT_FOUND, // ...................... DNS lookup of something was "not found"
   };
 }
 #import std.is_error_code_enum

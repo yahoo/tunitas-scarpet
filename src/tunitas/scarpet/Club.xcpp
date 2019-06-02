@@ -1,0 +1,42 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.char_traits
+#import std.basic_string
+namespace tunitas::scarpet {
+  //
+  // A (DID) Club (Name).
+  // Is a special kind of qualified domain name.
+  // Obviously it is more poetic and fun if they reference FQDN in the "club." TLD.
+  // But a DID club can be located anywhere.
+  //
+  // Examples:
+  //
+  //   naptr.club.
+  //   didptr.club.
+  //   scarpet.club.
+  //
+  // Usage:
+  //
+  //   oh come on (it's a string)
+  //
+  namespace club {
+    class Traits : public std::char_traits<char> { };
+  }
+  using Club = std::basic_string<char, club::Traits>;
+}
+#endiv
+#divert <hpp>
+#import std.string_view
+namespace tunitas::scarpet::club {
+  inline auto view(Club const &) -> std::string_view;
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet {
+  auto club::view(Club const &old) -> std::string_view {
+    return std::string_view{old.data(), old.size()};
+  }
+}
+#endiv

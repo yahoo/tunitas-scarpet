@@ -35,3 +35,16 @@ namespace tunitas::scarpet::did {
   using Identifier = std::basic_string<char, identifier::Traits>;
 }
 #endiv
+#divert <hpp>
+#import std.string_view
+namespace tunitas::scarpet::did::identifier {
+  inline auto view(Identifier const &) -> std::string_view;
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::did {
+  auto identifier::view(Identifier const &old) -> std::string_view {
+    return std::string_view{old.data(), old.size()};
+  }
+}
+#endiv

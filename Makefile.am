@@ -17,9 +17,11 @@ include @temerarious_flagship_datadir@/am/build.am
 
 DEVELOPMENT_AREAS = \
   $(apache_httpd_api_prefix) \
+  $(module_ares_prefix) \
   $(module_boost_prefix) \
   $(module_c_prefix) \
   $(module_format_prefix) \
+  $(module_ip_prefix) \
   $(module_nonstd_prefix) \
   $(module_options_prefix) \
   $(module_posix_prefix) \

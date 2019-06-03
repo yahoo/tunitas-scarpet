@@ -1,0 +1,84 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::drrs { class Fixture; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tunitas.scarpet.dns.type.constants
+class tests::unit::drrs::Fixture : public cppunit::test::Fixture {
+public:
+  using Type = ::tunitas::scarpet::dns::Type;
+  template<Type> auto test_record() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+namespace tests::unit::drrs {
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::DIDPTR>() -> void;
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::NAPTR>() -> void;
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::PTR>() -> void;
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::SRV>() -> void;
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::TXT>() -> void;
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::URI>() -> void;
+}
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.drrs.Record
+namespace tests::unit::drrs {
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::DIDPTR>() -> void {
+    using namespace ::tunitas::scarpet;
+    namespace drrs = ::tunitas::scarpet::drrs;
+    auto subject = drrs::Record<dns::DIDPTR>{};
+    CPPUNIT_ASSERT(sizeof (subject)); // yup, it constructed
+  }
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::NAPTR>() -> void {
+    using namespace ::tunitas::scarpet;
+    namespace drrs = ::tunitas::scarpet::drrs;
+    auto subject = drrs::Record<dns::NAPTR>{};
+    CPPUNIT_ASSERT(sizeof (subject)); // yup, it constructed
+  }
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::PTR>() -> void {
+    using namespace ::tunitas::scarpet;
+    namespace drrs = ::tunitas::scarpet::drrs;
+    auto subject = drrs::Record<dns::PTR>{};
+    CPPUNIT_ASSERT(sizeof (subject)); // yup, it constructed
+  }
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::SRV>() -> void {
+    using namespace ::tunitas::scarpet;
+    namespace drrs = ::tunitas::scarpet::drrs;
+    auto subject = drrs::Record<dns::SRV>{};
+    CPPUNIT_ASSERT(sizeof (subject)); // yup, it constructed
+  }
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::TXT>() -> void {
+    using namespace ::tunitas::scarpet;
+    namespace drrs = ::tunitas::scarpet::drrs;
+    auto subject = drrs::Record<dns::TXT>{};
+    CPPUNIT_ASSERT(sizeof (subject)); // yup, it constructed
+  }
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::URI>() -> void {
+    using namespace ::tunitas::scarpet;
+    namespace drrs = ::tunitas::scarpet::drrs;
+    auto subject = drrs::Record<dns::URI>{};
+    CPPUNIT_ASSERT(sizeof (subject)); // yup, it constructed
+  }
+}
+#import rigging.suite.io
+auto tests::unit::drrs::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"drrs"};
+  {
+    Stream rec{"record"};
+    using namespace tunitas::scarpet::dns::type::constants;
+    rec << call("DIDPTR", &Fixture::test_record<DIDPTR>)
+        << call("NAPTR", &Fixture::test_record<NAPTR>)
+        << call("PTR", &Fixture::test_record<PTR>)
+        << call("TXT", &Fixture::test_record<TXT>)
+        << call("SRV", &Fixture::test_record<SRV>)
+        << call("URI", &Fixture::test_record<URI>)
+      ;
+    series << move(rec);
+  }
+  return finalize(series);
+}
+#endiv

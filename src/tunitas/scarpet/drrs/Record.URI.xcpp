@@ -1,0 +1,26 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.drrs.Record.declaration
+namespace tunitas::scarpet::drrs {
+  //
+  // A URI record ... as per the standard.
+  //
+  template<> struct Record<dns::URI>;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.drrs.aspect.Endpoint
+#import std.string
+namespace tunitas::scarpet::drrs {
+  template<> struct Record<dns::URI>  : public Prototype, public aspect::Endpoint<std::string> {
+    struct ancestors {
+      using Prototype = drrs::Prototype;
+      using Endpoint = aspect::Endpoint<std::string>;
+    };
+  public:
+    Record() = default;
+  };
+}
+#endiv

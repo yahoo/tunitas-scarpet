@@ -1,0 +1,27 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.dns.Type
+namespace tunitas::scarpet::drrs {
+  //
+  // The DRSS (Disaggregated Resource Records, Splattered (across a DSSZ))
+  // Specializations only.
+  //
+  template<dns::Type> struct Record;
+}
+// Every specialization will need these constants which are at <hpp>
+#include <hpp/tunitas.scarpet.dns.type.constants>
+static_assert(sizeof (tunitas::scarpet::dns::DIDPTR));
+static_assert(sizeof (tunitas::scarpet::dns::NAPTR));
+static_assert(sizeof (tunitas::scarpet::dns::TXT));
+static_assert(sizeof (tunitas::scarpet::dns::SRV));
+static_assert(sizeof (tunitas::scarpet::dns::TXT));
+static_assert(sizeof (tunitas::scarpet::dns::URI));
+#import tunitas.scarpet.dns.type.constants
+#endiv
+#divert <hpp>
+// Ibidem.
+#import tunitas.scarpet.dns.type.constants
+#import tunitas.scarpet.drrs.Prototype
+#endiv

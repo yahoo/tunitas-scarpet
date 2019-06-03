@@ -23,6 +23,9 @@ check_bin_unit_SOURCES = \
   obj/src/tests/unit/did.Document.JSON.cpp \
   obj/src/tests/unit/did.Document.ZONE.cpp \
   \
+  obj/src/tests/unit/dns.Fixture.cpp \
+  obj/src/tests/unit/drrs.Fixture.cpp \
+  \
   obj/src/tests/unit/error.Fixture.cpp \
   obj/src/tests/unit/error.Category.cpp \
   \

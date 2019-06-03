@@ -24,6 +24,7 @@ auto tests::unit::did::Fixture::test_identifier_Identifier() -> void {
   CPPUNIT_ASSERT(std::empty(subject0));
   auto subject1 = ::tunitas::scarpet::did::Identifier{"1"};
   CPPUNIT_ASSERT(!std::empty(subject1));
+  CPPUNIT_ASSERT("1"sv == view(subject1));
 }
 #import tunitas.scarpet.did.Method
 auto tests::unit::did::Fixture::test_identifier_Method() -> void {
@@ -31,6 +32,7 @@ auto tests::unit::did::Fixture::test_identifier_Method() -> void {
   CPPUNIT_ASSERT(std::empty(subject0));
   auto subject1 = ::tunitas::scarpet::did::Method{"1"};
   CPPUNIT_ASSERT(!std::empty(subject1));
+  CPPUNIT_ASSERT("1"sv == view(subject1));
 }
 #import tunitas.scarpet.did.Parser
 auto tests::unit::did::Fixture::test_Parser_good() -> void {

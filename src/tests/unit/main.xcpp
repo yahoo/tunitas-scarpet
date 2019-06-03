@@ -4,6 +4,8 @@
 #divert <cpp>
 #import rigging.bench.Main
 #import tests.unit.did.Fixture
+#import tests.unit.dns.Fixture
+#import tests.unit.drrs.Fixture
 #import tests.unit.error.Fixture
 #import tests.unit.exception.Fixture
 #import tests.unit.options.Fixture
@@ -15,6 +17,8 @@ auto main(int argc, char **argv) -> int {
   using namespace rigging::bench;
   namespace tu = tests::unit;
   Main remain(tu::did::Fixture::suite(),
+              tu::dns::Fixture::suite(),
+              tu::drrs::Fixture::suite(),
               tu::error::Fixture::suite(),
               tu::exception::Fixture::suite(),
               tu::options::Fixture::suite(),

@@ -6,38 +6,33 @@
 #import std.basic_string
 namespace tunitas::scarpet::dns {
   //
-  // A Domain Name Service (DNS) Qualified Domain Name (QDN).
-  // A Domain Name consists of zero or more "labels"
-  //
-  // The Name is "just a string" ... with or without dots.
-  // See the commentariat in Labels.xcpp
+  // A Domain Label Service (DNS) Qualified Domain Label (QDN).
   //
   // A Label MUST NOT not have dots in it; e.g. mydomain
   // A Name MAY have dots in it; e.g. exp.devbox.mydomain.example.
-  // A Labels is (big endian) ordered string of labels. i.e. com.example.devbox.exp which prints as exp.devbox.example.com
   //
   // These are unchecked, unenforcable conditions, but the type system helps you keep it straight.
-  // [[FIXTHIS]] define is_valid(Name) and is_plausible(Name) or such
+  // [[FIXTHIS]] define is_valid(Label) and is_plausible(Label) or such
   //
   // Usage:
   //
   //   oh come on (it's a string)
   //
-  namespace name {
+  namespace label {
     class Traits : public std::char_traits<char> { };
   }
-  using Name = std::basic_string<char, name::Traits>;
+  using Label = std::basic_string<char, label::Traits>;
 }
 #endiv
 #divert <hpp>
 #import std.string_view
-namespace tunitas::scarpet::dns::name {
-  inline auto view(Name const &) -> std::string_view;
+namespace tunitas::scarpet::dns::label {
+  inline auto view(Label const &) -> std::string_view;
 }
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::dns {
-  auto name::view(Name const &old) -> std::string_view {
+  auto label::view(Label const &old) -> std::string_view {
     return std::string_view{old.data(), old.size()};
   }
 }

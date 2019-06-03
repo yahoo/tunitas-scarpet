@@ -19,6 +19,7 @@ protected:
 };
 #endiv
 #divert <cpp>
+#import std.empty
 #import tunitas.scarpet.Program
 auto tests::unit::scarpet::Fixture::test_Program() -> void {
   auto program = tunitas::scarpet::Program{"a.out"};
@@ -36,11 +37,13 @@ auto tests::unit::scarpet::Fixture::test_Configuration() -> void {
 auto tests::unit::scarpet::Fixture::test_Club() -> void {
   auto subject = tunitas::scarpet::Club{"cudgel"};
   CPPUNIT_ASSERT(0 != subject.size());
+  CPPUNIT_ASSERT("cudgel"sv == view(subject));
 }
 #import tunitas.scarpet.Service
 auto tests::unit::scarpet::Fixture::test_Service() -> void {
   auto subject = tunitas::scarpet::Service{"detailing"};
   CPPUNIT_ASSERT(0 != subject.size());
+  CPPUNIT_ASSERT("detailing"sv == view(subject));
 }
 #import rigging.suite.io
 auto tests::unit::scarpet::Fixture::suite() -> cppunit::Test * {

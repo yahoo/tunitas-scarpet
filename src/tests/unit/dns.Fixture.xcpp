@@ -1,0 +1,95 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::dns { class Fixture; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+class tests::unit::dns::Fixture : public cppunit::test::Fixture {
+public:
+  auto test_Name() -> void;
+  auto test_Label() -> void;
+  auto test_Labels() -> void;
+  auto test_Type() -> void;
+  auto test_type_constants() -> void;
+  auto test_type_DIDPTR() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+#import std.empty
+#import std.size
+#import tunitas.scarpet.dns.Label
+auto tests::unit::dns::Fixture::test_Label() -> void {
+  auto subject0 = ::tunitas::scarpet::dns::Label{};
+  CPPUNIT_ASSERT(std::empty(subject0));
+  auto subject1 = ::tunitas::scarpet::dns::Label{"myserver"};
+  CPPUNIT_ASSERT(!std::empty(subject1));
+  CPPUNIT_ASSERT("myserver"sv == view(subject1));
+}
+#import tunitas.scarpet.dns.Labels
+auto tests::unit::dns::Fixture::test_Labels() -> void {
+  auto subject0 = ::tunitas::scarpet::dns::Labels{};
+  CPPUNIT_ASSERT(std::empty(subject0));
+  auto subject1 = ::tunitas::scarpet::dns::Labels{"example", "myserver", "devbox"};
+  CPPUNIT_ASSERT(!std::empty(subject1));
+  CPPUNIT_ASSERT(3u == std::size(subject1));
+  CPPUNIT_ASSERT("devbox.myserver.example"s == to_string(subject1));
+  auto subject2 = ::tunitas::scarpet::dns::Labels{"", "example", "myserver", "devbox"};
+  CPPUNIT_ASSERT(4u == std::size(subject2));
+  // and we know that to_string(...) tests to_stream(...)
+  CPPUNIT_ASSERT("devbox.myserver.example."s == to_string(subject2));
+}
+#import tunitas.scarpet.dns.Name
+auto tests::unit::dns::Fixture::test_Name() -> void {
+  auto subject0 = ::tunitas::scarpet::dns::Name{};
+  CPPUNIT_ASSERT(std::empty(subject0));
+  auto subject1 = ::tunitas::scarpet::dns::Name{"exp.devbox.myserver.example."};
+  CPPUNIT_ASSERT(!std::empty(subject1));
+  CPPUNIT_ASSERT("exp.devbox.myserver.example."sv == view(subject1));
+}
+#import tunitas.scarpet.dns.Type
+#import tunitas.scarpet.dns.type.constants
+#import std.is_same
+auto tests::unit::dns::Fixture::test_Type() -> void {
+  using ::tunitas::scarpet::dns::Type;
+  auto const t99 = Type(99);
+  auto const are_the_same_type = std::is_same<std::remove_const<decltype(t99)>::type, std::remove_const<decltype(::tunitas::scarpet::dns::A)>::type>::value;
+  static_assert(are_the_same_type);
+}
+auto tests::unit::dns::Fixture::test_type_constants() -> void {
+  using namespace ::tunitas::scarpet::dns;
+  auto a = A;
+  auto aaaa = AAAA;
+  auto naptr = NAPTR;
+  auto ns = NS;
+  auto srv  = SRV;
+  auto txt = TXT;
+  auto uri = URI;
+  CPPUNIT_ASSERT(0 < sizeof (a) + sizeof (aaaa) + sizeof (naptr) + sizeof (ns) + sizeof (srv) + sizeof (txt) + sizeof (uri));
+}
+auto tests::unit::dns::Fixture::test_type_DIDPTR() -> void {
+  using namespace ::tunitas::scarpet::dns;
+  auto dp = DIDPTR;
+  auto np = NAPTR;
+  CPPUNIT_ASSERT(dp != np);
+}
+#import rigging.suite.io
+auto tests::unit::dns::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"dns"};
+  series << call("Name", &Fixture::test_Name)
+         << call("Type", &Fixture::test_Type)
+    ;
+  {
+    Stream type{"type"};
+    type << call("constants", &Fixture::test_type_constants)
+         << call("DIDPTR", &Fixture::test_type_DIDPTR)
+      ;
+    series << move(type);
+  }
+  return finalize(series);
+}
+#endiv

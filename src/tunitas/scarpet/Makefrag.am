@@ -32,7 +32,24 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/did/Document.cpp \
   \
   obj/src/tunitas/scarpet/dns/namespace.cpp \
+  obj/src/tunitas/scarpet/dns/Label.cpp \
+  obj/src/tunitas/scarpet/dns/Labels.cpp \
   obj/src/tunitas/scarpet/dns/Name.cpp \
+  obj/src/tunitas/scarpet/dns/Type.cpp \
+  obj/src/tunitas/scarpet/dns/type.constants.cpp \
+  \
+  obj/src/tunitas/scarpet/drrs/namespace.cpp \
+  obj/src/tunitas/scarpet/drrs/Prototype.cpp \
+  obj/src/tunitas/scarpet/drrs/aspect.Endpoint.cpp \
+  obj/src/tunitas/scarpet/drrs/aspect.Redirect.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.declaration.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.DIDPTR.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.NAPTR.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.PTR.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.TXT.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.URI.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.SRV.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.cpp \
   \
   obj/src/tunitas/scarpet/error/namespace.cpp \
   obj/src/tunitas/scarpet/error/Condition.cpp \

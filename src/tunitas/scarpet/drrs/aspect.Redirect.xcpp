@@ -1,0 +1,42 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::drrs::aspect {
+  //
+  // The commonalities of the Redirect sense among at least DIDPTR, NAPTR
+  // Descendants only.
+  //
+  // References (see https://wiki.tunitas.tech/.../Redirect)
+  //
+  //   RFC 2915 - The Naming Authority Pointer (NAPTR) DNS Resource Record, 2000; obsoleted by RFC 3401.
+  //   RFC 3401 - Dynamic Delegation Discovery System (DDDS) Part One: The Comprehensive DDDS, 2002-10.
+  //   RFC 3404 - Dynamic Delegation Discovery System (DDDS) Part Four: The Uniform Resource Identifiers (URI) Resolution, 2002-10.
+  //   ...and allied proposals...
+  //
+  // Usage:
+  //
+  //   ancestry for Record<DIDPTR>, Record<NAPTR>
+  //
+  class Redirect;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.drrs.aspect.Endpoint
+#import tunitas.scarpet.Service
+#import std.byte
+#import std.vector
+#import tunitas.scarpet.dns.Labels
+namespace tunitas::scarpet::drrs {
+  class aspect::Redirect : public Endpoint<dns::Labels> {
+    using ancestor = Endpoint<dns::Labels>;
+  protected:
+    virtual ~Redirect() = default;
+    Redirect() = default;
+  public:
+    using Flags = std::vector<std::byte>;
+    Flags flags;        // e.g. "R" "Z"
+    Service service;    // e.g. "did+w3id+v1" "did+w3id+v2"
+  };
+}
+#endiv

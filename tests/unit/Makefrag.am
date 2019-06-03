@@ -2,6 +2,7 @@ tests_unit_TESTS = \
   tests/unit/list.test \
   \
   tests/unit/did.test \
+  tests/unit/drrs.test \
   tests/unit/error.test \
   tests/unit/exception.test \
   tests/unit/options.test \

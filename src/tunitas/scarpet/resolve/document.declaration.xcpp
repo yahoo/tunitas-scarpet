@@ -2,17 +2,21 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
+#forward tunitas.scarpet.resolve.Service
 namespace tunitas::scarpet::resolve {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   //
   // The various types of lookups according to their Pointer Resource Record
   //
   enum Storage {
     DRRS, // disaggregated resource records splattered (DRRS) ... splattered around the Storage Service Zone (SSZ)
-    FILE, // the document from a file
-    FiLE [[deprecated("barf up a little in your mouth")]] = FILE,
-    REST, // the document from some other REST server; "reget"
-    ZONE, // the document is a zone, in toto; the NS records tell you where that is
+    FILE [[deprecated("WATCHOUT - FILE is a #define in stdio, which will make you barf up a little in your mouth")]],
+    FiLE = FILE, // the (DID) document from a file in the filesystem
+    REST, // the (DID) document from some other REST server; "reget"
+    ZONE, // the (DID) document is a zone, in toto; the NS records tell you where that is
   };
+#pragma GCC diagnostic pop
 }
 #endiv
 #divert <hpp>
@@ -23,6 +27,16 @@ namespace tunitas::scarpet::resolve {
   //
   // The various types of lookups according to their Pointer Resource Record
   //
-  template<Storage> auto document(Channel &, dns::Name const &) -> Outcome<did::Document<did::DOME>> = delete;
+  // Usage:
+  //
+  //                            identifier          did storage service
+  //                          <----------------> <--------------------->
+  //    quto qdn = dns::Name{"123456789abcdefghi.example.storage.service."};
+  //    auto looked = document<DRRS>(service, qdn);
+  //
+  template<Storage> auto document(Service &, Method const &, Identifier const &, dns::Name const &) -> Outcome<did::Document<did::DOME>> = delete;
 }
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.resolve.Service
 #endiv

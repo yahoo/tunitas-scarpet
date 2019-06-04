@@ -3,13 +3,12 @@
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
 #import ares.Channel
-#forward tunitas.scarpet.did.Method
-#forward tunitas.scarpet.did.Identifier
-#forward tunitas.scarpet.Service
 #forward tunitas.scarpet.Club
+#forward tunitas.scarpet.Protocol
+#forward tunitas.scarpet.did.Identifier
+#forward tunitas.scarpet.did.Method
 #forward tunitas.scarpet.dns.Name
 namespace tunitas::scarpet::resolve {
-  using ares::Channel;
   using did::Method;
   using did::Identifier;
 }
@@ -25,9 +24,9 @@ namespace tunitas::scarpet::resolve {
 }
 #endiv
 #divert <ipp>
-#import tunitas.scarpet.did.Method
-#import tunitas.scarpet.did.Identifier
-#import tunitas.scarpet.Service
 #import tunitas.scarpet.Club
+#import tunitas.scarpet.Protocol
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.did.Method
 #import tunitas.scarpet.dns.Name
 #endiv

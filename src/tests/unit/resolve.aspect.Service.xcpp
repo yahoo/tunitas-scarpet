@@ -4,7 +4,7 @@
 #divert <fpp>
 namespace tests::unit::resolve::aspect {
   //
-  // A test artifice to set up a channel.
+  // A test artifice to set up a service.
   // Descendants only; as a mixin to a Fixture
   // Works within the cppunit::test::Fixture system
   //
@@ -15,41 +15,53 @@ namespace tests::unit::resolve::aspect {
   //
   //   by inheritance, see resolve::Fixture
   //
-  class Channel;
+  class Service;
 }
 #endiv
 #divert <hpp>
 #import ares.Library
-#import ares.Channel
+#import tunitas.scarpet.resolve.Service
+#import std.filesystem.path
 #import std.unique_ptr
 namespace tests::unit::resolve {
-  class aspect::Channel {
+  class aspect::Service {
   protected:
-    virtual ~Channel() = default;
-    Channel() = default;
+    virtual ~Service() = default;
+    Service() = default;
   public:
     // Unifies with the cppunit::test::Fixture virtuals of the same name.
     virtual auto setUp() -> void;
     virtual auto tearDown() -> void;
   protected:
     // The library may be constructed/deconstructed (sic) multiple times; it apparently reference counts.
-    // But the ares library must be constructed and operable before the channel is started.
+    // But the ares library must be constructed and operable before the service is started.
     std::unique_ptr<ares::Library> library;
-    std::unique_ptr<ares::Channel> channel;
+    std::unique_ptr<tunitas::scarpet::resolve::Service> service;
   };
 }
 #endiv
 #divert <cpp>
+#import ares.Channel
 #import std.make_unique
+#import std.filesystem.exists
 namespace tests::unit::resolve::aspect {
-  auto Channel::setUp() -> void {
+  auto Service::setUp() -> void {
     library = std::make_unique<ares::Library>();
-    channel = std::make_unique<ares::Channel>();
+    auto channel = ares::Channel{};
+    auto directory = []() {
+                       //
+                       // Reminder: either we are running the unit tests from the top level
+                       // or else we are running the unit tests from within themselves (to debug)
+                       //
+                       auto proposed = std::filesystem::path{"tests/unit"};
+                       return std::filesystem::exists(proposed) ? proposed : std::filesystem::path{"."};
+                     }();
+    service = std::make_unique<::tunitas::scarpet::resolve::Service>(std::move(channel), std::move(directory));
   }
-  auto Channel::tearDown() -> void {
+  auto Service::tearDown() -> void {
     // in inverse order from setUp.
-    channel->cancel();
-    channel.reset();
+    service->channel->cancel();
+    service.reset();
     library.reset();
   }
 }

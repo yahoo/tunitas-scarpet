@@ -45,8 +45,20 @@ namespace tunitas::scarpet::error {
       return "failure";
     case Code::OPTIONS:
       return "options";
+    case Code::NOT_IMPLEMENTED:
+      return "not implemented";
+    case Code::INVALID_URN:
+      return "invalid URN syntax";
+    case Code::INVALID_METHOD:
+      return "invalid_DID method syntax";
+    case Code::INVALID_IDENTIFIER:
+      return "invalid DID identifier syntax";
+    case Code::UNKNOWN_METHOD:
+      return "unknown_DID method";
     case Code::NOT_FOUND:
-      return "not found";
+      return "no record was found"; // e.g. identifier not found in the method
+    case Code::FOUND_MULTIPLE:
+      return "found multiple records";
     default:
       return "error " + std::to_string(code);
     }

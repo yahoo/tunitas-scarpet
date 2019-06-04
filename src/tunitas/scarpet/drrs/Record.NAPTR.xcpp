@@ -28,9 +28,9 @@ namespace tunitas::scarpet::drrs {
 #import std.optional
 #import std.string
 namespace tunitas::scarpet::drrs {
-  template<> struct Record<dns::NAPTR> : public Prototype, public aspect::Redirect {
+  template<> struct Record<dns::NAPTR> : public record::Prototype, public aspect::Redirect {
     struct ancestors {
-      using Prototype = drrs::Prototype;
+      using Prototype = record::Prototype;
       using Redirect = aspect::Redirect;
     };
   public:

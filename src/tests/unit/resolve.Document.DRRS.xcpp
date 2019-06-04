@@ -10,9 +10,13 @@ namespace tests::unit::resolve {
 #divert <hpp>
 #import cppunit.Test
 #import cppunit.test.Fixture
+#import tests.unit.resolve.aspect.Configuration
+#import tests.unit.resolve.aspect.Service
 namespace tests::unit::resolve {
-  template<> class Document<DRRS> : public cppunit::test::Fixture {
+  template<> class Document<DRRS> : public cppunit::test::Fixture, aspect::Configuration, aspect::Service {
   public:
+    auto setUp() -> void override { Service::setUp(); }
+    auto tearDown() -> void override { Service::tearDown(); }
     auto test_case_01() -> void;
     auto test_case_02() -> void;
     static auto suite() -> cppunit::Test *;
@@ -23,8 +27,31 @@ namespace tests::unit::resolve {
 #import tunitas.scarpet.resolve.document.DRRS
 namespace tests::unit::resolve {
   auto Document<DRRS>::test_case_01() -> void {
-#warning WRITETHIS auto Document<DRRS>::test_case_01() -> void
-    CPPUNIT_ASSERT(true);
+    //
+    // Test succeeds because there exists an appropriate series of RR to form a "DID Document"
+    //
+    //   id.123456789abcdefghi.example. @TEST_DID_DOCUMENT_STORAGE_SERVICE_NAME@
+    //   context.123456789abcdefghi.example. @TEST_DID_DOCUMENT_STORAGE_SERVICE_NAME@
+    //   publickey.123456789abcdefghi.example. @TEST_DID_DOCUMENT_STORAGE_SERVICE_NAME@
+    //   authentication.123456789abcdefghi.example. @TEST_DID_DOCUMENT_STORAGE_SERVICE_NAME@
+    //   service.123456789abcdefghi.example. @TEST_DID_DOCUMENT_STORAGE_SERVICE_NAME@
+    //   proof.123456789abcdefghi.example. @TEST_DID_DOCUMENT_STORAGE_SERVICE_NAME@
+    //
+    // e.g. (recall that 'marfa' is a DID Method from the Mumblecore Lexicon; it is illustrative)
+    //
+    //  123456789abcdefghi.example.marfa.scarpet.solutions.
+    //  123456789abcdefghi.example.marfa.fd20-1e92-49c7.net.
+    //
+    using namespace ::tunitas::scarpet;
+    namespace resolve = ::tunitas::scarpet::resolve;
+    auto method = Method{"example"};
+    auto identifier = Identifier{"123456789abcdefghi"};
+    auto qdn = dns::Name{ac::test_did_document_storage_service_name()};
+    auto looked = resolve::document<resolve::DRRS>(*this->service, method, identifier, qdn);
+    CPPUNIT_ASSERT(ok(looked));
+    auto dome = value(std::move(looked));
+    CPPUNIT_ASSERT(sizeof (dome));
+    dome.dump(std::cerr);
   }
   auto Document<DRRS>::test_case_02() -> void {
 #warning WRITETHIS auto Document<DRRS>::test_case_02() -> void

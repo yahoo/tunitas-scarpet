@@ -26,6 +26,15 @@ namespace tunitas::scarpet::did {
     using ancestor = document::Prototype;
   public:
     Document() = default;
+    auto dump(std::ostream &) const -> void final;
   };
+}
+#endiv
+#divert <cpp>
+#import nonstd.exception.Unimplemented
+namespace tunitas::scarpet::did {
+  auto Document<DOME>::dump(std::ostream &) const -> void {
+    throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+  }
 }
 #endiv

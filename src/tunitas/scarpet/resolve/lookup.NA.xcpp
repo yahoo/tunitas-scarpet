@@ -36,7 +36,7 @@ namespace tunitas::scarpet::resolve {
   // id.123456789abcdefghi.example NAPTR 1 1 "R" "did+example.org+inline" "" inline.fata-morgana.fd20-1e92-49c7.net.
   // id.987654321.contexts.example NAPTR 1 1 "R" "did+context"            "" paulding.fd20-1e92-49c7.net.
   //
-  template<> auto lookup<NA>(Channel &, Method const &, Identifier const &, Service const &, Club const &) -> Outcome<dns::Name>;
+  template<> auto lookup<NA>(Service &, Method const &, Identifier const &, Protocol const &, Club const &) -> Outcome<dns::Name>;
 }
 #endiv
 #divert <cpp>
@@ -62,7 +62,7 @@ namespace tunitas::scarpet::resolve {
 #import std.ostringstream
 #import tunitas.scarpet.error.Code
 namespace tunitas::scarpet::resolve {
-  template<> auto lookup<NA>(Channel &channel, Method const &method, Identifier const &identifier, Service const &configured_service, Club const &configured_club) -> Outcome<dns::Name> {
+  template<> auto lookup<NA>(Service &service, Method const &method, Identifier const &identifier, Protocol const &configured_protocol, Club const &configured_club) -> Outcome<dns::Name> {
     auto qdn = [method, identifier, configured_club] {
                  // [[DELETETHIS]] auto review = [](auto const &str) { return std::string_view{str.data(), str.size()}; };
                  std::ostringstream buf;
@@ -73,7 +73,7 @@ namespace tunitas::scarpet::resolve {
     auto const dnstype = dns::NAPTR;
     std::optional<dns::Name> success;
     std::optional<std::error_code> failure;
-    auto const receive = [configured_service, &success, &failure](ares::error::Code code, ares::Count timeouts, ares::Buffer<std::byte const> buffer) -> void {
+    auto const receive = [configured_protocol, &success, &failure](ares::error::Code code, ares::Count timeouts, ares::Buffer<std::byte const> buffer) -> void {
                            using namespace ares;
                            if (ares::error::Code::SUCCESS != code) {
                              failure = std::error_code{code};
@@ -87,11 +87,11 @@ namespace tunitas::scarpet::resolve {
                            }
                            using Awkward = nonstd::span<char const>;
                            for (auto const &record : records) {
-                             auto const found_service = [record]() {
+                             auto const found_protocol = [record]() {
                                                           auto spun = record.service<Awkward>();
-                                                          return Service{spun.data(), spun.data()+spun.size()};
+                                                          return Protocol{spun.data(), spun.data()+spun.size()};
                                                         }();
-                             if (found_service == configured_service) {
+                             if (found_protocol == configured_protocol) {
                                success = [record]() {
                                            auto spun = record.replacement<Awkward>();
                                            return dns::Name{spun.data(), spun.data()+spun.size()};
@@ -101,13 +101,13 @@ namespace tunitas::scarpet::resolve {
                            }
                            // and maybe we finish up setting either failure or success (that will be recorded as a failure)
                          };
-    qq(channel, qdn, dnsclass, dnstype, receive);
-    run(channel, 5_count, 500ms);
+    qq(*service.channel, qdn, dnsclass, dnstype, receive);
+    run(*service.channel, 5_count, 500ms);
 #if 0
     ares::fd::Sets readies;
-    for (auto ccc=ares::fd::count(channel, readies); !zero(ccc); ccc=count(channel, readies)) {
-      select(ccc, readies, timeout(channel, 3s));
-      process(channel, readies);
+    for (auto ccc=ares::fd::count(*service.channel, readies); !zero(ccc); ccc=count(service, readies)) {
+      select(ccc, readies, timeout(*service.channel, 3s));
+      process(*service.channel, readies);
     }
 #endif
     if (failure) {

@@ -15,14 +15,20 @@
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
 #import apache.httpd.cmd_parms
+#import apache.httpd.log.Level
+#import apache.httpd.log.Stream
+#import apache.httpd.log.constants
 #import apache.httpd.request_rec
 #import apache.httpd.server_rec
+#import apache.httpd.status.constants
 #import apache.runtime.pool_t
 namespace mod::scarpet::httpd {
   using apache::httpd::cmd_parms;
   using apache::httpd::request_rec;
   using apache::httpd::server_rec;
   using apache::runtime::pool_t;
+  namespace HANDLER = apache::httpd::status::HANDLER;
+  namespace log = apache::httpd::log;
 }
 #endiv
 #divert <hpp>

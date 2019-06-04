@@ -7,35 +7,27 @@ namespace mod::scarpet::server {
   // State of the server
   //
   // The specification
-  // The DNS resolver Channel (socket)
+  // The DNS Resolver Channel (socket, directory)
   //
   class State;
 }
 #endiv
 #divert <hpp>
 #import mod.scarpet.config.Specification
-#import std.unique_ptr
-#import mod.scarpet.dns.Channel
-struct mod::scarpet::server::State {
+#import tunitas.scarpet.resolve.Service
+struct mod::scarpet::server::State : public tunitas::scarpet::resolve::Service {
   inline State();
   State(State const &) = delete;
   auto operator=(State const &) -> State & = delete;
   State(State &&) = delete;
   auto operator=(State &&) -> State & = delete;
-  //
-  // We won't need a channel::Guard because the channel lives for the lifetime of the service
-  //
-  dns::Channel channel;
-  // std::unique_ptr<config::Specification> specification;
   config::Specification specification;
 };
 #endiv
 #divert <ipp>
-#import std.make_unique
 namespace mod::scarpet::server {
   State::State()
-    : channel{}
-    , specification{} // std::make_unique<config::Specification>()}
+    : specification{}
   { }
 }
 #endiv

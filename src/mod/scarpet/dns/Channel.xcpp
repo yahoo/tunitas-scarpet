@@ -2,9 +2,12 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
+#import ares.Channel
 namespace mod::scarpet::dns {
   //
   // A DNS channel (socket)
+  //
+  // [[FIXTHIS]] ... this is overkill ... do not need this [[REMOVE]]
   //
   // Preconditions
   //   dns::library::initialize() has been called
@@ -16,14 +19,6 @@ namespace mod::scarpet::dns {
   //   ares has lots of documentation
   //   see module-ares
   //
-  class Channel;
+  using Channel = ares::Channel;
 }
-#endiv
-#divert <hpp>
-#import ares.Channel
-class mod::scarpet::dns::Channel : public ares::Channel {
-  using ancestor = ares::Channel;
-public:
-  Channel() = default;
-};
 #endiv

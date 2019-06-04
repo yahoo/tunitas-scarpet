@@ -15,8 +15,8 @@ namespace tunitas::scarpet::drrs {
 #divert <hpp>
 #import tunitas.scarpet.dns.Labels
 namespace tunitas::scarpet::drrs {
-  template<> struct Record<dns::PTR>  : public Prototype {
-    using ancestor = Prototype;
+  template<> struct Record<dns::PTR>  : public record::Prototype {
+    using ancestor = record::Prototype;
   public:
     Record() = default;
     dns::Labels labels;

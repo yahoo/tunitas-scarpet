@@ -5,8 +5,90 @@
 #import tunitas.scarpet.resolve.lookup.declaration
 namespace tunitas::scarpet::resolve {
   //
-  // Yup, it's still deleted.
+  // The DIDPTR lookup is cut & paste of the NAPTR lookup.
+  // Whereas the DIDPTR is "just like" the NAPTR except that it does not have the regexp fieid
+  // Also the DIDPTR is non-standard and unannounced ot the network.
+  // Missing:
+  //   tunitas::scarpet::reply::Record<DIDPTR> which the local extension of ares::reply::Record<DIDPTR> rhyming with ares::reply::Record<NAPTR>, 
+  //   tunitas::scarpet::reply:;parse<DIDPTR>(...) which rhymes with  ares::reply:;parse<NAPTR>(...).
   //
-  template<> auto lookup<DA>(Channel &, Method const &, Identifier const &, Service const &, Club const &) -> Outcome<dns::Name> = delete;
+  template<> auto lookup<DA>(Service &, Method const &, Identifier const &, Protocol const &, Club const &) -> Outcome<dns::Name>;
+}
+#endiv
+#divert <cpp>
+#import ares.dns.class.constants
+#import ares.dns.type.constants
+#import ares.error.Code
+#import ares.run
+#import ares.query
+#import tunitas.scarpet.dns.type.constants
+// #import tunitas.scarpet.reply.Record
+// #import tunitas.scarpet.ares.reply.parse
+#import format.q
+#import nonstd.exception.Unimplemented
+#import std.error_code
+#import std.optional
+#import std.string_view
+#import std.string
+#import std.ostringstream
+#import tunitas.scarpet.error.Code
+namespace tunitas::scarpet::resolve {
+  template<> auto lookup<DA>(Service &service, Method const &method, Identifier const &identifier, Protocol const &configured_protocol, Club const &configured_club) -> Outcome<dns::Name> {
+    auto qdn = [method, identifier, configured_club] {
+                 // [[DELETETHIS]] auto review = [](auto const &str) { return std::string_view{str.data(), str.size()}; };
+                 std::ostringstream buf;
+                 buf << "id" << '.' << view(identifier) << '.' << view(method) << '.' << view(configured_club);
+                 return buf.str();
+               }();
+    auto const dnsclass = dns::IN;
+    auto const dnstype = dns::DIDPTR;
+    auto unimplemented = false;
+    std::optional<dns::Name> success;
+    std::optional<std::error_code> failure;
+    auto const receive = [configured_protocol, &success, &failure, &unimplemented](ares::error::Code code, ares::Count timeouts, ares::Buffer<std::byte const> buffer) -> void {
+                           using namespace ares;
+                           if (ares::error::Code::SUCCESS != code) {
+                             failure = std::error_code{code};
+                             return;
+                           }
+#if 1
+                           unimplemented = true;
+                           throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+#else
+                           reply::Record<DIDPTR> records;
+                           auto parsed = reply::parse<DIDPTR>(std::nothrow, buffer, records);
+                           if (!ok(parsed)) {
+                             failure = error_code(parsed);
+                             return;
+                           }
+                           using Awkward = nonstd::span<char const>;
+                           for (auto const &record : records) {
+                             auto const found_protocol = [record]() {
+                                                          auto spun = record.service<Awkward>();
+                                                          return Protocol{spun.data(), spun.data()+spun.size()};
+                                                        }();
+                             if (found_protocol == configured_protocol) {
+                               success = [record]() {
+                                           auto spun = record.replacement<Awkward>();
+                                           return dns::Name{spun.data(), spun.data()+spun.size()};
+                                         }();
+                               return;
+                             }
+                           }
+#endif
+                           // and maybe we finish up setting either failure or success (that will be recorded as a failure)
+                         };
+    qq(*service.channel, qdn, dnsclass, dnstype, receive);
+    run(*service.channel, 5_count, 500ms); // WATCHOUT - ares::run(...) does NOT signal exceptions; it is basically 'noexcept' at this point [[FIXTHAT]] ares::run(...) and ares::process(...) should rethrow the exceptions; but they don't.
+    if (failure) {
+      return Outcome<dns::Name>{*failure};
+    } else if (success) {
+      return Outcome<dns::Name>{*success};
+    } else if (unimplemented) {
+      return Outcome<dns::Name>{std::error_code{error::Code::NOT_IMPLEMENTED}};
+    } else {
+      return Outcome<dns::Name>{std::error_code{error::Code::NOT_FOUND}};
+    }
+  }
 }
 #endiv

@@ -9,6 +9,7 @@ lib_libtunitas_scarpet_la_LIBADD = \
   -ltunitas-app \
   -lares-module \
   -ljson-module \
+  -lslurp-module \
   $(end)
 lib_libtunitas_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 lib_libtunitas_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_la_SOURCES))
@@ -17,7 +18,14 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/Configuration.cpp \
   obj/src/tunitas/scarpet/Program.cpp \
   obj/src/tunitas/scarpet/Club.cpp \
-  obj/src/tunitas/scarpet/Service.cpp \
+  obj/src/tunitas/scarpet/Protocol.cpp \
+  \
+  obj/src/tunitas/scarpet/answer/namespace.cpp \
+  obj/src/tunitas/scarpet/answer/response.Prototype.cpp \
+  obj/src/tunitas/scarpet/answer/Response.cpp \
+  obj/src/tunitas/scarpet/answer/Stanza.declaration.cpp \
+  obj/src/tunitas/scarpet/answer/Stanza.ID.cpp \
+  obj/src/tunitas/scarpet/answer/Stanza.cpp \
   \
   obj/src/tunitas/scarpet/did/namespace.cpp \
   obj/src/tunitas/scarpet/did/Parser.cpp \
@@ -30,6 +38,7 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/did/Document.JSON.cpp \
   obj/src/tunitas/scarpet/did/Document.ZONE.cpp \
   obj/src/tunitas/scarpet/did/Document.cpp \
+  obj/src/tunitas/scarpet/did/isa.cpp \
   \
   obj/src/tunitas/scarpet/dns/namespace.cpp \
   obj/src/tunitas/scarpet/dns/Label.cpp \
@@ -39,7 +48,7 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/dns/type.constants.cpp \
   \
   obj/src/tunitas/scarpet/drrs/namespace.cpp \
-  obj/src/tunitas/scarpet/drrs/Prototype.cpp \
+  obj/src/tunitas/scarpet/drrs/record.Prototype.cpp \
   obj/src/tunitas/scarpet/drrs/aspect.Endpoint.cpp \
   obj/src/tunitas/scarpet/drrs/aspect.Redirect.cpp \
   obj/src/tunitas/scarpet/drrs/Record.declaration.cpp \
@@ -60,10 +69,15 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/exception/namespace.cpp \
   obj/src/tunitas/scarpet/exception/Aspect.cpp \
   obj/src/tunitas/scarpet/exception/aspect.Exiting.cpp \
-  obj/src/tunitas/scarpet/exception/Version.cpp \
+  obj/src/tunitas/scarpet/exception/Configuration.cpp \
+  obj/src/tunitas/scarpet/exception/Invariant.cpp \
   obj/src/tunitas/scarpet/exception/Quitting.cpp \
+  obj/src/tunitas/scarpet/exception/Runtime.cpp \
+  obj/src/tunitas/scarpet/exception/System.cpp \
+  obj/src/tunitas/scarpet/exception/Version.cpp \
   \
   obj/src/tunitas/scarpet/resolve/namespace.cpp \
+  obj/src/tunitas/scarpet/resolve/Service.cpp \
   obj/src/tunitas/scarpet/resolve/document.declaration.cpp \
   obj/src/tunitas/scarpet/resolve/document.DRRS.cpp \
   obj/src/tunitas/scarpet/resolve/document.FILE.cpp \

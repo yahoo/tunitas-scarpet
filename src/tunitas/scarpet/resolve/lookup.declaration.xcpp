@@ -2,6 +2,7 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
+#forward tunitas.scarpet.resolve.Service
 namespace tunitas::scarpet::resolve {
   //
   // The various types of lookups according to their Pointer Resource Record
@@ -18,6 +19,9 @@ namespace tunitas::scarpet::resolve {
   //
   // The various types of lookups according to their Pointer Resource Record
   //
-  template<Pointer> auto lookup(Channel &, Method const &, Identifier const &, Service const &, Club const &) -> Outcome<dns::Name> = delete;
+  template<Pointer> auto lookup(Service &, Method const &, Identifier const &, Protocol const &, Club const &) -> Outcome<dns::Name> = delete;
 }
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.resolve.Service
 #endiv

@@ -36,8 +36,10 @@ check_bin_unit_SOURCES = \
   obj/src/tests/unit/options.Fixture.Parser.cpp \
   obj/src/tests/unit/options.Fixture.Specification.cpp \
   \
-  obj/src/tests/unit/resolve.aspect.Channel.cpp \
+  obj/src/tests/unit/resolve.aspect.Configuration.cpp \
+  obj/src/tests/unit/resolve.aspect.Service.cpp \
   obj/src/tests/unit/resolve.Fixture.cpp \
+  obj/src/tests/unit/resolve.Service.cpp \
   obj/src/tests/unit/resolve.Document.declaration.cpp \
   obj/src/tests/unit/resolve.Document.DRRS.cpp \
   obj/src/tests/unit/resolve.Document.FILE.cpp \

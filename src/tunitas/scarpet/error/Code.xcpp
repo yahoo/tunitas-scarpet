@@ -15,8 +15,15 @@ namespace tunitas::scarpet::error {
   enum class Code {
     SUCCESS = (int) Condition::SUCCESS,
     FAILURE = (int) Condition::FAILURE,
-    OPTIONS, // ........................ there was a problem with the options (parser)
-    NOT_FOUND, // ...................... DNS lookup of something was "not found"
+    OPTIONS, // ........................... there was a problem with the options (parser)
+    NOT_IMPLEMENTED, // ................... as such.
+    INVALID_URN, // ....................... invalid URN shape at all; not even close to did:<method>:<identifier>
+    INVALID_METHOD, // .................... invalid method within a valid syntax of did:<method>:<identifier>
+    INVALID_IDENTIFIER, // ................ invalid identifier within a valid syntax of did:<method>:<identifier>
+    UNKNOWN_METHOD, // .................... unknown DID method, though valid syntactically
+    NOT_FOUND, // ......................... lookup of the DID or something else was "not found"
+    UNKNOWN_IDENTIFIER = NOT_FOUND, // .... same thing
+    FOUND_MULTIPLE, // .................... found multiple records but only one is allowed
   };
 }
 #import std.is_error_code_enum

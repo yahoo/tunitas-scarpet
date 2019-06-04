@@ -26,10 +26,9 @@ DEVELOPMENT_AREAS = \
   $(module_nonstd_prefix) \
   $(module_options_prefix) \
   $(module_posix_prefix) \
-  $(module_sqlite_prefix) \
-  $(module_std_prefix) \
   $(module_slurp_prefix) \
   $(module_sqlite_prefix) \
+  $(module_std_prefix) \
   $(module_string_prefix) \
   $(module_sys_prefix) \
   $(module_uuid_prefix) \

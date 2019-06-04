@@ -23,7 +23,7 @@ namespace tunitas::scarpet::drrs::aspect {
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.drrs.aspect.Endpoint
-#import tunitas.scarpet.Service
+#import tunitas.scarpet.Protocol
 #import std.byte
 #import std.vector
 #import tunitas.scarpet.dns.Labels
@@ -34,9 +34,9 @@ namespace tunitas::scarpet::drrs {
     virtual ~Redirect() = default;
     Redirect() = default;
   public:
-    using Flags = std::vector<std::byte>;
+    using Flags = std::vector<std::byte>; // [[FIXTHIS]] these flags will always be very small ... back up with a fixed size std::array?
     Flags flags;        // e.g. "R" "Z"
-    Service service;    // e.g. "did+w3id+v1" "did+w3id+v2"
+    Protocol protocol;    // e.g. "did+w3id+v1" "did+w3id+v2"
   };
 }
 #endiv

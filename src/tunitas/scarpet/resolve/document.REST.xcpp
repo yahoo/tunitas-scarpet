@@ -11,6 +11,6 @@ namespace tunitas::scarpet::resolve {
   //
   // Pull the zone out of a REST call to a file service (a CDN).  The zone is not served (in DNS).
   //
-  template<> auto document<REST>(Channel &, dns::Name const &) -> Outcome<did::Document<did::DOME>> = delete;
+  template<> auto document<REST>(Service &, Method const &, Identifier const &, dns::Name const &) -> Outcome<did::Document<did::DOME>> = delete;
 }
 #endiv

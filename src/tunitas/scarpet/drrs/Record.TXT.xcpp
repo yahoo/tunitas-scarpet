@@ -13,8 +13,8 @@ namespace tunitas::scarpet::drrs {
 #divert <hpp>
 #import std.string
 namespace tunitas::scarpet::drrs {
-  template<> struct Record<dns::TXT>  : public Prototype {
-    using ancestor = Prototype;
+  template<> struct Record<dns::TXT>  : public record::Prototype {
+    using ancestor = record::Prototype;
   public:
     Record() = default;
     std::string text;

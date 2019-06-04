@@ -12,7 +12,7 @@ public:
   auto test_Program() -> void;
   auto test_Configuration() -> void;
   auto test_Club() -> void;
-  auto test_Service() -> void;
+  auto test_Protocol() -> void;
   static auto suite() -> cppunit::Test *;
 protected:
   struct Configuration;
@@ -39,11 +39,11 @@ auto tests::unit::scarpet::Fixture::test_Club() -> void {
   CPPUNIT_ASSERT(0 != subject.size());
   CPPUNIT_ASSERT("cudgel"sv == view(subject));
 }
-#import tunitas.scarpet.Service
-auto tests::unit::scarpet::Fixture::test_Service() -> void {
-  auto subject = tunitas::scarpet::Service{"detailing"};
+#import tunitas.scarpet.Protocol
+auto tests::unit::scarpet::Fixture::test_Protocol() -> void {
+  auto subject = tunitas::scarpet::Protocol{"this+that"};
   CPPUNIT_ASSERT(0 != subject.size());
-  CPPUNIT_ASSERT("detailing"sv == view(subject));
+  CPPUNIT_ASSERT("this+that"sv == view(subject));
 }
 #import rigging.suite.io
 auto tests::unit::scarpet::Fixture::suite() -> cppunit::Test * {
@@ -52,7 +52,7 @@ auto tests::unit::scarpet::Fixture::suite() -> cppunit::Test * {
   series << call("Program", &Fixture::test_Program)
          << call("Configuration", &Fixture::test_Configuration)
          << call("Club", &Fixture::test_Club)
-         << call("Service", &Fixture::test_Service)
+         << call("Protocol", &Fixture::test_Protocol)
     ;
   return finalize(series);
 }

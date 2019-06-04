@@ -13,6 +13,9 @@ public:
   auto test_identifier_Method() -> void;
   auto test_Parser_bad() -> void;
   auto test_Parser_good() -> void;
+  auto test_is_a_simple_word_Identifier() -> void;
+  auto test_is_a_simple_word_Method() -> void;
+  auto test_is_a_simple_word_string_view() -> void;
   static auto suite() -> cppunit::Test *;
 };
 #endiv
@@ -59,6 +62,42 @@ auto tests::unit::did::Fixture::test_Parser_bad() -> void {
   { auto u = parser("did:m:");
     CPPUNIT_ASSERT(!ok(u)); }
 }
+#import tunitas.scarpet.did.isa
+auto tests::unit::did::Fixture::test_is_a_simple_word_Identifier() -> void {
+  using namespace ::tunitas::scarpet::did;
+  CPPUNIT_ASSERT(false == is_a_simple_word(::tunitas::scarpet::did::Identifier{}));
+}
+auto tests::unit::did::Fixture::test_is_a_simple_word_Method() -> void {
+  using namespace ::tunitas::scarpet::did;
+  CPPUNIT_ASSERT(false == is_a_simple_word(::tunitas::scarpet::did::Method{}));
+}
+auto tests::unit::did::Fixture::test_is_a_simple_word_string_view() -> void {
+  using namespace ::tunitas::scarpet::did::detail;
+  CPPUNIT_ASSERT(false == is_a_simple_word(""sv));
+  //
+  CPPUNIT_ASSERT(true == is_a_simple_word("a"sv));
+  CPPUNIT_ASSERT(true == is_a_simple_word("A"sv));
+  CPPUNIT_ASSERT(true == is_a_simple_word("1"sv));
+  CPPUNIT_ASSERT(true == is_a_simple_word("_"sv));
+  CPPUNIT_ASSERT(true == is_a_simple_word("-"sv));
+  CPPUNIT_ASSERT(true == is_a_simple_word("+"sv));
+  //
+  CPPUNIT_ASSERT(false == is_a_simple_word(" "sv));
+  CPPUNIT_ASSERT(false == is_a_simple_word("\t"sv));
+  CPPUNIT_ASSERT(false == is_a_simple_word("\r"sv));
+  CPPUNIT_ASSERT(false == is_a_simple_word("\n"sv));
+  CPPUNIT_ASSERT(false == is_a_simple_word("\f"sv));
+  CPPUNIT_ASSERT(false == is_a_simple_word("/"sv));
+  CPPUNIT_ASSERT(false == is_a_simple_word("|"sv));
+  CPPUNIT_ASSERT(false == is_a_simple_word("\\"sv));
+  CPPUNIT_ASSERT(false == is_a_simple_word(":"sv));
+  CPPUNIT_ASSERT(false == is_a_simple_word("="sv));
+  //
+  CPPUNIT_ASSERT(true == is_a_simple_word("d41d8cd98f00b204e9800998ecf8427e"sv));
+  CPPUNIT_ASSERT(true == is_a_simple_word("da39a3ee5e6b4b0d3255bfef95601890afd80709"sv));
+  CPPUNIT_ASSERT(true == is_a_simple_word("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"sv));
+  CPPUNIT_ASSERT(true == is_a_simple_word("cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"sv));
+}
 #import tests.unit.did.Document.DOME
 #import tests.unit.did.Document.JSON
 #import tests.unit.did.Document.ZONE
@@ -81,6 +120,13 @@ auto tests::unit::did::Fixture::suite() -> cppunit::Test * {
         << call("bad", &Fixture::test_Parser_bad)
       ;
     series << add(par.release());
+  } {
+    Stream isa{"is_a_simple_word"};
+    isa << call("Method", &Fixture::test_is_a_simple_word_Method)
+        << call("Identifier", &Fixture::test_is_a_simple_word_Identifier)
+        << call("string_view", &Fixture::test_is_a_simple_word_string_view)
+      ;
+    series << add(isa.release());
   }
   namespace testing = tests::unit::did;
   namespace subjecting = ::tunitas::scarpet::did;

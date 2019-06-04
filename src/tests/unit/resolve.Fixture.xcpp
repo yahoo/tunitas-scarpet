@@ -7,31 +7,49 @@ namespace tests::unit::resolve { class Fixture; }
 #divert <hpp>
 #import cppunit.Test
 #import cppunit.test.Fixture
-#import tests.unit.resolve.aspect.Channel
-class tests::unit::resolve::Fixture : public cppunit::test::Fixture, aspect::Channel {
+#import tests.unit.resolve.aspect.Service
+#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
+#import tunitas.scarpet.Club
+#import tunitas.scarpet.Protocol
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.did.Identifier
+class tests::unit::resolve::Fixture : public cppunit::test::Fixture, aspect::Service {
 public:
-  auto setUp() -> void override { Channel::setUp(); }
-  auto tearDown() -> void override { Channel::tearDown(); }
+  auto setUp() -> void override { Service::setUp(); }
+  auto tearDown() -> void override { Service::tearDown(); }
+  auto test_Service() -> void;
   auto test_lookup_something() -> void;
   auto test_document_something() -> void;
   static auto suite() -> cppunit::Test *;
+protected:
+  using Method = ::tunitas::scarpet::did::Method;
+  using Identifier = ::tunitas::scarpet::did::Identifier;
+  using Protocol = ::tunitas::scarpet::Protocol;
+  using Club = ::tunitas::scarpet::Club;
+  struct dns { using Name = ::tunitas::scarpet::dns::Name; };
+  using ac = autotools::autoconf::Config<::tunitas::scarpet::CONFIG>;
 };
 #endiv
 #divert <cpp>
+#import tunitas.scarpet.resolve.Service
+auto tests::unit::resolve::Fixture::test_Service() -> void {
+  // The dedicated tester will test the other constructors (and more!)
+  auto subject = ::tunitas::scarpet::resolve::Service{};
+  CPPUNIT_ASSERT(!subject.channel);
+  CPPUNIT_ASSERT(!subject.directory);
+}
 #import tunitas.scarpet.resolve.lookup
-#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
 auto tests::unit::resolve::Fixture::test_lookup_something() -> void {
-  using ac = autotools::autoconf::Config<::tunitas::scarpet::CONFIG>;
   using namespace ::tunitas::scarpet::resolve;
-  auto method = ::tunitas::scarpet::did::Method{"example"};
-  auto identifier = ::tunitas::scarpet::did::Identifier{"123456789acdefghi"};
-  auto service = ::tunitas::scarpet::Service{"did+w3id+v1"};
+  auto method = Method{"example"};
+  auto identifier = Identifier{"123456789abcdefghi"};
+  auto protocol = Protocol{"did+w3id+v1"};
   auto club = ::tunitas::scarpet::Club{ac::did_club_name()};
-  auto looked = lookup<NA>(*this->channel, method, identifier, service, club);
+  auto looked = lookup<NA>(*this->service, method, identifier, protocol, club);
   //
   // Of course this lookup will fail if you operate the unit tests in a realm where
   // (a) there is no DNS service at all; e.g. in a buildfarm jail
-  // (b) where there is no definition of id.123456789acdefghi.example.$CLUB for $CLUB; e.g. scarpet.club.
+  // (b) where there is no definition of id.123456789abcdefghi.example.$CLUB for $CLUB; e.g. scarpet.club.
   //
   CPPUNIT_ASSERT(ok(looked) || !ok(looked));
   if (ok(looked)) {
@@ -41,7 +59,23 @@ auto tests::unit::resolve::Fixture::test_lookup_something() -> void {
 }
 #import tunitas.scarpet.resolve.document
 auto tests::unit::resolve::Fixture::test_document_something() -> void {
-  CPPUNIT_ASSERT(true);
+  using namespace ::tunitas::scarpet::resolve;
+  auto method = Method{"example"};
+  auto identifier = Identifier{"123456789abcdefghi"};
+  auto qdn = dns::Name{"."};
+  auto looked = document<FiLE>(*this->service, method, identifier, qdn);
+  //
+  // Of course this lookup will fail if you operate the unit tests in a realm where
+  // (a) there is no DNS service at all; e.g. in a buildfarm jail
+  // (b) where there is no definition of id.123456789abcdefghi.example.$CLUB for $CLUB; e.g. scarpet.club.
+  //
+  // The success case and the failing case is tested in the dedicated tester, nearby at tests::unit::Document<FILE>
+  //
+  CPPUNIT_ASSERT(ok(looked) || !ok(looked));
+  if (ok(looked)) {
+    auto dome = value(std::move(looked));
+    CPPUNIT_ASSERT(sizeof (dome));
+  }
 }
 #import tests.unit.resolve.Lookup.DA
 #import tests.unit.resolve.Lookup.NA

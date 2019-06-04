@@ -50,9 +50,6 @@ TF_MSG_VERBOSE([system-side subsystems (alphabetical)])
 TF_WITH_HYPOGEAL_TWILIGHT
 dnl NOT YET -----> TF_WITH_INCENDIARY_SOPHIST
 
-m4_include([ac/test-server.m4])
-SCARPET_ENABLE_TEST_SET([server])
-
 AC_CONFIG_SRCDIR([src/tunitas/scarpet/namespace.xcpp])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_FILES([Makefile])
@@ -93,10 +90,16 @@ SCARPET_DEFINE_MODULE_NAME
 m4_include([ac/enable-club.m4])
 SCARPET_ENABLE_DID_CLUB_NAME
 
+m4_include([ac/enable-test-sets.m4])
+SCARPET_ENABLE_TEST_SET([server])
+m4_include([ac/enable-test-services.m4])
+SCARPET_ENABLE_TEST_DID_CLUB_NAME
+SCARPET_ENABLE_TEST_DID_DOCUMENT_STORAGE_SERVICE_NAME
+
 m4_include([ac/enable-method.m4])
 SCARPET_ENABLE_DID_METHOD_NAME
 
-m4_include([ac/enable-service.m4])
-SCARPET_ENABLE_DID_SERVICE_NAME
+m4_include([ac/enable-protocol.m4])
+SCARPET_ENABLE_DID_PROTOCOL_NAME
 
 TF_FINALIZE

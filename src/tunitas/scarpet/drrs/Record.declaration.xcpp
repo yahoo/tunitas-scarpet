@@ -23,5 +23,5 @@ static_assert(sizeof (tunitas::scarpet::dns::URI));
 #divert <hpp>
 // Ibidem.
 #import tunitas.scarpet.dns.type.constants
-#import tunitas.scarpet.drrs.Prototype
+#import tunitas.scarpet.drrs.record.Prototype
 #endiv

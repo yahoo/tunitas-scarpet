@@ -10,7 +10,11 @@ namespace tests::unit::exception { class Fixture; }
 class tests::unit::exception::Fixture : public cppunit::test::Fixture {
 public:
   template<typename EXCEPTION> auto test_Aspect() -> void;
+  auto test_Configuration() -> void;
+  auto test_Invariant() -> void;
   auto test_Quitting() -> void;
+  auto test_Runtime() -> void;
+  auto test_System() -> void;
   auto test_Version() -> void;
   static auto suite() -> cppunit::Test *;
 protected:
@@ -32,10 +36,39 @@ namespace tests::unit::exception {
 }
 #endiv
 #divert <cpp>
+#import tunitas.scarpet.exception.Configuration
+auto tests::unit::exception::Fixture::test_Configuration() -> void {
+  tunitas::scarpet::exception::Configuration subject{"infinite-memory"};
+  CPPUNIT_ASSERT(nullptr != subject.what());
+}
+#import tunitas.scarpet.exception.Invariant
+auto tests::unit::exception::Fixture::test_Invariant() -> void {
+  tunitas::scarpet::exception::Invariant subject{"cannot have a '/' here"};
+  CPPUNIT_ASSERT(nullptr != subject.what());
+}
 #import tunitas.scarpet.exception.Quitting
 auto tests::unit::exception::Fixture::test_Quitting() -> void {
   tunitas::scarpet::exception::Quitting subject{"a.out"};
   CPPUNIT_ASSERT(nullptr != subject.what());
+}
+#import tunitas.scarpet.exception.Runtime
+auto tests::unit::exception::Fixture::test_Runtime() -> void {
+  tunitas::scarpet::exception::Runtime subject0{};
+  CPPUNIT_ASSERT(nullptr != subject0.what());
+  tunitas::scarpet::exception::Runtime subject1{"bad bad"};
+  CPPUNIT_ASSERT(nullptr != subject1.what());
+}
+#import tunitas.scarpet.exception.System
+#import std.system_category
+#import std.errc
+#import std.error_code
+auto tests::unit::exception::Fixture::test_System() -> void {
+  tunitas::scarpet::exception::System subjectA{13, std::system_category(), "bad bad"};
+  CPPUNIT_ASSERT(nullptr != subjectA.what());
+  tunitas::scarpet::exception::System subjectB{std::errc::no_such_file_or_directory, "missing file"};
+  CPPUNIT_ASSERT(nullptr != subjectB.what());
+  tunitas::scarpet::exception::System subjectC{std::error_code{13, std::system_category()}, "missing thing"};
+  CPPUNIT_ASSERT(nullptr != subjectC.what());
 }
 #import tunitas.scarpet.exception.Version
 auto tests::unit::exception::Fixture::test_Version() -> void {
@@ -46,13 +79,21 @@ auto tests::unit::exception::Fixture::test_Version() -> void {
 auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"exception"};
-  series << call("Quitting", &Fixture::test_Quitting)
+  series << call("Configuration", &Fixture::test_Configuration)
+         << call("Invariant", &Fixture::test_Invariant)
+         << call("Quitting", &Fixture::test_Quitting)
+         << call("Runtime", &Fixture::test_Runtime)
          << call("Version", &Fixture::test_Version)
     ;
   {
     Stream asp{"Aspect"};
     namespace subjecting = ::tunitas::scarpet::exception;
-    asp << call("Version", &Fixture::test_Aspect<subjecting::Version>)
+    asp << call("Configuration", &Fixture::test_Aspect<subjecting::Configuration>)
+        << call("Invariant", &Fixture::test_Aspect<subjecting::Invariant>)
+        << call("Quitting", &Fixture::test_Aspect<subjecting::Quitting>)
+        << call("Runtime", &Fixture::test_Aspect<subjecting::Runtime>)
+        << call("System", &Fixture::test_Aspect<subjecting::System>)
+        << call("Version", &Fixture::test_Aspect<subjecting::Version>)
       ;
     series << move(asp);
   }

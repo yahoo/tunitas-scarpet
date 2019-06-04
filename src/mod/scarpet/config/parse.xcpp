@@ -78,7 +78,7 @@ auto mod::scarpet::config::parse(httpd::cmd_parms *cmd, void */*???*/, char cons
     bool matched = false;
     matched |= specification->did_club_name.set_if(name, value);
     matched |= specification->did_method_name.set_if(name, value);
-    matched |= specification->resolver_service_name.set_if(name, value);
+    matched |= specification->resolver_protocol_name.set_if(name, value);
     matched |= specification->location_prefix.set_if(name, value);
     if ( ! matched ) {
       return parser.pstrcat("bad directive [", name, "], unsupported directive name");

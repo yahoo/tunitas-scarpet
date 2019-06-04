@@ -61,7 +61,7 @@ auto mod::scarpet::method::Getter::operator()() -> Code {
   }
   ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "use this method=%s, did=%s", c::str(did_method), c::str(did_identifier));
   using namespace tunitas::scarpet::resolve;
-  auto resolved = lookup<NA>(state->channel, did_method, did_identifier, state->specification.resolver_service_name.value, state->specification.did_club_name.value);
+  auto resolved = lookup<NA>(*state, did_method, did_identifier, state->specification.resolver_protocol_name.value, state->specification.did_club_name.value);
   if (ok(resolved)) {
     banner_success(value(resolved));
     return HANDLER::OK; // not HTTP::OK

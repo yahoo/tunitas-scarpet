@@ -14,9 +14,9 @@ namespace tunitas::scarpet::drrs {
 #import tunitas.scarpet.drrs.aspect.Endpoint
 #import std.string
 namespace tunitas::scarpet::drrs {
-  template<> struct Record<dns::URI>  : public Prototype, public aspect::Endpoint<std::string> {
+  template<> struct Record<dns::URI>  : public record::Prototype, public aspect::Endpoint<std::string> {
     struct ancestors {
-      using Prototype = drrs::Prototype;
+      using Prototype = record::Prototype;
       using Endpoint = aspect::Endpoint<std::string>;
     };
   public:

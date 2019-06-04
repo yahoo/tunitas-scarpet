@@ -23,11 +23,24 @@ namespace tests::unit::exception {
     auto operator()() -> void;
   };
 }
+#import tunitas.scarpet.exception.System
+namespace tests::unit::exception {
+  template<> auto Fixture::Thrower<::tunitas::scarpet::exception::System>::operator()() -> void;
+}
 #endiv
 #divert <tpp>
+#import std.errc
 namespace tests::unit::exception {
   template<typename _> auto Fixture::Thrower<_>::operator()() -> void {
     Exception subject{"a.out"};
+    throw subject;
+  }
+}
+#endiv
+#divert <cpp>
+namespace tests::unit::exception {
+  template<> auto Fixture::Thrower<::tunitas::scarpet::exception::System>::operator()() -> void {
+    Exception subject{std::errc::no_such_file_or_directory, "file.conf"};
     throw subject;
   }
 }

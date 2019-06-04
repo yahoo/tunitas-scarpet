@@ -104,6 +104,7 @@ function set_all_defaults_no() {
     : ${with_module_posix:=no}
     : ${with_module_rigging:=no}
     : ${with_module_std:=no}
+    : ${with_module_slurp:=no}
     : ${with_module_string:=no}
     : ${with_module_sys:=no}
     : ${with_module_uuid:=no}
@@ -122,6 +123,7 @@ function set_all_defaults_relatively() {
     : ${with_module_options:=$1/module-options}
     : ${with_module_posix:=$1/module-posix}
     : ${with_module_rigging:=$1/module-rigging}
+    : ${with_module_slurp:=$1/module-slurp}
     : ${with_module_std:=$1/module-std}
     : ${with_module_string:=$1/module-string}
     : ${with_module_sys:=$1/module-sys}
@@ -173,6 +175,7 @@ eval \
     ${with_module_options:+--with-module-options=$with_module_options} \
     ${with_module_posix:+--with-module-posix=$with_module_posix} \
     ${with_module_rigging:+--with-module-rigging=$with_module_rigging} \
+    ${with_module_slurp:+--with-module-slurp=$with_module_slurp} \
     ${with_module_std:+--with-module-std=$with_module_std} \
     ${with_module_string:+--with-module-string=$with_module_string} \
     ${with_module_sys:+--with-module-sys=$with_module_sys} \

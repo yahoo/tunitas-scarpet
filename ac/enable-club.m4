@@ -12,8 +12,8 @@ dnl
 AC_DEFUN([SCARPET_ENABLE_DID_CLUB_NAME], [
     default_did_club_name="scarpet.club"
     AC_ARG_ENABLE([did-club-name],
-                  AS_HELP_STRING([--enable-did-club-name=NAME],
-                                 [Choose the default DID club (a.k.a. DID resolver) name for mod_scarpet]),
+                  AS_HELP_STRING([--enable-did-club-name=FQDN],
+                                 [Choose the default DID Club Name (a.k.a. DID Resolver FQDN) for mod_scarpet]),
                   [if test xno = x$enable_did_club_name; then
                       AC_MSG_ERROR([--disable-did-club-name is not meaningful, for mod_scarpet])
                    fi],

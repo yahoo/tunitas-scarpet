@@ -2,7 +2,7 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace tunitas::scarpet::drrs {
+namespace tunitas::scarpet::drrs::record {
   //
   // The prototype of a Disaggregated Resource Record, Splatttered (DRRS)
   // Descendants only.
@@ -30,7 +30,7 @@ namespace tunitas::scarpet::drrs {
 // [[FIXTHIS]] nonstd::uint256_t
 // [[FIXTHIS]] nonstd::uint512_t
 #import tunitas.scarpet.dns.Labels
-class tunitas::scarpet::drrs::Prototype {
+class tunitas::scarpet::drrs::record::Prototype {
 protected:
   virtual ~Prototype() = default;
   Prototype() = default;

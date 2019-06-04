@@ -1,5 +1,5 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
-${exe?} -y
+${exe?} -y --private=private --public=public
 # the -y option enters dry-run mode, but we need to dry-run this (sic)
 test 0 == $?

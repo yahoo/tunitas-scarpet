@@ -9,6 +9,9 @@ lib_libwant_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 lib_libwant_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libwant_la_SOURCES))
 lib_libwant_la_SOURCES = \
   obj/src/want/namespace.cpp \
+  \
+  obj/src/want/stream.duo.Files.cpp \
+  obj/src/want/stream.duo.gang.cpp \
   $(end)
 
 $(scold_cxxdir)/want/dependencies.mk: Makefile

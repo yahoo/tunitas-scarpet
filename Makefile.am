@@ -21,6 +21,7 @@ DEVELOPMENT_AREAS = \
   $(module_c_prefix) \
   $(module_format_prefix) \
   $(module_nonstd_prefix) \
+  $(module_openssl_prefix) \
   $(module_options_prefix) \
   $(module_posix_prefix) \
   $(module_sqlite_prefix) \

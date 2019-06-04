@@ -5,7 +5,7 @@
 #import app.keygen.options.indicator // matryoshka
 #import app.options.indicator.constants
 namespace app::keygen::options::indicator {
-  inline auto const PRIVATE_KEY = Code::CODE_254;
-  inline auto const PUBLIC_KEY = Code::CODE_253;
+  inline auto const PRIVATE_SIDE = Code::CODE_254;
+  inline auto const PUBLIC_SIDE = Code::CODE_253;
 }
 #endiv

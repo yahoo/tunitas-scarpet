@@ -16,6 +16,8 @@ tests_keygen_TESTS = \
   tests/keygen/option.warning.test \
   tests/keygen/option.w.test \
   tests/keygen/option.y.test \
+  \
+  tests/keygen/run.01.test \
   $(end)
 
 tests_keygen_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/keygen/*.test)

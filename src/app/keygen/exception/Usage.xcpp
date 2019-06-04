@@ -70,8 +70,10 @@ namespace app::keygen::exception {
     buf << "usage: " << NAME << " [...options...]\n"
         << "\n"
         << "Generation Options\n"
-        << "--private-key=FILEPATH             write the private key to the FILEPATH\n"
-        << "--public-key=FILEPATH              write the public key (the DID) to the FILEPATH\n"
+        << "--private-side=FILEPATH             write the private key to the FILEPATH\n"
+        << "                                    also --private-key=FILEPATH or --private-key=FILEPATH\n"
+        << "--public-side=FILEPATH              write the public key (the DID) to the FILEPATH\n"
+        << "                                    also --public=FILEPATH or --public-key=FILEPATH\n"
         << '\n'
         << "General Options:\n"
         << "--usage, --help, -h                emit this message, and exit\n"

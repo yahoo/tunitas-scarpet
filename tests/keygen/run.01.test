@@ -1,0 +1,6 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+set -e
+rm -f ${0%.test}.private ${0%.test}.public
+${exe?} --private=${0%.test}.private --public=${0%.test}.public
+cat ${0%.test}.private ${0%.test}.public

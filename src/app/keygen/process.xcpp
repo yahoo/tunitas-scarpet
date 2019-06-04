@@ -1,0 +1,40 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import app.keygen.Configuration
+#import sys.exits.Code
+namespace app::keygen {
+  //
+  // Process ... generate that keypair
+  //
+  // Usage:
+  //
+  //   ...oh come on...
+  //
+  auto process(Configuration const &) -> sys::exits::Code;
+}
+#endiv
+#divert <cpp>
+#import openssl.ec.generate
+#import openssl.evp.PKey
+#import openssl.pem.to_string
+#import sys.exits.constants
+#import want.stream.duo.Files
+#import want.stream.duo.gang
+auto app::keygen::process(Configuration const &cfg) -> sys::exits::Code {
+  using namespace openssl;
+  using namespace want::stream::duo;
+  evp::PKey pkey;
+  pkey.assign(ec::generate(ec::group::Name::PRIME256V1));
+  Files out;
+  out.exceptions(std::ios::badbit|std::ios::failbit);
+  out.open(*cfg.private_side, *cfg.public_side);
+  debug(cfg) << "also writing to " << *cfg.private_side << " and " << *cfg.public_side << '\n'
+             << pem::to_string(pkey)
+             << '\n'
+             << pem::pub::to_string(pkey);
+  out << gang(pem::to_string(pkey), pem::pub::to_string(pkey));
+  return sys::exits::OK;
+}
+#endiv

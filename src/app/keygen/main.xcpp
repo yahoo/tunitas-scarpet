@@ -16,9 +16,9 @@ auto main(int cc, char *vv[]) -> int {
 #import app.keygen.Configuration
 #import app.keygen.options.Parser
 #import app.keygen.options.Specification
+#import app.keygen.process
 #import tunitas.scarpet.exception.aspect.Exiting
 #import sys.exits.constants
-#import nonstd.exception.Unimplemented
 #import std.exception
 auto app::keygen::main(Args av) -> sys::exits::Code try {
   auto program = Configuration::Program{av.front()};
@@ -34,7 +34,7 @@ auto app::keygen::main(Args av) -> sys::exits::Code try {
   if (cfg.dry_run_mode) {
     notice(cfg) << "not doing anything in dry-run mode\n";
   } else {
-    throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+    return process(cfg);
   }
   return sys::exits::OK;
 } catch (tunitas::scarpet::exception::aspect::Exiting const &e) {

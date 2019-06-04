@@ -45,10 +45,12 @@ namespace app::keygen::options {
                 {"debug", oa::NO, oi::DEBUG_MODE},
                 {"dry-run", oa::NO, oi::DRY_RUN_MODE},
                 {"dryrun", oa::NO, oi::DRY_RUN_MODE},
-                {"private-key", oa::NO, oi::PRIVATE_KEY},
-                {"private", oa::NO, oi::PRIVATE_KEY},
-                {"public", oa::NO, oi::PUBLIC_KEY},
-                {"public-key", oa::NO, oi::PUBLIC_KEY}}}
+                {"private-key", oa::REQUIRED, oi::PRIVATE_SIDE},
+                {"private-side", oa::REQUIRED, oi::PRIVATE_SIDE},
+                {"private", oa::REQUIRED, oi::PRIVATE_SIDE},
+                {"public", oa::REQUIRED, oi::PUBLIC_SIDE},
+                {"public-key", oa::REQUIRED, oi::PUBLIC_SIDE},
+                {"public-side", oa::REQUIRED, oi::PUBLIC_SIDE}}}
   { }
 }
 #endiv

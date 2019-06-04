@@ -7,6 +7,7 @@ bin_did_keygen = bin/did-keygen
 bin_did_keygen_LDADD = \
   $(lib_libapp_la) \
   $(lib_libtunitas_scarpet_la) \
+  -lopenssl-module \
   $(end)
 bin_did_keygen_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 bin_did_keygen_MODULES = $(call TF_SOURCEStoMODULES, $(bin_did_keygen_SOURCES))
@@ -14,6 +15,8 @@ bin_did_keygen_SOURCES = \
   obj/src/app/keygen/namespace.cpp \
   obj/src/app/keygen/main.cpp \
   obj/src/app/keygen/Configuration.cpp \
+  obj/src/app/keygen/process.cpp \
+  \
   obj/src/app/keygen/exception/namespace.cpp \
   obj/src/app/keygen/exception/Usage.cpp \
   obj/src/app/keygen/exception/Bad_Filepath.cpp \

@@ -98,10 +98,10 @@ namespace app::keygen::options {
         case oi::DRY_RUN_MODE:
           cfg.dry_run_mode = true;
           break;
-        case oi::PRIVATE_KEY:
+        case oi::PRIVATE_SIDE:
           cfg.private_side = get_filepath<exception::Bad_Filepath>(cfg, step);
           break;
-        case oi::PUBLIC_KEY:
+        case oi::PUBLIC_SIDE:
           cfg.public_side = get_filepath<exception::Bad_Filepath>(cfg, step);
           break;
         case oi::MISSING:
@@ -124,6 +124,15 @@ namespace app::keygen::options {
     auto const remaining = Arguments{get.begin(), get.end()};
     if (!std::empty(remaining)) {
       ::options::error(cfg) << "there are extra words after the options\n";
+      return Result{std::error_code{error::Code::OPTIONS}};
+    }
+    if (!cfg.public_side || !cfg.private_side) {
+      if (!cfg.public_side) {
+        ::options::error(cfg) << "the --public=FILEPATH is not set, but it is required\n";
+      }
+      if (!cfg.private_side) {
+        ::options::error(cfg) << "the --private=FILEPATH is not set, but it is required\n";
+      }
       return Result{std::error_code{error::Code::OPTIONS}};
     }
     return Result{tunitas::SUCCESS};

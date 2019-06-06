@@ -21,6 +21,16 @@ namespace tunitas::scarpet::drrs {
     };
   public:
     Record() = default;
+    // The endpoint will be copied in the ancestor's constructor
+    inline Record(Weight, Priority, std::string const &endpoint);
   };
 }
 #endiv
+#divert <ipp>
+namespace tunitas::scarpet::drrs {
+  Record<dns::URI>::Record(Weight weight, Priority priority, std::string const &endpoint)
+    : ancestors::Endpoint{weight, priority, endpoint}
+  { }
+}
+#endiv
+

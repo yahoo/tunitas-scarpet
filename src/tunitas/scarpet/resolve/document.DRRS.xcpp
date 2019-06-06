@@ -9,22 +9,28 @@ namespace tunitas::scarpet::resolve {
   //
   // Fish around the DSSZ and get the RR interest.
   //
-  // DRRS - Disaggregated Resource Records Splattered
+  // DRRS - Disaggregated Resource Records, Splattered
   // DSSZ - Document Storage Service Zone
   //  SSZ - Storage Service Zone
+  //  DSS - Document Storage Service (a company, one that is publishing and maintaining a SSZ)
   //
   // These use a "R" flag to indicate the use of a collection of resource records.
   // (elsewhere) "Z" to indicate the use of a whole zone in toto; which is not DRRS, but ZONE.
   //
+  // (Tunitas) Scarpet (Storage Service) Lexicon 
   // DID Document Storage Service Zone (DSSZ), a (F)QDN -------------------------\ (here)
   //                                                                             |      
-  //            DID Method -------------------------------------\---\            |
-  //                                                            |   |            |
-  // Mumblecore DID Document Storage Flags -----------------\   |   |            |
-  //                                                        |   |   |            |
-  // /-----------reversed DID---------------\               |   |   |            |
-  // |           |        |                 |               |   |   |            |
-  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv               v   v   v            v
+  // Mumblecore (DID Method) Lexicon                                             |
+  // DID Method ----------------------------\-------------------\---\            |
+  //                                        |                   |   |            |
+  // (Tunitas) Scarpet Service Flags        |                   |   |            |
+  //      ... Service-Protocol Flags        |                   |   |            |
+  // DID Document Storage Flags ------------|---------------\   |   |            |
+  //                                        |               |   |   |            |
+  // DID Identifier-------\                 |               |   |   |            |
+  //                      |                 |               |   |   |            |
+  //                      |                 |               |   |   |            |
+  // <-----+----+----+----+-----------> <---+-->            v   v   v            v
   // ... 9b-7d80-46c0-bc2a-76a84bf848ef.lo-fi    NAPTR 1 1 "R" "did+lo-fi"    "" gurdon.fd20-1e92-49c7.net.
   // ... 0e-233a-496c-aebd-79ca7c6efe9a.affogato NAPTR 1 1 "R" "did+affogato" "" will-o-the-wisp.fd20-1e92-49c7.net.
   //
@@ -37,14 +43,12 @@ namespace tunitas::scarpet::resolve {
 #endiv
 #divert <cpp>
 #import ares.dns.class.constants
-#import ares.query
 #import ares.run
 #import nonstd.exception.Unimplemented
-#import tunitas.scarpet.answer.Stanza
-#import tunitas.scarpet.answer.Response
+#import tunitas.scarpet.answer.Queries
+#import tunitas.scarpet.answer.launch
 #import tunitas.scarpet.did.isa
 #import tunitas.scarpet.exception.Configuration
-#import tunitas.scarpet.exception.Invariant
 #import tunitas.scarpet.exception.System
 #import tunitas.scarpet.error.Code
 #import std.error_code
@@ -54,7 +58,7 @@ namespace tunitas::scarpet::resolve {
 #import sys.error.E
 #import std.cerr
 namespace tunitas::scarpet::resolve {
-  template<> auto document<DRRS>(Service &service, Method const &method, Identifier const &identifier, dns::Name const &qdn) -> Outcome<did::Document<did::DOME>> try {
+  template<> auto document<DRRS>(Service &service, Method const &method, Identifier const &identifier, dns::Name const &ddss) -> Outcome<did::Document<did::DOME>> try {
     using Result = Outcome<did::Document<did::DOME>>;
     if (!service.channel) {
       // This function can't do its job.
@@ -64,20 +68,14 @@ namespace tunitas::scarpet::resolve {
       // The luser gave us bad data.
       return Result{std::error_code{error::Code::INVALID_IDENTIFIER}};
     }
-    auto id_qdn = [method, identifier, qdn] {
-                    std::ostringstream buf;
-                    buf << "id" << '.' << view(identifier) << '.' << view(method) << '.' << view(qdn);
-                    return buf.str();
-                  }();
-    auto id = drrs::Record<dns::URI>{};
-    auto id_response = answer::Response<drrs::Record<dns::URI>>{id};
-    auto id_query = answer::Stanza<answer::ID>{id_response};
-    std::cerr << "query ID " << id_qdn << '\n';
-    query(*service.channel, id_qdn, dns::IN, dns::URI, id_query);
-    run(*service.channel);
-    std::cerr << "response ID " << ok(id_response) << '\n';
-    std::cerr << "response ID " << value(id_response).endpoint << '\n';
+    answer::Queries queries;
+    launch(service, queries, method, identifier, ddss);
+    run(*service.channel, 5_count, 300ms);
+#if 1
+    std::cerr << "response ID " << ok(queries.id.response) << '\n';
+    std::cerr << "response ID " << value(queries.id.response).endpoint << '\n';
     // throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+#endif
     auto dome = did::Document<did::DOME>{};
     return Result{std::move(dome)};
   } catch (std::system_error const &e) {

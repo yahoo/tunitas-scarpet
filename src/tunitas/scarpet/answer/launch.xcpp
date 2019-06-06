@@ -1,0 +1,72 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.answer.Queries
+#import tunitas.scarpet.resolve.Service
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.dns.Name
+#import std.string
+namespace tunitas::scarpet::answer {
+  //
+  // Launch the queries.
+  // See the example and documentariat, nearby, at Queries
+  //
+  // Usage:
+  //
+  //   auto method = did::Method{...somehow...};          e.g. eample
+  //   auto identifier = did::Method{...somehow...};      e.g. 123456789abcdefghi
+  //   auto ddss = dns::Name{...somehow...};              e.g. storage.scarpet.tunitas.solutions.
+  //
+  //   Queries queries;
+  //   launch(*service.channel, queries, method, identifier, ddss);
+  //
+  namespace packaging::launching::function {
+    using resolve::Service;
+    using did::Method;
+    using did::Identifier;
+    using Storage = dns::Name; // the DID Document Storage Service (DDSS) Qualified Domain Name (QDS)
+    inline auto launch(Service &, Queries &, Method const &, Identifier const &, Storage const &) -> void;
+    // This may or may not be an implementation detail.
+    // At present we don't export it out of this detail namespace.
+    inline auto reqdn(dns::Label const &, Method const &, Identifier const &, Storage const &) -> std::string;
+  }
+  using packaging::launching::function::launch;
+}
+#endiv
+#divert <ipp>
+#import ares.query
+#import std.ostringstream
+#import ares.dns.class.constants
+namespace tunitas::scarpet::answer::packaging::launching {
+  auto function::launch(Service &service, Queries &queries, Method const &method, Identifier const &identifier, Storage const &ddss) -> void {
+#if 1
+    auto invoke = [&service, method, identifier, ddss](auto &field) {
+                    namespace dns = scarpet::dns;
+                    qq(*service.channel, reqdn(field.name(), method, identifier, ddss), dns::IN, field.type(), field.processor);
+                  };
+    invoke(queries.id);
+    invoke(queries.contexts);
+    invoke(queries.publickeys);
+    invoke(queries.authentications);
+    invoke(queries.services);
+    invoke(queries.proofs);
+#else
+    namespace dns = scarpet::dns;
+    qq(*service.channel, reqdn(queries.id.name(), method, identifier, ddss), dns::IN, queries.id.type(), queries.id.processor);
+    qq(*service.channel, reqdn(queries.contexts.name(), method, identifier, ddss), dns::IN, queries.contexts.type(), queries.contexts.processor);
+    qq(*service.channel, reqdn(queries.publickeys.name(), method, identifier, ddss), dns::IN, queries.publickeys.type(), queries.publickeys.processor);
+    qq(*service.channel, reqdn(queries.authentications.name(), method, identifier, ddss), dns::IN, queries.authentications.type(), queries.authentications.processor);
+    qq(*service.channel, reqdn(queries.services.name(), method, identifier, ddss), dns::IN, queries.services.type(), queries.services.processor);
+    qq(*service.channel, reqdn(queries.proofs.name(), method, identifier, ddss), dns::IN, queries.proofs.type(), queries.proofs.processor);
+#endif
+  }
+  auto function::reqdn(dns::Label const &label, Method const &method, Identifier const &identifier, Storage const &ddss) -> std::string {
+    std::ostringstream buf;
+    // We supply no trailing dot.  If they wanted one, the could have added it.
+    buf << view(label) << '.' << view(method) << '.' << view(identifier) << '.' << view(ddss);
+    return buf.str();
+  }
+}
+#endiv

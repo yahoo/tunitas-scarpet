@@ -13,13 +13,14 @@ namespace tunitas::scarpet::drrs {
 }
 #endiv
 #divert <hpp>
-#import tunitas.scarpet.dns.Labels
+#import tunitas.scarpet.dns.Name
 namespace tunitas::scarpet::drrs {
   template<> struct Record<dns::PTR>  : public record::Prototype {
     using ancestor = record::Prototype;
   public:
     Record() = default;
-    dns::Labels labels;
+    inline explicit Record(dns::Name target) : target{target} { }
+    dns::Name target;
   };
 }
 #endiv

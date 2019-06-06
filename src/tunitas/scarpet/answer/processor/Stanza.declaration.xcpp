@@ -1,0 +1,61 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The queries for the top-level fields of a DID Document
+  // Specializations only.
+  //
+  enum Name {
+    ID,
+    CONTEXTS, // ............ label 'context' (singular) with zero or more PTR records
+    PUBLICKEYS, // .......... ibidem.
+    AUTHENTICATIONS, // ..... 
+    SERVICES, // ............ 
+    PROOFS, // .............. ibidem.
+  };
+  //
+  // The Stanza<NAME> implements an ares query as a functor for use in an ares::query(...)
+  //
+  // Given: (recall that 'marfa' is a "DID Method Name" from the Mumblecore Lexicon, herein it is merely illustrative)
+  //
+  //    $ORIGIN scarpet.club.
+  //    ; See the examples in https://w3c-ccg.github.io/did-spec/
+  //    id.123456789abcdefghi.example NAPTR 1 1 "R" "did+w3id+v1"  "" marfa.storage.scarpet.solutions.
+  //
+  //    $ORIGIN storage.scarpet.solutions.
+  //    id.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
+  //    context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/did/v1"
+  //    context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/security/v1"
+  //    publickey.123456789abcdefghi.marfa ........etc...see Stanza<PUBLICKEYS>
+  //    authentication.123456789abcdefghi.marfa ...etc...see Stanza<AUTHENTICATIONS>
+  //    service.123456789abcdefghi.marfa ..........etc...see Stanza<SERVICES>
+  //    proof.123456789abcdefghi.marfa ............etc...see Stanza<PROOFS>
+  //
+  // Usage:
+  //
+  //                                     DID Method      DID Document Storage Service
+  //                                     |               | 
+  //                                     |               v
+  //               <--- DID Document --> v      <------- DDSS ----------->
+  //   auto qdn = "id.123456789abcdefghi.marfa.storage.scarpet.solutions.
+  //
+  //   Response<drrs::Record<ID>> id_response{};
+  //   auto processor = Stanza<ID>{id_response}
+  //
+  //   auto channel = ares::Channel{};
+  //   ares::query(channel, qdn, dns::IN, dns::URI, processor); <--------------- copy the Stanza into the query
+  //   ares::run(channel);
+  //
+  //   if (ok(id_response))) {
+  //      drrs::Record<ID> const &id = value(id_response);
+  //   } else {
+  //       auto ec = error_code(id_response);
+  //      ...bad... did not get a good recovery...
+  //   }
+  //
+  template<Name> struct Stanza;
+}
+#import tunitas.scarpet.answer.processor.Prototype // every specialization is-a Prototype
+#endiv

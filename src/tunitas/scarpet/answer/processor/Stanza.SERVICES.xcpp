@@ -1,0 +1,30 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.processor.Stanza.declaration
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The top-level 'service' fields are but indexed pointers to other "subdocuments"
+  // Perhaps there are no services at all.
+  // Therefore, there can be zero or more of these.
+  //
+  // Example: (see Stanza.declaration.hpp, and 'marfa' being an illustrative DID Method)
+  //
+  //   service.123456789abcdefghi.marfa PTR 0.service.123456789abcdefghi.marfa
+  //   service.123456789abcdefghi.marfa PTR 1.service.123456789abcdefghi.marfa
+  //   service.123456789abcdefghi.marfa PTR 2.service.123456789abcdefghi.marfa
+  //
+  template<> class Stanza<SERVICES>;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.processor.Pointers
+namespace tunitas::scarpet::answer::processor {
+  template<> class Stanza<SERVICES> : public Pointers {
+    using ancestor = Pointers;
+  public:
+    inline explicit Stanza(State &state) : ancestor{state} { }
+  };
+}
+#endiv

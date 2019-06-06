@@ -56,9 +56,11 @@ namespace tunitas::scarpet::error {
     case Code::UNKNOWN_METHOD:
       return "unknown_DID method";
     case Code::NOT_FOUND:
-      return "no record was found"; // e.g. identifier not found in the method
-    case Code::FOUND_MULTIPLE:
+      return "no record was found"; // e.g. the did identifier not found in the zone
+    case Code::FOUND_MULTIPLE_RECORDS:
       return "found multiple records";
+    case Code::FOUND_ZERO_RECORDS:
+      return "found zero records";
     default:
       return "error " + std::to_string(code);
     }

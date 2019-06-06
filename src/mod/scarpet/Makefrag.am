@@ -34,6 +34,12 @@ lib_libmod_scarpet_la_SOURCES = \
   \
   obj/src/mod/scarpet/method/namespace.cpp \
   obj/src/mod/scarpet/method/Prototype.cpp \
+  obj/src/mod/scarpet/method/Getter.declaration.cpp \
+  obj/src/mod/scarpet/method/Getter.PING.cpp \
+  obj/src/mod/scarpet/method/Getter.DAPTR.cpp \
+  obj/src/mod/scarpet/method/Getter.NAPTR.cpp \
+  obj/src/mod/scarpet/method/Getter.DOCUMENT.cpp \
+  obj/src/mod/scarpet/method/ptr.Getter.cpp \
   obj/src/mod/scarpet/method/Getter.cpp \
   obj/src/mod/scarpet/method/Poster.cpp \
   obj/src/mod/scarpet/method/Putter.cpp \

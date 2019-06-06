@@ -37,15 +37,39 @@ namespace tunitas::scarpet::drrs::aspect {
 #import ares.managed // Priority & Weight
 namespace tunitas::scarpet::drrs {
   template<aspect::required::Field FIELD> class aspect::Endpoint {
-  protected:
-    virtual ~Endpoint() = default;
-    Endpoint() = default;
   public:
     using Weight = ares::managed::Weight;
     using Priority = ares::managed::Priority;
+  protected:
+    virtual ~Endpoint() = default;
+    inline Endpoint();
+    using Field = FIELD; // Not ready to announce 'using Endpoint = FIELD' to the descendants.
+    inline Endpoint(Weight, Priority, Field const &);
+    inline Endpoint(Weight, Priority, Field &&);
+  public:
     Weight weight;
     Priority priority;
-    FIELD endpoint; //   e.g. something.example.com, or "https://something.example.com/myhouse"
+    Field endpoint; //   e.g. something.example.com, or "https://something.example.com/myhouse"
   };
+}
+#endiv
+#divert <ipp>
+#import std.forward
+namespace tunitas::scarpet::drrs::aspect {
+  template<aspect::required::Field _> Endpoint<_>::Endpoint()
+    : weight{Weight{}}
+    , priority{Priority{}}
+    , endpoint{}
+  { }
+  template<aspect::required::Field _> Endpoint<_>::Endpoint(Weight weight, Priority priority, Field const &field)
+    : weight{weight}
+    , priority{priority}
+    , endpoint{endpoint}
+  { }
+  template<aspect::required::Field _> Endpoint<_>::Endpoint(Weight weight, Priority priority, Field &&field)
+    : weight{weight}
+    , priority{priority}
+    , endpoint{std::forward<Field>(endpoint)}
+  { }
 }
 #endiv

@@ -23,7 +23,8 @@ namespace tunitas::scarpet::error {
     UNKNOWN_METHOD, // .................... unknown DID method, though valid syntactically
     NOT_FOUND, // ......................... lookup of the DID or something else was "not found"
     UNKNOWN_IDENTIFIER = NOT_FOUND, // .... same thing
-    FOUND_MULTIPLE, // .................... found multiple records but only one is allowed
+    FOUND_MULTIPLE_RECORDS, // ............ found multiple records but only one is allowed
+    FOUND_ZERO_RECORDS, // ................ found zero records where at least one was expected (otherwise "found" and "successful" though)
   };
 }
 #import std.is_error_code_enum

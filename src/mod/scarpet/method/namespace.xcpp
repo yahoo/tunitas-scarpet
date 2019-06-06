@@ -7,8 +7,9 @@
 #import apache.httpd.status.Code
 namespace mod::scarpet::method {
   using namespace apache::httpd::method;
-  namespace HTTP = apache::httpd::status::HTTP;
-  namespace HANDLER = apache::httpd::status::handler;
+  namespace status = apache::httpd::status; // merely make status::Code easy to say
+  namespace HTTP = apache::httpd::status::HTTP; // .......... hoist
+  namespace HANDLER = apache::httpd::status::handler; // .... hoist
   namespace io = apache::httpd::io;
 }
 #endiv

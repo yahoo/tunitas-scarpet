@@ -2,13 +2,13 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-#import tunitas.scarpet.answer.Stanza.declaration
-namespace tunitas::scarpet::answer {
+#import tunitas.scarpet.answer.processor.Stanza.declaration
+namespace tunitas::scarpet::answer::processor {
   //
-  // The ID Field
+  // The top-level ID Field
   // There can only be one of these in a document
   //
-  // Example:
+  // Example: (see Stanza.declaration.hpp, and 'marfa' being an illustrative DID Method)
   //
   //   id.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
   //
@@ -16,25 +16,25 @@ namespace tunitas::scarpet::answer {
 }
 #endiv
 #divert <hpp>
-namespace tunitas::scarpet::answer {
-  template<> class Stanza<ID> : public ares::function::Query<Response<drrs::Record<dns::URI>>> {
+namespace tunitas::scarpet::answer::processor {
+  template<> class Stanza<ID> : public Prototype, public ares::function::Query<Response<drrs::Record<dns::URI>>> {
     using ancestor = ares::function::Query<Response<drrs::Record<dns::URI>>>;
   public:
     inline explicit Stanza(State &);
-    auto receive(ares::error::Code, ares::Count timeouts, ares::Buffer<std::byte const>) -> void final;
+    auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void final;
   };
 }
 #endiv
 #divert <ipp>
-namespace tunitas::scarpet::answer {
+namespace tunitas::scarpet::answer::processor {
   Stanza<ID>::Stanza(State &response) : ancestor{response} { }
 }
 #endiv
 #divert <cpp>
-namespace tunitas::scarpet::answer {
-  auto Stanza<ID>::receive(ares::error::Code code, ares::Count timeouts, ares::Buffer<std::byte const> buffer) -> void {
+namespace tunitas::scarpet::answer::processor {
+  auto Stanza<ID>::receive(error::Code<ARES> code, Count timeouts, Buffer buffer) -> void {
     using namespace ares;
-    if (ares::error::Code::SUCCESS != code) {
+    if (error::Code<ARES>::SUCCESS != code) {
       this->state.success = std::error_code{code};
     } else {
       reply::Record<URI> records;
@@ -42,7 +42,7 @@ namespace tunitas::scarpet::answer {
       if (!ok(parsed)) {
         this->state.success = error_code(parsed);
       } else if (1 != records.size()) { // [[FIXTHIS]] this is common enough that ares::List should special-case unit length lists
-        this->state.success = std::error_code{scarpet::error::Code::FOUND_MULTIPLE};
+        this->state.success = std::error_code{error::Code<SCARPET>::FOUND_MULTIPLE_RECORDS};
       } else {
         auto const &record = *records.begin();
         this->state.referenced.priority = record.priority();

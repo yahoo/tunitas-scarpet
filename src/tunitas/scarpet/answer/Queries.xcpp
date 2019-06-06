@@ -1,0 +1,45 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::answer {
+  //
+  // All the queries that comprise a DID Document
+  //
+  // Example
+  //
+  //    $ORIGIN scarpet.tunitas.club.
+  //    id.123456789abcdefghi.example NAPTR 1 1 "R" "did+w3id+v1" "" storage.scarpet.tunitas.solutions.
+  //
+  //    $ORIGIN storage.scarpet.tunitas.solutions.
+  //    id.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
+  //    context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/did/v1"
+  //    context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/security/v1"
+  //    publickey..123456789abcdefghi.example ... 
+  //    authentication..123456789abcdefghi.example ... 
+  //    service..123456789abcdefghi.example ... 
+  //    proof.123456789abcdefghi.example ... you get the idea...
+  //
+  // Usage:
+  //
+  //   auto method = did::Method{...somehow...};          e.g. eample
+  //   auto identifier = did::Method{...somehow...};      e.g. 123456789abcdefghi
+  //   auto ddss = dns::Name{...somehow...};              e.g. storage.scarpet.tunitas.solutions.
+  //
+  //   Queries queries;
+  //   launch(*service.channel, queries, method, identifier, ddss);
+  //
+  struct Queries;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.Query
+struct tunitas::scarpet::answer::Queries {
+  Query<processor::Stanza<processor::ID>> id;
+  Query<processor::Stanza<processor::CONTEXTS>> contexts;
+  Query<processor::Stanza<processor::PUBLICKEYS>> publickeys;
+  Query<processor::Stanza<processor::AUTHENTICATIONS>> authentications;
+  Query<processor::Stanza<processor::SERVICES>> services;
+  Query<processor::Stanza<processor::PROOFS>> proofs;
+};
+#endiv

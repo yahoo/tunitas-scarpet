@@ -74,7 +74,7 @@ auto mod::scarpet::httpd::packaging::handler::function::handler(request_rec *r) 
     // ...ignored...
     //
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "GET");
-    method::Getter GET(r, state);
+    method::Getter<method::getter::NAPTR> GET(r, state);
     return GET();
   } else if (method::POST == r->method_number) {
     //

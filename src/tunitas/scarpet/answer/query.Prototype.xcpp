@@ -1,0 +1,55 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.dns.Type
+#include <hpp/tunitas.scarpet.answer.processor.Prototype>
+#import std.is_base_of
+namespace tunitas::scarpet::answer::query {
+  //
+  // Whereas every query is basically the same, herein find the prototype of every query.
+  // Descendants only.
+  // Descendants shall provide
+  //
+  //   auto name() const -> dns::Label { return "NAME"; }
+  //
+  // For the (top-level) Stanzas (context, publickey, authentication, service, proof)
+  // most of them them sport multiple DNS records against the indicated label (e.g. 'context' or 'publickey')
+  // - the PROCESSOR must handle plural records
+  // - the indexing into drrs::Records<TYPE> means that drrs::Records<TYPE> can handle plurals
+  //
+  // For the lower-level subfields PublicKey, Authentication, Service, Proof
+  // - the PROCESSOR must look for precisely one record and fail if zero or multiple are found.
+  // - the indexing into drrs::Records<TYPE> means that drrs::Records<TYPE> must handle plurals but the correct usage is for singletons
+  //
+  // The RECORDS is nominally plural, and that is appropriate for CONTEXTS, PUBLICKEYS, AUTHORIZATIONS,, SERVICES, PROOFS.
+  // But for ID, a singleton is used to enforce the condition that there can only be one (top-level) id per DID Document.
+  //
+  // Usage:
+  //
+  //   see the specializations Query<TYPE>
+  //
+  namespace required {
+    template<typename PROCESSOR> concept bool Processor = std::is_base_of<processor::Prototype, PROCESSOR>::value;
+  }
+  template<dns::Type DNS, required::Processor PROCESSOR, typename RECORDS = drrs::Records<DNS>> class Prototype;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.Response
+#import tunitas.scarpet.drrs.Records
+namespace tunitas::scarpet::answer {
+  template<dns::Type DNS, query::required::Processor PROCESSOR, typename RECORDS> struct query::Prototype {
+    using Records = RECORDS;
+    using Response = answer::Response<Records>;
+    using Processor = PROCESSOR;
+    Records records;
+    Response response;
+    Processor processor; // e.g. processor::Stanza<ID>
+    inline auto type() const { return DNS; }
+  protected:
+    ~Prototype() = default;
+    inline Prototype() : records{}, response{records}, processor{response} { }
+  };
+}
+#endiv

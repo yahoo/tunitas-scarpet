@@ -21,11 +21,30 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/Protocol.cpp \
   \
   obj/src/tunitas/scarpet/answer/namespace.cpp \
+  obj/src/tunitas/scarpet/answer/processor/namespace.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Prototype.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.declaration.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.ID.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.CONTEXTS.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.PUBLICKEYS.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.AUTHENTICATIONS.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.SERVICES.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.PROOFS.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Pointers.cpp \
+  obj/src/tunitas/scarpet/answer/Queries.cpp \
+  obj/src/tunitas/scarpet/answer/launch.cpp \
+  obj/src/tunitas/scarpet/answer/query.Prototype.cpp \
+  obj/src/tunitas/scarpet/answer/Query.declaration.cpp \
+  obj/src/tunitas/scarpet/answer/Query.ID.cpp \
+  obj/src/tunitas/scarpet/answer/Query.CONTEXTS.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.cpp \
+  obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.cpp \
+  obj/src/tunitas/scarpet/answer/Query.SERVICES.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PROOFS.cpp \
+  obj/src/tunitas/scarpet/answer/Query.cpp \
   obj/src/tunitas/scarpet/answer/response.Prototype.cpp \
   obj/src/tunitas/scarpet/answer/Response.cpp \
-  obj/src/tunitas/scarpet/answer/Stanza.declaration.cpp \
-  obj/src/tunitas/scarpet/answer/Stanza.ID.cpp \
-  obj/src/tunitas/scarpet/answer/Stanza.cpp \
   \
   obj/src/tunitas/scarpet/did/namespace.cpp \
   obj/src/tunitas/scarpet/did/Parser.cpp \
@@ -59,6 +78,7 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/drrs/Record.URI.cpp \
   obj/src/tunitas/scarpet/drrs/Record.SRV.cpp \
   obj/src/tunitas/scarpet/drrs/Record.cpp \
+  obj/src/tunitas/scarpet/drrs/Records.cpp \
   \
   obj/src/tunitas/scarpet/error/namespace.cpp \
   obj/src/tunitas/scarpet/error/Condition.cpp \
@@ -76,6 +96,14 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/exception/System.cpp \
   obj/src/tunitas/scarpet/exception/Version.cpp \
   \
+  obj/src/tunitas/scarpet/options/namespace.cpp \
+  obj/src/tunitas/scarpet/options/indicator.cpp \
+  obj/src/tunitas/scarpet/options/indicator.constants.cpp \
+  obj/src/tunitas/scarpet/options/Arguments.cpp \
+  obj/src/tunitas/scarpet/options/Parser.cpp \
+  obj/src/tunitas/scarpet/options/parser.Result.cpp \
+  obj/src/tunitas/scarpet/options/Specification.cpp \
+  \
   obj/src/tunitas/scarpet/resolve/namespace.cpp \
   obj/src/tunitas/scarpet/resolve/Service.cpp \
   obj/src/tunitas/scarpet/resolve/document.declaration.cpp \
@@ -88,14 +116,6 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/resolve/lookup.NA.cpp \
   obj/src/tunitas/scarpet/resolve/lookup.DA.cpp \
   obj/src/tunitas/scarpet/resolve/lookup.cpp \
-  \
-  obj/src/tunitas/scarpet/options/namespace.cpp \
-  obj/src/tunitas/scarpet/options/indicator.cpp \
-  obj/src/tunitas/scarpet/options/indicator.constants.cpp \
-  obj/src/tunitas/scarpet/options/Arguments.cpp \
-  obj/src/tunitas/scarpet/options/Parser.cpp \
-  obj/src/tunitas/scarpet/options/parser.Result.cpp \
-  obj/src/tunitas/scarpet/options/Specification.cpp \
   \
   obj/src/tunitas/scarpet/url/namespace.cpp \
   obj/src/tunitas/scarpet/url/Parser.cpp \

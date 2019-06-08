@@ -1,0 +1,8 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+set -e
+rm -f ${0%.test}.private ${0%.test}.public
+${exe?} --strip-armor --private=${0%.test}.private --public=${0%.test}.public
+sed -e 's/^/private> /' ${0%.test}.private
+echo
+sed -e 's/^/public> /' ${0%.test}.public

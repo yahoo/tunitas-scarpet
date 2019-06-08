@@ -1,0 +1,31 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#forward tunitas.scarpet.crypto.key.Activated
+#forward tunitas.scarpet.crypto.key.Pair
+namespace tunitas::scarpet::crypto::key {
+  //
+  // Extract the pair from an Activated
+  //
+  // Related: pair(Activated) -> Pair
+  //
+  // Usage:
+  //
+  //   auto k = Activated{...somehow...};
+  //   auto p = pair(k);
+  //
+  inline auto pair(Activated const &) -> Pair;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.crypto.key.Activated
+#import tunitas.scarpet.crypto.key.Pair
+#import tunitas.scarpet.crypto.key.publik
+#import tunitas.scarpet.crypto.key.privat
+namespace tunitas::scarpet::crypto {
+  auto key::pair(Activated const &key) -> Pair {
+    return Pair{privat(key), publik(key)};
+  }
+}
+#endiv

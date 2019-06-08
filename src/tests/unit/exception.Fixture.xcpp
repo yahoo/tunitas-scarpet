@@ -10,6 +10,9 @@ namespace tests::unit::exception { class Fixture; }
 class tests::unit::exception::Fixture : public cppunit::test::Fixture {
 public:
   template<typename EXCEPTION> auto test_Aspect() -> void;
+  auto test_Coding() -> void;
+  auto test_Crypto() -> void;
+  auto test_Options() -> void;
   auto test_Quitting() -> void;
   auto test_Version() -> void;
   static auto suite() -> cppunit::Test *;
@@ -32,6 +35,21 @@ namespace tests::unit::exception {
 }
 #endiv
 #divert <cpp>
+#import tunitas.scarpet.exception.Coding
+auto tests::unit::exception::Fixture::test_Coding() -> void {
+  tunitas::scarpet::exception::Coding subject{"base19"};
+  CPPUNIT_ASSERT(nullptr != subject.what());
+}
+#import tunitas.scarpet.exception.Crypto
+auto tests::unit::exception::Fixture::test_Crypto() -> void {
+  tunitas::scarpet::exception::Crypto subject{"rot13"};
+  CPPUNIT_ASSERT(nullptr != subject.what());
+}
+#import tunitas.scarpet.exception.Options
+auto tests::unit::exception::Fixture::test_Options() -> void {
+  tunitas::scarpet::exception::Options subject{"Encoding"};
+  CPPUNIT_ASSERT(nullptr != subject.what());
+}
 #import tunitas.scarpet.exception.Quitting
 auto tests::unit::exception::Fixture::test_Quitting() -> void {
   tunitas::scarpet::exception::Quitting subject{"a.out"};
@@ -46,13 +64,20 @@ auto tests::unit::exception::Fixture::test_Version() -> void {
 auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series("exception");
-  series << call("Quitting", &Fixture::test_Quitting)
-         << call("Version", &Fixture::test_Version)
+  series  << call("Coding", &Fixture::test_Coding)
+          << call("Crypto", &Fixture::test_Crypto)
+          << call("Options", &Fixture::test_Options)
+          << call("Quitting", &Fixture::test_Quitting)
+          << call("Version", &Fixture::test_Version)
     ;
   {
     Stream asp("Aspect");
     namespace subjecting = ::tunitas::scarpet::exception;
-    asp << call("Version", &Fixture::test_Aspect<subjecting::Version>)
+    asp << call("Coding", &Fixture::test_Aspect<subjecting::Coding>)
+        << call("Crypto", &Fixture::test_Aspect<subjecting::Crypto>)
+        << call("Options", &Fixture::test_Aspect<subjecting::Options>)
+        << call("Quitting", &Fixture::test_Aspect<subjecting::Quitting>)
+        << call("Version", &Fixture::test_Aspect<subjecting::Version>)
       ;
     series << move(asp);
   }

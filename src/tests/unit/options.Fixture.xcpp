@@ -10,6 +10,7 @@ namespace tests::unit::options { class Fixture; }
 class tests::unit::options::Fixture : public cppunit::test::Fixture {
 public:
   auto test_Arguments() -> void;
+  auto test_usage_Encoding() -> void;
   auto test_Parser() -> void;
   auto test_parser_Result() -> void;
   auto test_Specification() -> void;
@@ -20,11 +21,18 @@ protected:
 };
 #endiv
 #divert <cpp>
-#import tunitas.scarpet.options.Arguments
 #import std.empty
+#import tunitas.scarpet.options.Arguments
 auto tests::unit::options::Fixture::test_Arguments() -> void {
   auto subject = ::tunitas::scarpet::options::Arguments{};
   CPPUNIT_ASSERT(std::empty(subject));
+}
+#import tunitas.scarpet.options.Encoding
+auto tests::unit::options::Fixture::test_usage_Encoding() -> void {
+  using Subject = ::tunitas::scarpet::options::Encoding;
+  auto p = Subject::PEM;
+  auto d = Subject::DER_BASE64URL;
+  CPPUNIT_ASSERT(p != d);
 }
 #import tests.unit.options.Fixture.Parser
 auto tests::unit::options::Fixture::test_Parser() -> void {
@@ -45,11 +53,19 @@ auto tests::unit::options::Fixture::test_Specification() -> void {
   CPPUNIT_ASSERT(0 != spc.shortish().size());
   CPPUNIT_ASSERT(0 != spc.longish().size());
 }
+#import tests.unit.options.Encoding
 #import rigging.suite.io
 auto tests::unit::options::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series("options");
+  {
+    Stream use("usage");
+    use << call("Encoding", &Fixture::test_usage_Encoding)
+      ;
+    series << move(use);
+  }
   series << call("Arguments", &Fixture::test_Arguments)
+         << add(Encoding::suite())
          << call("Parser", &Fixture::test_Parser)
          << call("parser::Result", &Fixture::test_parser_Result)
          << call("Specification", &Fixture::test_Specification)

@@ -1,5 +1,5 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
-${exe?} -h
 # the -h option exits 0 (the user meant to do it)
+${exe?} -h
 test 0 == $?

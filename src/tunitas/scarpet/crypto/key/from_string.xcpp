@@ -1,0 +1,118 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#forward tunitas.scarpet.crypto.key.Pair
+#forward tunitas.scarpet.crypto.key.Privat
+#forward tunitas.scarpet.crypto.key.Publik
+#forward tunitas.scarpet.crypto.key.Activated
+#import c.const_stringz
+#import nonstd.span
+#import re.string
+#import std.vector
+namespace tunitas::scarpet::crypto::key {
+  //
+  // Convert a string in "base64" back to something
+  // See the decisions & erudition near to_string(...)
+  //
+  // Usage:
+  //
+  //   auto syntax = std::string{...somehow...};
+  //
+  //   auto p = from_string<Pair>(syntax);
+  //   auto p = from_string<Privat>(syntax);
+  //   auto p = from_string<Publik>(syntax);
+  //   auto p = from_string<Activated>(syntax);
+  //
+  template<typename RESULT> auto from_string(re::string<c::const_stringz>) -> RESULT = delete;
+  template<> inline auto from_string<Pair>(re::string<c::const_stringz>) -> Pair;
+  template<> inline auto from_string<Privat>(re::string<c::const_stringz>) -> Privat;
+  template<> inline auto from_string<Publik>(re::string<c::const_stringz>) -> Publik;
+  template<> inline auto from_string<Activated>(re::string<c::const_stringz>) -> Activated;
+  namespace detail {
+    template<typename MODE> auto from_string(std::string) -> Activated = delete;
+    template<> inline auto from_string<Privat>(std::string) -> Activated;
+    template<> inline auto from_string<Publik>(std::string) -> Activated;
+    inline auto decode(std::string) -> std::vector<unsigned char>;
+    inline auto span(std::string const &) -> nonstd::span<unsigned char const>;
+    inline auto span(std::vector<unsigned char> const &) -> nonstd::span<unsigned char const>;
+  }
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.crypto.key.Pair
+#import tunitas.scarpet.crypto.key.Privat
+#import tunitas.scarpet.crypto.key.Publik
+#import tunitas.scarpet.crypto.key.Activated
+namespace tunitas::scarpet::crypto {
+  template<> auto key::from_string<key::Pair>(re::string<c::const_stringz> syntax) -> Pair {
+    auto pk = detail::from_string<Privat>(syntax);
+    auto priv = privat(pk);
+    auto publ = publik(pk);
+    return Pair{std::move(priv), std::move(publ)};
+  }
+  template<> auto key::from_string<key::Privat>(re::string<c::const_stringz> syntax) -> Privat {
+    return privat(detail::from_string<Privat>(syntax));
+  }
+  template<> auto key::from_string<key::Publik>(re::string<c::const_stringz> syntax) -> Publik {
+    return publik(detail::from_string<Publik>(syntax));
+  }
+  template<> auto key::from_string<key::Activated>(re::string<c::const_stringz> syntax) -> Activated {
+    return detail::from_string<Privat>(syntax);
+  }
+}
+#import std.move
+#import std.isalnum
+#import tunitas.scarpet.exception.Coding
+#import tunitas.scarpet.exception.Crypto
+namespace tunitas::scarpet::crypto::key {
+  auto detail::span(std::string const &s) -> nonstd::span<unsigned char const> {
+    return nonstd::span<unsigned char const>{reinterpret_cast<unsigned char const *>(s.data()), s.size()};
+  }
+  auto detail::span(std::vector<unsigned char> const &v) -> nonstd::span<unsigned char const> {
+    return nonstd::span<unsigned char const>{v.data(), v.size()};
+  }
+  template<> auto detail::from_string<Privat>(std::string syntax) -> Activated {
+    auto decoded = decode(std::move(syntax));
+    Activated key = d2i::PrivateKey(span(decoded));
+    if (nullptr == key) {
+      throw exception::Crypto{"d2i_PrivateKey"};
+    }
+    return std::move(key);
+  }
+  template<> auto detail::from_string<Publik>(std::string syntax) -> Activated {
+    auto decoded = decode(std::move(syntax));
+    Activated key = d2i::PublicKey(span(decoded));
+    if (nullptr == key) {
+      throw exception::Crypto{"d2i_PublicKey"};
+    }
+    return std::move(key);
+  }
+  auto detail::decode(std::string source) -> std::vector<unsigned char> {
+    // This inverts what was done in detail::encode(...)
+    for (auto &c : source) {
+      if (false) {
+      } else if ('-' == c) {
+        c = '+';
+      } else if ('_' == c) {
+        c = '/';
+      } else if (!std::isalnum(c)) {
+        throw exception::Coding{"decode"};
+      }
+    }
+    std::vector<unsigned char> buffer;
+    buffer.resize(source.size()); // [[FIXTHIS]] sloppy ... the true space need is smaller
+    //
+    // https://wiki.openssl.org/index.php/Base64
+    // And we had some character conversions in the encode stage
+    auto resource = span(source);
+    auto actual_size = EVP_DecodeBlock(buffer.data(), resource.data(), resource.size());
+    if (actual_size < 0 || unsigned(actual_size) > resource.size()) {
+      // [[FIXTHIS]] throw the openssl::exception::Library when that exists, recover the openssl code that was the proximal cause
+      throw exception::Coding{"EVP_DecodeBlock"};
+    }
+    buffer.resize(actual_size);
+    return std::move(buffer);
+  }
+}
+#endiv

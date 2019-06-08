@@ -7,5 +7,8 @@
 namespace app::keygen::options::indicator {
   inline auto const PRIVATE_SIDE = Code::CODE_254;
   inline auto const PUBLIC_SIDE = Code::CODE_253;
+  inline auto const STRIP_ARMOR = Code::CODE_252;
+  inline auto const KEEP_ARMOR = Code::CODE_251;
+  inline auto const ENCODING = Code::CODE_250;
 }
 #endiv

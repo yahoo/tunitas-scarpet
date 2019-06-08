@@ -7,6 +7,8 @@ tests_keygen_TESTS = \
   tests/keygen/option.h.test \
   tests/keygen/option.q.test \
   tests/keygen/option.quiet.test \
+  tests/keygen/option.s.test \
+  tests/keygen/option.strip-armor.test \
   tests/keygen/option.usage.test \
   tests/keygen/option.verbose.test \
   tests/keygen/option.version.test \
@@ -18,6 +20,12 @@ tests_keygen_TESTS = \
   tests/keygen/option.y.test \
   \
   tests/keygen/run.01.test \
+  tests/keygen/run.02.test \
+  tests/keygen/run.03.pem-keep.test \
+  tests/keygen/run.04.pem-strip.test \
+  tests/keygen/run.05.der.test \
+  tests/keygen/run.06.der+base64.test \
+  tests/keygen/run.07.der+base64url.test \
   $(end)
 
 tests_keygen_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/keygen/*.test)

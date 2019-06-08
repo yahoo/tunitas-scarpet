@@ -13,6 +13,7 @@ bin_did_keygen_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 bin_did_keygen_MODULES = $(call TF_SOURCEStoMODULES, $(bin_did_keygen_SOURCES))
 bin_did_keygen_SOURCES = \
   obj/src/app/keygen/namespace.cpp \
+  obj/src/app/keygen/defaults.cpp \
   obj/src/app/keygen/main.cpp \
   obj/src/app/keygen/Configuration.cpp \
   obj/src/app/keygen/process.cpp \

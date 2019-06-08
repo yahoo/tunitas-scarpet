@@ -1,0 +1,55 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#forward tunitas.scarpet.crypto.key.Activated
+#forward tunitas.scarpet.crypto.key.Privat
+#forward tunitas.scarpet.crypto.key.Pair
+namespace tunitas::scarpet::crypto::key {
+  //
+  // Access the private key
+  // Of course this is misspelled; in C++, 'private' is a reserved word.  Get over yourself.
+  //
+  // Related: publik(Activated) -> Publik
+  //
+  // Usage:
+  //
+  //   auto k = Activated{...somehow...};
+  //   auto p = privat(k);
+  //
+  inline auto privat(Activated const &) -> Privat;
+  // These are accessors (casts)
+  inline auto privat(Pair const &pair) -> Privat const &;
+  inline auto privat(Pair &pair) -> Privat &;
+  inline auto privat(Pair &&) -> Privat;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.crypto.key.Privat
+#import tunitas.scarpet.crypto.key.Pair
+#import std.move
+namespace tunitas::scarpet::crypto {
+  auto key::privat(Pair const &pair) -> Privat const & { return pair.privat(); }
+  auto key::privat(Pair &pair) -> Privat & { return pair.privat(); }
+  auto key::privat(Pair &&pair) -> Privat { return Privat{std::move(pair.privat())}; }
+}
+#import tunitas.scarpet.crypto.key.Activated
+#import openssl.functions
+#import want.openssl.memory.Buffer
+#import openssl.exception.System // [[FIXTHIS]] use openssl.exception.Library when it is available
+namespace tunitas::scarpet::crypto {
+  auto key::privat(Activated const &k) -> Privat {
+    using namespace openssl;
+    using namespace want::openssl; // [[FIXTHIS]] because there is no namespace cascade in want.openssl
+    unsigned char *private_buffer{nullptr};
+    auto size = i2d_PrivateKey(k.get(), &private_buffer);
+    if (size < 0 || nullptr == private_buffer) {
+      // [[FIXTHIS]] throw openssl::exception::Library{...} using ERROR_get_error() when that is available
+      throw openssl::exception::System{errno, std::system_category(), "i2d_PrivateKey"};
+    }
+    // pesky ... modern Buffer uses std::byte, older openssl uses unsigned char
+    // pesky ... modern Buffer uses std::size_t, older openssl uses signed long
+    return Privat{memory::Buffer{reinterpret_cast<std::byte *>(private_buffer), std::size_t(size)}};
+  }
+}
+#endiv

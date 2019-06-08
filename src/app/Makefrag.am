@@ -11,6 +11,7 @@ lib_libapp_la_SOURCES = \
   obj/src/app/namespace.cpp \
   obj/src/app/Configuration.cpp \
   obj/src/app/options/namespace.cpp \
+  obj/src/app/options/get_encoding.cpp \
   obj/src/app/options/indicator.cpp \
   obj/src/app/options/indicator.constants.cpp \
   obj/src/app/options/Parser.cpp \

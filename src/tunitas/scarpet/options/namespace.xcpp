@@ -2,8 +2,10 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
+#import options // WATCHOUT - tunitas-basics <= 1.8 does not cascade from module-options, so we do it
 #import tunitas.app.options
 namespace tunitas::scarpet::options {
   using namespace app::options; // cascade the namespaces
+  using namespace ::options; // WATCHOUT - ibidem - tunitas-basics <= 1.8 does not cascade from module-options, so we do it
 }
 #endiv

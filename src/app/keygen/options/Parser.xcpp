@@ -48,6 +48,8 @@ namespace app::keygen::options {
 }
 #endiv
 #divert <cpp>
+#import app.options.get_encoding
+#import app.keygen.defaults
 #import app.keygen.exception.Usage
 #import app.keygen.options.indicator.constants
 #import app.keygen.options.Specification
@@ -104,6 +106,18 @@ namespace app::keygen::options {
         case oi::PUBLIC_SIDE:
           cfg.public_side = get_filepath<exception::Bad_Filepath>(cfg, step);
           break;
+        case oi::CHR_e:
+        case oi::ENCODING:
+          cfg.encoding = get_encoding(cfg, step);
+          break;
+        case oi::CHR_a:
+        case oi::KEEP_ARMOR:
+          cfg.strip_armor = false;
+          break;
+        case oi::CHR_s:
+        case oi::STRIP_ARMOR:
+          cfg.strip_armor = true;
+          break;
         case oi::MISSING:
           ::options::error(cfg) << "missing value on " << word_in_error(step) << '\n';
           return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
@@ -134,6 +148,12 @@ namespace app::keygen::options {
         ::options::error(cfg) << "the --private=FILEPATH is not set, but it is required\n";
       }
       return Result{std::error_code{error::Code::OPTIONS}};
+    }
+    if (!cfg.encoding) {
+      verbose(cfg) << "encoding defaults to " << cfg.encoding.value_or(defaults::ENCODING) << '\n';
+    }
+    if (cfg.strip_armor && Encoding::PEM != cfg.encoding.value_or(defaults::ENCODING)) {
+      warning(cfg) << "the --strip-armor option is ignored unless --encoding=pem\n";
     }
     return Result{tunitas::SUCCESS};
   }

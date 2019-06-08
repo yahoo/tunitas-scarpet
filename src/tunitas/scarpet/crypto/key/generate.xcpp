@@ -1,0 +1,46 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#forward tunitas.scarpet.crypto.key.Activated
+#forward tunitas.scarpet.crypto.key.Pair
+#forward tunitas.scarpet.crypto.key.Privat
+#forward tunitas.scarpet.crypto.key.Publik
+namespace tunitas::scarpet::crypto::key {
+  //
+  // Generate a key pair
+  // Generate a (private) key
+  // Of course generating a public key (alone) is impossible.
+  //
+  template<typename TYPE> auto generate() -> TYPE = delete;
+  template<> inline auto generate<Activated>() -> Activated;
+  template<> inline auto generate<Pair>() -> Pair;
+  template<> inline auto generate<Privat>() -> Privat;
+  template<> auto generate<Publik>() -> Publik = delete; // there is no such ... think about it.
+}
+#endiv
+#divert <ipp>
+#import openssl.ec.generate
+#import tunitas.scarpet.crypto.key.Activated
+#import tunitas.scarpet.crypto.key.Pair
+#import tunitas.scarpet.crypto.key.Privat
+#import tunitas.scarpet.crypto.key.Publik
+#import tunitas.scarpet.crypto.key.privat
+#import tunitas.scarpet.crypto.key.publik
+namespace tunitas::scarpet::crypto::key {
+  template<> auto generate<Activated>() -> Activated {
+    Activated k;
+    namespace ec = openssl::ec;
+    k.assign(ec::generate(ec::group::Name::PRIME256V1));
+    return std::move(k);
+  }
+  template<> auto generate<Pair>() -> Pair {
+    auto k = generate<Activated>();
+    return Pair{privat(k), publik(k)};
+  }
+  template<> auto generate<Privat>() -> Privat {
+    auto k = generate<Activated>();
+    return privat(k);
+  }
+}
+#endiv

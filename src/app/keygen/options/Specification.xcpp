@@ -34,7 +34,7 @@ namespace app::keygen::options {
     //          /-------------- enable MISSING processing
     //          |
     //          v
-    : ancestor{":hVwqvdy",
+    : ancestor{":hVwqvdyase",
                {{"usage", oa::NO, oi::USAGE_SUBCOMMAND},
                 {"help", oa::NO, oi::USAGE_SUBCOMMAND},
                 {"version", oa::NO, oi::VERSION_SUBCOMMAND},
@@ -45,9 +45,13 @@ namespace app::keygen::options {
                 {"debug", oa::NO, oi::DEBUG_MODE},
                 {"dry-run", oa::NO, oi::DRY_RUN_MODE},
                 {"dryrun", oa::NO, oi::DRY_RUN_MODE},
+                {"keep-armor", oa::NO, oi::STRIP_ARMOR},
+                {"strip-armor", oa::NO, oi::STRIP_ARMOR},
+                {"encoding", oa::REQUIRED, oi::ENCODING},
+                // there are no short options for these --public and --private options
+                {"private", oa::REQUIRED, oi::PRIVATE_SIDE},
                 {"private-key", oa::REQUIRED, oi::PRIVATE_SIDE},
                 {"private-side", oa::REQUIRED, oi::PRIVATE_SIDE},
-                {"private", oa::REQUIRED, oi::PRIVATE_SIDE},
                 {"public", oa::REQUIRED, oi::PUBLIC_SIDE},
                 {"public-key", oa::REQUIRED, oi::PUBLIC_SIDE},
                 {"public-side", oa::REQUIRED, oi::PUBLIC_SIDE}}}

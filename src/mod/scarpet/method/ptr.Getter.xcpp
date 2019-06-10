@@ -28,8 +28,6 @@ namespace mod::scarpet::method::ptr {
 #import mod.scarpet.method.Prototype
 // These necessary at at least for the lambda into Getter::call(FUNCTION)
 #forward mod.scarpet.server.State
-#forward tunitas.scarpet.did.Method
-#forward tunitas.scarpet.did.Identifier
 #forward tunitas.scarpet.Protocol
 #forward tunitas.scarpet.Club
 #import tunitas.Outcome
@@ -46,9 +44,8 @@ protected:
   struct server {
     using State = mod::scarpet::server::State;
   };
-  struct did {
-    using Method = tunitas::scarpet::did::Method;
-    using Identifier = tunitas::scarpet::did::Identifier;
+  struct dns {
+    using Name = tunitas::scarpet::dns::Name;
   };
   using Protocol = tunitas::scarpet::Protocol;
   using Club = tunitas::scarpet::Club;
@@ -62,13 +59,7 @@ protected:
   //
   template<typename FUNCTION> inline auto call(FUNCTION lookup, Protocol const &, Club const &) -> status::Code;
 private:
-  using Qualified_Name = tunitas::scarpet::dns::Name;
-  auto banner_success(Qualified_Name const &) -> void;
-  auto banner_failure(std::string const &) -> void;
-  auto get_did(std::string const &uri) -> std::tuple<status::Code, std::string>;
-  using Method = tunitas::scarpet::did::Method;
-  using Identifier = tunitas::scarpet::did::Identifier;
-  auto get_dns(std::string const &did) -> std::tuple<status::Code, Method, Identifier>;
+  auto banner_success(dns::Name const &) -> void;
 };
 #endiv
 #divert <tpp>
@@ -78,12 +69,12 @@ private:
 #import mod.scarpet.httpd.module
 #import tunitas.scarpet.resolve.lookup
 template<typename FUNCTION> auto mod::scarpet::method::ptr::Getter::call(FUNCTION lookup, Protocol const &protocol, Club const &club) -> status::Code {
-  auto [url_status, url_identifier] = get_did(req->uri);
+  auto [url_status, url_did_urn] = get_did_urn(req->uri);
   if (HANDLER::OK != url_status) {
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "returning url_status=%d", (int) url_status);
     return url_status;
   }
-  auto [did_status, did_method, did_identifier] = get_dns(url_identifier);
+  auto [did_status, did_method, did_identifier] = get_did_method_identifier(url_did_urn);
   if (HANDLER::OK != did_status) {
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "returning did_status=%d", (int) did_status);
     return did_status;
@@ -95,63 +86,14 @@ template<typename FUNCTION> auto mod::scarpet::method::ptr::Getter::call(FUNCTIO
     banner_success(value(resolved));
     return HANDLER::OK; // not HTTP::OK
   } else {
-    banner_failure(url_identifier);
+    banner_failure(url_did_urn);
     return HTTP::NOT_FOUND;
   }
 }
 #endiv
 #divert <cpp>
-#import apache.httpd.io.keywords
-#import autotools.autoconf.Config.mod.scarpet.CONFIG
-auto mod::scarpet::method::ptr::Getter::banner_failure(std::string const &identifier) -> void {
-  using namespace io::keywords;
-  ap_set_content_type(this->req, "text/html"); // [[FIXTHIS]] as ap::set_content_type(...)
-  rs << html << br
-     << head << autotools::autoconf::Config<CONFIG>::package_name() << _head << br
-     << body << p << "unable to recover the identifier "
-     << identifier
-     << " because "
-     << "of some really good reasons"
-     << _p << _body
-     << _html;
-}
-auto mod::scarpet::method::ptr::Getter::banner_success(Qualified_Name const &qdn) -> void {
+auto mod::scarpet::method::ptr::Getter::banner_success(dns::Name const &qdn) -> void {
   ap_set_content_type(this->req, "text/text"); // [[FIXTHIS]] as ap::set_content_type(...)
   rs << view(qdn);
-}
-#import c.str
-#import std.string
-auto mod::scarpet::method::ptr::Getter::get_did(std::string const &uri) -> std::tuple<status::Code, std::string> {
-  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "uri %s", c::str(uri));
-  auto parsed = uri_parser(uri);
-  if (!ok(parsed)) {
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "unparsable uri %s", c::str(uri));
-    return {HTTP::BAD_REQUEST, {}};
-  }
-  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "prefix: found=%s, configured=%s", c::str(prefix(parsed)), c::str(state->specification.location_prefix.value));
-  if (prefix(parsed) != state->specification.location_prefix.value) {
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "inappropriate routing prefix: found=%s, configured=%s", c::str(prefix(parsed)), c::str(state->specification.location_prefix.value));
-    // How then, did this get routed here?
-    return {HTTP::NOT_FOUND, {}};
-  }
-  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "good identifier %s", c::str(identifier(parsed)));
-  return {HANDLER::OK, identifier(move(parsed))};
-}
-auto mod::scarpet::method::ptr::Getter::get_dns(std::string const &did) -> std::tuple<status::Code, Method, Identifier> {
-  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "did %s", c::str(did));
-  auto parsed = did_parser(did);
-  if (!ok(parsed)) {
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "unparsable did %s", c::str(did));
-    return {HTTP::BAD_REQUEST, {}, {}};
-  }
-  using tunitas::scarpet::did::parser::method;
-  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "did: found=%s, configured=%s", c::str(method(parsed)), c::str(state->specification.did_method_name.value));
-  if (method(parsed) != state->specification.did_method_name.value) {
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "inappropriate did_method: found=%s, configured=%s", c::str(method(parsed)), c::str(state->specification.did_method_name.value));
-    // How then, did this get routed here?
-    return {HTTP::NOT_FOUND, {}, {}};
-  }
-  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "good did %s identifier %s", c::str(method(parsed)), c::str(identifier(parsed)));
-  return {HANDLER::OK, method(move(parsed)), identifier(move(parsed))};
 }
 #endiv

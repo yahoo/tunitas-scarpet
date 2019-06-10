@@ -1,0 +1,86 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace mod::scarpet::router::url::parser {
+  //
+  // An URL (path) parser which returns the tail componentn
+  //
+  // Assumes a valid canonical URL path.
+  // Will handle duplicated non-canonical slashes at the tail part.
+  //
+  // Exceptions:
+  //
+  //   Throws a descendant of exception::aspect::Router
+  //   if there is no slash at all; there is always supposed to be a alash in a path.
+  //   if the root path is given; as there is not tail component to return
+  //
+  // Usage:
+  //
+  //   auto urlpath = std::string{...somehow...}       e.g. std::string{req->uri};
+  //
+  //   auto parse = url::parser::Tail{};
+  //   auto [head, tail] = parse(urlpath)
+  //
+  class Tail;
+}
+#endiv
+#divert <hpp>
+#import std.tuple
+#import std.string
+#import tunitas.Outcome
+struct mod::scarpet::router::url::parser::Tail { 
+  using Result = std::tuple<std::string, std::string>;
+  template<typename RESULT> using Outcome = tunitas::Outcome<RESULT>;
+  auto operator()(std::string const &) -> Result;
+  inline auto operator()(std::nothrow_t, std::string const &) -> Outcome<Result>;
+};
+#endiv
+#divert <ipp>
+#import std.error_code
+#import tunitas.scarpet.error.Code
+#import mod.scarpet.exception.aspect.Router
+namespace mod::scarpet::router::url::parser { 
+  auto Tail::operator()(std::nothrow_t, std::string const &path) -> Outcome<Result> try {
+    return Outcome<Result>(operator()(path));
+  } catch (exception::aspect::Router const &) {
+    return Outcome<Result>{std::error_code{tunitas::scarpet::error::Code::ROUTER}};
+  }
+}
+#endiv
+#divert <cpp>
+#import mod.scarpet.exception.router.Path
+namespace mod::scarpet::router::url::parser { 
+  auto Tail::operator()(std::string const &path) -> Result {
+    if (path.empty()) {
+      throw exception::router::Path{"empty (no slash)", path};
+    } else {
+      auto slash = path.rfind('/');
+      if (false) {
+      } else if (std::string::npos == slash) {
+        throw exception::router::Path{"no levels (no slash)", path};
+      } else if (0u == slash) {
+        throw exception::router::Path{"no levels (only root)", path};
+      } else if (path.size()-1 == slash) {
+        throw exception::router::Path{"no tail (trailing slash)", path};
+      } else {
+        //
+        //    .../cherry/dog///eagle               (a canonicalized URL won't have multiple slashes)
+        //                    ^                     but Mr. Robusto says guard against it anyway.
+        //                    |
+        //                    \----------------- slash
+        //
+        auto prev=slash-1;
+        for (; 0 != prev && '/' == path.at(prev); --prev) {
+          continue;
+        }
+        if (0u == prev) {
+          throw exception::router::Path{"one level (need two)", path};
+        } else {
+          return Result{path.substr(0, 1+prev), path.substr(slash+1)};
+        }
+      }
+    }
+  }
+}
+#endiv

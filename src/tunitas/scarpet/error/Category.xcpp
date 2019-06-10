@@ -45,10 +45,12 @@ namespace tunitas::scarpet::error {
       return "failure";
     case Code::OPTIONS:
       return "options";
+    case Code::ROUTER:
+      return "router";
     case Code::NOT_IMPLEMENTED:
       return "not implemented";
     case Code::INVALID_URN:
-      return "invalid URN syntax";
+      return "invalid URN syntax"; // i.e. not shaped like m/^did:\S+:\S+/ for reasonable characters in \S, espcially no colons
     case Code::INVALID_METHOD:
       return "invalid_DID method syntax";
     case Code::INVALID_IDENTIFIER:

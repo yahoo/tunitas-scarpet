@@ -9,8 +9,9 @@ namespace tests::unit::url { class Fixture; }
 #import cppunit.test.Fixture
 class tests::unit::url::Fixture : public cppunit::test::Fixture {
 public:
-  auto test_Parser_slash() -> void;
-  auto test_Parser_slashprefix() -> void;
+  auto test_case_parser_01() -> void;
+  auto test_usage_Parser_slash() -> void;
+  auto test_usage_Parser_slashprefix() -> void;
   static auto suite() -> cppunit::Test *;
 };
 #endiv
@@ -18,8 +19,18 @@ public:
 #import tunitas.scarpet.url.Parser
 #import format.q
 #import std.clog
-auto tests::unit::url::Fixture::test_Parser_slash() -> void {
-  ::tunitas::scarpet::url::Parser parser("/");
+auto tests::unit::url::Fixture::test_case_parser_01() -> void {
+  using ::tunitas::scarpet::url::Parser;
+  auto const specimen = "/scarpet/daptr/did:example:123456789abcdefghi"s;
+  { auto parser = Parser{"/scarpet"};
+    auto fails = parser(specimen); // because the prefix is not sufficient
+    CPPUNIT_ASSERT(!ok(fails)); }
+  { auto parser = Parser{"/scarpet/daptr"};
+    auto good = parser(specimen); // because the prefix is now is sufficient
+    CPPUNIT_ASSERT(ok(good)); }
+}
+auto tests::unit::url::Fixture::test_usage_Parser_slash() -> void {
+  ::tunitas::scarpet::url::Parser parser{"/"};
   { auto u = parser("");
     CPPUNIT_ASSERT(!ok(u)); }
   { auto u = parser("/");
@@ -29,21 +40,21 @@ auto tests::unit::url::Fixture::test_Parser_slash() -> void {
     if (ok(u)) {
       using format::q;
       std::clog << "prefix=" << q(prefix(u)) << '\n';
-      std::clog << "identifier=" << q(identifier(u)) << '\n';
+      std::clog << "urn=" << q(urn(u)) << '\n';
     }
     CPPUNIT_ASSERT("/" == prefix(u));
-    CPPUNIT_ASSERT("prefix" == identifier(u)); }
+    CPPUNIT_ASSERT("prefix" == urn(u)); }
   { auto u = parser("/2");
     CPPUNIT_ASSERT(ok(u));
     { std::string expected = "/";
       std::string actual = prefix(u);
       CPPUNIT_ASSERT_EQUAL(expected, actual); }
     { std::string expected = "2";
-      std::string actual = identifier(u);
+      std::string actual = urn(u);
       CPPUNIT_ASSERT_EQUAL(expected, actual); } }
 }
-auto tests::unit::url::Fixture::test_Parser_slashprefix() -> void {
-  ::tunitas::scarpet::url::Parser parser("/prefix");
+auto tests::unit::url::Fixture::test_usage_Parser_slashprefix() -> void {
+  ::tunitas::scarpet::url::Parser parser{"/prefix"};
   { auto u = parser("");
     CPPUNIT_ASSERT(!ok(u)); }
   { auto u = parser("/");
@@ -56,7 +67,7 @@ auto tests::unit::url::Fixture::test_Parser_slashprefix() -> void {
     if (ok(u)) {
       using format::q;
       std::clog << "prefix=" << q(prefix(u)) << '\n';
-      std::clog << "identifier=" << q(identifier(u)) << '\n';
+      std::clog << "urn=" << q(urn(u)) << '\n';
     }
     CPPUNIT_ASSERT(!ok(u)); }
   { auto u = parser("/prefix/2");
@@ -65,7 +76,7 @@ auto tests::unit::url::Fixture::test_Parser_slashprefix() -> void {
       std::string actual = prefix(u);
       CPPUNIT_ASSERT_EQUAL(expected, actual); }
     { std::string expected = "2";
-      std::string actual = identifier(u);
+      std::string actual = urn(u);
       CPPUNIT_ASSERT_EQUAL(expected, actual); } }
 }
 #import tests.unit.url.Parser
@@ -75,9 +86,27 @@ auto tests::unit::url::Fixture::test_Parser_slashprefix() -> void {
 auto tests::unit::url::Fixture::suite() -> cppunit::Test * {
   using namespace ::unit::rigging::suite;
   Stream series{"url"};
-  series << call("Parser_slash", &Fixture::test_Parser_slash)
-         << call("Parser_slashprefix", &Fixture::test_Parser_slashprefix)
-         << add(Parser::suite())
+  {
+    Stream cas{"case"};
+    {
+      Stream par{"parser"};
+      par << call("01", &Fixture::test_case_parser_01)
+        ;
+      cas << add(par.release());
+    }
+    series << add(cas.release());
+  } {
+    Stream use{"usage"};
+    {
+      Stream par{"Parser"};
+      par << call("slash", &Fixture::test_usage_Parser_slash)
+          << call("slashprefix", &Fixture::test_usage_Parser_slashprefix)
+        ;
+      use << add(par.release());
+    }
+    series << add(use.release());
+  }
+  series << add(Parser::suite())
     ;
   return series.release();
 }

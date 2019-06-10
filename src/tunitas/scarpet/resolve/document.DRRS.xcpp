@@ -38,7 +38,7 @@ namespace tunitas::scarpet::resolve {
   //  qdn = 4c76ad9b-7d80-46c0-bc2a-76a84bf848ef.gurdon.fd20-1e92-49c7.net.
   //  qdn = 635b700e-233a-496c-aebd-79ca7c6efe9a.will-o-the-wisp.fd20-1e92-49c7.net.
   //
-  template<> auto document<DRRS>(Service &, Method const &, Identifier const &, dns::Name const &) -> Outcome<did::Document<did::DOME>>;
+  template<> auto document<DRRS>(Service &, Method const &unused, Identifier const &, dns::Name const &) -> Outcome<did::Document<did::DOME>>;
 }
 #endiv
 #divert <cpp>
@@ -58,27 +58,41 @@ namespace tunitas::scarpet::resolve {
 #import sys.error.E
 #import std.cerr
 namespace tunitas::scarpet::resolve {
-  template<> auto document<DRRS>(Service &service, Method const &method, Identifier const &identifier, dns::Name const &ddss) -> Outcome<did::Document<did::DOME>> try {
+  template<> auto document<DRRS>(Service &service, Method const &unused_method, Identifier const &identifier, dns::Name const &ddss) -> Outcome<did::Document<did::DOME>> try {
     using Result = Outcome<did::Document<did::DOME>>;
     if (!service.channel) {
       // This function can't do its job.
       throw exception::Configuration{"no resolver channel"};
     }
-    if (!did::is_a_simple_word(method) || !did::is_a_simple_word(identifier)) {
-      // The luser gave us bad data.
+    // If the luser gave us bad did componentry then there is no point in proceeding (it is normal, so return a failure, not an exception)
+    if (!did::is_a_simple_word(unused_method)) {
+      return Result{std::error_code{error::Code::INVALID_METHOD}};
+    }
+    if (!did::is_a_simple_word(identifier)) {
       return Result{std::error_code{error::Code::INVALID_IDENTIFIER}};
     }
     answer::Queries queries;
-    launch(service, queries, method, identifier, ddss);
+    launch(service, queries, identifier, ddss);
     run(*service.channel, 5_count, 300ms);
+#warning #if 1 DEBUG code
 #if 1
-    std::cerr << "response ID " << ok(queries.id.response) << '\n';
-    std::cerr << "response ID " << value(queries.id.response).endpoint << '\n';
-    // throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+    std::cerr << "response ID ok " << ok(queries.id.response) << '\n';
+    std::cerr << "response ID value " << value(queries.id.response).endpoint << '\n';
+    std::cerr << "response CONTEXTS ok " << ok(queries.contexts.response) << '\n';
+    std::cerr << "response CONTEXTS value size " << size(value(queries.contexts.response)) << '\n';
+    std::cerr << "response PUBLICKEYS ok " << ok(queries.publickeys.response) << '\n';
+    std::cerr << "response PUBLICKEYS value size " << size(value(queries.publickeys.response)) << '\n';
+    std::cerr << "response AUTHENTICATIONS ok " << ok(queries.authentications.response) << '\n';
+    std::cerr << "response AUTHENTICATIONS value size " << size(value(queries.authentications.response)) << '\n';
+    std::cerr << "response SERVICES ok " << ok(queries.services.response) << '\n';
+    std::cerr << "response SERVICES value size " << size(value(queries.services.response)) << '\n';
+    std::cerr << "response PROOFS ok " << ok(queries.proofs.response) << '\n';
+    std::cerr << "response PROOFS value size " << size(value(queries.proofs.response)) << '\n';
 #endif
     auto dome = did::Document<did::DOME>{};
     return Result{std::move(dome)};
   } catch (std::system_error const &e) {
+    // This is a surprise and not a normal event.  This is exceptional.
     throw exception::System{e.code(), "document"};
   }
 }

@@ -25,14 +25,15 @@ namespace tunitas::scarpet::resolve {
 #import tunitas.scarpet.did.Document
 namespace tunitas::scarpet::resolve {
   //
-  // The various types of lookups according to their Pointer Resource Record
+  // The various types of document lookups according to their Pointer Resource Record
+  // The DID Method may be unused; it may be used to contextualize a subquery (c.f. FILE, REST, but not DRRS or ZONE)
   //
   // Usage:
   //
-  //                            identifier          did storage service
+  //                              identifier     did document storage service
   //                          <----------------> <--------------------->
   //    quto qdn = dns::Name{"123456789abcdefghi.example.storage.service."};
-  //    auto looked = document<DRRS>(service, qdn);
+  //    auto looked = document<DRRS>(service, identifier, qdn);
   //
   template<Storage> auto document(Service &, Method const &, Identifier const &, dns::Name const &) -> Outcome<did::Document<did::DOME>> = delete;
 }

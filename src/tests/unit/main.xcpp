@@ -10,6 +10,7 @@
 #import tests.unit.exception.Fixture
 #import tests.unit.options.Fixture
 #import tests.unit.resolve.Fixture
+#import tests.unit.router.Fixture
 #import tests.unit.scarpet.Fixture
 #import tests.unit.url.Fixture
 #import tests.unit.want.Fixture
@@ -22,8 +23,9 @@ auto main(int argc, char **argv) -> int {
               tu::error::Fixture::suite(),
               tu::exception::Fixture::suite(),
               tu::options::Fixture::suite(),
-              tu::scarpet::Fixture::suite(),
               tu::resolve::Fixture::suite(),
+              tu::router::Fixture::suite(),
+              tu::scarpet::Fixture::suite(),
               tu::url::Fixture::suite(),
               tu::want::Fixture::suite());
   return remain(argc, argv);

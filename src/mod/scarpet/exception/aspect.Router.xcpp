@@ -1,0 +1,32 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace mod::scarpet::exception::aspect {
+  //
+  // The aspect of a router exception
+  // Descendants only.
+  // This is a  mixin, in the usual style; but it only mixes in the "router aspect" sense.
+  // It does not mix in the "scarpet exception aspect" sense therefore inheritance from three is indicated.
+  //
+  // Usage:
+  //
+  //   class my::Problem : public aspect::Router, public Aspect, public std::invalid_argument {
+  //     struct ancestors { ... };
+  //   public:
+  //     Problem(...);
+  //     auto what() const noexcept -> char const *;
+  //   };
+  //
+  class Router;
+}
+#endiv
+#divert <hpp>
+class mod::scarpet::exception::aspect::Router {
+protected:
+  virtual ~Router() = default;
+public:
+  Router() = default;
+  virtual auto what() const noexcept -> char const * = 0;
+};
+#endiv

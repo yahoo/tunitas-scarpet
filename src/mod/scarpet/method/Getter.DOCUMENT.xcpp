@@ -25,15 +25,49 @@ namespace mod::scarpet::method {
 #import mod.scarpet.method.Prototype
 namespace mod::scarpet::method {
   template<> class Getter<getter::DOCUMENT> : public Prototype {
+    using ancestor = Prototype;
+  public:
+    using ancestor::Prototype;
     auto operator()() -> status::Code;
   };
 }
 #endiv
 #divert <cpp>
-#import nonstd.exception.Unimplemented
+#import tunitas.scarpet.resolve.document
+#import tunitas.scarpet.resolve.lookup
 namespace mod::scarpet::method {
   auto Getter<getter::DOCUMENT>::operator()() -> status::Code {
-    throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+    auto [url_status, url_did_urn] = get_did_urn(req->uri);
+    if (HANDLER::OK != url_status) {
+      ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "returning url_status=%d", (int) url_status);
+      return url_status;
+    }
+    auto parsed = did_parser(url_did_urn);
+    if (!ok(parsed)) {
+      ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "unparsable did %s", c::str(url_did_urn));
+      return HTTP::BAD_REQUEST;
+    }
+    auto [did_status, did_method, did_identifier] = get_did_method_identifier(url_did_urn);
+    if (HANDLER::OK != did_status) {
+      ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "returning did_status=%d", (int) did_status);
+      return did_status;
+    }
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "use this method=%s, did=%s", c::str(did_method), c::str(did_identifier));
+    using namespace tunitas::scarpet::resolve;
+    auto const &protocol = state->specification.resolver_protocol_name.value;
+    auto const &club = state->specification.did_club_name.value;
+    auto looked = lookup<NA>(*state, did_method, did_identifier, protocol, club);
+    if (ok(looked)) {
+      // DDSS = Did Document Storage Service
+      auto const &ddss = value(looked);
+      auto resolved = document<DRRS>(*state, did_method, did_identifier, ddss);
+      if (ok(resolved)) {
+        auto dome = value(std::move(resolved));
+        return HANDLER::OK; // not HTTP::OK
+      }
+    }
+    banner_failure(url_did_urn);
+    return HTTP::NOT_FOUND;
   }
 }
 #endiv

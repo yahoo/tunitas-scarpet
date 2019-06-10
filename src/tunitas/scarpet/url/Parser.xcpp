@@ -31,9 +31,9 @@ namespace tunitas::scarpet::url {
   //   } else if (prefix(parsed) != spec->location_prefix.value) {
   //     return HTTP::INTERNAL_SERVER_SERROR;
   //   } else {
-  //      auto id = identifier(std::move(parsed));
-  //      ...validate the identifier in detail...
-  //      ...use the validated identifier...
+  //      auto id = urn(std::move(parsed));
+  //      ...validate the urn in detail...
+  //      ...use the validated urn...
   //   }
   //
   class Parser;
@@ -49,9 +49,9 @@ public:
 protected:
   // A slash is appended from the constructor's argument
   std::string prefix_slash;
-  inline auto isidentifier_thereon(std::string const &syntax, std::string::size_type start_at) -> bool;
+  inline auto isurn_thereon(std::string const &syntax, std::string::size_type start_at) -> bool;
   // The set of "safe" characters that you can find in a DNS-type name.
-  inline static auto isidentifier(char) -> bool;
+  inline static auto isurn(char) -> bool;
 };
 #endiv
 #divert <ipp>
@@ -67,17 +67,17 @@ namespace tunitas::scarpet {
       prefix_slash += '/';
     }
   }
-  auto url::Parser::isidentifier(char specimen) -> bool {
+  auto url::Parser::isurn(char specimen) -> bool {
     if constexpr (false) {
       return std::isalnum(specimen) || '-' == specimen || '_' == specimen || '.' == specimen || ':' == specimen;
     } else {
       return '/' != specimen;
     }
   }
-  auto url::Parser::isidentifier_thereon(std::string const &syntax, std::string::size_type start_at) -> bool {
+  auto url::Parser::isurn_thereon(std::string const &syntax, std::string::size_type start_at) -> bool {
     auto start = syntax.begin() + start_at;
     auto finish = syntax.end();
-    return std::all_of(start, finish, isidentifier);
+    return std::all_of(start, finish, isurn);
   }
   auto url::Parser::operator()(std::string const &syntax) -> Path {
     //
@@ -106,7 +106,7 @@ namespace tunitas::scarpet {
       throw std::invalid_argument{"no trailing slash"}; // the constructor should have helped here
     }
     std::string::size_type rest_index = prefix_slash.size();
-    if (0 != syntax.find(prefix_slash) || syntax.size() < rest_index+1 || !isidentifier_thereon(syntax, rest_index)) {
+    if (0 != syntax.find(prefix_slash) || syntax.size() < rest_index+1 || !isurn_thereon(syntax, rest_index)) {
       return Path{false, std::string(), std::string()};
     } else {
        auto prefix_length = std::max<decltype(rest_index)>(1, rest_index-1);

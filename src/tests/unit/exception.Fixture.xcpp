@@ -13,6 +13,7 @@ public:
   auto test_Configuration() -> void;
   auto test_Invariant() -> void;
   auto test_Quitting() -> void;
+  auto test_router_Path() -> void;
   auto test_Runtime() -> void;
   auto test_System() -> void;
   auto test_Version() -> void;
@@ -51,6 +52,16 @@ auto tests::unit::exception::Fixture::test_Quitting() -> void {
   tunitas::scarpet::exception::Quitting subject{"a.out"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
+#import mod.scarpet.exception.router.Path
+auto tests::unit::exception::Fixture::test_router_Path() -> void {
+  using Subject = mod::scarpet::exception::router::Path;
+  Subject subject{"bad", "/dev/null"};
+  CPPUNIT_ASSERT(nullptr != subject.what());
+  CPPUNIT_ASSERT_EQUAL("/dev/null"s, subject.path());
+  Subject resubject{subject};
+  CPPUNIT_ASSERT(nullptr != resubject.what());
+  CPPUNIT_ASSERT_EQUAL("/dev/null"s, resubject.path());
+}
 #import tunitas.scarpet.exception.Runtime
 auto tests::unit::exception::Fixture::test_Runtime() -> void {
   tunitas::scarpet::exception::Runtime subject0{};
@@ -86,16 +97,24 @@ auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
          << call("Version", &Fixture::test_Version)
     ;
   {
+    Stream rou{"router"};
+    rou << call("Path", &Fixture::test_router_Path)
+      ;
+    series << add(rou.release());
+  } {
     Stream asp{"Aspect"};
     namespace subjecting = ::tunitas::scarpet::exception;
+    namespace modding = ::mod::scarpet::exception;
+    namespace otherwise = ::mod::scarpet::exception;
     asp << call("Configuration", &Fixture::test_Aspect<subjecting::Configuration>)
         << call("Invariant", &Fixture::test_Aspect<subjecting::Invariant>)
         << call("Quitting", &Fixture::test_Aspect<subjecting::Quitting>)
+        << call("router:Path", &Fixture::test_Aspect<modding::router::Path>)
         << call("Runtime", &Fixture::test_Aspect<subjecting::Runtime>)
         << call("System", &Fixture::test_Aspect<subjecting::System>)
         << call("Version", &Fixture::test_Aspect<subjecting::Version>)
       ;
-    series << move(asp);
+    series << add(asp.release());
   }
   return finalize(series);
 }

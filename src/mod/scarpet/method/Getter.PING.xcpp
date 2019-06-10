@@ -25,6 +25,9 @@ namespace mod::scarpet::method {
 #import mod.scarpet.method.Prototype
 namespace mod::scarpet::method {
   template<> class Getter<getter::PING> : public Prototype {
+    using ancestor = Prototype;
+  public:
+    using ancestor::Prototype;
     auto operator()() -> status::Code;
   };
 }

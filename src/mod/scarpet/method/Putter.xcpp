@@ -10,10 +10,10 @@ namespace mod::scarpet::method {
   // Expectations of URL routing consistency are enforced
   //
   //   case 1
-  //       /{ID}         uri
+  //       /{ID}         req->uri
   //       /             location_prefix.value  i.e. "" followed by "/"
   //   case 2
-  //       /prefix/{ID}  uri
+  //       /prefix/{ID}  req->uri
   //       /prefix/      location_prefix.value  i.e. "" followed by "/"
   //
   // Usage:
@@ -39,7 +39,7 @@ private:
 #divert <cpp>
 #import nonstd.exception.Unimplemented
 auto mod::scarpet::method::Putter::operator()() -> apache::httpd::status::Code {
-  auto parsed = uri_parser(this->req->uri);
+  auto parsed = url_parser(this->req->uri);
   if (!ok(parsed)) {
     return HTTP::BAD_REQUEST;
   }

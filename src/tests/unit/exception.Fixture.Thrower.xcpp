@@ -24,8 +24,10 @@ namespace tests::unit::exception {
   };
 }
 #import tunitas.scarpet.exception.System
+#import mod.scarpet.exception.router.Path
 namespace tests::unit::exception {
   template<> auto Fixture::Thrower<::tunitas::scarpet::exception::System>::operator()() -> void;
+  template<> auto Fixture::Thrower<::mod::scarpet::exception::router::Path>::operator()() -> void;
 }
 #endiv
 #divert <tpp>
@@ -39,6 +41,10 @@ namespace tests::unit::exception {
 #endiv
 #divert <cpp>
 namespace tests::unit::exception {
+  template<> auto Fixture::Thrower<::mod::scarpet::exception::router::Path>::operator()() -> void {
+    Exception subject{"too many notes", "/robots.txt"};
+    throw subject;
+  }
   template<> auto Fixture::Thrower<::tunitas::scarpet::exception::System>::operator()() -> void {
     Exception subject{std::errc::no_such_file_or_directory, "file.conf"};
     throw subject;

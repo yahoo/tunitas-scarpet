@@ -49,6 +49,9 @@ check_bin_unit_SOURCES = \
   obj/src/tests/unit/resolve.Lookup.DA.cpp \
   obj/src/tests/unit/resolve.Lookup.NA.cpp \
   \
+  obj/src/tests/unit/router.Fixture.cpp \
+  obj/src/tests/unit/router.url.parser.Tail.cpp \
+  \
   obj/src/tests/unit/scarpet.Fixture.cpp \
   obj/src/tests/unit/scarpet.Fixture.Configuration.cpp \
   \

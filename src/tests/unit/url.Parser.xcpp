@@ -16,7 +16,7 @@ public:
   auto test_more() -> void;
   auto test_slash2() -> void;
   auto test_slash2_prefix() -> void;
-  auto test_slash2_identifier() -> void;
+  auto test_slash2_urn() -> void;
   auto test_slashprefix_empty() -> void;
   auto test_slashprefix_slash() -> void;
   auto test_slashprefix_perfidy() -> void;
@@ -24,10 +24,10 @@ public:
   auto test_slashprefix_trailing_slash() -> void;
   auto test_slashprefix_two_ok() -> void;
   auto test_slashprefix_two_prefix() -> void;
-  auto test_slashprefix_two_identifier() -> void;
-  auto test_bad_identifier_1_with_slash() -> void;
-  auto test_bad_identifier_2_with_slash() -> void;
-  auto test_bad_identifier_3_not_isidentifier() -> void;
+  auto test_slashprefix_two_urn() -> void;
+  auto test_bad_urn_1_with_slash() -> void;
+  auto test_bad_urn_2_with_slash() -> void;
+  auto test_bad_urn_3_not_isurn() -> void;
   auto test_case_01() -> void;
   auto test_case_02() -> void;
   auto test_case_03() -> void;
@@ -65,11 +65,11 @@ auto tests::unit::url::Parser::test_slash2_prefix() -> void {
   std::string actual = prefix(u);
   CPPUNIT_ASSERT_EQUAL(expected, actual);
 }
-auto tests::unit::url::Parser::test_slash2_identifier() -> void {
+auto tests::unit::url::Parser::test_slash2_urn() -> void {
   Subject parser("/");
   auto u = parser("/2");
   std::string expected = "2";
-  std::string actual = identifier(u);
+  std::string actual = urn(u);
   CPPUNIT_ASSERT_EQUAL(expected, actual);
  }
 auto tests::unit::url::Parser::test_slashprefix_empty() -> void {
@@ -109,71 +109,71 @@ auto tests::unit::url::Parser::test_slashprefix_two_prefix() -> void {
   std::string actual = prefix(u);
   CPPUNIT_ASSERT_EQUAL(expected, actual);
 }
-auto tests::unit::url::Parser::test_slashprefix_two_identifier() -> void {
+auto tests::unit::url::Parser::test_slashprefix_two_urn() -> void {
   Subject parser("/prefix");
   auto u = parser("/prefix/2");
   std::string expected = "2";
-  std::string actual = identifier(u);
+  std::string actual = urn(u);
   CPPUNIT_ASSERT_EQUAL(expected, actual);
 }
-auto tests::unit::url::Parser::test_bad_identifier_1_with_slash() -> void {
+auto tests::unit::url::Parser::test_bad_urn_1_with_slash() -> void {
   Subject parser("/prefix");
-  auto u = parser("/prefix/2/"); // <--- malformed identifier (contains a slash)
+  auto u = parser("/prefix/2/"); // <--- malformed urn (contains a slash)
   CPPUNIT_ASSERT(!ok(u));
 }
-auto tests::unit::url::Parser::test_bad_identifier_2_with_slash() -> void {
+auto tests::unit::url::Parser::test_bad_urn_2_with_slash() -> void {
   Subject parser("/prefix");
-  auto u = parser("/prefix/apple/banana"); // <--- malformed identifier (contains a slash)
+  auto u = parser("/prefix/apple/banana"); // <--- malformed urn (contains a slash)
   CPPUNIT_ASSERT(!ok(u));
 }
-auto tests::unit::url::Parser::test_bad_identifier_3_not_isidentifier() -> void {
+auto tests::unit::url::Parser::test_bad_urn_3_not_isurn() -> void {
   Subject parser("/prefix");
-  { auto u = parser("/prefix/!@#$%^^&*&"); // <----- WELL FORMED identifier (merely:does not contain '/')
+  { auto u = parser("/prefix/!@#$%^^&*&"); // <----- WELL FORMED urn (merely:does not contain '/')
     CPPUNIT_ASSERT(ok(u)); }
-  { auto u = parser("/prefix/%20"); // <------------ WELL FORMED identifier
+  { auto u = parser("/prefix/%20"); // <------------ WELL FORMED urn
     CPPUNIT_ASSERT(ok(u)); }
-  { auto u = parser("/prefix/$(date)"); // <-------- WELL FORMED identifier
+  { auto u = parser("/prefix/$(date)"); // <-------- WELL FORMED urn
     CPPUNIT_ASSERT(ok(u)); }
-  { auto u = parser("/prefix/|date"); // <---------- WELL FORMED identifier
+  { auto u = parser("/prefix/|date"); // <---------- WELL FORMED urn
     CPPUNIT_ASSERT(ok(u)); }
-  { auto u = parser("/prefix/|/home/you"); // <--- malformed identifier (with slashe)
+  { auto u = parser("/prefix/|/home/you"); // <--- malformed urn (with slashe)
     CPPUNIT_ASSERT(!ok(u)); }
 }
 auto tests::unit::url::Parser::test_case_01() -> void {
   Subject parser("/");
   auto parsed = parser("/did:example:123456789abcdefghi");
   CPPUNIT_ASSERT(ok(parsed));
-  CPPUNIT_ASSERT_EQUAL("did:example:123456789abcdefghi"s, identifier(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:example:123456789abcdefghi"s, urn(parsed));
 }
 auto tests::unit::url::Parser::test_case_02() -> void {
   Subject parser("/scarpet");
   auto parsed = parser("/scarpet/did:example:123456789abcdefghi");
   CPPUNIT_ASSERT(ok(parsed));
-  CPPUNIT_ASSERT_EQUAL("did:example:123456789abcdefghi"s, identifier(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:example:123456789abcdefghi"s, urn(parsed));
 }
 auto tests::unit::url::Parser::test_case_03() -> void {
   Subject parser("/scarpet");
   auto parsed = parser("/scarpet/did:example:a0096d98-2919-4a48-9b69-b8e7a8891d40");
   CPPUNIT_ASSERT(ok(parsed));
-  CPPUNIT_ASSERT_EQUAL("did:example:a0096d98-2919-4a48-9b69-b8e7a8891d40"s, identifier(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:example:a0096d98-2919-4a48-9b69-b8e7a8891d40"s, urn(parsed));
 }
 auto tests::unit::url::Parser::test_case_04() -> void {
   Subject parser("/scarpet");
   auto parsed = parser("/scarpet/did:artisanal:d41d8cd98f00b204e9800998ecf8427e");
   CPPUNIT_ASSERT(ok(parsed));
-  CPPUNIT_ASSERT_EQUAL("did:artisanal:d41d8cd98f00b204e9800998ecf8427e"s, identifier(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:artisanal:d41d8cd98f00b204e9800998ecf8427e"s, urn(parsed));
 }
 auto tests::unit::url::Parser::test_case_05() -> void {
   Subject parser("/scarpet");
   auto parsed = parser("/scarpet/did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
   CPPUNIT_ASSERT(ok(parsed));
-  CPPUNIT_ASSERT_EQUAL("did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"s, identifier(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"s, urn(parsed));
 }
 auto tests::unit::url::Parser::test_case_06() -> void {
   Subject parser("/scarpet");
   auto parsed = parser("/scarpet/did:flannel:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
   CPPUNIT_ASSERT(ok(parsed));
-  CPPUNIT_ASSERT_EQUAL("did:flannel:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"s, identifier(parsed));
+  CPPUNIT_ASSERT_EQUAL("did:flannel:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"s, urn(parsed));
 }
 #import unit.rigging.suite.Stream
 #import unit.rigging.suite.add
@@ -186,7 +186,7 @@ auto tests::unit::url::Parser::suite() -> cppunit::Test * {
          << call("more", &Parser::test_more)
          << call("slash2", &Parser::test_slash2)
          << call("slash2_prefix", &Parser::test_slash2_prefix)
-         << call("slash2_identifier", &Parser::test_slash2_identifier)
+         << call("slash2_urn", &Parser::test_slash2_urn)
          << call("slashprefix_empty", &Parser::test_slashprefix_empty)
          << call("slashprefix_slash", &Parser::test_slashprefix_slash)
          << call("slashprefix_perfidy", &Parser::test_slashprefix_perfidy)
@@ -194,10 +194,10 @@ auto tests::unit::url::Parser::suite() -> cppunit::Test * {
          << call("slashprefix_trailing_slash", &Parser::test_slashprefix_trailing_slash)
          << call("slashprefix_two_ok", &Parser::test_slashprefix_two_ok)
          << call("slashprefix_two_prefix", &Parser::test_slashprefix_two_prefix)
-         << call("slashprefix_two_identifier", &Parser::test_slashprefix_two_identifier)
-         << call("bad_identifier_1_with_slash", &Parser::test_bad_identifier_1_with_slash)
-         << call("bad_identifier_2_with_slash", &Parser::test_bad_identifier_2_with_slash)
-         << call("bad_identifier_3_not_identifier", &Parser::test_bad_identifier_3_not_isidentifier)
+         << call("slashprefix_two_urn", &Parser::test_slashprefix_two_urn)
+         << call("bad_urn_1_with_slash", &Parser::test_bad_urn_1_with_slash)
+         << call("bad_urn_2_with_slash", &Parser::test_bad_urn_2_with_slash)
+         << call("bad_urn_3_not_urn", &Parser::test_bad_urn_3_not_isurn)
     ;
   {
     Stream cas{"case"};

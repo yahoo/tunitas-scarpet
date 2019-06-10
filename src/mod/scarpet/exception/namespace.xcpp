@@ -2,9 +2,5 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-#import mod.scarpet.method.Getter.declaration
-#import mod.scarpet.method.Getter.PING
-#import mod.scarpet.method.Getter.DAPTR
-#import mod.scarpet.method.Getter.NAPTR
-#import mod.scarpet.method.Getter.DOCUMENT
+namespace mod::scarpet::exception { }
 #endiv

@@ -31,10 +31,10 @@ namespace tunitas::scarpet::did {
 }
 #endiv
 #divert <cpp>
-#import nonstd.exception.Unimplemented
 namespace tunitas::scarpet::did {
-  auto Document<DOME>::dump(std::ostream &) const -> void {
-    throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+  auto Document<DOME>::dump(std::ostream &outbound) const -> void {
+#warning WRITETHIS auto Document<DOME>::dump(std::ostream &) const -> void
+    outbound << "there is nothing to dump in " << __FUNCTION__ << " at " << __FILE__ << ':' << __LINE__ << '\n';
   }
 }
 #endiv

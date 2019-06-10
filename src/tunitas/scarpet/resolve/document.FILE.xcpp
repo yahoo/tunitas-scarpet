@@ -18,9 +18,9 @@ namespace tunitas::scarpet::resolve {
   //                                                                               |      
   // The regex pattern & replacement is always completely empty -----------------\ |
   //                                                                             | |
-  //            DID Resolver Service+Protocol ------------------\---\            | |
+  // DID Resolver Service+Protocol -----------------------------\---\            | |
   //                                                            |   |            | |
-  // Mumblecore DID Document Storage Flags -----------------\   |   |            | |
+  // DID Document Storage Flags ----------------------------\   |   |            | |
   //                                                        |   |   |            | |
   // /-----------reversed DID-----------------\             |   |   |            | |
   // |           |        |                   |             |   |   |            | |

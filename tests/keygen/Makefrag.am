@@ -31,4 +31,4 @@ tests_keygen_TESTS = \
 tests_keygen_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/keygen/*.test)
 tests_keygen_TESTS_SELFCHECK_EXPECTED = $(tests_keygen_TESTS)
 tests_keygen_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_keygen_TESTS_SELFCHECK_EXPECTED), $(tests_keygen_TESTS_SELFCHECK_ACTUAL))
-$(if $(tests_keygen_TESTS_SELFCHECK_ORPHANS),$(error Orphaned tests: $(tests_keygen_TESTS_SELFCHECK_ORPHANS)))
+$(if $(tests_keygen_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_keygen_TESTS_SELFCHECK_ORPHANS)))

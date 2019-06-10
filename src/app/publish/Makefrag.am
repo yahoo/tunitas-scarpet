@@ -6,13 +6,26 @@
 bin_did_publish = bin/did-publish
 bin_did_publish_LDADD = \
   $(lib_libapp_la) \
-  $(lib_libtunitas_scarpet_module_la) \
+  $(lib_libtunitas_scarpet_la) \
   $(end)
 bin_did_publish_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 bin_did_publish_MODULES = $(call TF_SOURCEStoMODULES, $(bin_did_publish_SOURCES))
 bin_did_publish_SOURCES = \
   obj/src/app/publish/namespace.cpp \
   obj/src/app/publish/main.cpp \
+  obj/src/app/publish/defaults.cpp \
+  obj/src/app/publish/examples.cpp \
+  obj/src/app/publish/Configuration.cpp \
+  obj/src/app/publish/process.cpp \
+  \
+  obj/src/app/publish/exception/namespace.cpp \
+  obj/src/app/publish/exception/Usage.cpp \
+  \
+  obj/src/app/publish/options/namespace.cpp \
+  obj/src/app/publish/options/indicator.constants.cpp \
+  obj/src/app/publish/options/indicator.cpp \
+  obj/src/app/publish/options/Parser.cpp \
+  obj/src/app/publish/options/Specification.cpp \
   $(end)
 
 $(scold_cxxdir)/app/publish/dependencies.mk: Makefile

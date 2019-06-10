@@ -1,0 +1,25 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import app.publish.Configuration
+#import sys.exits.Code
+namespace app::publish {
+  //
+  // Process ... publish the DID Document (DDNS UPDATE)
+  //
+  // Usage:
+  //
+  //   ...oh come on...
+  //
+  auto process(Configuration const &) -> sys::exits::Code;
+}
+#endiv
+#divert <cpp>
+#import nonstd.exception.Unimplemented
+#import sys.exits.constants
+auto app::publish::process(Configuration const &cfg) -> sys::exits::Code {
+  throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+  return sys::exits::OK;
+}
+#endiv

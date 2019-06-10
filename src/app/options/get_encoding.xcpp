@@ -6,6 +6,7 @@
 #import options.longish.Step
 #import tunitas.scarpet.exception
 #import tunitas.scarpet.options.Encoding
+#import tunitas.required.exception.app.Quitting
 namespace app::options {
   //
   // Get the encoding by its keyword
@@ -41,7 +42,7 @@ namespace app::options {
   namespace packaging::get_encoding::function {
     namespace exception = tunitas::scarpet::exception;
     using Step = ::options::longish::Step;
-    inline auto get_encoding(Configuration const &, Step const &) -> Encoding;
+    template<tunitas::required::exception::app::Quitting QUITTING> inline auto get_encoding(Configuration const &, Step const &) -> Encoding;
   }
   using packaging::get_encoding::function::get_encoding;
 }
@@ -50,11 +51,12 @@ namespace app::options {
 #import app.Configuration
 #import options.longish.Step
 #import tunitas.scarpet.exception.aspect.Exiting
-#import tunitas.scarpet.exception.Quitting
 #import tunitas.scarpet.options.Encoding // from_string
 #import sys.exits.constants
 namespace app::options::packaging::get_encoding {
-  auto function::get_encoding(Configuration const &cfg, Step const &step) -> Encoding try {
+  template<tunitas::required::exception::app::Quitting QUITTING> auto function::get_encoding(Configuration const &cfg, Step const &step) -> Encoding try {
+    //
+    // Either we get the Encoding or we don't. QUITTING isn't actually that helpful
     return from_string<Encoding>(required(step));
   } catch (...) {
     error(cfg) << "cannot recover an encoding out of " << /*FIXTHIS format::q*/ required(step) << '\n';
@@ -63,7 +65,8 @@ namespace app::options::packaging::get_encoding {
     } catch (exception::aspect::Exiting const &) {
       throw;
     } catch (...) {
-      throw exception::Quitting(cfg.NAME, sys::exits::CONFIG);
+      // throw exception::Quitting(cfg.NAME, sys::exits::CONFIG);
+      throw QUITTING(cfg.NAME, sys::exits::CONFIG);
     }
   }
 }

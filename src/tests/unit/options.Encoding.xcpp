@@ -52,7 +52,7 @@ auto tests::unit::options::Encoding::test_operator_insert_bad() -> void {
 #import std.istringstream
 auto tests::unit::options::Encoding::test_operator_extract_good() -> void {
   std::istringstream buf{"pem der der+base64 der+base64url 99"};
-  Subject p, d1, d2, d3;
+  Subject p{}, d1{}, d2{}, d3{};
   int i;
   auto &stream = buf >> p >> d1 >> d2 >> d3 >> i;
   CPPUNIT_ASSERT((bool) stream);

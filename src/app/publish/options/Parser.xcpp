@@ -2,9 +2,9 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace app::keygen::options {
+namespace app::publish::options {
   //
-  // The keygen option parser
+  // The publish (publishment, publication) option parser
   //
   // Usage:
   //
@@ -26,9 +26,9 @@ namespace app::keygen::options {
 #divert <hpp>
 #import app.options.Parser
 #import tunitas.Success
-#import app.keygen.Configuration
+#import app.publish.Configuration
 #import tunitas.app.options.Args
-class app::keygen::options::Parser : public app::options::Parser {
+class app::publish::options::Parser : public app::options::Parser {
   using ancestor = app::options::Parser;
 public:
   inline explicit Parser(Specification const &, Configuration &);
@@ -40,7 +40,7 @@ protected:
 };
 #endiv
 #divert <ipp>
-namespace app::keygen::options {
+namespace app::publish::options {
   Parser::Parser(Specification const &spc, Configuration &cfg)
     : ancestor{spc}
     , cfg{cfg}
@@ -48,13 +48,13 @@ namespace app::keygen::options {
 }
 #endiv
 #divert <cpp>
-#import app.options.get_encoding
-#import app.exception.Bad_Encoding
 #import app.exception.Bad_Filepath
-#import app.keygen.defaults
-#import app.keygen.exception.Usage
-#import app.keygen.options.indicator.constants
-#import app.keygen.options.Specification
+#import app.exception.Bad_Domain
+#import app.options.get_domain
+#import app.publish.defaults
+#import app.publish.exception.Usage
+#import app.publish.options.indicator.constants
+#import app.publish.options.Specification
 #import options.longish.Getter
 #import options.longish.Step
 #import std.error_code
@@ -64,7 +64,7 @@ namespace app::keygen::options {
 #import tunitas.scarpet.error.Code
 #import tunitas.scarpet.exception.Version
 #import tunitas.scarpet.error.Code
-namespace app::keygen::options {
+namespace app::publish::options {
   auto Parser::operator()(Args av) -> Result {
     namespace error = tunitas::scarpet::error;
     // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::app::optoins
@@ -101,29 +101,46 @@ namespace app::keygen::options {
         case oi::DRY_RUN_MODE:
           cfg.dry_run_mode = true;
           break;
-        case oi::PRIVATE_SIDE:
-          cfg.private_side = get_filepath<exception::Bad_Filepath>(cfg, step);
+        case oi::CHR_n:
+        case oi::NAME_SERVER:
+          cfg.name_server = get_domain<exception::Bad_Domain>(cfg, step);
+          // don't care what the suffix is ... we will treat it as ZONE later
           break;
-        case oi::PUBLIC_SIDE:
-          cfg.public_side = get_filepath<exception::Bad_Filepath>(cfg, step);
+        case oi::CHR_k:
+        case oi::NAME_SERVER_UPDATE_KEY:
+          cfg.update_key = get_filepath<exception::Bad_Filepath>(cfg, step);
           break;
-        case oi::CHR_e:
-        case oi::ENCODING:
-          cfg.encoding = get_encoding<exception::Bad_Encoding>(cfg, step);
+        case oi::DID_DOCUMENT_GUESS:
+          {
+            auto guess = get_filepath<exception::Bad_Filepath>(cfg, step);
+            auto extension = guess.extension();
+            if (false) {
+            } else if (".json"s == extension) {
+              cfg.did_document_json = std::move(guess);
+            } else if (".zone"s == extension) {
+              cfg.did_document_zone = std::move(guess);
+            } else {
+              notice(cfg) << "neither 'json' nor 'zone' suffix on --document=" << guess << '\n';
+              /* [[FIXME]] ee(cfg) */ ::options::error(cfg) << "could not guess the type of the file from the suffix\n";
+            }
+          }
           break;
-        case oi::CHR_a:
-        case oi::KEEP_ARMOR:
-          cfg.strip_armor = false;
+        case oi::DID_DOCUMENT_JSON:
+          cfg.did_document_json = get_filepath<exception::Bad_Filepath>(cfg, step);
+          // don't care what the suffix is ... we will treat it as JSON later
           break;
-        case oi::CHR_s:
-        case oi::STRIP_ARMOR:
-          cfg.strip_armor = true;
+        case oi::DID_DOCUMENT_ZONE:
+          cfg.did_document_zone = get_filepath<exception::Bad_Filepath>(cfg, step);
+          // don't care what the suffix is ... we will treat it as ZONE later
+          break;
+        case oi::DID_DOMAIN:
+          cfg.did_domain = get_domain<exception::Bad_Domain>(cfg, step);
           break;
         case oi::MISSING:
-          ::options::error(cfg) << "missing value on " << word_in_error(step) << '\n';
+          /* [[FIXTHIS ee(cfg)) */ ::options::error(cfg) << "missing value on " << word_in_error(step) << '\n';
           return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
         case oi::UNKNOWN:
-          ::options::error(cfg) << "invalid option " << word_in_error(step) << '\n';
+          /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "invalid option " << word_in_error(step) << '\n';
           return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
         default:
           // This is a programmer error.
@@ -131,11 +148,11 @@ namespace app::keygen::options {
           // Someone (you) forgot to take care of some eventuality.
           throw std::logic_error{"Specification"};
         }
-      } catch (exception::Bad_Encoding const &e) {
-        /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "invalid encoding keyword " << /* [[FIXTHIS]] format::q(required(step)) */required(step) << " value on " << word_in_error(step) << 'n';
+      } catch (exception::Bad_Domain const &e) {
+        /* [[FIXTHIS ee(cfg)) */ ::options::error(cfg) << "invalid domain " << required(step) << " value on " << word_in_error(step) << '\n';
         return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
       } catch (exception::Bad_Filepath const &e) {
-        /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "invalid file path " << /* [[FIXTHIS]] format::q(required(step)) */ required(step) << " value on " << word_in_error(step) << 'n';
+        /* [[FIXTHIS ee(cfg)) */ ::options::error(cfg) << "invalid file path " << required(step) << " value on " << word_in_error(step) << '\n';
         return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
       }
     }
@@ -144,20 +161,25 @@ namespace app::keygen::options {
       ::options::error(cfg) << "there are extra words after the options\n";
       return Result{std::error_code{error::Code::OPTIONS}};
     }
-    if (!cfg.public_side || !cfg.private_side) {
-      if (!cfg.public_side) {
-        ::options::error(cfg) << "the --public=FILEPATH is not set, but it is required\n";
-      }
-      if (!cfg.private_side) {
-        ::options::error(cfg) << "the --private=FILEPATH is not set, but it is required\n";
-      }
+    if (!cfg.did_document_json && !cfg.did_document_zone) {
+      ::options::error(cfg) << "for --did-document neither a JSON file nor a ZONE file was given\n";
       return Result{std::error_code{error::Code::OPTIONS}};
     }
-    if (!cfg.encoding) {
-      verbose(cfg) << "encoding defaults to " << cfg.encoding.value_or(defaults::ENCODING) << '\n';
+    if (cfg.did_document_json && cfg.did_document_zone) {
+      ::options::error(cfg) << "both a JSON file and a ZONE file cannot be given\n";
+      return Result{std::error_code{error::Code::OPTIONS}};
     }
-    if (cfg.strip_armor && Encoding::PEM != cfg.encoding.value_or(defaults::ENCODING)) {
-      warning(cfg) << "the --strip-armor option is ignored unless --encoding=pem\n";
+    if (!cfg.did_domain) {
+      ::options::error(cfg) << "the domain (Qualified Domain Name) into which to load this DID Document not defined\n";
+      return Result{std::error_code{error::Code::OPTIONS}};
+    }
+    if (!cfg.name_server) {
+      ::options::error(cfg) << "the name server into which to load this DID Document not defined\n";
+      return Result{std::error_code{error::Code::OPTIONS}};
+    }
+    if (!cfg.update_key) {
+      ::options::error(cfg) << "the update key is not defined\n";
+      return Result{std::error_code{error::Code::OPTIONS}};
     }
     return Result{tunitas::SUCCESS};
   }

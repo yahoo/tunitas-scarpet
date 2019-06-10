@@ -2,8 +2,8 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-#import tunitas.scarpet.exception
+#import app.exception
 namespace app::keygen::exception {
-  using namespace tunitas::scarpet::exception; // cascade the namespace
+  using namespace app::exception; // cascade the namespace
 }
 #endiv

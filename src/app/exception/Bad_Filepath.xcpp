@@ -2,15 +2,17 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace app::keygen::exception {
+namespace app::exception {
+  //
+  // Bloffo ... all this does is create a new type, a new descendant of Quitting.
   //
   // Transform the failure of tunitas::app::options::get_filepath<...>(...)
-  // into a well-known exception that keygen can capture and redirect elsewhere.
+  // into a well-known exception that the application { keygen, publish, etc. } can capture and redirect elsewhere.o
   //
   // In order to clear the template requirements for get_filepath<QUITTING>(...)
-  // the exception must be "shaped like" a Tunitas quitting exception; hence the ancestry
+  // the exception must be "shaped like" a Tunitas Quitting exception; hence the ancestry.
   //
-  // The NAME and reason which are often supplied in the constructor are elided here.
+  // The NAME and reason which are often supplied in the constructor are unimportant here.
   // Because we're using the exception to capture and redirect, we don't care what the message might be.
   //
   // Usage:
@@ -21,7 +23,7 @@ namespace app::keygen::exception {
   //     ...
   //     cfg.public_side = get_filepath<exception::Bad_Filepath>(cfg, step);
   //     ...
-  //   } catch (BadFilepath const &) {
+  //   } catch (Bad_Filepath const &) {
   //     ...that was a bad bad file...
   //     return Result{std:error_code{error::Code::OPTIONS}};
   //   }
@@ -32,14 +34,14 @@ namespace app::keygen::exception {
 #divert <hpp>
 #import tunitas.scarpet.exception.Quitting
 #import sys.exits.Code
-class app::keygen::exception::Bad_Filepath : public tunitas::scarpet::exception::Quitting {
+class app::exception::Bad_Filepath : public tunitas::scarpet::exception::Quitting {
   using ancestor = tunitas::scarpet::exception::Quitting;
 public:
   inline explicit Bad_Filepath(std::string const &NAME, sys::exits::Code);
 };
 #endiv
 #divert <ipp>
-app::keygen::exception::Bad_Filepath::Bad_Filepath(std::string const &NAME, sys::exits::Code code)
+app::exception::Bad_Filepath::Bad_Filepath(std::string const &NAME, sys::exits::Code code)
   : ancestor{NAME, code}
 { }
 #endiv

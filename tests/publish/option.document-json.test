@@ -1,5 +1,5 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
-${exe?} --warning -y -k /dev/null -n localhost.localdomain --doc=/dev/null.json --domain=ddss.example.
+${exe?} -y --document-json=/dev/null -k /dev/null -n localhost.localdomain --domain=ddss.example
 # enters warning mode, but we need to dry-run this
 test 0 == $?

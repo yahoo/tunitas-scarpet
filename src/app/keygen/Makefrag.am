@@ -20,7 +20,6 @@ bin_did_keygen_SOURCES = \
   \
   obj/src/app/keygen/exception/namespace.cpp \
   obj/src/app/keygen/exception/Usage.cpp \
-  obj/src/app/keygen/exception/Bad_Filepath.cpp \
   \
   obj/src/app/keygen/options/namespace.cpp \
   obj/src/app/keygen/options/indicator.cpp \

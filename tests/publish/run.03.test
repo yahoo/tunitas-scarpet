@@ -1,0 +1,4 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+set -e
+${exe?} --zone=${0%.test}.zone --ns=localhost

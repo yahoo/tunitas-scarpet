@@ -1,0 +1,76 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import app.cagen.Configuration
+#import sys.exits.Code
+namespace app::cagen {
+  //
+  // Process ... generate that keypair
+  //
+  // Usage:
+  //
+  //   ...oh come on...
+  //
+  auto process(Configuration const &) -> sys::exits::Code;
+}
+#endiv
+#divert <cpp>
+#import app.cagen.defaults
+#import openssl.ec.generate
+#import openssl.error.Code
+#import openssl.evp.PKey
+#import openssl.pem.to_string
+#import openssl.time.literals
+#import openssl.time.now
+#import openssl.x509.Crt
+#import openssl.x509.Req
+#import openssl.x509.serial.generate
+#import openssl.exception.Argument
+#import openssl.functions // NID_basic_constraints, etc.
+#import std.move
+#import std.error_code
+#import sys.exits.constants
+#import want.stream.duo.Files
+#import want.stream.duo.gang
+auto app::cagen::process(Configuration const &cfg) -> sys::exits::Code {
+  using namespace openssl;
+  auto pkey = []() -> evp::PKey {
+                evp::PKey pkey;
+                pkey.assign(ec::generate(ec::group::Name::PRIME256V1));
+                return std::move(pkey);
+              }();
+  auto req = [&pkey, &cfg]() -> x509::Req {
+               x509::Req req;
+               req.set_pubkey(pkey);
+               req.get_subject_name().add_entry_by_txt(cfg.fields); // <----------- Wowza is this slick!
+               req.sign(pkey, EVP_sha256());
+               std::cout << "DEBUG " << pem::to_string(req);
+               return std::move(req);
+             }();
+  auto crt = [&req, &pkey]() -> x509::Crt {
+                x509::Crt crt;
+                crt.set_version(x509::crt::Version{2}); // x509v3
+                crt.set_serialNumber(x509::serial::generate());
+                crt.set_issuer_name(req.get_subject_name());
+                crt.set_subject_name(req.get_subject_name()); // [[FIXTHIS]] validate these fields before signing anything!
+                using namespace openssl::time::literals;
+                auto const now = openssl::time::now();
+                auto const timespan = 2_years; // [[FIXTHIS]] cfg should indicate how short this can be
+                crt.set_notBefore(now);
+                crt.set_notAfter(now + timespan);
+                crt.set_pubkey(req.get_pubkey());
+                crt.add_ext(x509::extension::config(NID_basic_constraints, "critical,CA:TRUE"));
+                // [[FIXTHIS]] A few more extensions here ... SKI, AKI, EU ... and all that.
+                crt.sign(pkey, EVP_sha256());
+                return std::move(crt);
+              }();
+  using namespace want::stream::duo;
+  Files out;
+  out.exceptions(std::ios::badbit|std::ios::failbit);
+  out.open(*cfg.private_side, *cfg.public_side);
+  debug(cfg) << "also writing to " << *cfg.private_side << " and " << *cfg.public_side << '\n';
+  out << gang(pem::to_string(pkey), pem::to_string(crt));
+  return sys::exits::OK;
+}
+#endiv

@@ -67,7 +67,7 @@ namespace app::publish::options {
 namespace app::publish::options {
   auto Parser::operator()(Args av) -> Result {
     namespace error = tunitas::scarpet::error;
-    // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::app::optoins
+    // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::app::options
     using ::options::longish::Getter;
     using ::options::longish::Step;
     Getter get{spc.shortish(), spc.longish(), av};

@@ -53,6 +53,7 @@ module_SOURCE_SET = \
   $(lib_libwant_la_SOURCES) \
   $(end)
 
+include src/app/cagen/Makefrag.am
 include src/app/keygen/Makefrag.am
 include src/app/Makefrag.am
 include src/app/publish/Makefrag.am
@@ -65,6 +66,7 @@ include src/want/Makefrag.am
 
 bin_PROGRAMS = \
   $(bin_did_keygen) \
+  $(bin_did_cagen) \
   $(bin_did_publish) \
   $(bin_did_zonegen) \
   $(end)
@@ -104,9 +106,11 @@ autotools_autoconf_DEPENDENT_GENERATED_SET = \
   $(end)
 $(autotools_autoconf_DEPENDENT_OBJECTS_SET) : $(autotools_autoconf_DEPENDENT_GENERATED_SET)
 
-include tests/unit/Makefrag.am
+# alphabetical is fine
+include tests/cagen/Makefrag.am
 include tests/keygen/Makefrag.am
 include tests/publish/Makefrag.am
+include tests/unit/Makefrag.am
 include tests/zonegen/Makefrag.am
 
 if ENABLE_SERVER_TESTS
@@ -117,9 +121,11 @@ else
 ENABLED_SERVER_TESTS = 
 endif
 
+# ordered by complexity of the tests
 XFAIL_TESTS = \
   $(tests_unit_XFAIL_TESTS) \
   $(tests_keygen_XFAIL_TESTS) \
+  $(tests_cagen_XFAIL_TESTS) \
   $(tests_publish_XFAIL_TESTS) \
   $(tests_zonegen_XFAIL_TESTS) \
   $(ENABLED_SERVER_XFAIL_TESTS)
@@ -127,6 +133,7 @@ XFAIL_TESTS = \
 TESTS = \
   $(tests_unit_TESTS) \
   $(tests_keygen_TESTS) \
+  $(tests_cagen_TESTS) \
   $(tests_publish_TESTS) \
   $(tests_zonegen_TESTS) \
   $(ENABLED_SERVER_TESTS)

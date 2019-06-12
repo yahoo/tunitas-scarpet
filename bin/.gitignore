@@ -1,6 +1,18 @@
 # yes bin should exist
 .libs
+#
 did-keygen
+did-gen-key
+did-generate-key-pair
+#
+did-cagen
+did-gen-ca
+did-generate-trust-anchor
+#
+did-reqgen
+did-gen-req
+did-generate-request
+#
 did-publish
 did-zonegen
 #end

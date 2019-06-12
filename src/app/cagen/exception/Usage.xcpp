@@ -2,9 +2,9 @@
 // Copyright 2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace app::keygen::exception {
+namespace app::cagen::exception {
   //
-  // The keygen message, as an application exception
+  // The cagen message, as an application exception
   //
   // Usage: (sic)
   //
@@ -30,7 +30,7 @@ namespace app::keygen::exception {
 #import tunitas.scarpet.exception.aspect.Exiting
 #import std.exception
 #import std.string
-class app::keygen::exception::Usage
+class app::cagen::exception::Usage
   : public tunitas::scarpet::exception::aspect::Exiting,
     public tunitas::app::exception::Usage,
     public tunitas::app::exception::Messaging,
@@ -53,10 +53,10 @@ private:
 #endiv
 #divert <ipp>
 #import sys.exits.constants
-app::keygen::exception::Usage::Usage(std::string const &NAME)
+app::cagen::exception::Usage::Usage(std::string const &NAME)
   : Usage{NAME, sys::exits::OK}
 { }
-app::keygen::exception::Usage::Usage(std::string const &NAME, sys::exits::Code code)
+app::cagen::exception::Usage::Usage(std::string const &NAME, sys::exits::Code code)
   : ancestors::Usage{code}
   , ancestors::Messaging{format(NAME)}
   , ancestors::Exception{}
@@ -64,25 +64,31 @@ app::keygen::exception::Usage::Usage(std::string const &NAME, sys::exits::Code c
 #endiv
 #divert <cpp>
 #import std.ostringstream
-namespace app::keygen::exception {
+namespace app::cagen::exception {
   auto Usage::format(std::string const &NAME) -> std::string {
     std::ostringstream buf;
-    buf << "usage: " << NAME << " [...options...]\n"
+    buf << "usage: " << NAME << " [...options...] [...fields...]\n"
         << "\n"
-        << "Presentation Options\n"
-        << "--encoding=der+base64url           use DER (Distinguished Encoding Rules) with BASE64URL (urlsafe) encoding\n"
-        << "                                   this is the default\n"
-        << "--encoding=pem                     use PEM (Privacy-Enhanced Mail) Encoding\n"
-        << "--strip-armor, -s                  removes the wrappers -----BEGIN ... KEY----- -----END ... KEY-----\n"
-        << "                                   only applicable for --encoding=pem, this is the default\n"
-        << "--keep-armor, -a                   keeps the wrappers -----BEGIN ... KEY----- -----END ... KEY-----\n"
-        << "                                   only applicable for --encoding=pem\n"
-        << '\n'
+        << "X.509 Field Values\n"
+        << "  C=country                        ISO 3166-1 alpha-2)\n"
+        << "  ST=state                         full name, do not abbreviate\n"
+        << "  L=locality                       full name, do not abbreviate\n"
+        << "  O=organization\n"
+        << "  OU=organizatioal unit            optional\n"
+        << "  CN=common name                   leave blank, this is not helpful in a Certificate Authority\n"
+#if 0
+      // [[FIXTHIS]] not yet ... this is not yet a field in module-openssl <= 0.3.0-0.devel
+        << "  eA=email                         leave blank, this is not helpful in a Certificate Authority\n"
+#endif
+        << "\n"
         << "Generation Options\n"
+        << "--generate-common-name             generate the common name with 128-bits\n"
+        << "         --generate-cn             this option precludes the use of CN=name\n"
+        << "               --gencn\n"
         << "--private-side=FILEPATH            write the private key to the FILEPATH\n"
         << "                                   also --private-key=FILEPATH or --private=FILEPATH\n"
-        << "--public-side=FILEPATH             write the public key (the DID) to the FILEPATH\n"
-        << "                                   also --public-key=FILEPATH or --public=FILEPATH\n"
+        << "--public-side=FILEPATH             write the public certificate to the FILEPATH\n"
+        << "                                   also --public-crt=FILEPATH or --public=FILEPATH\n"
         << '\n'
         << "General Options:\n"
         << "--usage, --help, -h                emit this message, and exit\n"

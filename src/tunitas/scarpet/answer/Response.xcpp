@@ -42,7 +42,7 @@ namespace tunitas::scarpet {
   public:
     using Value = PAYLOAD;
     inline explicit Response(Value &referenced) : referenced{referenced} { }
-#if 0
+#if 0 // REMOVETHIS ... it won't be used
   protected:
     // Making this protected is indeed overkill
     friend auto answer::value<>(Response const &) -> PAYLOAD const &;

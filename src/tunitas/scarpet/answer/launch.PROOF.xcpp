@@ -1,0 +1,73 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.answer.Fields.PROOF
+#import tunitas.scarpet.resolve.Service
+#import tunitas.scarpet.dns.Name
+#import std.string
+namespace tunitas::scarpet::answer {
+  //
+  // Launch the queries.
+  // See the example and documentariat, nearby, at Fields
+  //
+  // Prior to calling this variant of launch(...) you should have done a launch(...)&run(...) on Fields<STANZA>
+  //
+  // Examples: (taken from https://w3c-ccg.github.io/did-spec/)
+  //
+  //                                        <---------- Base------------->
+  //   proof.123456789abcdefghi.marfa PTR 0.proof.123456789abcdefghi.marfa
+  //
+  // The record (at least one of them, sic, The Specification is a bit vague on the fields to be expected)
+  // 
+  //                    <---------- Base ------------>
+  //             type.0.proof.123456789abcdefghi.marfa TXT "LinkedDataSignature2015"
+  //          created.0.proof.123456789abcdefghi.marfa TXT "2016-02-08T16:02:20Z"
+  //          creator.0.proof.123456789abcdefghi.marfa URI 1 1 "did:example:8uQhQMGzWxR8vw5P3UWH1ja#keys-1"
+  //        signature.0.proof.123456789abcdefghi.marfa TXT "QNB13Y7Q9...blah-blah=blah...1tzjn4w==" [[VARIANCE]]
+  //   signatureValue.0.proof.123456789abcdefghi.marfa TXT "QNB13Y7Q9...blah-blah=blah...1tzjn4w=="
+  //
+  // Usage:
+  //
+  //   See document<DRRS>(...) for the overall usage scenario among the Fields,
+  //   Fields<STANZA>, Fields<KEY>, Fields<AUTHENTICATION>, Fields<PROOF>, Fields<PROOF>.
+  //
+  namespace packaging {
+    namespace launching { }
+    namespace launching_PROOF {
+      using namespace launching; // cascade to get reqdn(...)
+      namespace function {
+        using resolve::Service;
+        using Record = packaging::Fields<fields::PROOF>;
+        using Base = dns::Name; // the PTR record target
+        inline auto launch(Service &, Record &, Base const &) -> void;
+      }
+    }
+    // ADL expects to find it against packaging::Fields<STANZA>; c.f. document<DDRS>(...)
+    using launching_PROOF::function::launch;
+  }
+  // And we expect to find it at namespace answer for explicit naming.
+  using packaging::launch;
+}
+#endiv
+#divert <ipp>
+#import ares.query
+#import ares.dns.class.constants
+#import std.cerr // REMOVETHIS
+#import tunitas.scarpet.answer.launching.reqdn
+namespace tunitas::scarpet::answer::packaging::launching_PROOF {
+  auto function::launch(Service &service, Record &record, Base const &base) -> void {
+    auto invoke = [&service, &base](auto &field) {
+                    namespace dns = scarpet::dns; // REMOVETHIS?
+                    std::cerr << "DEBUG query type=" << (int) field.type() << " for " << reqdn(field.name(), base) << '\n'; // REMOVETHIS
+                    qq(*service.channel, reqdn(field.name(), base), dns::IN, field.type(), field.processor);
+                  };
+    invoke(record.transaction);
+    invoke(record.created);
+    invoke(record.creator);
+    invoke(record.description);
+    invoke(record.signature);
+    invoke(record.reference);
+  }
+}
+#endiv

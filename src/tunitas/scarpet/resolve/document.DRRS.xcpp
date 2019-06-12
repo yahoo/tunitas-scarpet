@@ -45,7 +45,7 @@ namespace tunitas::scarpet::resolve {
 #import ares.dns.class.constants
 #import ares.run
 #import nonstd.exception.Unimplemented
-#import tunitas.scarpet.answer.Queries
+#import tunitas.scarpet.answer.Document
 #import tunitas.scarpet.answer.launch
 #import tunitas.scarpet.did.isa
 #import tunitas.scarpet.exception.Configuration
@@ -71,24 +71,103 @@ namespace tunitas::scarpet::resolve {
     if (!did::is_a_simple_word(identifier)) {
       return Result{std::error_code{error::Code::INVALID_IDENTIFIER}};
     }
-    answer::Queries queries;
-    launch(service, queries, identifier, ddss);
+    answer::Document document;
+    launch(service, document.stanzas, identifier, ddss);
     run(*service.channel, 5_count, 300ms);
-#warning #if 1 DEBUG code
-#if 1
-    std::cerr << "response ID ok " << ok(queries.id.response) << '\n';
-    std::cerr << "response ID value " << value(queries.id.response).endpoint << '\n';
-    std::cerr << "response CONTEXTS ok " << ok(queries.contexts.response) << '\n';
-    std::cerr << "response CONTEXTS value size " << size(value(queries.contexts.response)) << '\n';
-    std::cerr << "response PUBLICKEYS ok " << ok(queries.publickeys.response) << '\n';
-    std::cerr << "response PUBLICKEYS value size " << size(value(queries.publickeys.response)) << '\n';
-    std::cerr << "response AUTHENTICATIONS ok " << ok(queries.authentications.response) << '\n';
-    std::cerr << "response AUTHENTICATIONS value size " << size(value(queries.authentications.response)) << '\n';
-    std::cerr << "response SERVICES ok " << ok(queries.services.response) << '\n';
-    std::cerr << "response SERVICES value size " << size(value(queries.services.response)) << '\n';
-    std::cerr << "response PROOFS ok " << ok(queries.proofs.response) << '\n';
-    std::cerr << "response PROOFS value size " << size(value(queries.proofs.response)) << '\n';
-#endif
+    constexpr auto DEVELOPMENTAL_DEBUGGING_MODE = true;
+    if constexpr (DEVELOPMENTAL_DEBUGGING_MODE) {
+      std::cerr << "DEBUG response ID ok " << ok(document.stanzas.id.response) << '\n';
+      std::cerr << "DEBUG response ID value " << value(document.stanzas.id.response).endpoint << '\n';
+      std::cerr << "DEBUG response CONTEXTS ok " << ok(document.stanzas.contexts.response) << '\n';
+      std::cerr << "DEBUG response CONTEXTS value size " << size(value(document.stanzas.contexts.response)) << '\n';
+      std::cerr << "DEBUG response KEYS ok " << ok(document.stanzas.keys.response) << '\n';
+      std::cerr << "DEBUG response KEYS value size " << size(value(document.stanzas.keys.response)) << '\n';
+      std::cerr << "DEBUG response AUTHENTICATIONS ok " << ok(document.stanzas.authentications.response) << '\n';
+      std::cerr << "DEBUG response AUTHENTICATIONS value size " << size(value(document.stanzas.authentications.response)) << '\n';
+      std::cerr << "DEBUG response SERVICES ok " << ok(document.stanzas.services.response) << '\n';
+      std::cerr << "DEBUG response SERVICES value size " << size(value(document.stanzas.services.response)) << '\n';
+      std::cerr << "DEBUG response PROOFS ok " << ok(document.stanzas.proofs.response) << '\n';
+      std::cerr << "DEBUG response PROOFS value size " << size(value(document.stanzas.proofs.response)) << '\n';
+    }
+    auto estimated_count_of_records_inbound_back_to_us = 0;
+    if (ok(document.stanzas.keys.response)) {
+      for (auto const &ptr : value(document.stanzas.keys.response)) {
+        document.keys.emplace_back();
+        launch(service, document.keys.back(), ptr.target);
+        ++estimated_count_of_records_inbound_back_to_us;
+      }
+    }
+    if (ok(document.stanzas.authentications.response)) {
+      for (auto const &ptr : value(document.stanzas.authentications.response)) {
+        document.authentications.emplace_back();
+        launch(service, document.authentications.back(), ptr.target);
+        ++estimated_count_of_records_inbound_back_to_us;
+      }
+    }
+    if (ok(document.stanzas.services.response)) {
+      for (auto const &ptr : value(document.stanzas.services.response)) {
+        document.services.emplace_back();
+        launch(service, document.services.back(), ptr.target);
+        ++estimated_count_of_records_inbound_back_to_us;
+      }
+    }
+    if (ok(document.stanzas.proofs.response)) {
+      for (auto const &ptr : value(document.stanzas.proofs.response)) {
+        document.proofs.emplace_back();
+        launch(service, document.proofs.back(), ptr.target);
+        ++estimated_count_of_records_inbound_back_to_us;
+      }
+    }
+    // At least one count [[FIXTHIS]] ares should support scalar multiplication of ares::Count
+    auto const iteration_count = ares::Count{ares::count::Underlying(5_count) * ++estimated_count_of_records_inbound_back_to_us};
+    run(*service.channel, iteration_count, 300ms);
+    if constexpr (DEVELOPMENTAL_DEBUGGING_MODE) {
+        std::ostream &outbound{std::cerr};
+        {
+          auto ith = 0u;
+          for (auto const &record : document.keys) {
+            outbound << "DEBUG key " << ith << " ID ";
+            if (ok(record.id.response)) {
+              outbound << " found " << value(record.id.response).endpoint << '\n';
+            } else { outbound << " FAIL " << error_code(record.id.response).message() << '\n'; }
+            outbound << "DEBUG key " << ith << " TYPE ";
+            if (ok(record.type.response)) {
+              outbound << " found " << value(record.type.response).text << '\n';
+            } else { outbound << " FAIL " << error_code(record.type.response).message() << '\n'; }
+            outbound << "DEBUG key " << ith << " CONTROLLER ";
+            if (ok(record.controller.response)) {
+              outbound << " found " << value(record.controller.response).endpoint << '\n';
+            } else { outbound << " FAIL " << error_code(record.controller.response).message() << '\n'; }
+            outbound << "DEBUG key " << ith << " KEY ";
+            if (ok(record.key.response)) {
+              outbound << " found " << value(record.key.response).text << '\n';
+            } else { outbound << " FAIL " << error_code(record.key.response).message() << '\n'; }
+            ++ith;
+          }
+        }
+        {
+          auto ith = 0u;
+          for (auto const &record : document.authentications) {
+            outbound << "DEBUG authentication " << ith << " ID ";
+            if (ok(record.id.response)) {
+              outbound << " found " << value(record.id.response).endpoint << '\n';
+            } else { outbound << " FAIL " << error_code(record.id.response).message() << '\n'; }
+            outbound << "DEBUG authentication " << ith << " TYPE ";
+            if (ok(record.type.response)) {
+              outbound << " found " << value(record.type.response).text << '\n';
+            } else { outbound << " FAIL " << error_code(record.type.response).message() << '\n'; }
+            outbound << "DEBUG authentication " << ith << " CONTROLLER ";
+            if (ok(record.controller.response)) {
+              outbound << " found " << value(record.controller.response).endpoint << '\n';
+            } else { outbound << " FAIL " << error_code(record.controller.response).message() << '\n'; }
+            outbound << "DEBUG authentication " << ith << " KEY ";
+            if (ok(record.key.response)) {
+              outbound << " found " << value(record.key.response).text << '\n';
+            } else { outbound << " FAIL " << error_code(record.key.response).message() << '\n'; }
+            ++ith;
+          }
+        }
+      }
     auto dome = did::Document<did::DOME>{};
     return Result{std::move(dome)};
   } catch (std::system_error const &e) {

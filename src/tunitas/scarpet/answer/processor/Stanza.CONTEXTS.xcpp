@@ -13,12 +13,12 @@ namespace tunitas::scarpet::answer::processor {
   //   context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/did/v1"
   //   context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/security/v1"
   //
-  template<> class Stanza<CONTEXTS>;
+  template<> class Stanza<stanza::CONTEXTS>;
 }
 #endiv
 #divert <hpp>
 namespace tunitas::scarpet::answer::processor {
-  template<> class Stanza<CONTEXTS> : public Prototype, public ares::function::Query<Response<drrs::Records<dns::URI>>> {
+  template<> class Stanza<stanza::CONTEXTS> : public Prototype, public ares::function::Query<Response<drrs::Records<dns::URI>>> {
     using ancestor = ares::function::Query<Response<drrs::Records<dns::URI>>>;
   public:
     inline explicit Stanza(State &);
@@ -28,12 +28,12 @@ namespace tunitas::scarpet::answer::processor {
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::answer::processor {
-  Stanza<CONTEXTS>::Stanza(State &state) : ancestor{state} { }
+  Stanza<stanza::CONTEXTS>::Stanza(State &state) : ancestor{state} { }
 }
 #endiv
 #divert <cpp>
 namespace tunitas::scarpet::answer::processor {
-  auto Stanza<CONTEXTS>::receive(error::Code<ARES> code, Count timeouts, Buffer buffer) -> void {
+  auto Stanza<stanza::CONTEXTS>::receive(error::Code<ARES> code, Count timeouts, Buffer buffer) -> void {
     using namespace ares;
     if (error::Code<ARES>::SUCCESS != code) {
       this->state.success = std::error_code{code};

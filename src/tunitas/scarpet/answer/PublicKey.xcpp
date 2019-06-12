@@ -1,0 +1,57 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#forward tunitas.scarpet.answer.processor.Stanza.declaration
+namespace tunitas::scarpet::answer::packaging {
+  //
+  // All the queries that comprise a single publickey or authentication top level of a DID Document
+  // Descendants only; the only to possible descendants being Fields<KEY>, Fields<AUTHENTICATION>.
+  // This is the cut & paste common code between publickey and authentication.
+  // the documentariat herein is describedony in terms of publickey, but the authentication is exactly the same.
+  //
+  // Example: (out of https://w3c-ccg.github.io/did-spec/)
+  //
+  //            id.0.publickey.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi#keys-1"
+  //    created.id.0.publickey.123456789abcdefghi.marfa TXT  "2002-10-10T17:00:00Z"
+  //    updated.id.0.publickey.123456789abcdefghi.marfa TXT "2016-10-17T02:41:00Z"
+  //          type.0.publickey.123456789abcdefghi.marfa TXT "RsaVerificationKey2018"
+  //    controller.0.publickey.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
+  //           key.0.publickey.123456789abcdefghi.marfa TXT "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"
+  //
+  // Variances
+  // 1. The "publickey" is a keychain, a dictionary of keys into which the authentication stanza MAY refer.
+  // 2. the specification entails the encoding type and the semantic of the payload together.
+  //
+  //      publicKeyPem.0.publickey.123456789abcdefghi.marfa TXT "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"
+  //      publicKeyBase58.1.publickey.123456789abcdefghi.marfa TXT "H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
+  //      publicKeyHex.2.publickey.123456789abcdefghi.marfa TXT "02b97c30de767f084ce3080168ee293053ba33b235d7116a3263d29f1450936b71"
+  //      ...etc...
+  //
+  // This Queries<NAME> (query set) an implementation detail within launch(...)
+  //
+  // Usage:
+  //
+  //   See Queries<STANZAS> and launch(...)
+  //
+  template<processor::stanza::Name STANZA> class PublicKey;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.Query
+namespace tunitas::scarpet::answer {
+  template<processor::stanza::Name STANZA> class packaging::PublicKey {
+    using Id         = Query<Stanza<STANZA>, processor::PublicKey<processor::publickey::ID>>;
+    using Type       = Query<Stanza<STANZA>, processor::PublicKey<processor::publickey::TYPE>>;
+    using Controller = Query<Stanza<STANZA>, processor::PublicKey<processor::publickey::CONTROLLER>>;
+    using Key        = Query<Stanza<STANZA>, processor::PublicKey<processor::publickey::KEY>>;
+  protected:
+    ~PublicKey() = default;
+  public:
+    Id id;
+    Type type;
+    Controller controller;
+    Key key;
+  };
+}
+#endiv

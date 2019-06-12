@@ -4,21 +4,24 @@
 #divert <fpp>
 namespace tunitas::scarpet::answer::processor {
   //
-  // The queries for the top-level fields of a DID Document
+  // The processors of the queries for the top-level fields of a DID Document
   // Specializations only.
   //
-  enum Name {
-    ID,
-    CONTEXTS, // ............ label 'context' (singular) with zero or more PTR records
-    PUBLICKEYS, // .......... ibidem.
-    AUTHENTICATIONS, // ..... 
-    SERVICES, // ............ 
-    PROOFS, // .............. ibidem.
-  };
+  namespace stanza {
+    enum Name {
+      ID,
+      CONTEXTS, // ............ label 'context' (singular) with zero or more PTR records
+      KEYS, // ................ ibidem.
+      AUTHENTICATIONS, // ..... 
+      SERVICES, // ............ 
+      PROOFS, // .............. ibidem.
+      PUBLICKEYS [[deprecated("avoid, instead use KEYS (plural)")]]= KEYS,
+    };
+  }
   //
   // The Stanza<NAME> implements an ares query as a functor for use in an ares::query(...)
   //
-  // Given: (recall that 'marfa' is a "DID Method Name" from the Mumblecore Lexicon, herein it is merely illustrative)
+  // Given: (recall that 'marfa' is a "DID Method Name" from the Hipster Lexicon, herein it is merely illustrative)
   //
   //    $ORIGIN scarpet.club.
   //    ; See the examples in https://w3c-ccg.github.io/did-spec/
@@ -55,7 +58,7 @@ namespace tunitas::scarpet::answer::processor {
   //      ...bad... did not get a good recovery...
   //   }
   //
-  template<Name> struct Stanza;
+  template<stanza::Name> struct Stanza;
 }
 #import tunitas.scarpet.answer.processor.Prototype // every specialization is-a Prototype
 #endiv

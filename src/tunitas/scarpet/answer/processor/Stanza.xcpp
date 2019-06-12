@@ -2,10 +2,9 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-#import tunitas.scarpet.answer.processor.Stanza.declaration
 #import tunitas.scarpet.answer.processor.Stanza.ID
 #import tunitas.scarpet.answer.processor.Stanza.CONTEXTS
-#import tunitas.scarpet.answer.processor.Stanza.PUBLICKEYS
+#import tunitas.scarpet.answer.processor.Stanza.KEYS
 #import tunitas.scarpet.answer.processor.Stanza.AUTHENTICATIONS
 #import tunitas.scarpet.answer.processor.Stanza.SERVICES
 #import tunitas.scarpet.answer.processor.Stanza.PROOFS

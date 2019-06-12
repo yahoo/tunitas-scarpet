@@ -12,12 +12,12 @@ namespace tunitas::scarpet::answer::processor {
   //
   //   id.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
   //
-  template<> class Stanza<ID>;
+  template<> class Stanza<stanza::ID>;
 }
 #endiv
 #divert <hpp>
 namespace tunitas::scarpet::answer::processor {
-  template<> class Stanza<ID> : public Prototype, public ares::function::Query<Response<drrs::Record<dns::URI>>> {
+  template<> class Stanza<stanza::ID> : public Prototype, public ares::function::Query<Response<drrs::Record<dns::URI>>> {
     using ancestor = ares::function::Query<Response<drrs::Record<dns::URI>>>;
   public:
     inline explicit Stanza(State &);
@@ -27,12 +27,12 @@ namespace tunitas::scarpet::answer::processor {
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::answer::processor {
-  Stanza<ID>::Stanza(State &response) : ancestor{response} { }
+  Stanza<stanza::ID>::Stanza(State &response) : ancestor{response} { }
 }
 #endiv
 #divert <cpp>
 namespace tunitas::scarpet::answer::processor {
-  auto Stanza<ID>::receive(error::Code<ARES> code, Count timeouts, Buffer buffer) -> void {
+  auto Stanza<stanza::ID>::receive(error::Code<ARES> code, Count timeouts, Buffer buffer) -> void {
     using namespace ares;
     if (error::Code<ARES>::SUCCESS != code) {
       this->state.success = std::error_code{code};

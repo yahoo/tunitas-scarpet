@@ -16,7 +16,7 @@ namespace tunitas::scarpet::answer::processor {
   //
   // Usage:
   //
-  //   Yes.
+  //   Yes.  See the descendants.
   //
   class Prototype;
 }

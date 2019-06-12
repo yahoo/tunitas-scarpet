@@ -4,8 +4,30 @@
 #divert <fpp>
 #import tunitas.scarpet.answer.Query.ID
 #import tunitas.scarpet.answer.Query.CONTEXTS
-#import tunitas.scarpet.answer.Query.PUBLICKEYS
+#import tunitas.scarpet.answer.Query.KEYS
 #import tunitas.scarpet.answer.Query.AUTHENTICATIONS
 #import tunitas.scarpet.answer.Query.SERVICES
 #import tunitas.scarpet.answer.Query.PROOFS
+
+#import tunitas.scarpet.answer.Query.KEYS.ID
+#import tunitas.scarpet.answer.Query.KEYS.TYPE
+#import tunitas.scarpet.answer.Query.KEYS.CONTROLLER
+#import tunitas.scarpet.answer.Query.KEYS.KEY
+
+#import tunitas.scarpet.answer.Query.AUTHENTICATIONS.ID
+#import tunitas.scarpet.answer.Query.AUTHENTICATIONS.TYPE
+#import tunitas.scarpet.answer.Query.AUTHENTICATIONS.CONTROLLER
+#import tunitas.scarpet.answer.Query.AUTHENTICATIONS.KEY
+
+#import tunitas.scarpet.answer.Query.SERVICES.ID
+#import tunitas.scarpet.answer.Query.SERVICES.TYPE
+#import tunitas.scarpet.answer.Query.SERVICES.ENDPOINT
+#import tunitas.scarpet.answer.Query.SERVICES.DESCRIPTION
+
+#import tunitas.scarpet.answer.Query.PROOFS.TRANSACTION
+#import tunitas.scarpet.answer.Query.PROOFS.CREATED
+#import tunitas.scarpet.answer.Query.PROOFS.CREATOR
+#import tunitas.scarpet.answer.Query.PROOFS.DESCRIPTION
+#import tunitas.scarpet.answer.Query.PROOFS.SIGNATURE
+#import tunitas.scarpet.answer.Query.PROOFS.REFERENCE
 #endiv

@@ -7,7 +7,7 @@ namespace tunitas::scarpet::answer::processor {
   //
   // The pointer sets (sets of PTR)
   // Descendants only.
-  // Descendants are PUBLICKEYS, AUTHENTICATIONS, SERVICES, PROOFS.
+  // Descendants are KEYS, AUTHENTICATIONS, SERVICES, PROOFS.
   //
   // The stanzas are actually collections of subdocuments.
   // This is easy to do in a document-object-model (JSON, XML, YAML, etc)

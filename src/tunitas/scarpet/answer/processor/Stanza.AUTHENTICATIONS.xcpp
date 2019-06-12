@@ -15,16 +15,16 @@ namespace tunitas::scarpet::answer::processor {
   //   authentication.123456789abcdefghi.marfa PTR 1.authentication.123456789abcdefghi.marfa
   //   authentication.123456789abcdefghi.marfa PTR 2.authentication.123456789abcdefghi.marfa
   //
-  template<> class Stanza<AUTHENTICATIONS>;
+  template<> class Stanza<stanza::AUTHENTICATIONS>;
 }
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.answer.processor.Pointers
 namespace tunitas::scarpet::answer::processor {
-  template<> class Stanza<AUTHENTICATIONS> : public Pointers {
+  template<> class Stanza<stanza::AUTHENTICATIONS> : public Pointers {
     using ancestor = Pointers;
   public:
-    inline explicit Stanza(State &state) : ancestor{state} { }
+    using ancestor::Pointers;
   };
 }
 #endiv

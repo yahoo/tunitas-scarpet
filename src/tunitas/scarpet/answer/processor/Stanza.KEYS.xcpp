@@ -15,16 +15,16 @@ namespace tunitas::scarpet::answer::processor {
   //   publickey.123456789abcdefghi.marfa PTR 1.publickey.123456789abcdefghi.marfa
   //   publickey.123456789abcdefghi.marfa PTR 2.publickey.123456789abcdefghi.marfa
   //
-  template<> class Stanza<PUBLICKEYS>;
+  template<> class Stanza<stanza::KEYS>;
 }
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.answer.processor.Pointers
 namespace tunitas::scarpet::answer::processor {
-  template<> class Stanza<PUBLICKEYS> : public Pointers {
+  template<> class Stanza<stanza::KEYS> : public Pointers {
     using ancestor = Pointers;
   public:
-    inline explicit Stanza(State &state) : ancestor{state} { }
+    using ancestor::Pointers;
   };
 }
 #endiv

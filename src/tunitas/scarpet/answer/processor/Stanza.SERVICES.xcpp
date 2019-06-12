@@ -15,16 +15,16 @@ namespace tunitas::scarpet::answer::processor {
   //   service.123456789abcdefghi.marfa PTR 1.service.123456789abcdefghi.marfa
   //   service.123456789abcdefghi.marfa PTR 2.service.123456789abcdefghi.marfa
   //
-  template<> class Stanza<SERVICES>;
+  template<> class Stanza<stanza::SERVICES>;
 }
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.answer.processor.Pointers
 namespace tunitas::scarpet::answer::processor {
-  template<> class Stanza<SERVICES> : public Pointers {
+  template<> class Stanza<stanza::SERVICES> : public Pointers {
     using ancestor = Pointers;
   public:
-    inline explicit Stanza(State &state) : ancestor{state} { }
+    using ancestor::Pointers;
   };
 }
 #endiv

@@ -1,0 +1,37 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The processors of the queries for the fields in one 'proof' DID stanza
+  // Specializations only.
+  //
+  // Usage:
+  //
+  //   See Queries which stacks up a whole bunch of these.
+  //
+  namespace proof {
+    enum Name {
+      TRANSACTION, // like ID but names a proofe, does not name a DID (a person-device-thingy)
+      TYPE,
+      CREATED,
+      CREATOR,
+      DESCRIPTION,
+      SIGNATURE,
+      REFERENCE,
+    };
+  }
+  //
+  // The Proof<NAME> implements an ares query as a functor for use in an ares::query(...)
+  //
+  // Whereas the examples in The Specification are sketchy and dubious, we go lite on the documentariat here.
+  // (following  https://w3c-ccg.github.io/did-spec/)
+  //
+  template<proof::Name> struct Proof;
+}
+#endiv
+#divert <hpp>
+// All specializations will need these
+#import tunitas.scarpet.answer.processor.Single
+#endiv

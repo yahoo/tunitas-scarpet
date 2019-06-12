@@ -22,8 +22,11 @@ namespace tunitas::scarpet::answer::query {
   // - the PROCESSOR must look for precisely one record and fail if zero or multiple are found.
   // - the indexing into drrs::Records<TYPE> means that drrs::Records<TYPE> must handle plurals but the correct usage is for singletons
   //
-  // The RECORDS is nominally plural, and that is appropriate for CONTEXTS, PUBLICKEYS, AUTHORIZATIONS,, SERVICES, PROOFS.
-  // But for ID, a singleton is used to enforce the condition that there can only be one (top-level) id per DID Document.
+  // The RECORDATION is nominally plural, and that is appropriate for CONTEXTS, PUBLICKEYS, AUTHORIZATIONS,, SERVICES, PROOFS.
+  // But for stanza::ID, a singleton is used to enforce the condition that there can only be one (top-level) id per DID Document.
+  //
+  // Everything else is singular: for the substanzas, e.g. publickey, authentication, service, proof, all(?) of the fields are singletons.
+  // So a singleton is used to enforce the condition that there can only be one (top-level) id per DID Document.
   //
   // Usage:
   //
@@ -32,15 +35,17 @@ namespace tunitas::scarpet::answer::query {
   namespace required {
     template<typename PROCESSOR> concept bool Processor = std::is_base_of<processor::Prototype, PROCESSOR>::value;
   }
-  template<dns::Type DNS, required::Processor PROCESSOR, typename RECORDS = drrs::Records<DNS>> class Prototype;
+  // RECORDATION = drrs::Records<DNS> for Stanzas<NAME>
+  // RECORDATION = drrs::Record<DNS>  for PublicKey<NAME> Authentication<NAME>, Service<NAME>, Proof<NAME>
+  template<dns::Type DNS, required::Processor PROCESSOR, typename RECORDATION> class Prototype;
 }
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.answer.Response
 #import tunitas.scarpet.drrs.Records
 namespace tunitas::scarpet::answer {
-  template<dns::Type DNS, query::required::Processor PROCESSOR, typename RECORDS> struct query::Prototype {
-    using Records = RECORDS;
+  template<dns::Type DNS, query::required::Processor PROCESSOR, typename RECORDATION> struct query::Prototype {
+    using Records = RECORDATION;
     using Response = answer::Response<Records>;
     using Processor = PROCESSOR;
     Records records;

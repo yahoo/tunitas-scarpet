@@ -1,0 +1,45 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.dns.Name
+#import tunitas.scarpet.dns.Label
+#import std.string
+namespace tunitas::scarpet::answer::packaging::launching {
+  //
+  // The reqdn(...) are domain name synthesis functions.
+  // They are implementation details of the launch(...) overloads.
+  //
+  // Future: these may or may not remain but an implementation detail.
+  // At present we don't export it out of this detail namespace.
+  //
+  // It is not expected that ADL will be used to find these functions.
+  // These are found by cascaded namespaces surrounding the launch(...) functions where they are used.
+  //
+  // Policy: we supply no trailing dot herein.
+  //         if the caller wanted one, they could have added it.
+  //
+  // Usage: see the launch(...) function definitions
+  //
+  inline auto reqdn(dns::Label const &, dns::Name const &base) -> std::string;
+  inline auto reqdn(dns::Label const &, did::Identifier const &, dns::Name const &ddss) -> std::string;
+}
+#endiv
+#divert <ipp>
+#import std.ostringstream
+namespace tunitas::scarpet::answer::packaging {
+  auto launching::reqdn(dns::Label const &label, did::Identifier const &identifier, dns::Name const &ddss) -> std::string {
+    std::ostringstream buf;
+    buf << view(label) << '.' << view(identifier) << '.' << view(ddss);
+    return buf.str();
+  }
+  auto launching::reqdn(dns::Label const &label, dns::Name const &base) -> std::string {
+    std::ostringstream buf;
+    // We supply no trailing dot.  If they wanted one, they could have added it.
+    buf << view(label) << '.' << view(base);
+    return buf.str();
+  }
+}
+#endiv

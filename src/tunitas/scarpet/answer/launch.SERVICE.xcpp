@@ -1,0 +1,73 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.answer.Fields.SERVICE
+#import tunitas.scarpet.resolve.Service
+#import tunitas.scarpet.dns.Name
+#import std.string
+namespace tunitas::scarpet::answer {
+  //
+  // Launch the queries.
+  // See the example and documentariat, nearby, at Fields
+  //
+  // Prior to calling this variant of launch(...) you should have done a launch(...)&run(...) on Fields<STANZA>
+  //
+  // Examples: (taken from https://w3c-ccg.github.io/did-spec/)
+  //
+  //                                          <---------- Base -------------->
+  //   service.123456789abcdefghi.marfa PTR 0.service.123456789abcdefghi.marfa
+  //   service.123456789abcdefghi.marfa PTR 1.service.123456789abcdefghi.marfa
+  //   ...blah blah blah...
+  //
+  // The record (at least one of them)
+  //
+  //                     <---------- Base -------------->
+  //                id.0.service.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi#openid"
+  //              type.0.service.123456789abcdefghi.marfa TXT "OpenIdConnectVersion1.0Service"
+  //          endpoint.0.service.123456789abcdefghi.marfa URI 1 1 "https://openid.example.com/" ; [[VARIANCE]]
+  //   serviceEndpoint.0.service.123456789abcdefghi.marfa URI 1 1 "https://openid.example.com/"
+  //
+  // Usage:
+  //
+  //   See document<DRRS>(...) for the overall usage scenario among the Fields,
+  //   Fields<STANZA>, Fields<KEY>, Fields<AUTHENTICATION>, Fields<SERVICE>, Fields<PROOF>.
+  //
+  //
+  namespace packaging {
+    namespace launching { }
+    namespace launching_SERVICE {
+      using namespace launching; // cascade to get reqdn(...)
+      namespace function {
+        using resolve::Service;
+        using Record = packaging::Fields<fields::SERVICE>;
+        using Base = dns::Name; // the PTR record target
+        inline auto launch(Service &, Record &, Base const &) -> void;
+      }
+    }
+    // ADL expects to find it against packaging::Fields<STANZA>; c.f. document<DDRS>(...)
+    using launching_SERVICE::function::launch;
+  }
+  // And we expect to find it at namespace answer for explicit naming.
+  using packaging::launch;
+}
+#endiv
+#divert <ipp>
+#import ares.query
+#import ares.dns.class.constants
+#import std.cerr // REMOVETHIS
+#import tunitas.scarpet.answer.launching.reqdn
+namespace tunitas::scarpet::answer::packaging::launching_SERVICE {
+  auto function::launch(Service &service, Record &record, Base const &base) -> void {
+    auto invoke = [&service, &base](auto &field) {
+                    namespace dns = scarpet::dns; // REMOVETHIS?
+                    std::cerr << "DEBUG query type=" << (int) field.type() << " for " << reqdn(field.name(), base) << '\n'; // REMOVETHIS
+                    qq(*service.channel, reqdn(field.name(), base), dns::IN, field.type(), field.processor);
+                  };
+    invoke(record.id);
+    invoke(record.type);
+    invoke(record.endpoint);
+    invoke(record.description);
+  }
+}
+#endiv

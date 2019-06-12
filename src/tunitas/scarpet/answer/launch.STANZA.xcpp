@@ -1,0 +1,70 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.answer.Fields.STANZA
+#import tunitas.scarpet.resolve.Service
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.dns.Name
+#import std.string
+namespace tunitas::scarpet::answer {
+  //
+  // Launch the queries.
+  // See the example and documentariat, nearby, at Fields
+  //
+  // Note that the DID Method (did::Method) plays no role in the proceedings here.
+  // The use of lookup<NA>(...) or lookup<DA>(...) was previously used look up from DID URN -> { DID Method, DID Identifier, DDSS }
+  //
+  // Usage:
+  //
+  //   auto did_urn = "did:example:123456789abcdefghi"s;
+  //
+  //   <strike>auto method = did::Method{...somehow...};          e.g. example</strike>
+  //   auto identifier = did::Identifier{...somehow...};          e.g. 123456789abcdefghi
+  //   auto ddss = dns::Name{...somehow...};                      e.g. storage.scarpet.tunitas.solutions.
+  //
+  //   Document document
+  //   launch(*service.channel, document.stanzas, method, identifier, ddss);
+  //   run(...)
+  //   ...explore the KEYs, AUTHENTICATIONs, SERVICEs, PROOFs.
+  //
+  namespace packaging {
+    namespace launching { }
+    namespace launching_STANZA {
+      using namespace launching; // cascade to get reqdn(...)
+      namespace function {
+        using resolve::Service;
+        using Record = packaging::Fields<fields::STANZA>;
+        using did::Identifier;
+        using Storage = dns::Name; // the DID Document Storage Service (DDSS) Qualified Domain Name (QDS)
+        inline auto launch(Service &, Record &, Identifier const &, Storage const &) -> void;
+      }
+    }
+    // ADL expects to find it against packaging::Fields<STANZA>; c.f. document<DDRS>(...)
+    using launching_STANZA::function::launch;
+  }
+  // And we expect to find it at namespace answer for explicit naming.
+  using packaging::launch;
+}
+#endiv
+#divert <ipp>
+#import ares.query
+#import std.cerr // REMOVETHIS
+#import ares.dns.class.constants
+#import tunitas.scarpet.answer.launching.reqdn
+namespace tunitas::scarpet::answer::packaging::launching_STANZA {
+  auto function::launch(Service &service, Record &record, Identifier const &identifier, Storage const &ddss) -> void {
+    auto invoke = [&service, &identifier, &ddss](auto &field) {
+                    namespace dns = scarpet::dns; // REMOVETHIS?
+                    std::cerr << "DEBUG query type=" << (int) field.type() << " for " << reqdn(field.name(), identifier, ddss) << '\n'; // REMOVETHIS
+                    qq(*service.channel, reqdn(field.name(), identifier, ddss), dns::IN, field.type(), field.processor);
+                  };
+    invoke(record.id);
+    invoke(record.contexts);
+    invoke(record.keys);
+    invoke(record.authentications);
+    invoke(record.services);
+    invoke(record.proofs);
+  }
+}
+#endiv

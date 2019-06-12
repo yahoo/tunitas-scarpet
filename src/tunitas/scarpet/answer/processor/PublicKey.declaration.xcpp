@@ -1,0 +1,79 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The processors of the queries for the fields in one 'publickey' DID stanza
+  // Specializations only.
+  //
+  // Usage:
+  //
+  //   See Queries which stacks up a whole bunch of these.
+  //
+  namespace publickey {
+    enum Name {
+      ID,
+      TYPE,
+      CONTROLLER,
+      // [[FIXTHIS]] ... the examples in the spec use publicKeyHex, publicKeyPem, publicKeyBase58 and other ad hoc name schemes.
+      KEY, // [[FIXTHIS]] ... this is at variance with the published (recommendation) standard
+    };
+  }
+  //
+  // The PublicKey<NAME> implements an ares query as a functor for use in an ares::query(...)
+  //
+  // Example: (following  https://w3c-ccg.github.io/did-spec/)
+  //
+  //           id.0.publickey.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi#keys-1"
+  //   created.id.0.publickey.123456789abcdefghi.marfa TXT  "2002-10-10T17:00:00Z"
+  //   updated.id.0.publickey.123456789abcdefghi.marfa TXT "2016-10-17T02:41:00Z"
+  //         type.0.publickey.123456789abcdefghi.marfa TXT "RsaVerificationKey2018"
+  //   controller.0.publickey.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
+  //          key.0.publickey.123456789abcdefghi.marfa TXT "pem."    "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"
+  //
+  // Whereas the name form "publicKeySOMETHING" is redundant with the label series higher up
+  // being as "publicKey" appears twice and we already know it is a public key from the first usage,
+  // And of course it is a *public* key, one would never put a *private* key up in DNS now would one?
+  // Also, whereas putting the encoding algorithm name, barely standardized and non-canonical and being
+  // positioned within a a suffix of a label name is dubious as it encapsulates both the semantic of the
+  // "payload sense" and encoding algorithm, which is (wholly?) redundant with the type field.
+  //
+  // Let, provisionally, the name be "key" and the payload be self-describing.
+  //
+  //   Variance: just use 'key' and let the software figure out what the payload is
+  //             MAY be two string literals (even in the packet)
+  //             MUST have a period to delineate the encoding name
+  //
+  //       key.0.publickey.123456789abcdefghi.marfa TXT "pem."    "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"
+  //       key.1.publickey.123456789abcdefghi.marfa TXT "base58." "H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
+  //       key.2.publickey.123456789abcdefghi.marfa TXT "hex."    "02b97c30de767f084ce3080168ee293053ba33b235d7116a3263d29f1450936b71"
+  //
+  //   At variance with the published standard is the use of computed names from an unbounded lexicon
+  //   Avoid (avoid fishing around with computed field names, any of which could reasonably be there)
+  //
+  //        publicKeyPem.0.publickey.123456789abcdefghi.marfa TXT "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"
+  //     publicKeyBase58.0.publickey.123456789abcdefghi.marfa TXT "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"
+  //        publicKeyHex.0.publickey.123456789abcdefghi.marfa TXT "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"
+  //
+  //   Alternate (nominate algorithms with a dictionary of allowed, specified, supported schemes)
+  //   e.g.
+  //
+  //          pem.key.0.publickey.123456789abcdefghi.marfa TXT "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"
+  //       base16.key.0.publickey.123456789abcdefghi.marfa TXT "...something...something...something...dark-side...";
+  //       base32.key.0.publickey.123456789abcdefghi.marfa TXT "...somehow...";
+  //       base58.key.0.publickey.123456789abcdefghi.marfa TXT "...somehow...";
+  //       base64.key.0.publickey.123456789abcdefghi.marfa TXT "...somehow...";
+  //       base85.key.0.publickey.123456789abcdefghi.marfa TXT "...somehow...";
+  //     whatever.key.0.publickey.123456789abcdefghi.marfa TXT "...somehow...";
+  //          new.key.0.publickey.123456789abcdefghi.marfa TXT "...somehow...";
+  //      fangled.key.0.publickey.123456789abcdefghi.marfa TXT "...somehow...";
+  //        thing.key.0.publickey.123456789abcdefghi.marfa TXT "...somehow...";
+  //
+  template<publickey::Name> struct PublicKey;
+}
+#endiv
+#divert <hpp>
+// All specializations will need these
+#import tunitas.scarpet.answer.processor.Single
+#endiv

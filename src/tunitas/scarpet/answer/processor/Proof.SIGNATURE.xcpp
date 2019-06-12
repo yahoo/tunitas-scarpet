@@ -1,0 +1,26 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.processor.Proof.declaration
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The SIGNATURE field of a service stanza-field
+  // There can only be one of these in a substanza.
+  //
+  // Example: (see Proof.declaration.hpp, and 'marfa' being an illustrative DID Method)
+  //
+  //   ... you get the idea ... but these aren't documented yet.
+  //
+  template<> class Proof<proof::SIGNATURE>;
+}
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::answer::processor {
+  template<> class Proof<proof::SIGNATURE> : public Single<dns::TXT> {
+    using ancestor = Single<dns::TXT>;
+  public:
+    using ancestor::Single;
+  };
+}
+#endiv

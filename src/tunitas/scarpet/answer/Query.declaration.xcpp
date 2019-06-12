@@ -2,15 +2,22 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
+#import tunitas.scarpet.answer.processor
 namespace tunitas::scarpet::answer {
   //
   // The Queries.
   // Specializations only.
   //
+  // The template parameters serve only to provide unique computed names.
+  // The computed names follow the ragged structure of the DID document itself.
+  //
   // Usage:
   //
   //   See Queries which stacks up a whole bunch of these.
   //
-  template<typename...> struct Query;
+  namespace packaging {
+    using namespace processor;
+    template<typename...> struct Query;
+  }
 }
 #endiv

@@ -1,0 +1,32 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.processor.Single.declaration
+namespace tunitas::scarpet::answer::processor {
+  template<> class Single<dns::TXT>;
+}
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::answer::processor {
+  template<> class Single<dns::TXT> : public single::Prototype, public ares::function::Query<Response<drrs::Record<dns::TXT>>> {
+    using ancestor = ares::function::Query<Response<drrs::Record<dns::TXT>>>;
+  protected:
+    ~Single() = default;
+  public:
+    inline explicit Single(State &);
+    inline auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void final;
+  };
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::answer::processor {
+  Single<dns::TXT>::Single(State &response) : ancestor{response} { }
+  auto Single<dns::TXT>::receive(error::Code<ARES> code, Count timeouts, Buffer buffer) -> void {
+    auto const assignment = [](drrs::Record<dns::TXT> &lhs, ares::managed::list::Entry<ares::TXT> const &rhs) {
+                              lhs.text = rhs.txt();
+                            };
+    reception<ares::TXT>(this->state, code, timeouts, buffer, assignment);
+  }
+}
+#endiv

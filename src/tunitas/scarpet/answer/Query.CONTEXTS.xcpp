@@ -4,15 +4,15 @@
 #divert <fpp>
 #import tunitas.scarpet.answer.Query.declaration
 #import tunitas.scarpet.answer.processor.Stanza.CONTEXTS
-namespace tunitas::scarpet::answer {
-  template<> struct Query<processor::Stanza<processor::CONTEXTS>>;
+namespace tunitas::scarpet::answer::packaging {
+  template<> struct Query<processor::Stanza<processor::stanza::CONTEXTS>>;
 }
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.answer.query.Prototype
 #import tunitas.scarpet.drrs.Record.URI
-namespace tunitas::scarpet::answer {
-  template<> struct Query<processor::Stanza<processor::CONTEXTS>> : public query::Prototype<dns::URI, processor::Stanza<processor::CONTEXTS>> {
+namespace tunitas::scarpet::answer::packaging {
+  template<> struct Query<processor::Stanza<processor::stanza::CONTEXTS>> : public query::Prototype<dns::URI, processor::Stanza<processor::stanza::CONTEXTS>, drrs::Records<dns::URI>> {
     inline auto name() const -> dns::Label { return "context"; }
   };
 }

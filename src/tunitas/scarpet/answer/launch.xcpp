@@ -2,78 +2,9 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <hpp>
-#import tunitas.scarpet.answer.Queries
-#import tunitas.scarpet.resolve.Service
-#import tunitas.scarpet.did.Identifier
-#import tunitas.scarpet.dns.Name
-#import std.string
-namespace tunitas::scarpet::answer {
-  //
-  // Launch the queries.
-  // See the example and documentariat, nearby, at Queries
-  //
-  // Note that the DID Method (did::Method) plays no role in the proceedings here.
-  // The use of lookup<NA>(...) or lookup<DA>(...) was previously used look up from DID URN -> { DID Method, DID Identifier, DDSS }
-  //
-  // Usage:
-  //
-  //   auto did_urn = "did:example:123456789abcdefghi"s;
-  //
-  //   <strike>auto method = did::Method{...somehow...};          e.g. example</strike>
-  //   auto identifier = did::Identifier{...somehow...};          e.g. 123456789abcdefghi
-  //   auto ddss = dns::Name{...somehow...};                      e.g. storage.scarpet.tunitas.solutions.
-  //
-  //   Queries queries;
-  //   launch(*service.channel, queries, method, identifier, ddss);
-  //
-  namespace packaging::launching::function {
-    using resolve::Service;
-    using did::Identifier;
-    using Storage = dns::Name; // the DID Document Storage Service (DDSS) Qualified Domain Name (QDS)
-    inline auto launch(Service &, Queries &, Identifier const &, Storage const &) -> void;
-    // This may or may not be an implementation detail.
-    // At present we don't export it out of this detail namespace.
-    inline auto reqdn(dns::Label const &, Identifier const &, Storage const &) -> std::string;
-  }
-  using packaging::launching::function::launch;
-}
-#endiv
-#divert <ipp>
-#import ares.query
-#import std.cerr
-#import std.ostringstream
-#import ares.dns.class.constants
-namespace tunitas::scarpet::answer::packaging::launching {
-  auto function::launch(Service &service, Queries &queries, Identifier const &identifier, Storage const &ddss) -> void {
-#warning #if 1 this is the better way
-#if 1
-    auto invoke = [&service, &identifier, &ddss](auto &field) {
-                    namespace dns = scarpet::dns;
-                    std::cerr << "DEBUG query for " << reqdn(field.name(), identifier, ddss) << '\n';
-                    qq(*service.channel, reqdn(field.name(), identifier, ddss), dns::IN, field.type(), field.processor);
-                  };
-    invoke(queries.id);
-    invoke(queries.contexts);
-    invoke(queries.publickeys);
-    invoke(queries.authentications);
-    invoke(queries.services);
-    invoke(queries.proofs);
-#else
-    namespace dns = scarpet::dns;
-    qq(*service.channel, reqdn(queries.id.name(), identifier, ddss), dns::IN, queries.id.type(), queries.id.processor);
-    qq(*service.channel, reqdn(queries.contexts.name(), identifier, ddss), dns::IN, queries.contexts.type(), queries.contexts.processor);
-    qq(*service.channel, reqdn(queries.publickeys.name(), identifier, ddss), dns::IN, queries.publickeys.type(), queries.publickeys.processor);
-    qq(*service.channel, reqdn(queries.authentications.name(), identifier, ddss), dns::IN, queries.authentications.type(), queries.authentications.processor);
-    qq(*service.channel, reqdn(queries.services.name(), identifier, ddss), dns::IN, queries.services.type(), queries.services.processor);
-    qq(*service.channel, reqdn(queries.proofs.name(), identifier, ddss), dns::IN, queries.proofs.type(), queries.proofs.processor);
-#endif
-  }
-  auto function::reqdn(dns::Label const &label, Identifier const &identifier, Storage const &ddss) -> std::string {
-    std::ostringstream buf;
-    // The method is unused.  The DDSS is suppoesd to know its own method.
-    // We supply no trailing dot.  If they wanted one, the could have added it.
-    buf << view(label) << '.' << view(identifier) << '.' << view(ddss);
-    return buf.str();
-  }
-}
+#import tunitas.scarpet.answer.launch.STANZA
+#import tunitas.scarpet.answer.launch.KEY
+#import tunitas.scarpet.answer.launch.AUTHENTICATION
+#import tunitas.scarpet.answer.launch.SERVICE
+#import tunitas.scarpet.answer.launch.PROOF
 #endiv

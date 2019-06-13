@@ -5,12 +5,12 @@
 #import tunitas.scarpet.resolve.lookup.declaration
 namespace tunitas::scarpet::resolve {
   //
-  // The DIDPTR lookup is cut & paste of the NAPTR lookup.
-  // Whereas the DIDPTR is "just like" the NAPTR except that it does not have the regexp fieid
-  // Also the DIDPTR is non-standard and unannounced ot the network.
+  // The DAPTR lookup is cut & paste of the NAPTR lookup.
+  // Whereas the DAPTR is "just like" the NAPTR except that it does not have the regexp fieid
+  // Also the DAPTR is non-standard and unannounced ot the network.
   // Missing:
-  //   tunitas::scarpet::reply::Record<DIDPTR> which the local extension of ares::reply::Record<DIDPTR> rhyming with ares::reply::Record<NAPTR>, 
-  //   tunitas::scarpet::reply:;parse<DIDPTR>(...) which rhymes with  ares::reply:;parse<NAPTR>(...).
+  //   tunitas::scarpet::reply::Record<DAPTR> which the local extension of ares::reply::Record<DAPTR> rhyming with ares::reply::Record<NAPTR>, 
+  //   tunitas::scarpet::reply:;parse<DAPTR>(...) which rhymes with  ares::reply:;parse<NAPTR>(...).
   //
   template<> auto lookup<DA>(Service &, Method const &, Identifier const &, Protocol const &, Club const &) -> Outcome<dns::Name>;
 }
@@ -19,12 +19,11 @@ namespace tunitas::scarpet::resolve {
 #import ares.dns.class.constants
 #import ares.dns.type.constants
 #import ares.error.Code
-#import ares.run
 #import ares.query
+#import ares.reply.Record
+#import ares.reply.parse
+#import ares.run
 #import tunitas.scarpet.dns.type.constants
-// #import tunitas.scarpet.reply.Record
-// #import tunitas.scarpet.ares.reply.parse
-#import format.q
 #import nonstd.exception.Unimplemented
 #import std.error_code
 #import std.optional
@@ -41,7 +40,7 @@ namespace tunitas::scarpet::resolve {
                  return buf.str();
                }();
     auto const dnsclass = dns::IN;
-    auto const dnstype = dns::DIDPTR;
+    auto const dnstype = dns::DAPTR;
     auto unimplemented = false;
     std::optional<dns::Name> success;
     std::optional<std::error_code> failure;
@@ -51,12 +50,13 @@ namespace tunitas::scarpet::resolve {
                              failure = std::error_code{code};
                              return;
                            }
+#warning DAPTR is unimplemented, augment
 #if 1
                            unimplemented = true;
                            throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
 #else
-                           reply::Record<DIDPTR> records;
-                           auto parsed = reply::parse<DIDPTR>(std::nothrow, buffer, records);
+                           reply::Record<DAPTR> records;
+                           auto parsed = reply::parse<DAPTR>(std::nothrow, buffer, records);
                            if (!ok(parsed)) {
                              failure = error_code(parsed);
                              return;

@@ -12,7 +12,7 @@ namespace tunitas::scarpet::drrs {
 }
 // Every specialization will need these constants which are at <hpp>
 #include <hpp/tunitas.scarpet.dns.type.constants>
-static_assert(sizeof (tunitas::scarpet::dns::DIDPTR));
+static_assert(sizeof (tunitas::scarpet::dns::DAPTR));
 static_assert(sizeof (tunitas::scarpet::dns::NAPTR));
 static_assert(sizeof (tunitas::scarpet::dns::TXT));
 static_assert(sizeof (tunitas::scarpet::dns::SRV));

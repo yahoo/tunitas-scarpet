@@ -14,12 +14,12 @@ namespace tunitas::scarpet::dns {
       //   <arpa/nameser.h>
       //   and (um) Wikipedia https://en.wikipedia.org/wiki/List_of_DNS_record_types
       //
-      inline constexpr auto DIDPTR = Type(5157);
+      inline constexpr auto DAPTR = Type(5157);
     }
   }
   using namespace type;
 }
-static_assert(sizeof (tunitas::scarpet::dns::DIDPTR));
+static_assert(sizeof (tunitas::scarpet::dns::DAPTR));
 static_assert(sizeof (tunitas::scarpet::dns::NAPTR));
 static_assert(sizeof (tunitas::scarpet::dns::TXT));
 static_assert(sizeof (tunitas::scarpet::dns::SRV));
@@ -28,7 +28,7 @@ static_assert(sizeof (tunitas::scarpet::dns::URI));
 #endiv
 #divert <cpp>
 // Of course, this is test code
-static_assert(sizeof (tunitas::scarpet::dns::DIDPTR));
+static_assert(sizeof (tunitas::scarpet::dns::DAPTR));
 static_assert(sizeof (tunitas::scarpet::dns::NAPTR));
 static_assert(sizeof (tunitas::scarpet::dns::TXT));
 static_assert(sizeof (tunitas::scarpet::dns::SRV));

@@ -5,28 +5,28 @@
 #import tunitas.scarpet.drrs.Record.declaration
 namespace tunitas::scarpet::drrs {
   //
-  // The Distributed Identity Pointer (DIDPTR) Record
+  // The Distributed Identity Pointer (DAPTR) Record
   //
   // DDSS - DID Document Storage Service
   // DDSZ - DID Document Storage Zone
   //  
   // See the examples in https://w3c-ccg.github.io/did-spec/
   // <---------------------------- examples -----------------------------> <----- Mumblecore-Lexicon DDSS --------->
-  // id.123456789abcdefghi.example DIDPTR 1 1 "R" "did+w3id+v1"            marfa.fd20-1e92-49c7.net.
-  // id.123456789abcdefghi.example DIDPTR 1 1 "R" "did+example.org"        fata-morgana.fd20-1e92-49c7.net.
-  // id.123456789abcdefghi.example DIDPTR 1 1 "R" "did+example.org+inline" inline.fata-morgana.fd20-1e92-49c7.net.
-  // id.987654321.contexts.example DIDPTR 1 1 "R" "did+context"            paulding.fd20-1e92-49c7.net.
+  // id.123456789abcdefghi.example DAPTR 1 1 "R" "did+w3id+v1"            marfa.fd20-1e92-49c7.net.
+  // id.123456789abcdefghi.example DAPTR 1 1 "R" "did+example.org"        fata-morgana.fd20-1e92-49c7.net.
+  // id.123456789abcdefghi.example DAPTR 1 1 "R" "did+example.org+inline" inline.fata-morgana.fd20-1e92-49c7.net.
+  // id.987654321.contexts.example DAPTR 1 1 "R" "did+context"            paulding.fd20-1e92-49c7.net.
   //
-  // id.4c76ad9b-7d80-46c0-bc2a-76a84bf848ef.lo-fi    DIDPTR 1 1 "Z" "did+lo-fi"    gurdon.fd20-1e92-49c7.net.
-  // id.635b700e-233a-496c-aebd-79ca7c6efe9a.affogato DIDPTR 1 1 "Z" "did+affogato" will-o-the-wisp.fd20-1e92-49c7.net.
+  // id.4c76ad9b-7d80-46c0-bc2a-76a84bf848ef.lo-fi    DAPTR 1 1 "Z" "did+lo-fi"    gurdon.fd20-1e92-49c7.net.
+  // id.635b700e-233a-496c-aebd-79ca7c6efe9a.affogato DAPTR 1 1 "Z" "did+affogato" will-o-the-wisp.fd20-1e92-49c7.net.
   //
-  template<> struct Record<dns::DIDPTR>;
+  template<> struct Record<dns::DAPTR>;
 }
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.drrs.aspect.Redirect
 namespace tunitas::scarpet::drrs {
-  template<> struct Record<dns::DIDPTR> : public record::Prototype, public aspect::Redirect {
+  template<> struct Record<dns::DAPTR> : public record::Prototype, public aspect::Redirect {
     struct ancestors {
       using Prototype = record::Prototype;
       using Redirect = aspect::Redirect;

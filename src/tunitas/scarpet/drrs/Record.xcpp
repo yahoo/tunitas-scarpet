@@ -3,7 +3,7 @@
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
 #import tunitas.scarpet.drrs.Record.declaration
-#import tunitas.scarpet.drrs.Record.DIDPTR
+#import tunitas.scarpet.drrs.Record.DAPTR
 #import tunitas.scarpet.drrs.Record.NAPTR
 #import tunitas.scarpet.drrs.Record.PTR
 #import tunitas.scarpet.drrs.Record.SRV

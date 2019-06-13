@@ -62,6 +62,7 @@ include src/autotools/autoconf/Makefrag.am
 include src/mod/scarpet/Makefrag.am
 include src/tests/unit/Makefrag.am
 include src/tunitas/scarpet/Makefrag.am
+include src/tunitas/scarpet/answer/Makefrag.am
 include src/want/Makefrag.am
 
 bin_PROGRAMS = \
@@ -72,6 +73,7 @@ bin_PROGRAMS = \
 noinst_LTLIBRARIES = \
   $(lib_libautotools_autoconf_la) \
   $(lib_libautotools_autoconf_a_b_la) \
+  $(lib_libtunitas_scarpet_answer_la) \
   $(lib_libwant_la) \
   $(lib_libapp_la) \
   $(end)

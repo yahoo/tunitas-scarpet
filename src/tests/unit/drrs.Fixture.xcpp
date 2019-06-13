@@ -15,7 +15,7 @@ public:
   static auto suite() -> cppunit::Test *;
 };
 namespace tests::unit::drrs {
-  template<> auto Fixture::test_record<tunitas::scarpet::dns::DIDPTR>() -> void;
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::DAPTR>() -> void;
   template<> auto Fixture::test_record<tunitas::scarpet::dns::NAPTR>() -> void;
   template<> auto Fixture::test_record<tunitas::scarpet::dns::PTR>() -> void;
   template<> auto Fixture::test_record<tunitas::scarpet::dns::SRV>() -> void;
@@ -26,10 +26,10 @@ namespace tests::unit::drrs {
 #divert <cpp>
 #import tunitas.scarpet.drrs.Record
 namespace tests::unit::drrs {
-  template<> auto Fixture::test_record<tunitas::scarpet::dns::DIDPTR>() -> void {
+  template<> auto Fixture::test_record<tunitas::scarpet::dns::DAPTR>() -> void {
     using namespace ::tunitas::scarpet;
     namespace drrs = ::tunitas::scarpet::drrs;
-    auto subject = drrs::Record<dns::DIDPTR>{};
+    auto subject = drrs::Record<dns::DAPTR>{};
     CPPUNIT_ASSERT(sizeof (subject)); // yup, it constructed
   }
   template<> auto Fixture::test_record<tunitas::scarpet::dns::NAPTR>() -> void {
@@ -70,7 +70,7 @@ auto tests::unit::drrs::Fixture::suite() -> cppunit::Test * {
   {
     Stream rec{"record"};
     using namespace tunitas::scarpet::dns::type::constants;
-    rec << call("DIDPTR", &Fixture::test_record<DIDPTR>)
+    rec << call("DAPTR", &Fixture::test_record<DAPTR>)
         << call("NAPTR", &Fixture::test_record<NAPTR>)
         << call("PTR", &Fixture::test_record<PTR>)
         << call("TXT", &Fixture::test_record<TXT>)

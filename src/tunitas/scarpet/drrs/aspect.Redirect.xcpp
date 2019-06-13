@@ -4,7 +4,7 @@
 #divert <fpp>
 namespace tunitas::scarpet::drrs::aspect {
   //
-  // The commonalities of the Redirect sense among at least DIDPTR, NAPTR
+  // The commonalities of the Redirect sense among at least DAPTR, NAPTR
   // Descendants only.
   //
   // References (see https://wiki.tunitas.tech/.../Redirect)
@@ -16,7 +16,7 @@ namespace tunitas::scarpet::drrs::aspect {
   //
   // Usage:
   //
-  //   ancestry for Record<DIDPTR>, Record<NAPTR>
+  //   ancestry for Record<DAPTR>, Record<NAPTR>
   //
   class Redirect;
 }

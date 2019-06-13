@@ -14,7 +14,7 @@ public:
   auto test_Labels() -> void;
   auto test_Type() -> void;
   auto test_type_constants() -> void;
-  auto test_type_DIDPTR() -> void;
+  auto test_type_DAPTR() -> void;
   static auto suite() -> cppunit::Test *;
 };
 #endiv
@@ -70,9 +70,9 @@ auto tests::unit::dns::Fixture::test_type_constants() -> void {
   auto uri = URI;
   CPPUNIT_ASSERT(0 < sizeof (a) + sizeof (aaaa) + sizeof (naptr) + sizeof (ns) + sizeof (srv) + sizeof (txt) + sizeof (uri));
 }
-auto tests::unit::dns::Fixture::test_type_DIDPTR() -> void {
+auto tests::unit::dns::Fixture::test_type_DAPTR() -> void {
   using namespace ::tunitas::scarpet::dns;
-  auto dp = DIDPTR;
+  auto dp = DAPTR;
   auto np = NAPTR;
   CPPUNIT_ASSERT(dp != np);
 }
@@ -86,7 +86,7 @@ auto tests::unit::dns::Fixture::suite() -> cppunit::Test * {
   {
     Stream type{"type"};
     type << call("constants", &Fixture::test_type_constants)
-         << call("DIDPTR", &Fixture::test_type_DIDPTR)
+         << call("DAPTR", &Fixture::test_type_DAPTR)
       ;
     series << move(type);
   }

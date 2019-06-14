@@ -122,7 +122,7 @@ namespace app::cagen::options {
           throw std::logic_error{"Specification"};
         }
       } catch (exception::Bad_Filepath const &e) {
-        /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "invalid file path " << /* [[FIXTHIS]] format::q(required(step)) */ required(step) << " value on " << word_in_error(step) << 'n';
+        /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "invalid file path " << /* [[FIXTHIS]] format::q(required(step)) */ required(step) << " value on --" << word(step) << 'n';
         return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
       }
     }

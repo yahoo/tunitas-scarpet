@@ -1,5 +1,5 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
-${exe?} -d -y  -k /dev/null -n localhost.localdomain --doc=/dev/null.json --domain=ddss.example.
+${exe?} -d -y  -K /dev/null -n localhost.localdomain --doc=/dev/null.json --domain=ddss.example.
 # the -d option enters debug mode, but we need to dry-run this
 test 0 == $?

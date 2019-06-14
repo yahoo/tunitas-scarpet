@@ -15,10 +15,12 @@ lib_libapp_la_SOURCES = \
   obj/src/app/exception/Bad_Domain.cpp \
   obj/src/app/exception/Bad_Encoding.cpp \
   obj/src/app/exception/Bad_Filepath.cpp \
+  obj/src/app/exception/Bad_Secret.cpp \
   \
   obj/src/app/options/namespace.cpp \
   obj/src/app/options/get_domain.cpp \
   obj/src/app/options/get_encoding.cpp \
+  obj/src/app/options/get_secret_literal.cpp \
   obj/src/app/options/indicator.cpp \
   obj/src/app/options/indicator.constants.cpp \
   obj/src/app/options/Parser.cpp \

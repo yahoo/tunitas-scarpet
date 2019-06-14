@@ -27,9 +27,19 @@ public:
   inline explicit Configuration(Program const &);
   std::optional<std::filesystem::path> did_document_json;
   std::optional<std::filesystem::path> did_document_zone;
-  std::optional<std::string> did_domain;  // e.g. 123456789abcdefghi.example.scarpet.tunitas.club.
-  std::optional<std::string> name_server; // a master receiptive to updates from us
-  std::optional<std::string> update_key; // the magic secret hash to allow the update to be accepted
+  //
+  // the DC (DID Club),                       e.g. example.scarpet.tunitas.club.
+  // the DDSS (DID Document Storage Service), e.g. storage.scarpet.tunitas.solutions.
+  //                                    or example.storage.scarpet.tunitas.solutions.  (optionally with the method in a multi-tenant scheme)
+  //
+  std::optional<std::string> did_document_storage_service_domain;
+  std::optional<std::string> name_server; // a master recepitive to updates from us
+  //
+  // Either one or the other, but not both
+  // See defaults::UPDATE_SECRET_FILE for the default secret file when neither appears
+  //
+  std::optional<std::string> update_secret_value; // the magic secret hash to allow the update to be accepted
+  std::optional<std::filesystem::path> update_secret_file; // when that secret is located in a file
 };
 #endiv
 #divert <ipp>

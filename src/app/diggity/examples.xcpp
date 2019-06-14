@@ -1,0 +1,15 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import std.filesystem.path
+namespace app::diggity::examples {
+  inline namespace constants {
+    inline auto const UPDATE_SECRET_FILEPATH = "/etc/named/scarpet-secret.key"s;
+    inline auto const NAME_SERVER = "ns1.scarpet.tunitas.net."s;
+    inline auto const DOCUMENT_JSON = std::filesystem::path{"/home/USER/did-document.json"};
+    inline auto const DOCUMENT_ZONE = std::filesystem::path{"/home/USER/did-document.zone"};
+    inline auto const DID_DOCUMENT_STORAGE_SERVICE_DOMAIN = "storage.scarpet.tunitas.solutions."s;
+  }
+}
+#endiv

@@ -34,7 +34,7 @@ namespace app::publish::options {
     //          /-------------- enable MISSING processing
     //          |
     //          v
-    : ancestor{":hVwqvdyn:k:",
+    : ancestor{":hVwqvdyn:k:K:",
                {{"usage", oa::NO, oi::USAGE_SUBCOMMAND},
                 {"help", oa::NO, oi::USAGE_SUBCOMMAND},
                 {"version", oa::NO, oi::VERSION_SUBCOMMAND},
@@ -50,18 +50,25 @@ namespace app::publish::options {
                 {"server", oa::REQUIRED, oi::NAME_SERVER},
                 {"ns", oa::REQUIRED, oi::NAME_SERVER},
                 // -k
-                {"name-server-update-key", oa::REQUIRED, oi::NAME_SERVER_UPDATE_KEY},
-                {"update-key", oa::REQUIRED, oi::NAME_SERVER_UPDATE_KEY},
-                {"key", oa::REQUIRED, oi::NAME_SERVER_UPDATE_KEY},
+                {"name-server-update-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
+                {"name-server-update-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
+                {"update-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
+                {"update-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
+                {"secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
+                {"secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
+                // -K
+                {"name-server-update-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_FILEPATH},
+                {"update-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_FILEPATH},
+                {"secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_FILEPATH},
                 //
                 // Below here, there are no short options for these
                 //
                 // DID Document Storage Service (DSSS)
                 //
-                {"did-document-storage-service", oa::REQUIRED, oi::DID_DOMAIN},
-                {"ddss", oa::REQUIRED, oi::DID_DOMAIN},
-                {"did-domain", oa::REQUIRED, oi::DID_DOMAIN},
-                {"domain", oa::REQUIRED, oi::DID_DOMAIN},
+                {"did-document-storage-service", oa::REQUIRED, oi::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN},
+                {"ddss", oa::REQUIRED, oi::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN},
+                {"did-domain", oa::REQUIRED, oi::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN},
+                {"domain", oa::REQUIRED, oi::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN},
                 // The DID Document (itself)
                 {"did-document", oa::REQUIRED, oi::DID_DOCUMENT_GUESS},
                 {"document", oa::REQUIRED, oi::DID_DOCUMENT_GUESS},

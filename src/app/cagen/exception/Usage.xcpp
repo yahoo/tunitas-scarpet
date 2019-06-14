@@ -8,7 +8,7 @@ namespace app::cagen::exception {
   //
   // Usage: (sic)
   //
-  //     throw Usage{"program"};
+  //   throw Usage{"program"};
   //
   // Usage: (sic)
   //

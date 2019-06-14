@@ -1,0 +1,35 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace app::diggity {
+  //
+  // The configuration of (the) DID Diggity
+  //
+  // Usage:
+  //
+  //   auto av = Args{cc, vv};
+  //   auto program = Program{av};
+  //   auto cfg = Configuration{program};
+  //
+  class Configuration;
+}
+#endiv
+#divert <hpp>
+#import app.Configuration
+#import std.optional
+#import std.string
+class app::diggity::Configuration : public app::Configuration {
+  using ancestor = app::Configuration;
+public:
+  inline explicit Configuration(Program const &);
+  std::optional<std::string> name_server; // a specified name server, else the servers in /etc/resolv.conf
+};
+#endiv
+#divert <ipp>
+namespace app::diggity {
+  Configuration::Configuration(Program const &program)
+    : ancestor{program}
+  { }
+}
+#endiv

@@ -56,7 +56,9 @@ namespace app::options {
 namespace app::options::packaging::get_encoding {
   template<tunitas::required::exception::app::Quitting QUITTING> auto function::get_encoding(Configuration const &cfg, Step const &step) -> Encoding try {
     //
-    // Either we get the Encoding or we don't. QUITTING isn't actually that helpful
+    // Either we get the Encoding or we don't.
+    // If we don't then escalate that exception into QUITTING.
+    //
     return from_string<Encoding>(required(step));
   } catch (...) {
     error(cfg) << "cannot recover an encoding out of " << /*FIXTHIS format::q*/ required(step) << '\n';

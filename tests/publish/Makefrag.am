@@ -18,9 +18,14 @@ tests_publish_TESTS = \
   tests/publish/option.zone.test \
   tests/publish/option.did-domain.test \
   tests/publish/option.domain.test \
-  tests/publish/option.name-server-update-key.test \
-  tests/publish/option.update-key.test \
-  tests/publish/option.key.test \
+  tests/publish/option.name-server-update-secret-value.test \
+  tests/publish/option.name-server-update-secret.test \
+  tests/publish/option.update-secret-value.test \
+  tests/publish/option.update-secret.test \
+  tests/publish/option.secret.test \
+  tests/publish/option.name-server-update-secret-file.test \
+  tests/publish/option.update-secret-file.test \
+  tests/publish/option.secret-file.test \
   tests/publish/option.name-server.test \
   tests/publish/option.server.test \
   tests/publish/option.ns.test \

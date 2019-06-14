@@ -64,6 +64,7 @@ namespace app::options::packaging::get_domain {
     auto const good_enough_for_a_domain = [](char c) { return '.' == c || '_' == c || '-' == c || isalnum(c); };
     // Prove that all the characters are good; but allow for syntax problems (e.g. duplicated dots).  We let the library discover those
     if (!std::all_of(word.begin(), word.end(), good_enough_for_a_domain)) {
+      error(cfg) << "in inappropriate characters in the domain name\n";
       throw QUITTING{cfg.NAME, sys::exits::CONFIG};
     }
     return std::move(word);

@@ -8,8 +8,9 @@ namespace app::publish::options::indicator {
   inline auto const DID_DOCUMENT_GUESS = Code::CODE_254;
   inline auto const DID_DOCUMENT_JSON = Code::CODE_253;
   inline auto const DID_DOCUMENT_ZONE = Code::CODE_252;
-  inline auto const DID_DOMAIN = Code::CODE_251;
+  inline auto const DID_DOCUMENT_STORAGE_SERVICE_DOMAIN = Code::CODE_251;
   inline auto const NAME_SERVER = Code::CODE_250;
-  inline auto const NAME_SERVER_UPDATE_KEY = Code::CODE_249;
+  inline auto const NAME_SERVER_UPDATE_SECRET_VALUE = Code::CODE_249;
+  inline auto const NAME_SERVER_UPDATE_SECRET_FILEPATH = Code::CODE_248;
 }
 #endiv

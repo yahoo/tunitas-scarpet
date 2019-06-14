@@ -50,7 +50,9 @@ namespace app::publish::options {
 #divert <cpp>
 #import app.exception.Bad_Filepath
 #import app.exception.Bad_Domain
+#import app.exception.Bad_Secret
 #import app.options.get_domain
+#import app.options.get_secret_literal
 #import app.publish.defaults
 #import app.publish.exception.Usage
 #import app.publish.options.indicator.constants
@@ -104,11 +106,15 @@ namespace app::publish::options {
         case oi::CHR_n:
         case oi::NAME_SERVER:
           cfg.name_server = get_domain<exception::Bad_Domain>(cfg, step);
-          // don't care what the suffix is ... we will treat it as ZONE later
           break;
         case oi::CHR_k:
-        case oi::NAME_SERVER_UPDATE_KEY:
-          cfg.update_key = get_filepath<exception::Bad_Filepath>(cfg, step);
+        case oi::NAME_SERVER_UPDATE_SECRET_VALUE:
+          cfg.update_secret_value = get_secret_literal<exception::Bad_Secret>(cfg, step);
+          break;
+        case oi::CHR_K:
+        case oi::NAME_SERVER_UPDATE_SECRET_FILEPATH:
+          // Here we don't care what the filepath suffix is.
+          cfg.update_secret_file = get_filepath<exception::Bad_Filepath>(cfg, step);
           break;
         case oi::DID_DOCUMENT_GUESS:
           {
@@ -133,8 +139,8 @@ namespace app::publish::options {
           cfg.did_document_zone = get_filepath<exception::Bad_Filepath>(cfg, step);
           // don't care what the suffix is ... we will treat it as ZONE later
           break;
-        case oi::DID_DOMAIN:
-          cfg.did_domain = get_domain<exception::Bad_Domain>(cfg, step);
+        case oi::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN:
+          cfg.did_document_storage_service_domain = get_domain<exception::Bad_Domain>(cfg, step);
           break;
         case oi::MISSING:
           /* [[FIXTHIS ee(cfg)) */ ::options::error(cfg) << "missing value on " << word_in_error(step) << '\n';
@@ -149,36 +155,45 @@ namespace app::publish::options {
           throw std::logic_error{"Specification"};
         }
       } catch (exception::Bad_Domain const &e) {
-        /* [[FIXTHIS ee(cfg)) */ ::options::error(cfg) << "invalid domain " << required(step) << " value on " << word_in_error(step) << '\n';
+        /* [[FIXTHIS ee(cfg)) */ ::options::error(cfg) << "invalid domain " << required(step) << " value on --" << word(step) << '\n';
         return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
       } catch (exception::Bad_Filepath const &e) {
-        /* [[FIXTHIS ee(cfg)) */ ::options::error(cfg) << "invalid file path " << required(step) << " value on " << word_in_error(step) << '\n';
+        /* [[FIXTHIS ee(cfg)) */ ::options::error(cfg) << "invalid file path " << required(step) << " value on --" << word(step) << '\n';
+        return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+      } catch (exception::Bad_Secret const &e) {
+        /* [[FIXTHIS ee(cfg)) */ ::options::error(cfg) << "invalid secret " << required(step) << " value on --" << word(step) << '\n';
         return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
       }
     }
     auto const remaining = Arguments{get.begin(), get.end()};
     if (!std::empty(remaining)) {
-      ::options::error(cfg) << "there are extra words after the options\n";
+      /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "there are extra words after the options\n";
       return Result{std::error_code{error::Code::OPTIONS}};
     }
     if (!cfg.did_document_json && !cfg.did_document_zone) {
-      ::options::error(cfg) << "for --did-document neither a JSON file nor a ZONE file was given\n";
+      /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "for --did-document neither a JSON file nor a ZONE file was given\n";
       return Result{std::error_code{error::Code::OPTIONS}};
     }
     if (cfg.did_document_json && cfg.did_document_zone) {
-      ::options::error(cfg) << "both a JSON file and a ZONE file cannot be given\n";
+      /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "both a JSON file and a ZONE file cannot be given\n";
       return Result{std::error_code{error::Code::OPTIONS}};
     }
-    if (!cfg.did_domain) {
-      ::options::error(cfg) << "the domain (Qualified Domain Name) into which to load this DID Document not defined\n";
+    if (!cfg.did_document_storage_service_domain) {
+      /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "the domain (Qualified Domain Name) into which to load this DID Document not defined\n";
       return Result{std::error_code{error::Code::OPTIONS}};
     }
     if (!cfg.name_server) {
-      ::options::error(cfg) << "the name server into which to load this DID Document not defined\n";
+      /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "the name server into which to load this DID Document not defined\n";
       return Result{std::error_code{error::Code::OPTIONS}};
     }
-    if (!cfg.update_key) {
-      ::options::error(cfg) << "the update key is not defined\n";
+    if (!cfg.update_secret_value && !cfg.update_secret_file) {
+      notice(cfg) << "the update secret must be given literally or from a file\n";
+      /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "the update secret is not defined at all\n";
+      return Result{std::error_code{error::Code::OPTIONS}};
+    }
+    if (cfg.update_secret_value && cfg.update_secret_file) {
+      notice(cfg) << "the both --name-server-update-secret-value=SECRET and --name-server-update-secret-file=FILEPATH appear\n";
+      /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "the update secret cannot be both from a file and literally\n";
       return Result{std::error_code{error::Code::OPTIONS}};
     }
     return Result{tunitas::SUCCESS};

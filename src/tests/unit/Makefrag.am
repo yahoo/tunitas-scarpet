@@ -24,13 +24,27 @@ check_bin_unit_SOURCES = \
   obj/src/tests/unit/did.Document.ZONE.cpp \
   \
   obj/src/tests/unit/dns.Fixture.cpp \
+  \
   obj/src/tests/unit/drrs.Fixture.cpp \
+  obj/src/tests/unit/drrs.Allocator.cpp \
+  obj/src/tests/unit/drrs.Record.declaration.cpp \
+  obj/src/tests/unit/drrs.Record.DAPTR.cpp \
+  obj/src/tests/unit/drrs.Record.NAPTR.cpp \
+  obj/src/tests/unit/drrs.Record.PTR.cpp \
+  obj/src/tests/unit/drrs.Record.SRV.cpp \
+  obj/src/tests/unit/drrs.Record.TXT.cpp \
+  obj/src/tests/unit/drrs.Record.URI.cpp \
+  obj/src/tests/unit/drrs.Record.cpp \
+  obj/src/tests/unit/drrs.Tree.cpp \
+  obj/src/tests/unit/drrs.Tree.Populator.cpp \
   \
   obj/src/tests/unit/error.Fixture.cpp \
   obj/src/tests/unit/error.Category.cpp \
   \
   obj/src/tests/unit/exception.Fixture.cpp \
   obj/src/tests/unit/exception.Fixture.Thrower.cpp \
+  \
+  obj/src/tests/unit/names.Fixture.cpp \
   \
   obj/src/tests/unit/options.Fixture.cpp \
   obj/src/tests/unit/options.Fixture.Parser.cpp \

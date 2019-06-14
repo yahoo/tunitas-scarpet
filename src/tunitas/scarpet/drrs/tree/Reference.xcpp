@@ -1,0 +1,32 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::drrs::tree {
+  //
+  // "Tree Reference" is this is a fancy word for pointer-to-Tree
+  //
+  // Only Tree::ref() can construct one of these.
+  //
+  class Reference;
+}
+#endiv
+#divert <hpp>
+#import std.reference_wrapper
+#forward tunitas.scarpet.drrs.Tree
+class tunitas::scarpet::drrs::tree::Reference : protected std::reference_wrapper<Tree> {
+  using ancestor = std::reference_wrapper<Tree>;
+protected:
+  friend class tree::Tree;
+  inline explicit Reference(Tree &);
+};
+#endiv
+#divert <ipp>
+#import std.reference_wrapper
+#import tunitas.scarpet.drrs.Tree
+namespace tunitas::scarpet::drrs::tree {
+  Reference::Reference(Tree &referent)
+    : ancestor{referent}
+  { }
+}
+#endiv

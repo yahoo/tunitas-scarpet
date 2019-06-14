@@ -8,6 +8,7 @@
 #import tests.unit.drrs.Fixture
 #import tests.unit.error.Fixture
 #import tests.unit.exception.Fixture
+#import tests.unit.names.Fixture
 #import tests.unit.options.Fixture
 #import tests.unit.resolve.Fixture
 #import tests.unit.router.Fixture
@@ -22,6 +23,7 @@ auto main(int argc, char **argv) -> int {
               tu::drrs::Fixture::suite(),
               tu::error::Fixture::suite(),
               tu::exception::Fixture::suite(),
+              tu::names::Fixture::suite(),
               tu::options::Fixture::suite(),
               tu::resolve::Fixture::suite(),
               tu::router::Fixture::suite(),

@@ -1,0 +1,141 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::drrs { class Tree; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tunitas.scarpet.drrs.Tree
+#import tunitas.scarpet.drrs.tree.Allocator
+class tests::unit::drrs::Tree : public cppunit::test::Fixture {
+public:
+  using Subject = ::tunitas::scarpet::drrs::Tree;
+  auto test_constructor_top() -> void;
+  auto test_constructor_ref() -> void;
+  auto test_name_unqualified() -> void;
+  auto test_name_fully_qualified() -> void;
+  auto test_children() -> void;
+  auto test_records() -> void;
+  static auto suite() -> cppunit::Test *;
+protected:
+  using Allocator = ::tunitas::scarpet::drrs::tree::Allocator;
+  static auto generate_something_interesting() -> Subject;
+  struct Populator;
+};
+#endiv
+#divert <cpp>
+#import tests.unit.drrs.Tree.Populator
+auto tests::unit::drrs::Tree::generate_something_interesting() -> Subject {
+  auto apple = Subject{"apple", Subject::top()};
+  std::cerr << "apple fqdn = " << view(apple.fqdn()) << '\n';
+  auto &banana = Allocator{apple}.make_child("banana", apple.ref());
+  std::cerr << "banana fqdn = " << view(banana.fqdn()) << '\n';
+  auto &cherry = Allocator{banana}.make_child("cherry", banana.ref());
+  std::cerr << "cherry fqdn = " << view(cherry.fqdn()) << '\n';
+  auto &dog = Allocator{cherry}.make_child("dog", cherry.ref());
+  std::cerr << "dog fqdn = " << view(dog.fqdn()) << '\n';
+  auto &eagle = Allocator{dog}.make_child("eagle", dog.ref());
+  std::cerr << "eagle fqdn = " << view(eagle.fqdn()) << '\n';
+  auto &frog = Allocator{eagle}.make_child("frog", eagle.ref());
+  std::cerr << "frog fqdn = " << view(frog.fqdn()) << '\n';
+  auto &goat = Allocator{frog}.make_child("goat", frog.ref());
+  std::cerr << "goat fqdn = " << view(goat.fqdn()) << '\n';
+  auto &harpie = Allocator{goat}.make_child("harpie", goat.ref());
+  std::cerr << "harpie fqdn = " << view(harpie.fqdn()) << '\n';
+  auto &idiot = Allocator{harpie}.make_child("idiot", harpie.ref());
+  std::cerr << "idiot fqdn = " << view(idiot.fqdn()) << '\n';
+  auto &jackass = Allocator{idiot}.make_child("jackass", idiot.ref());
+  std::cerr << "jackass fqdn = " << view(jackass.fqdn()) << '\n';
+  CPPUNIT_ASSERT(0 == jackass.children().size());
+  Populator enpopulator;
+  enpopulator.populate(apple);
+  std::cerr << "populated jackass fqdn = " << view(jackass.fqdn()) << '\n';
+  return std::move(apple);
+}
+auto tests::unit::drrs::Tree::test_constructor_top() -> void {
+  auto subject = Subject{"www", Subject::top()};
+  CPPUNIT_ASSERT(sizeof (subject));
+}
+auto tests::unit::drrs::Tree::test_constructor_ref() -> void {
+  auto top = Subject{"www", Subject::top()};
+  auto &child = Allocator{top}.make_child("xyzzy", top.ref());
+  CPPUNIT_ASSERT(0 == child.children().size());
+}
+auto tests::unit::drrs::Tree::test_name_unqualified() -> void {
+  auto apple = Subject{"apple", Subject::top()};
+  auto actual = to_string(apple.uqdn());
+  auto expected = "apple"s;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::drrs::Tree::test_name_fully_qualified() -> void {
+  auto apple = Subject{"apple", Subject::top()};
+  auto &banana = Allocator{apple}.make_child("banana", apple.ref());
+  auto &cherry = Allocator{banana}.make_child("cherry", banana.ref());
+  auto &dog = Allocator{cherry}.make_child("dog", cherry.ref());
+  auto &eagle = Allocator{dog}.make_child("eagle", dog.ref());
+  auto &frog = Allocator{eagle}.make_child("frog", eagle.ref());
+  auto &goat = Allocator{frog}.make_child("goat", frog.ref());
+  auto &harpie = Allocator{goat}.make_child("harpie", goat.ref());
+  auto &idiot = Allocator{harpie}.make_child("idiot", harpie.ref());
+  auto &jackass = Allocator{idiot}.make_child("jackass", idiot.ref());
+  auto const actual = to_string(jackass.fqdn());
+  auto const expected = "jackass.idiot.harpie.goat.frog.eagle.dog.cherry.banana.apple"s; // NO trailing dot
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+#import std.ostringstream
+auto tests::unit::drrs::Tree::test_children() -> void {
+  auto subject = generate_something_interesting();
+  auto name0 = subject.uqdn();
+  std::cerr << "level0 uqdn=" << view(subject.uqdn()) << " fqdn=" << view(subject.fqdn()) << '\n';
+  for (auto const &level1 : subject.children()) {
+    auto name1 = level1.uqdn();
+    std::cerr << "level1 uqdn=" << view(level1.uqdn()) << " fqdn=" << view(level1.fqdn()) << '\n';
+    for (auto const &level2 : level1.children()) {
+      auto name2 = level2.uqdn();
+      std::cerr << "level2 uqdn=" << view(level2.uqdn()) << " fqdn=" << view(level2.fqdn()) << '\n';
+      std::ostringstream buf;
+      buf << view(name2) << '.' << view(name1) << '.' << view(name0);
+      auto const as_fqdn = to_string(level2.fqdn());
+      auto const as_herein = buf.str();
+      CPPUNIT_ASSERT_EQUAL(as_fqdn, as_herein);
+    }
+  }
+}
+#import tunitas.scarpet.drrs.Record
+#import std.ostringstream
+#import std.visit
+auto tests::unit::drrs::Tree::test_records() -> void {
+  std::ostringstream buf;
+  auto subject = generate_something_interesting();
+  for (auto const &variant : subject.records()) {
+    buf << '\n' << view(subject.fqdn()) << ' ';
+    auto visitor = nonstd::Visitor{[&buf](tunitas::scarpet::drrs::Record<tunitas::scarpet::dns::TXT> const &r) { buf << '"' << r.text << '"' << '\n'; },
+                                   [&buf](auto const &) { buf << "other\n"; }};
+    std::visit(visitor, variant);
+  }
+}
+#import rigging.suite.io
+auto tests::unit::drrs::Tree::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"Tree"};
+  {
+    Stream con{"constructor"};
+    con << call("top", &Tree::test_constructor_top)
+        << call("ref", &Tree::test_constructor_ref)
+      ;
+    series << add(con.release());
+  } {
+    Stream nam{"name"};
+    nam << call("unqualified", &Tree::test_name_unqualified)
+        << call("fully-qualified", &Tree::test_name_fully_qualified)
+      ;
+    series << add(nam.release());
+  }
+  series << call("records", &Tree::test_records)
+         << call("children", &Tree::test_children)
+    ;
+  return finalize(series);
+}
+#endiv

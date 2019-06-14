@@ -2,11 +2,10 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-#import ares.dns
-#import ares.managed
-namespace tunitas::scarpet::dns {
-  using namespace ares::dns; // cascade this namespace, because otherwise it's confusing
-  using Weight = ares::managed::Weight;
-  using Priority = ares::managed::Priority;
-}
+#import tests.unit.drrs.Record.DAPTR
+#import tests.unit.drrs.Record.NAPTR
+#import tests.unit.drrs.Record.PTR
+#import tests.unit.drrs.Record.SRV
+#import tests.unit.drrs.Record.TXT
+#import tests.unit.drrs.Record.URI
 #endiv

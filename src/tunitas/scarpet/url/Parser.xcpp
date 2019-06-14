@@ -59,7 +59,7 @@ protected:
 #import std.all_of
 #import std.max
 #import std.move
-#import std.invalid_argument
+#import tunitas.scarpet.exception.Invariant
 namespace tunitas::scarpet {
   url::Parser::Parser(std::string const &prefix)
     : prefix_slash{prefix} {
@@ -103,7 +103,7 @@ namespace tunitas::scarpet {
     // but slashes further down in the string are separators.
     //
     if ('/' != prefix_slash.back()) {
-      throw std::invalid_argument{"no trailing slash"}; // the constructor should have helped here
+      throw exception::Invariant{"no trailing slash"}; // the constructor should have helped here
     }
     std::string::size_type rest_index = prefix_slash.size();
     if (0 != syntax.find(prefix_slash) || syntax.size() < rest_index+1 || !isurn_thereon(syntax, rest_index)) {

@@ -21,7 +21,7 @@ namespace tunitas::scarpet::drrs {
     };
   public:
     Record() = default;
-    // The endpoint will be copied in the ancestor's constructor
+    // Though pass by reference here, but the endpoint will be copied in the ancestor's constructor
     inline Record(Weight, Priority, std::string const &endpoint);
   };
 }
@@ -33,4 +33,3 @@ namespace tunitas::scarpet::drrs {
   { }
 }
 #endiv
-

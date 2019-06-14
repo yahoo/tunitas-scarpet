@@ -1,0 +1,124 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::drrs::tree {
+  //
+  // A Tree of DRRS
+  //
+  // DRRS (Disaggregated Resource Records, Splattered) (across a DSSZ)
+  // DSSZ - Document Storage Service Zone
+  //  SSZ - Storage Service Zone
+  //
+  // Usage:
+  //
+  //   auto tree = Tree{...somehow...};
+  //   auto fqdn = tree.fqdn();
+  //   auto name = tree.uqdn();
+  //   for (auto const &subtree : tree.children()) {
+  //     ...visit the children...
+  //   }
+  //   for (auto const &record : tree.records()) {
+  //     ...visit the resource records herein...
+  //   }
+  //
+  class Tree;
+}
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::drrs::tree {
+  inline auto swap(Tree &, Tree &) noexcept -> void;
+}
+#import tunitas.scarpet.dns.Label
+#import tunitas.scarpet.drrs.tree.Children
+#import tunitas.scarpet.drrs.tree.Records
+#import tunitas.scarpet.drrs.tree.Reference
+#import tunitas.scarpet.drrs.tree.Top
+class tunitas::scarpet::drrs::tree::Tree {
+public:
+  inline static auto top() -> Top;
+  inline auto ref() -> Reference;
+  inline Tree(dns::Label const &, Top);
+  inline Tree(dns::Label const &, Reference);
+  Tree(Tree const &) = delete;
+  auto operator=(Tree const &) -> Tree & = delete;
+  inline Tree(Tree &&);
+  inline auto operator=(Tree &&) -> Tree &;
+  inline auto uqdn() const -> dns::Label const & { return unqualified_name(); }
+  inline auto fqdn() const -> dns::Name { return fully_qualified_name(); }
+  inline auto unqualified_name() const -> dns::Label const &;
+  auto fully_qualified_name() const -> dns::Name; // ... fully-qualified, always ends in a '.'
+  struct Pointer;
+  using Children = tree::Children;
+  auto children() -> Children & { return down; }
+  auto children() const -> Children const & { return down; }
+  using Records = tree::Records;
+  auto records() -> Records & { return here; }
+  auto records() const -> Records const & { return here; }
+protected:
+  dns::Label label;
+  Tree *up; // this pointer is not owned by us, neither is it const to signal thta.
+  tree::Children down;
+  tree::Records here;
+  friend auto tree::swap(Tree &a, Tree &b) noexcept -> void;
+private:
+  inline auto relink_children() -> void;
+};
+#import tunitas.scarpet.drrs.tree.Pointer
+#import tunitas.scarpet.drrs.tree.Children
+#endiv
+#divert <ipp>
+#import std.swap
+auto tunitas::scarpet::drrs::tree::swap(Tree &a, Tree &b) noexcept -> void {
+  swap(a.label, b.label);
+  std::swap(a.up, b.up);
+  swap(a.down, b.down);
+  swap(a.here, b.here);
+  a.relink_children();
+  b.relink_children();
+}
+#import std.move
+namespace tunitas::scarpet::drrs::tree {
+  Tree::Tree(dns::Label const &label, Top)
+    : label{label}
+    , up{nullptr}
+  { }
+  Tree::Tree(dns::Label const &label, Reference reference)
+    : label{label}
+    , up{&reference.get()}
+  { }
+  Tree::Tree(Tree &&other)
+    : label{std::move(other.label)}
+    , up{std::move(other.up)}
+    , down{std::move(other.down)}
+    , here{std::move(other.here)} {
+      relink_children();
+    }
+  auto Tree::operator=(Tree &&other) -> Tree & {
+    swap(*this, other);
+    return *this;
+  }
+  auto Tree::unqualified_name() const -> dns::Label const & { return label; }
+  auto Tree::top() -> Top { return Top(); }
+  auto Tree::ref() -> Reference { return Reference(*this); }
+  auto Tree::relink_children() -> void {
+    for (auto &child: down) {
+      child.up = this;
+    }
+  }
+}
+#endiv
+#divert <cpp>
+#import std.ostringstream
+namespace tunitas::scarpet::drrs::tree {
+  auto Tree::fully_qualified_name() const -> dns::Name {
+    std::ostringstream buf;
+    buf << view(label);
+    for (auto p=up; nullptr != p; p=p->up) {
+      buf << '.' << view(p->label);
+    }
+    auto formatted = buf.str();
+    return dns::Name{formatted.data(), formatted.size()};
+  }
+}
+#endiv

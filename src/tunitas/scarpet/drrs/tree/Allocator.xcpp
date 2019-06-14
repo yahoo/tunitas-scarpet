@@ -1,0 +1,105 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::drrs::tree {
+  //
+  // The allocator is a bundle fo convenience routines.
+  // Whereas a Tree does self-manage the child objects, the allocator facilitates the construction of the children.
+  //
+  // Very crude, but codifies the construction recipes.
+  //
+  // Usage:
+  //
+  //   auto top = Tree{...somehow...};
+  //
+  //   Allocator aaa{top};
+  //   auto &c1 = aaa.make_child();
+  //   auto &v1a = aaa.make_record<PTR>("that text");
+  //   auto &v1b = aaa.make_record<SRV>(weight, priority, dns::Name{"endpoint.example"});
+  //   auto &v1c = aaa.make_record<PTR>(dns::Name{"endpoint.example"});
+  //   auto &v12 = aaa.make_record<URI>(weight, priority, "https://endpoint.example/receive");
+  //
+  //   auto &c2 = aaa.make_child();
+  // 
+  class Allocator;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.dns.Type
+#import tunitas.scarpet.dns.type.constants
+#import tunitas.scarpet.dns.Label
+#import tunitas.scarpet.dns.Name
+#forward tunitas.scarpet.drrs.Record
+#forward tunitas.scarpet.drrs.tree.Tree
+#import tunitas.scarpet.drrs.tree.Reference
+#import tunitas.scarpet.drrs.tree.Top
+#import tunitas.scarpet.drrs.tree.records.Variant
+#import std.string
+struct tunitas::scarpet::drrs::tree::Allocator {
+  inline explicit Allocator(Tree &referent);
+  inline auto make_child(dns::Label, Top) -> Tree &;
+  inline auto make_child(dns::Label, Reference) -> Tree &;
+  template<dns::Type TYPE> auto make_record(std::string) -> Record<TYPE> & = delete;
+  template<dns::Type TYPE> auto make_record(dns::Name) -> Record<TYPE> & = delete;
+  template<dns::Type TYPE> auto make_record(dns::Weight, dns::Priority, std::string) -> Record<TYPE> & = delete;
+  template<dns::Type TYPE> auto make_record(dns::Weight, dns::Priority, dns::Name) -> Record<TYPE> & = delete;
+protected:
+  // Valid to call when (a) !referent.records().empty() and (b) that final record is actually a TYPE
+  template<dns::Type TYPE> inline auto reference_back() -> Record<TYPE> &;
+  template<dns::Type TYPE> inline static auto downcast(records::Variant &) -> Record<TYPE> &;
+  Tree &referent;
+};
+namespace tunitas::scarpet::drrs::tree {
+  template<> inline auto Allocator::make_record<dns::PTR>(dns::Name) -> Record<dns::PTR> &;
+  template<> inline auto Allocator::make_record<dns::SRV>(dns::Weight, dns::Priority, dns::Name) -> Record<dns::SRV> &;
+  template<> inline auto Allocator::make_record<dns::TXT>(std::string) -> Record<dns::TXT> &;
+  template<> inline auto Allocator::make_record<dns::URI>(dns::Weight, dns::Priority, std::string) -> Record<dns::URI> &;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.drrs.Record
+#import tunitas.scarpet.drrs.tree.Tree
+#import std.move
+#import std.make_unique
+namespace tunitas::scarpet::drrs::tree {
+  Allocator::Allocator(Tree &referent) : referent{referent} { }
+  auto Allocator::make_child(dns::Label label, Top top) -> Tree & {
+    return *referent.children().emplace_back(std::make_unique<Tree>(std::move(label), top));
+  }
+  auto Allocator::make_child(dns::Label label, Reference ref) -> Tree & {
+    return *referent.children().emplace_back(std::make_unique<Tree>(std::move(label), ref));
+  }
+  template<> auto Allocator::make_record<dns::PTR>(dns::Name name) -> Record<dns::PTR> & {
+    return downcast<dns::PTR>(referent.records().emplace_back(Record<dns::PTR>{std::move(name)}));
+  }
+  template<> auto Allocator::make_record<dns::SRV>(dns::Weight weight, dns::Priority priority, dns::Name endpoint) -> Record<dns::SRV> & {
+    return downcast<dns::SRV>(referent.records().emplace_back(Record<dns::SRV>{weight, priority, std::move(endpoint)}));
+  }
+  template<> auto Allocator::make_record<dns::TXT>(std::string text) -> Record<dns::TXT> & {
+    return downcast<dns::TXT>(referent.records().emplace_back(Record<dns::TXT>{std::move(text)}));
+  }
+  template<> auto Allocator::make_record<dns::URI>(dns::Weight weight, dns::Priority priority, std::string endpoint) -> Record<dns::URI> & {
+    return downcast<dns::URI>(referent.records().emplace_back(Record<dns::URI>{weight, priority, std::move(endpoint)}));
+  }
+}
+#import tunitas.scarpet.exception.Invariant
+#import tunitas.scarpet.exception.Logic
+#import nonstd.Visitor
+#import std.visit
+namespace tunitas::scarpet::drrs::tree {
+  template<dns::Type TYPE> auto Allocator::downcast(records::Variant &variant) -> Record<TYPE> & {
+    auto visitor = nonstd::Visitor{[](Record<TYPE> &r) -> Record<TYPE> & { return r; },
+                                   // The otherwise here indicates a programmer error (your error) for casting incorrectly
+                                   [](auto &) -> Record<TYPE> & { throw exception::Logic{"unexpected record type"}; } };
+    return std::visit(visitor, variant);
+  }
+  template<dns::Type TYPE> auto Allocator::reference_back() -> Record<TYPE> & {
+    auto &records = referent.records();
+    if (records.empty()) {
+      throw exception::Invariant{"no records"};
+    }
+    return downcast<TYPE>(records.back());
+  }
+}
+#endiv

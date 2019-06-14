@@ -144,8 +144,7 @@ namespace tunitas::scarpet::resolve {
             } else { outbound << " FAIL " << error_code(record.key.response).message() << '\n'; }
             ++ith;
           }
-        }
-        {
+        } {
           auto ith = 0u;
           for (auto const &record : document.authentications) {
             outbound << "DEBUG authentication " << ith << " ID ";

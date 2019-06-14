@@ -49,11 +49,23 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/drrs/Record.DAPTR.cpp \
   obj/src/tunitas/scarpet/drrs/Record.NAPTR.cpp \
   obj/src/tunitas/scarpet/drrs/Record.PTR.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.SRV.cpp \
   obj/src/tunitas/scarpet/drrs/Record.TXT.cpp \
   obj/src/tunitas/scarpet/drrs/Record.URI.cpp \
-  obj/src/tunitas/scarpet/drrs/Record.SRV.cpp \
   obj/src/tunitas/scarpet/drrs/Record.cpp \
   obj/src/tunitas/scarpet/drrs/Records.cpp \
+  obj/src/tunitas/scarpet/drrs/Tree.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/namespace.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Allocator.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Pointer.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Top.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Tree.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Reference.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Children.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/children.Iterator.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/children.Iterator.iterator_traits.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Records.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/records.Variant.cpp \
   \
   obj/src/tunitas/scarpet/error/namespace.cpp \
   obj/src/tunitas/scarpet/error/Condition.cpp \
@@ -66,6 +78,7 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/exception/aspect.Exiting.cpp \
   obj/src/tunitas/scarpet/exception/Configuration.cpp \
   obj/src/tunitas/scarpet/exception/Invariant.cpp \
+  obj/src/tunitas/scarpet/exception/Logic.cpp \
   obj/src/tunitas/scarpet/exception/Quitting.cpp \
   obj/src/tunitas/scarpet/exception/Runtime.cpp \
   obj/src/tunitas/scarpet/exception/System.cpp \

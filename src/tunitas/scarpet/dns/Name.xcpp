@@ -31,14 +31,19 @@ namespace tunitas::scarpet::dns {
 #endiv
 #divert <hpp>
 #import std.string_view
+#import std.string
 namespace tunitas::scarpet::dns::name {
   inline auto view(Name const &) -> std::string_view;
+  inline auto to_string(Name const &) -> std::string;
 }
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::dns {
   auto name::view(Name const &old) -> std::string_view {
     return std::string_view{old.data(), old.size()};
+  }
+  auto name::to_string(Name const &old) -> std::string {
+    return std::string{old.data(), old.size()};
   }
 }
 #endiv

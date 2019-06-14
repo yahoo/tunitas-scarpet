@@ -34,14 +34,19 @@ namespace tunitas::scarpet {
 #endiv
 #divert <hpp>
 #import std.string_view
+#import std.string
 namespace tunitas::scarpet::protocol {
   inline auto view(Protocol const &) -> std::string_view;
+  inline auto to_string(Protocol const &) -> std::string;
 }
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet {
   auto protocol::view(Protocol const &old) -> std::string_view {
     return std::string_view{old.data(), old.size()};
+  }
+  auto protocol::to_string(Protocol const &old) -> std::string {
+    return std::string{old.data(), old.size()};
   }
 }
 #endiv

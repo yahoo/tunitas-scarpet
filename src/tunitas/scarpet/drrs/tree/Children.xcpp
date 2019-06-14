@@ -1,0 +1,80 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::drrs::tree {
+  //
+  // The children (child set) of a tree.
+  //
+  // It's container of pointers
+  // But the iterators are special because they produce fully-indirected references.
+  //
+  // The class is more more less "private to Tree" and is expected to be operated only thereby.
+  //
+  // Usage:
+  //
+  //   oh come on (hint: it's the reduced interface of std::list)
+  //   for (auto const &subtree : tree.children()) {
+  //      ...do stuff on the subtree....
+  //   }
+  //
+  class Children;
+}
+#endiv
+#divert <hpp>
+#import std.list
+#import std.unique_ptr
+#import std.size
+#forward tunitas.scarpet.drrs.tree.Allocator
+#forward tunitas.scarpet.drrs.tree.Tree
+#forward tunitas.scarpet.drrs.tree.children.Iterator
+#import std.iterator_traits
+class tunitas::scarpet::drrs::tree::Children : protected std::list<std::unique_ptr<Tree>> {
+#if 0 // [[REMOVETHIS]]
+  static_assert(1+sizeof (std::unique_ptr<Tree>));
+  static_assert(1+sizeof (std::list<std::unique_ptr<Tree>>));
+  static_assert(1+sizeof (std::list<std::unique_ptr<Tree>>::iterator));
+  static_assert(1+sizeof (std::_List_iterator<int>));
+  static_assert(1+sizeof (std::_List_iterator<Tree>));
+  static_assert(1+sizeof (std::_List_iterator<std::unique_ptr<int>>));
+  static_assert(1+sizeof (std::_List_iterator<std::unique_ptr<Tree>>));
+  static_assert(1+sizeof (std::iterator_traits<std::list<int>::iterator>));
+  static_assert(1+sizeof (std::iterator_traits<std::_List_iterator<int>>));
+  static_assert(1+sizeof (std::iterator_traits<std::_List_iterator<std::unique_ptr<int>>>));
+  static_assert(1+sizeof (std::iterator_traits<std::_List_iterator<std::unique_ptr<Tree>>>));
+  static_assert(1+sizeof (std::iterator_traits<std::list<std::unique_ptr<Tree>>::iterator>));
+#endif
+  using ancestor = std::list<std::unique_ptr<Tree>>;
+  friend class tree::Allocator;
+  friend class tree::Tree;
+public:
+  Children() = default;
+  Children(Children const &) = delete;
+  auto operator=(Children const &) -> Children & = delete;
+  Children(Children &&) = default;
+  auto operator=(Children &&) -> Children & = default;
+  using ancestor::empty;
+  using ancestor::size; // constant, per std::list since C++11
+#if 0 // [[REMOVETHIS]]
+  static_assert(1+sizeof (std::list<std::unique_ptr<Tree>>::iterator));
+  static_assert(1+sizeof (ancestor::iterator));
+  static_assert(1+sizeof (std::iterator_traits<std::list<std::unique_ptr<Tree>>::iterator>));
+  static_assert(1+sizeof (std::iterator_traits<ancestor::iterator>));
+#endif
+  using iterator = tree::children::Iterator<ancestor::iterator>;
+  inline auto begin() -> iterator;
+  inline auto end() -> iterator;
+  using const_iterator = tree::children::Iterator<ancestor::const_iterator>;
+  inline auto begin() const -> const_iterator;
+  inline auto end() const -> const_iterator;
+};
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.drrs.tree.children.Iterator
+namespace tunitas::scarpet::drrs::tree {
+  auto Children::begin() -> iterator { return iterator{ancestor::begin()}; }
+  auto Children::end() -> iterator { return iterator{ancestor::end()}; }
+  auto Children::begin() const -> const_iterator { return const_iterator{ancestor::begin()}; }
+  auto Children::end() const -> const_iterator { return const_iterator{ancestor::end()}; }
+}
+#endiv

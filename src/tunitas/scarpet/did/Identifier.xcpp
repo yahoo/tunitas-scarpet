@@ -37,14 +37,19 @@ namespace tunitas::scarpet::did {
 #endiv
 #divert <hpp>
 #import std.string_view
+#import std.string
 namespace tunitas::scarpet::did::identifier {
   inline auto view(Identifier const &) -> std::string_view;
+  inline auto to_string(Identifier const &) -> std::string;
 }
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::did {
   auto identifier::view(Identifier const &old) -> std::string_view {
     return std::string_view{old.data(), old.size()};
+  }
+  auto identifier::to_string(Identifier const &old) -> std::string {
+    return std::string{old.data(), old.size()};
   }
 }
 #endiv

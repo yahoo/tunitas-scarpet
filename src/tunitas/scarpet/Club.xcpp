@@ -29,14 +29,19 @@ namespace tunitas::scarpet {
 #endiv
 #divert <hpp>
 #import std.string_view
+#import std.string
 namespace tunitas::scarpet::club {
   inline auto view(Club const &) -> std::string_view;
+  inline auto to_string(Club const &) -> std::string;
 }
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet {
   auto club::view(Club const &old) -> std::string_view {
     return std::string_view{old.data(), old.size()};
+  }
+  auto club::to_string(Club const &old) -> std::string {
+    return std::string{old.data(), old.size()};
   }
 }
 #endiv

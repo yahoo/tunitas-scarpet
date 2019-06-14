@@ -1,0 +1,93 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.iterator_traits
+namespace tunitas::scarpet::drrs::tree::children {
+  //
+  // An iterator (on the tree children).
+  // Whereas the children are manged by pointers, for convenience and safety, the iterator produces references (indirected pointers)
+  //
+  // Usage:
+  //
+  //   ...shesh, it's an iterator...
+  //   for (auto const &subtree : tree.children()) {
+  //      ...do stuff on the subtree....
+  //   }
+  //
+  namespace required {
+    template<typename ITERATOR> concept bool Iterator = true; // later within the class: 1+sizeof (std::iterator_traits<ITERATOR>);
+  }
+  template<required::Iterator TREE> class Iterator;
+}
+#import tunitas.scarpet.drrs.tree.children.Iterator.iterator_traits
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::drrs::tree::children {
+  template<required::Iterator ITERATOR> inline auto operator==(Iterator<ITERATOR> const &, Iterator<ITERATOR> const &) -> bool;
+  template<required::Iterator ITERATOR> inline auto operator!=(Iterator<ITERATOR> const &, Iterator<ITERATOR> const &) -> bool;
+}
+#forward tunitas.scarpet.drrs.tree.Children
+namespace tunitas::scarpet::drrs::tree {
+  template<children::required::Iterator ITERATOR> class children::Iterator {
+    friend class tree::Children;
+    using Subiterator = ITERATOR;
+    inline  explicit Iterator(Subiterator);
+  public:
+    Iterator() = default;
+    using Value = typename std::iterator_traits<Iterator>::Value;
+    inline auto operator*() const -> Value const &;
+    inline auto operator*() -> Value &;
+    inline auto operator++() -> Iterator &;
+    inline auto operator++(int) -> Iterator;
+    inline auto operator--() -> Iterator &;
+    inline auto operator--(int) -> Iterator;
+  protected:
+    Subiterator subiterator;
+    static_assert(1+sizeof (std::iterator_traits<Subiterator>)); // only utterable at <hpp> once the complete type of ITERATOR is known.
+    friend auto operator== <>(Iterator const &, Iterator const &) -> bool;
+  };
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::drrs::tree {
+  template<children::required::Iterator ITERATOR> auto children::operator==(Iterator<ITERATOR> const &a, Iterator<ITERATOR> const &b) -> bool {
+    return a.subiterator == b.subiterator;
+  }
+  template<children::required::Iterator ITERATOR> auto children::operator!=(Iterator<ITERATOR> const &a, Iterator<ITERATOR> const &b) -> bool {
+    return !operator==(a, b);
+  }
+}
+namespace tunitas::scarpet::drrs::tree::children {
+  template<children::required::Iterator _> Iterator<_>::Iterator(Subiterator sub) : subiterator{sub} { }
+  template<children::required::Iterator _> auto Iterator<_>::operator*() const -> Value const & {
+    // unchecked: that subiterator is valid at all.
+    //
+    // The double indirection is unique to this iterator.  That is why all this machinery exists.
+    return **subiterator;
+  }
+  template<children::required::Iterator _> auto Iterator<_>::operator*() -> Value & {
+    // unchecked: that subiterator is valid at all.
+    return **subiterator;
+  }
+  template<children::required::Iterator _> auto Iterator<_>::operator++() -> Iterator & {
+    // unchecked: that subiterator is valid at all.
+    ++subiterator;
+    return *this;
+  }
+  template<children::required::Iterator _> auto Iterator<_>::operator++(int) -> Iterator {
+    Iterator old{*this};
+    operator++();
+    return old;
+  }
+  template<children::required::Iterator _> auto Iterator<_>::operator--() -> Iterator & {
+    --subiterator;
+    return *this;
+  }
+  template<children::required::Iterator _> auto Iterator<_>::operator--(int) -> Iterator {
+    Iterator old{*this};
+    operator--();
+    return old;
+  }
+}
+#endiv

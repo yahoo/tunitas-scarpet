@@ -17,6 +17,7 @@ namespace tunitas::scarpet::drrs {
     using ancestor = record::Prototype;
   public:
     Record() = default;
+    inline Record(std::string text) : text{text} { }
     std::string text;
   };
 }

@@ -19,8 +19,15 @@ namespace tunitas::scarpet::drrs {
     using ancestor = record::Prototype;
   public:
     Record() = default;
-    inline explicit Record(dns::Name target) : target{target} { }
+    inline explicit Record(dns::Name);
     dns::Name target;
   };
 }
 #endiv
+#divert <ipp>
+#import tunitas.scarpet.dns.Name
+namespace tunitas::scarpet::drrs {
+  Record<dns::PTR>::Record(dns::Name target) : target{std::move(target)} { }
+}
+#endiv
+

@@ -26,14 +26,19 @@ namespace tunitas::scarpet::dns {
 #endiv
 #divert <hpp>
 #import std.string_view
+#import std.string
 namespace tunitas::scarpet::dns::label {
   inline auto view(Label const &) -> std::string_view;
+  inline auto to_string(Label const &) -> std::string;
 }
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::dns {
   auto label::view(Label const &old) -> std::string_view {
     return std::string_view{old.data(), old.size()};
+  }
+  auto label::to_string(Label const &old) -> std::string {
+    return std::string{old.data(), old.size()};
   }
 }
 #endiv

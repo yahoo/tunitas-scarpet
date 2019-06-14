@@ -1,0 +1,52 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#include <hpp/tunitas.scarpet.dns.type.constants> // need those dns constants to name the Record<...> specializations
+namespace tunitas::scarpet::drrs::tree {
+  //
+  // The records (resource record set) at this level in the tree.
+  //
+  // It's container of variants (std::variant of all the possible resource records that we care about)
+  //
+  // The class is more more less "private to Tree" and is expected to be operated only thereby.
+  //
+  // Usage:
+  //
+  //   oh come on (hint: it's the reduced interface of std::list)
+  //   for (auto const &variant : tree.records()) {
+  //      auto const visitor = Visitor{[](Record<DAPTR> const &) { ... },
+  //                                   [](Record<NAPTR> const &) { ... },
+  //                                   ...and so on ... };
+  //      std::visit(visitor, variant);
+  //   }
+  //
+  class Records;
+}
+#endiv
+#divert <hpp>
+#import std.deque
+#forward tunitas.scarpet.drrs.tree.Allocator
+#forward tunitas.scarpet.drrs.tree.Tree
+#import tunitas.scarpet.drrs.tree.records.Variant
+class tunitas::scarpet::drrs::tree::Records : protected std::deque<records::Variant> {
+  using ancestor = std::deque<records::Variant>;
+  friend class tree::Allocator;
+  friend class tree::Tree;
+public:
+  Records() = default;
+  Records(Records const &) = delete;
+  auto operator=(Records const &) -> Records & = delete;
+  Records(Records &&) = default;
+  auto operator=(Records &&) -> Records & = default;
+  using ancestor::empty;
+  using ancestor::size; // constant, per std::deque since forever
+  using ancestor::const_iterator;
+  using ancestor::iterator;
+  using ancestor::begin;
+  using ancestor::end;
+};
+// Every user of tree::Records will need these sooner or later
+#import std.visit
+#import nonstd.Visitor
+#endiv

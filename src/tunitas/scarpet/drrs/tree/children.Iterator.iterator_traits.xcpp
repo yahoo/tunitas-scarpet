@@ -1,0 +1,46 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.iterator_traits
+#import std.unique_ptr
+#import std.list
+#forward tunitas.scarpet.drrs.Tree
+#forward tunitas.scarpet.drrs.tree.children.Iterator
+namespace std {
+  template<> struct iterator_traits<tunitas::scarpet::drrs::tree::children::Iterator<list<unique_ptr<tunitas::scarpet::drrs::Tree>>::iterator>>;
+  template<> struct iterator_traits<tunitas::scarpet::drrs::tree::children::Iterator<list<unique_ptr<tunitas::scarpet::drrs::Tree>>::const_iterator>>;
+}
+#endiv
+#divert <hpp>
+#import std.bidirectional_iterator_tag
+#import std.ptrdiff_t
+template<> struct std::iterator_traits<tunitas::scarpet::drrs::tree::children::Iterator<std::list<std::unique_ptr<tunitas::scarpet::drrs::Tree>>::iterator>> {
+  // New School
+  using Value = tunitas::scarpet::drrs::Tree;
+  using Difference = std::ptrdiff_t;
+  using Pointer = void; // can't take or return pointers to these things
+  using Reference = Value &;
+  using Category = std::bidirectional_iterator_tag;
+  // old_school
+  using value_type = Value;
+  using difference_type = Difference;
+  using pointer = Pointer;
+  using reference = Reference;
+  using iterator_category = Category;
+};
+template<> struct std::iterator_traits<tunitas::scarpet::drrs::tree::children::Iterator<std::list<std::unique_ptr<tunitas::scarpet::drrs::Tree>>::const_iterator>> {
+  // New School
+  using Value = tunitas::scarpet::drrs::Tree const;
+  using Difference = std::ptrdiff_t;
+  using Pointer = void; // can't take or return pointers to these things
+  using Reference = Value const &;
+  using Category = std::bidirectional_iterator_tag;
+  // old_school
+  using value_type = Value;
+  using difference_type = Difference;
+  using pointer = Pointer;
+  using reference = Reference;
+  using iterator_category = Category;
+};
+#endiv

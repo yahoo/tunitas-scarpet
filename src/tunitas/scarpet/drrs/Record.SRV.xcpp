@@ -21,6 +21,15 @@ namespace tunitas::scarpet::drrs {
     };
   public:
     Record() = default;
+    // Though pass by reference here, but the endpoint will be copied in the ancestor's constructor
+    inline Record(Weight, Priority, dns::Name const &endpoint);
   };
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::drrs {
+  Record<dns::SRV>::Record(Weight weight, Priority priority, dns::Name const &endpoint)
+    : ancestors::Endpoint{weight, priority, endpoint}
+  { }
 }
 #endiv

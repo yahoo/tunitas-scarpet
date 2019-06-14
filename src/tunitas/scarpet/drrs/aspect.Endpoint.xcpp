@@ -64,12 +64,12 @@ namespace tunitas::scarpet::drrs::aspect {
   template<aspect::required::Field _> Endpoint<_>::Endpoint(Weight weight, Priority priority, Field const &field)
     : weight{weight}
     , priority{priority}
-    , endpoint{endpoint}
+    , endpoint{field}
   { }
   template<aspect::required::Field _> Endpoint<_>::Endpoint(Weight weight, Priority priority, Field &&field)
     : weight{weight}
     , priority{priority}
-    , endpoint{std::forward<Field>(endpoint)}
+    , endpoint{std::forward<Field>(field)}
   { }
 }
 #endiv

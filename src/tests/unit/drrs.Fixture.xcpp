@@ -63,22 +63,38 @@ namespace tests::unit::drrs {
     CPPUNIT_ASSERT(sizeof (subject)); // yup, it constructed
   }
 }
+#import tests.unit.drrs.Record
+#import tests.unit.drrs.Tree
+#import tests.unit.drrs.Allocator
 #import rigging.suite.io
 auto tests::unit::drrs::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"drrs"};
   {
-    Stream rec{"record"};
-    using namespace tunitas::scarpet::dns::type::constants;
-    rec << call("DAPTR", &Fixture::test_record<DAPTR>)
-        << call("NAPTR", &Fixture::test_record<NAPTR>)
-        << call("PTR", &Fixture::test_record<PTR>)
-        << call("TXT", &Fixture::test_record<TXT>)
-        << call("SRV", &Fixture::test_record<SRV>)
-        << call("URI", &Fixture::test_record<URI>)
-      ;
-    series << move(rec);
+    Stream use{"usage"};
+    {
+      Stream rec{"record"};
+      using namespace tunitas::scarpet::dns::type::constants;
+      rec << call("DAPTR", &Fixture::test_record<dns::DAPTR>)
+          << call("NAPTR", &Fixture::test_record<dns::NAPTR>)
+          << call("PTR", &Fixture::test_record<dns::PTR>)
+          << call("TXT", &Fixture::test_record<dns::TXT>)
+          << call("SRV", &Fixture::test_record<dns::SRV>)
+          << call("URI", &Fixture::test_record<dns::URI>)
+        ;
+      use << move(rec);
+    }
+    series << move(use);
   }
+  series << add(Record<dns::DAPTR>::suite())
+         << add(Record<dns::NAPTR>::suite())
+         << add(Record<dns::PTR>::suite())
+         << add(Record<dns::TXT>::suite())
+         << add(Record<dns::SRV>::suite())
+         << add(Record<dns::URI>::suite())
+         << add(Tree::suite())
+         << add(Allocator::suite())
+              ;
   return finalize(series);
 }
 #endiv

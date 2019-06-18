@@ -68,32 +68,40 @@ app::publish::exception::Usage::Usage(std::string const &NAME, sys::exits::Code 
 namespace app::publish::exception {
   auto Usage::format(std::string const &NAME) -> std::string {
     std::ostringstream buf;
-    buf << "usage: " << NAME << " [...options...]\n"
+    buf << "Publish the DID Document (DD) into the indicated DID Document Storage Service (DDSS).\n"
+        << '\n'
+        << "usage: " << NAME << " [...options...]\n"
         << "\n"
         << "DID Document (DD) Options\n"
+        << '\n'
         << "--did-document=FILEPATH                 where GUESS is a filepath with a '.json' or a '.zone' suffix\n"
         << "    --document=FILEPATH                 e.g. " << examples::DOCUMENT_JSON << '\n'
         << "         --doc=FILEPATH                 or " << examples::DOCUMENT_ZONE << '\n'
+        << '\n'
         << "--did-document-json=FILEPATH            the FILEPATH is the DID Document, it must contain DID-schema JSON\n"
         << "    --document-json=FILEPATH            e.g. " << examples::DOCUMENT_JSON << '\n'
         << "             --json=FILEPATH\n"
+        << '\n'
         << "--did-document-zone=FILEPATH            the FILEPATH is the DID Document, it must contain DID-schema ZONE\n"
         << "    --document-zone=FILEPATH            e.g. " << examples::DOCUMENT_ZONE << '\n'
         << "             --zone=FILEPATH\n"
         << '\n'
         << "DID Document Storage Service (DDSS) Options\n"
+        << '\n'
         << "--did-document-storage-service=FQDN     the FQDN into which the DID document is to be installed on the name server\n"
         << "                        --ddss=FQDN     e.g. " << examples::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN << '\n'
         << "                  --did-domain=FQDN     same thing\n"
         << "                      --domain=FQDN     as such\n"                 
         << '\n'
         << "Name Server (NS) Options\n"
+        << '\n'
         << "--name-server-update-secret=FILEPATH    the FILEPATH contains the secret secret that allows update of the name server\n"
         << "            --update-secret=FILEPATH    e.g. " << examples::UPDATE_SECRET_FILEPATH << '\n'
         << "                   --secret=FILEPATH\n"
-        << "--name-server=FQDN                      the name server into which the DID document will be updated\n"
-        << "     --server=FQDN                      e.g. " << examples::NAME_SERVER << '\n'
-        << "         --ns=FQDN\n"
+        << '\n'
+        << "--name-server=HOSTNAME                  the name server into which the DID document will be updated\n"
+        << "     --server=HOSTNAME                  this server must be a primary mater for the zone\n"
+        << "         --ns=HOSTNAME                  e.g. " << examples::NAME_SERVER << '\n'
         << '\n'
         << "General Options:\n"
         << "--usage, --help, -h                     emit this message, and exit\n"

@@ -58,11 +58,14 @@ include src/app/cagen/Makefrag.am
 include src/app/diggity/Makefrag.am
 include src/app/keygen/Makefrag.am
 include src/app/publish/Makefrag.am
+include src/app/scissor/Makefrag.am
+include src/app/signify/Makefrag.am
 include src/app/zonegen/Makefrag.am
 include src/autotools/autoconf/Makefrag.am
 include src/mod/scarpet/Makefrag.am
 include src/tests/unit/Makefrag.am
 include src/tunitas/scarpet/Makefrag.am
+include src/tunitas/scarpet/pki/Makefrag.am
 include src/want/Makefrag.am
 
 bin_PROGRAMS = \
@@ -70,11 +73,14 @@ bin_PROGRAMS = \
   $(bin_did_diggity) \
   $(bin_did_keygen) \
   $(bin_did_publish) \
+  $(bin_did_scissor) \
+  $(bin_did_signify) \
   $(bin_did_zonegen) \
   $(end)
 noinst_LTLIBRARIES = \
   $(lib_libautotools_autoconf_la) \
   $(lib_libautotools_autoconf_a_b_la) \
+  $(lib_libtunitas_scarpet_pki_la) \
   $(lib_libwant_la) \
   $(lib_libapp_la) \
   $(end)
@@ -113,6 +119,8 @@ include tests/cagen/Makefrag.am
 include tests/diggity/Makefrag.am
 include tests/keygen/Makefrag.am
 include tests/publish/Makefrag.am
+include tests/scissor/Makefrag.am
+include tests/signify/Makefrag.am
 include tests/unit/Makefrag.am
 include tests/zonegen/Makefrag.am
 
@@ -131,6 +139,8 @@ XFAIL_TESTS = \
   $(tests_cagen_XFAIL_TESTS) \
   $(tests_publish_XFAIL_TESTS) \
   $(tests_diggity_XFAIL_TESTS) \
+  $(tests_scissor_XFAIL_TESTS) \
+  $(tests_signify_XFAIL_TESTS) \
   $(tests_zonegen_XFAIL_TESTS) \
   $(ENABLED_SERVER_XFAIL_TESTS)
   $(end)
@@ -140,6 +150,8 @@ TESTS = \
   $(tests_cagen_TESTS) \
   $(tests_publish_TESTS) \
   $(tests_diggity_TESTS) \
+  $(tests_scissordiggity_TESTS) \
+  $(tests_signify_TESTS) \
   $(tests_zonegen_TESTS) \
   $(ENABLED_SERVER_TESTS)
   $(end)

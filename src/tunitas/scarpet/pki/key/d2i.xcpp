@@ -1,0 +1,43 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import nonstd.span
+#forward tunitas.scarpet.pki.key.Activated
+namespace tunitas::scarpet::pki::key::d2i {
+  //
+  // Simplified d2i interface.
+  // So that these functions can be friended easily, e.g. in key::Activated
+  //
+  // Usage:
+  //
+  //   oh come on
+  //
+  inline auto PrivateKey(nonstd::span<unsigned char const>) -> Activated;
+  inline auto PublicKey(nonstd::span<unsigned char const>) -> Activated;
+}
+#endiv
+#divert <ipp>
+#import openssl.functions
+#import tunitas.scarpet.pki.key.Activated
+namespace tunitas::scarpet::pki::key {
+  //
+  // Modern C++                OpenSSL             
+  //
+  // pointer-to-const          address-of-pointer
+  // unsigned char const *     unsigned char **
+  //
+  // size_t                    signed long
+  //
+  auto d2i::PrivateKey(nonstd::span<unsigned char const> source) -> Activated {
+    unsigned char const *p = source.data();
+    long l = source.size();
+    return Activated{::d2i_PrivateKey(EVP_PKEY_EC, nullptr, &p, l)};
+  }
+  auto d2i::PublicKey(nonstd::span<unsigned char const> source) -> Activated {
+    unsigned char const *p = source.data();
+    long l = source.size();
+    return Activated{::d2i_PublicKey(EVP_PKEY_EC, nullptr, &p, l)};
+  }
+}
+#endiv

@@ -15,5 +15,7 @@ did-generate-request
 #
 did-diggity
 did-publish
+did-scissor
+did-signify
 did-zonegen
 #end

@@ -1,0 +1,28 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::pki::key {
+  //
+  // An "activated" key (openssl::evp::PKey)
+  // A separate type so that it can have its own ADL lookup
+  //
+  // Usage:
+  //
+  //   just like evp::PKey
+  //
+  class Activated;
+}
+#endiv
+#divert <hpp>
+#import openssl.evp.PKey
+#import tunitas.scarpet.pki.key.d2i
+class tunitas::scarpet::pki::key::Activated : public openssl::evp::PKey {
+  using ancestor = openssl::evp::PKey;
+  friend auto d2i::PrivateKey(nonstd::span<unsigned char const>) -> Activated;
+  friend auto d2i::PublicKey(nonstd::span<unsigned char const>) -> Activated;
+  inline explicit Activated(EVP_PKEY *pointer) : ancestor{pointer} { }
+public:
+  Activated() = default;
+};
+#endiv

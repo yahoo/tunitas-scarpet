@@ -1,0 +1,21 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import std.string
+#import std.string_literals
+#import std.filesystem.path
+namespace app::well_known {
+  using namespace std::literals;
+  inline
+  namespace constants {
+    inline auto const RESOLV_CONF = std::filesystem::path{"/etc/resolv.conf"};
+    inline auto const AUTHGEN = "did-authgen"s;
+    inline auto const DIGGITY = "did-diggity"s;
+    inline auto const PUBLISH = "did-publish"s;
+    inline auto const SCISSOR = "did-scissor"s;
+    inline auto const SIGNIFY = "did-signify"s;
+    inline auto const ZONEGEN = "did-zonegen"s;
+  }
+}
+#endiv

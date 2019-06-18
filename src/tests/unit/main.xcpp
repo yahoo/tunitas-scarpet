@@ -3,20 +3,20 @@
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <cpp>
 #import rigging.bench.Main
-#import tests.unit.crypto.Fixture
 #import tests.unit.error.Fixture
 #import tests.unit.exception.Fixture
 #import tests.unit.options.Fixture
+#import tests.unit.pki.Fixture
 #import tests.unit.scarpet.Fixture
 #import tests.unit.url.Fixture
 #import tests.unit.want.Fixture
 auto main(int argc, char **argv) -> int {
   using namespace rigging::bench;
   using namespace tests::unit;
-  Main remain(crypto::Fixture::suite(),
-              error::Fixture::suite(),
+  Main remain(error::Fixture::suite(),
               exception::Fixture::suite(),
               options::Fixture::suite(),
+              pki::Fixture::suite(),
               scarpet::Fixture::suite(),
               url::Fixture::suite(),
               want::Fixture::suite());

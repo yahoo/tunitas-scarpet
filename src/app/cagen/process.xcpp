@@ -6,7 +6,7 @@
 #import sys.exits.Code
 namespace app::cagen {
   //
-  // Process ... generate that keypair
+  // Process ... generate the self-signed certificate, and its key.
   //
   // Usage:
   //

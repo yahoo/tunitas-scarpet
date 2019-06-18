@@ -6,7 +6,7 @@
 #import sys.exits.Code
 namespace app::keygen {
   //
-  // Process ... generate that keypair
+  // Process ... generate that key pair
   //
   // Usage:
   //
@@ -24,11 +24,11 @@ namespace app::keygen {
 #import openssl.evp.PKey
 #import openssl.pem.to_string // includes pem::pub::to_string(...)
 #import sys.exits.constants
-#import tunitas.scarpet.crypto.key.generate
-#import tunitas.scarpet.crypto.key.to_string
-#import tunitas.scarpet.crypto.key.privat
-#import tunitas.scarpet.crypto.key.publik
-#import tunitas.scarpet.crypto.key.Pair
+#import tunitas.scarpet.pki.key.generate
+#import tunitas.scarpet.pki.key.to_string
+#import tunitas.scarpet.pki.key.privat
+#import tunitas.scarpet.pki.key.publik
+#import tunitas.scarpet.pki.key.Pair
 #import tunitas.scarpet.exception.Coding
 #import want.stream.duo.Files
 #import want.stream.duo.gang
@@ -55,7 +55,7 @@ auto app::keygen::process(Configuration const &cfg) -> sys::exits::Code {
     }
   case Encoding::DER_BASE64URL:
     {
-      using namespace tunitas::scarpet::crypto::key;
+      using namespace tunitas::scarpet::pki::key;
       auto generated = generate<Pair>();
       debug(cfg) << to_string(generated) << '\n';
       out << gang(to_string(privat(generated)), to_string(publik(generated)));
@@ -79,7 +79,7 @@ auto app::keygen::detail::strip(std::string source) -> std::string {
   std::smatch capture;
   std::cerr << "DEBUG " << source << '\n';
   if (!std::regex_match(source, capture, ARMORED)) {
-    // [[FIXTHIS]] there has to be a more relevant exception than this; maybe strip(...) should be in namespace tunitas::scarpet::crypto
+    // [[FIXTHIS]] there has to be a more relevant exception than this; maybe strip(...) should be in namespace tunitas::scarpet::pki
     throw tunitas::scarpet::exception::Crypto{"std::match"};
   }
   auto body = capture[1].str();

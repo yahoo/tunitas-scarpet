@@ -65,10 +65,27 @@ app::diggity::exception::Usage::Usage(std::string const &NAME, sys::exits::Code 
 #divert <cpp>
 #import std.ostringstream
 #import app.diggity.examples
+#import app.well_known
 namespace app::diggity::exception {
   auto Usage::format(std::string const &NAME) -> std::string {
     std::ostringstream buf;
-    buf << "usage: " << NAME << " [...options...]\n"
+    buf << "Look up (dig up, resolve) the DID Document behind the Decentralized Identifier (DID).\n"
+        << "The DID Document is disgorged onto the standard output.\n"
+        << '\n'
+        << "usage: " << NAME << " [...options...] did { ...did... }\n"
+        << '\n'
+        << "DID (Decentralized Identifier):\n"
+        << "  " << examples::DID0 << '\n'
+        << "  " << examples::DID1 << '\n'
+        << "  " << examples::DID2 << '\n'
+        << "  " << examples::DID3 << '\n'
+        << "  " << examples::DID4 << '\n'
+        << "\n"
+        << "Lookup (Digging) Options:\n"
+        << '\n'
+        << "--name-server=HOSTNAME               direct the query to this name server\n"
+        << "     --server=HOSTNAME               the default is the servers in " << well_known::RESOLV_CONF << "\n"
+        << "         --ns=HOSTNAME               e.g. " << examples::NAME_SERVER << '\n'
         << "\n"
         << "General Options:\n"
         << "--usage, --help, -h                  emit this message, and exit\n"

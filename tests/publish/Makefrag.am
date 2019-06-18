@@ -26,6 +26,7 @@ tests_publish_TESTS = \
   tests/publish/option.name-server-update-secret-file.test \
   tests/publish/option.update-secret-file.test \
   tests/publish/option.secret-file.test \
+  tests/publish/option.secret-value.test \
   tests/publish/option.name-server.test \
   tests/publish/option.server.test \
   tests/publish/option.ns.test \

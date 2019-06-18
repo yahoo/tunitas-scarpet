@@ -4,7 +4,7 @@
 #divert <fpp>
 namespace app::cagen::exception {
   //
-  // The cagen message, as an application exception
+  // The cagen usage message, as an application exception
   //
   // Usage: (sic)
   //
@@ -67,28 +67,36 @@ app::cagen::exception::Usage::Usage(std::string const &NAME, sys::exits::Code co
 namespace app::cagen::exception {
   auto Usage::format(std::string const &NAME) -> std::string {
     std::ostringstream buf;
-    buf << "usage: " << NAME << " [...options...] [...fields...]\n"
-        << "\n"
-        << "X.509 Field Values\n"
-        << "  C=country                        ISO 3166-1 alpha-2)\n"
-        << "  ST=state                         full name, do not abbreviate\n"
-        << "  L=locality                       full name, do not abbreviate\n"
-        << "  O=organization\n"
-        << "  OU=organizatioal unit            optional\n"
+    buf << "Generate a Certificate Authority (CA) as a self-signed certificate\n"
+        << '\n'
+        << "usage: " << NAME << " [...options...] [...fields...]\n"
+        << '\n'
+        << "X.509 Field Values:\n"
+        << '\n'
+        << "  C=country                        optional, ISO 3166-1 alpha-2)\n"
+        << "  ST=state                         optional, full name, do not abbreviate\n"
+        << "  L=locality                       optional, full name, do not abbreviate\n"
+        << "  O=organization                   optional, legal business name, should be canonical\n"
+        << "  OU=organizational unit           optional\n"
         << "  CN=common name                   leave blank, this is not helpful in a Certificate Authority\n"
 #if 0
       // [[FIXTHIS]] not yet ... this is not yet a field in module-openssl <= 0.3.0-0.devel
         << "  eA=email                         leave blank, this is not helpful in a Certificate Authority\n"
 #endif
-        << "\n"
+        << '\n'
         << "Generation Options\n"
+        << '\n'
         << "--generate-common-name             generate the common name with 128-bits\n"
         << "         --generate-cn             this option precludes the use of CN=name\n"
         << "               --gencn\n"
+        << '\n'
         << "--private-side=FILEPATH            write the private key to the FILEPATH\n"
-        << "                                   also --private-key=FILEPATH or --private=FILEPATH\n"
+        << " --private-key=FILEPATH            simpler\n"
+        << "     --private=FILEPATH            simplest\n"
+        << '\n'
         << "--public-side=FILEPATH             write the public certificate to the FILEPATH\n"
-        << "                                   also --public-crt=FILEPATH or --public=FILEPATH\n"
+        << " --public-crt=FILEPATH             simpler\n"
+        << "     --public=FILEPATH             simplest\n"
         << '\n'
         << "General Options:\n"
         << "--usage, --help, -h                emit this message, and exit\n"

@@ -1,0 +1,6 @@
+# see run.01.test, run.02.test
+*.ca.crt.pem
+*.ca.key.pem
+*.req.pem
+*.key.pem
+

@@ -7,8 +7,8 @@
 #import tunitas.scarpet.options.Arguments
 namespace app::diggity {
   //
-  // Process ... the diggity.
-  // Go digging to get the DID document.
+  // Process ... perform the lookup (the digging)
+  // Go digging to get the DID Document.
   // Display what was discovered (the document or an error)
   //
   // Usage:

@@ -5,43 +5,19 @@
 #import std.string
 namespace app::cagen {
   //
-  // Generate a 128-bit common name
-  // Must be no more than 64 characters, per RFC 2459 (ahem, page 81)
-  //
-  // This is just two (2) UUIDs without the dashes; concatenated.
-  // Or else reading from /dev/urandom directly
-  //
-  // Example:
-  //
-  //                       111111111122222222223333333333444444444455555555556666
-  //   counting: 0123456789012345678901234567890123456789012345678901234567890123
-  //             |                                                              |
-  //             v                                                              v
-  //   specimen: 28c3d85dcf2a481cb403de6db136f136d5ad3e1b68164e14986c744b54be6a81
+  // Generate a 256-bit common name
+  // This is now available in the main package.  See the documentariat therein.
   //
   // Usage:
   //
   //   auto name = generate_common_name()
   //
-  inline auto generate_common_name() -> std::string;
+  [[deprecated("call tunitas::scarpet::pki::cn::generate()")]] inline auto generate_common_name() -> std::string;
 }
 #endiv
 #divert <ipp>
-#import std.move
-#import std.runtime_error
-#import uuid.unparse
-#import uuid.generate.random
+#import tunitas.scarpet.pki.cn.generate
 auto app::cagen::generate_common_name() -> std::string {
-  std::string ret;
-  unparse(uuid::generate::random(), ret);
-  unparse(uuid::generate::random(), ret);
-  for (std::string::size_type pos; ret.size() && std::string::npos != (pos = ret.rfind('-')); ) {
-    ret.erase(pos + ret.begin());
-  }
-  if (64 != ret.size()) {
-    // This is unexpected and troublesome.
-    throw std::runtime_error{"not 128 bits"};
-  }
-  return std::move(ret);
+  return tunitas::scarpet::pki::cn::generate();
 }
 #endiv

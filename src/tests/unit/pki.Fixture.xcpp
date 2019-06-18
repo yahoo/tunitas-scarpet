@@ -1,0 +1,37 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::pki { class Fixture; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+class tests::unit::pki::Fixture : public cppunit::test::Fixture {
+public:
+  auto test_cn_generate() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.pki.cn.generate
+auto tests::unit::pki::Fixture::test_cn_generate() -> void {
+  auto name = ::tunitas::scarpet::pki::cn::generate();
+  CPPUNIT_ASSERT(64 == name.size());
+}
+#import tests.unit.pki.key.Fixture
+#import rigging.suite.io
+auto tests::unit::pki::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series("pki");
+  {
+    Stream cnn("cn");
+    cnn << call("generate", &Fixture::test_cn_generate)
+      ;
+    series << add(cnn.release());
+  }
+  series << add<key::Fixture>()
+    ;
+  return finalize(series);
+}
+#endiv

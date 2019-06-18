@@ -4,7 +4,7 @@
 #divert <fpp>
 namespace app::keygen::exception {
   //
-  // The keygen message, as an application exception
+  // The keygen usage message, as an application exception
   //
   // Usage: (sic)
   //
@@ -67,9 +67,12 @@ app::keygen::exception::Usage::Usage(std::string const &NAME, sys::exits::Code c
 namespace app::keygen::exception {
   auto Usage::format(std::string const &NAME) -> std::string {
     std::ostringstream buf;
-    buf << "usage: " << NAME << " [...options...]\n"
-        << "\n"
-        << "Presentation Options\n"
+    buf << "Generate a key pair\n"
+        << '\n'
+        << "usage: " << NAME << " [...options...]\n"
+        << '\n'
+        << "Presentation Options:\n"
+        << '\n'
         << "--encoding=der+base64url           use DER (Distinguished Encoding Rules) with BASE64URL (urlsafe) encoding\n"
         << "                                   this is the default\n"
         << "--encoding=pem                     use PEM (Privacy-Enhanced Mail) Encoding\n"
@@ -78,11 +81,15 @@ namespace app::keygen::exception {
         << "--keep-armor, -a                   keeps the wrappers -----BEGIN ... KEY----- -----END ... KEY-----\n"
         << "                                   only applicable for --encoding=pem\n"
         << '\n'
-        << "Generation Options\n"
+        << "Generation Options:\n"
+        << '\n'
         << "--private-side=FILEPATH            write the private key to the FILEPATH\n"
-        << "                                   also --private-key=FILEPATH or --private=FILEPATH\n"
+        << " --private-key=FILEPATH            simpler\n"
+        << "     --private=FILEPATH            simplest\n"
+        << '\n'
         << "--public-side=FILEPATH             write the public key (the DID) to the FILEPATH\n"
-        << "                                   also --public-key=FILEPATH or --public=FILEPATH\n"
+        << " --public-key=FILEPATH             simpler\n"
+        << "    --public=FILEPATH              simplest\n"
         << '\n'
         << "General Options:\n"
         << "--usage, --help, -h                emit this message, and exit\n"

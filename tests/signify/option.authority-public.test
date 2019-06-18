@@ -1,0 +1,5 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+# the --quiet option enters quiet mode, but we need to dry-run this
+${exe?} --quiet -y --private=/dev/null.private --authority-public=/dev/null.public --request=/dev/null.request
+test 0 == $?

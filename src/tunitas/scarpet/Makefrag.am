@@ -5,6 +5,7 @@
 
 lib_libtunitas_scarpet_la = lib/libtunitas-scarpet.la
 lib_libtunitas_scarpet_la_LIBADD = \
+  $(lib_libtunitas_scarpet_pki_la) \
   $(lib_libwant_la) \
   -ltunitas-app \
   -lopenssl-module \
@@ -16,22 +17,6 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/namespace.cpp \
   obj/src/tunitas/scarpet/Configuration.cpp \
   obj/src/tunitas/scarpet/Program.cpp \
-  \
-  obj/src/tunitas/scarpet/crypto/namespace.cpp \
-  obj/src/tunitas/scarpet/crypto/key/namespace.cpp \
-  obj/src/tunitas/scarpet/crypto/key/Privat.cpp \
-  obj/src/tunitas/scarpet/crypto/key/Publik.cpp \
-  obj/src/tunitas/scarpet/crypto/key/Pair.cpp \
-  obj/src/tunitas/scarpet/crypto/key/Activated.cpp \
-  obj/src/tunitas/scarpet/crypto/key/publik.cpp \
-  obj/src/tunitas/scarpet/crypto/key/privat.cpp \
-  obj/src/tunitas/scarpet/crypto/key/pair.cpp \
-  obj/src/tunitas/scarpet/crypto/key/from_string.cpp \
-  obj/src/tunitas/scarpet/crypto/key/to_string.cpp \
-  obj/src/tunitas/scarpet/crypto/key/to_stream.cpp \
-  obj/src/tunitas/scarpet/crypto/key/generate.cpp \
-  obj/src/tunitas/scarpet/crypto/key/detail.Pointer.cpp \
-  obj/src/tunitas/scarpet/crypto/key/d2i.cpp \
   \
   obj/src/tunitas/scarpet/error/namespace.cpp \
   obj/src/tunitas/scarpet/error/Condition.cpp \

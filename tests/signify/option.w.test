@@ -1,0 +1,5 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+# enters warning mode, but we need to dry-run this
+${exe?} -w -y --private=/dev/null.private --public=/dev/null.public --request=/dev/null.request
+test 0 == $?

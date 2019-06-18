@@ -1,0 +1,70 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import app.signify.Configuration
+#import sys.exits.Code
+namespace app::signify {
+  //
+  // Process ... sign the CSR, return the certificate
+  //
+  // Usage:
+  //
+  //   ...oh come on...
+  //
+  auto process(Configuration const &) -> sys::exits::Code;
+}
+#endiv
+#divert <cpp>
+#import openssl.error.Code
+#import openssl.evp.PKey
+#import openssl.pem.load
+#import openssl.pem.to_string
+#import openssl.time.literals
+#import openssl.time.now
+#import openssl.x509.Crt
+#import openssl.x509.Req
+#import openssl.x509.serial.generate
+#import std.error_code
+#import std.filesystem.path
+#import std.string_view_literals
+#import sys.exits.constants
+#import sys.posix.exists // equivalently: std::filesystem::exists
+auto app::signify::process(Configuration const &cfg) -> sys::exits::Code try {
+  using namespace openssl;
+  auto ca_key = pem::load<evp::PKey>(*cfg.authority_private_side);
+  auto ca_crt = pem::load<x509::Crt>(*cfg.authority_public_side);
+  auto their_csr = pem::load<x509::Req>(*cfg.request);
+  x509::Crt their_crt;
+  their_crt.set_version(x509::crt::Version{2}); // x509v3
+  their_crt.set_serialNumber(x509::serial::generate());
+  their_crt.set_issuer_name(ca_crt.get_subject_name());
+  their_crt.set_subject_name(their_csr.get_subject_name()); // [[FIXTHIS]] validate these fields before signing anything!
+  using namespace openssl::time::literals;
+  auto const now = openssl::time::now();
+  auto const timespan = 2_weeks; // [[FIXTHIS]] maybe this should be a configurable interval
+  their_crt.set_notBefore(now);
+  their_crt.set_notAfter(now + timespan);
+  their_crt.set_pubkey(their_csr.get_pubkey());
+  their_crt.sign(ca_key, EVP_sha256());
+  // [[FIXTHIS]] write to one of those fancy File objects that goes to stdout or a file depending
+  std::cout << pem::to_string(their_crt);
+  return sys::exits::OK;
+} catch (std::error_code const &ec) {
+  if (openssl::error::Code::PEM != ec) {
+    throw;
+  }
+  std::cerr << NAME << ": error, bad PEM encoding among the input files\n";
+  return sys::exits::FAIL;
+} catch (std::system_error const &ec) {
+  auto present = [](std::filesystem::path const &candidate) -> std::string_view {
+                   return sys::posix::exists(candidate) ? "present"sv :  "absent"sv;
+                 };
+  error(cfg) << ec.what() << " among the files\n"
+           << "  [in]ca key: " << *cfg.authority_private_side << " is " << present(*cfg.authority_private_side) << '\n'
+           << "  [in]ca crt: " << *cfg.authority_public_side << " is " << present(*cfg.authority_public_side) << '\n'
+           << "  [in]csr:    " << *cfg.request << " is " << present(*cfg.request) << '\n'
+    ;
+  return sys::exits::FAIL;
+}
+#endiv

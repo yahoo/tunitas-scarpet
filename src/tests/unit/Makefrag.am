@@ -15,12 +15,12 @@ check_bin_unit_MODULES = $(call TF_SOURCEStoMODULES, $(check_bin_unit_SOURCES))
 check_bin_unit_SOURCES = \
   obj/src/tests/unit/namespace.cpp \
   obj/src/tests/unit/main.cpp \
-  obj/src/tests/unit/crypto.Fixture.cpp \
-  obj/src/tests/unit/crypto.key.Fixture.cpp \
-  obj/src/tests/unit/crypto.key.Activated.cpp \
-  obj/src/tests/unit/crypto.key.Pair.cpp \
-  obj/src/tests/unit/crypto.key.Privat.cpp \
-  obj/src/tests/unit/crypto.key.Publik.cpp \
+  obj/src/tests/unit/pki.Fixture.cpp \
+  obj/src/tests/unit/pki.key.Fixture.cpp \
+  obj/src/tests/unit/pki.key.Activated.cpp \
+  obj/src/tests/unit/pki.key.Pair.cpp \
+  obj/src/tests/unit/pki.key.Privat.cpp \
+  obj/src/tests/unit/pki.key.Publik.cpp \
   obj/src/tests/unit/error.Fixture.cpp \
   obj/src/tests/unit/error.Category.cpp \
   obj/src/tests/unit/exception.Fixture.cpp \

@@ -10,6 +10,7 @@ lib_libapp_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libapp_la_SOURCES))
 lib_libapp_la_SOURCES = \
   obj/src/app/namespace.cpp \
   obj/src/app/Configuration.cpp \
+  obj/src/app/well_known.cpp \
   \
   obj/src/app/exception/namespace.cpp \
   obj/src/app/exception/Bad_Domain.cpp \

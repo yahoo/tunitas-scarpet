@@ -1,0 +1,47 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.app.options.Args
+#import sys.exits.Code
+namespace app::signify {
+  using Args = tunitas::app::options::Args;
+  auto main(Args) -> sys::exits::Code;
+}
+#endiv
+#divert <cpp>
+auto main(int cc, char *vv[]) -> int {
+  return app::signify::main(app::signify::Args(cc, vv));
+}
+#import app.signify.Configuration
+#import app.signify.options.Parser
+#import app.signify.options.Specification
+#import app.signify.process
+#import tunitas.scarpet.exception.aspect.Exiting
+#import sys.exits.constants
+#import std.exception
+auto app::signify::main(Args av) -> sys::exits::Code try {
+  auto program = Configuration::Program{av.front()};
+  auto cfg = Configuration{program};
+  auto spc = options::Specification{};
+  auto parser = options::Parser{spc, cfg};
+  auto parsed = parser(av);
+  if (!ok(parsed)) {
+    // [[FIXTHIS]] the error_code does not provide much fidelity on the problem ... "there was some problem"
+    error(cfg) << "could not grok the options\n";
+    return sys::exits::FAIL;
+  }
+  if (cfg.dry_run_mode) {
+    notice(cfg) << "not doing anything in dry-run mode\n";
+  } else {
+    return process(cfg);
+  }
+  return sys::exits::OK;
+} catch (tunitas::scarpet::exception::aspect::Exiting const &e) {
+  e.stream() << e.what() << '\n';
+  return e.code();
+} catch (std::exception const &e) {
+  std::cerr << NAME << ": error, unexpected " << e.what() << '\n';
+  return sys::exits::SOFTWARE;
+}
+#endiv

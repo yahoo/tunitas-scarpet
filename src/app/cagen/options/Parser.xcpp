@@ -153,17 +153,17 @@ namespace app::cagen::options {
         return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
       }
     }
+    //
+    // The recommendation is to not use CN on the authgen gambit.
+    // But if the luser insists upon supplying the CN then allow it when it is unambiguous.
+    //
     if (cfg.generate_common_name && cfg.fields.CN.value) {
-      /* [[FIXTHIS]] */ ::options::error(cfg) << "the options cannot have both --generate-common-name and also CN=<name>\n";
-        return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+      /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "the options cannot have both --generate-common-name and also CN=<name>\n";
+      return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
     }
     if (cfg.generate_common_name) {
+      notice(cfg) << "the use of CN is gently contra-indicated when generating a trust anchor\n";
       cfg.fields.CN.value = generate_common_name();
-    };
-    if (!cfg.fields.CN.value) {
-      notice(cfg) << "either --generate-common-name or CN=<name> is required, the other fields are optional\n";
-      /* [[FIXTHIS]] ee(cfg) */::options::error(cfg) << "the certificate would be empty\n";
-      return Result{std::error_code{error::Code::OPTIONS}};
     }
     if (!cfg.public_side || !cfg.private_side) {
       if (!cfg.public_side) {

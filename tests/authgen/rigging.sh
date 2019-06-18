@@ -3,4 +3,4 @@
 #
 __topdir=${0%/*}/../..
 export PATH="${__topdir?}/bin:${__topdir?}/sbin:$PATH"
-exe=did-cagen
+exe=did-authgen

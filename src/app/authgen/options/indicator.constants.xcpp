@@ -2,11 +2,11 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <hpp>
-#import tunitas.scarpet.options.Encoding
-namespace app::cagen::defaults {
-  inline namespace constants {
-    inline auto const ENCODING = ::tunitas::scarpet::options::Encoding::DER_BASE64URL;
-    inline auto const STRIP_ARMOR = true;
-  }
+#import app.authgen.options.indicator // matryoshka
+#import app.options.indicator.constants
+namespace app::authgen::options::indicator {
+  inline auto const PRIVATE_SIDE = Code::CODE_254;
+  inline auto const PUBLIC_SIDE = Code::CODE_253;
+  inline auto const GENERATE_COMMON_NAME = Code::CODE_252;
 }
 #endiv

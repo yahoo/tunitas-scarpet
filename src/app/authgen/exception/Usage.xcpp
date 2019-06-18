@@ -2,9 +2,9 @@
 // Copyright 2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace app::cagen::exception {
+namespace app::authgen::exception {
   //
-  // The cagen usage message, as an application exception
+  // The authgen usage message, as an application exception
   //
   // Usage: (sic)
   //
@@ -30,7 +30,7 @@ namespace app::cagen::exception {
 #import tunitas.scarpet.exception.aspect.Exiting
 #import std.exception
 #import std.string
-class app::cagen::exception::Usage
+class app::authgen::exception::Usage
   : public tunitas::scarpet::exception::aspect::Exiting,
     public tunitas::app::exception::Usage,
     public tunitas::app::exception::Messaging,
@@ -53,10 +53,10 @@ private:
 #endiv
 #divert <ipp>
 #import sys.exits.constants
-app::cagen::exception::Usage::Usage(std::string const &NAME)
+app::authgen::exception::Usage::Usage(std::string const &NAME)
   : Usage{NAME, sys::exits::OK}
 { }
-app::cagen::exception::Usage::Usage(std::string const &NAME, sys::exits::Code code)
+app::authgen::exception::Usage::Usage(std::string const &NAME, sys::exits::Code code)
   : ancestors::Usage{code}
   , ancestors::Messaging{format(NAME)}
   , ancestors::Exception{}
@@ -64,7 +64,7 @@ app::cagen::exception::Usage::Usage(std::string const &NAME, sys::exits::Code co
 #endiv
 #divert <cpp>
 #import std.ostringstream
-namespace app::cagen::exception {
+namespace app::authgen::exception {
   auto Usage::format(std::string const &NAME) -> std::string {
     std::ostringstream buf;
     buf << "Generate a Certificate Authority (CA) as a self-signed certificate\n"

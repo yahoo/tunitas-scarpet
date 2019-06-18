@@ -2,7 +2,7 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace app::cagen {
+namespace app::authgen {
   //
   // The configuration of the key generator
   //
@@ -21,7 +21,7 @@ namespace app::cagen {
 #import std.filesystem.path
 #import std.optional
 #import openssl.x509.Fields
-class app::cagen::Configuration : public app::Configuration {
+class app::authgen::Configuration : public app::Configuration {
   using ancestor = app::Configuration;
 public:
   inline explicit Configuration(Program const &);
@@ -32,7 +32,7 @@ public:
 };
 #endiv
 #divert <ipp>
-namespace app::cagen {
+namespace app::authgen {
   Configuration::Configuration(Program const &program)
     : ancestor{program}
   { }

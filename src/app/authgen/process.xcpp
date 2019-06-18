@@ -2,9 +2,9 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <hpp>
-#import app.cagen.Configuration
+#import app.authgen.Configuration
 #import sys.exits.Code
-namespace app::cagen {
+namespace app::authgen {
   //
   // Process ... generate the self-signed certificate, and its key.
   //
@@ -16,7 +16,7 @@ namespace app::cagen {
 }
 #endiv
 #divert <cpp>
-#import app.cagen.defaults
+#import app.authgen.defaults
 #import openssl.ec.generate
 #import openssl.error.Code
 #import openssl.evp.PKey
@@ -33,7 +33,7 @@ namespace app::cagen {
 #import sys.exits.constants
 #import want.stream.duo.Files
 #import want.stream.duo.gang
-auto app::cagen::process(Configuration const &cfg) -> sys::exits::Code {
+auto app::authgen::process(Configuration const &cfg) -> sys::exits::Code {
   using namespace openssl;
   auto pkey = []() -> evp::PKey {
                 evp::PKey pkey;

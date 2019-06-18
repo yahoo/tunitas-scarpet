@@ -5,6 +5,7 @@ did-keygen
 did-gen-key
 did-generate-key-pair
 #
+did-authgen
 did-cagen
 did-gen-ca
 did-generate-trust-anchor

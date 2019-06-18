@@ -3,7 +3,7 @@
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <hpp>
 #import std.string
-namespace app::cagen {
+namespace app::authgen {
   //
   // Generate a 256-bit common name
   // This is now available in the main package.  See the documentariat therein.
@@ -17,7 +17,7 @@ namespace app::cagen {
 #endiv
 #divert <ipp>
 #import tunitas.scarpet.pki.cn.generate
-auto app::cagen::generate_common_name() -> std::string {
+auto app::authgen::generate_common_name() -> std::string {
   return tunitas::scarpet::pki::cn::generate();
 }
 #endiv

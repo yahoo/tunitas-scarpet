@@ -4,23 +4,23 @@
 #divert <hpp>
 #import tunitas.app.options.Args
 #import sys.exits.Code
-namespace app::cagen {
+namespace app::authgen {
   using Args = tunitas::app::options::Args;
   auto main(Args) -> sys::exits::Code;
 }
 #endiv
 #divert <cpp>
 auto main(int cc, char *vv[]) -> int {
-  return app::cagen::main(app::cagen::Args(cc, vv));
+  return app::authgen::main(app::authgen::Args(cc, vv));
 }
-#import app.cagen.Configuration
-#import app.cagen.options.Parser
-#import app.cagen.options.Specification
-#import app.cagen.process
+#import app.authgen.Configuration
+#import app.authgen.options.Parser
+#import app.authgen.options.Specification
+#import app.authgen.process
 #import tunitas.scarpet.exception.aspect.Exiting
 #import sys.exits.constants
 #import std.exception
-auto app::cagen::main(Args av) -> sys::exits::Code try {
+auto app::authgen::main(Args av) -> sys::exits::Code try {
   auto program = Configuration::Program{av.front()};
   auto cfg = Configuration{program};
   auto spc = options::Specification{};

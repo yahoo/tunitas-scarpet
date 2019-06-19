@@ -5,7 +5,8 @@
 #import std.filesystem.path
 namespace app::publish::examples {
   inline namespace constants {
-    inline auto const UPDATE_SECRET_FILEPATH = "/etc/named/scarpet-secret.key"s;
+    inline auto const UPDATE_TSIG_KEY_FILEPATH = std::filesystem::path{"/etc/named/Kstorage.scarpet.tunitas.solutions.+157+26437.key"};
+    inline auto const UPDATE_TSIG_PRIVATE_FILEPATH = std::filesystem::path{"/etc/named/Kstorage.scarpet.tunitas.solutions.+157+26437.private"};
     // ddss = did-document-storage-service
     inline auto const NAME_SERVER = "ns1.ddss.tunitas.net."s;
     inline auto const DOCUMENT_JSON = std::filesystem::path{"/home/USER/did-document.json"};

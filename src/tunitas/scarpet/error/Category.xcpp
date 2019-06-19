@@ -45,6 +45,12 @@ namespace tunitas::scarpet::error {
       return "failure";
     case Code::OPTIONS:
       return "options";
+    case Code::BAD_UPDATE_TSIG_PRIVATE:
+      return "bad name server update secret";
+    case Code::BAD_JSON:
+      return "bad JSON"; // in a file
+    case Code::BAD_ZONE:
+      return "bad ZONE"; // in a file
     default:
       return "error " + std::to_string(code);
     }

@@ -17,6 +17,10 @@ bin_did_publish_SOURCES = \
   obj/src/app/publish/examples.cpp \
   obj/src/app/publish/Configuration.cpp \
   obj/src/app/publish/process.cpp \
+  obj/src/app/publish/tsig.load.cpp \
+  obj/src/app/publish/tsig.validate.cpp \
+  obj/src/app/publish/json.load.cpp \
+  obj/src/app/publish/zone.load.cpp \
   \
   obj/src/app/publish/exception/namespace.cpp \
   obj/src/app/publish/exception/Usage.cpp \

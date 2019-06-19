@@ -108,13 +108,13 @@ namespace app::publish::options {
           cfg.name_server = get_domain<exception::Bad_Domain>(cfg, step);
           break;
         case oi::CHR_k:
-        case oi::NAME_SERVER_UPDATE_SECRET_VALUE:
-          cfg.update_secret_value = get_secret_literal<exception::Bad_Secret>(cfg, step);
+        case oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE:
+          cfg.update_tsig_key_value = get_secret_literal<exception::Bad_Secret>(cfg, step);
           break;
         case oi::CHR_K:
-        case oi::NAME_SERVER_UPDATE_SECRET_FILEPATH:
+        case oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH:
           // Here we don't care what the filepath suffix is.
-          cfg.update_secret_file = get_filepath<exception::Bad_Filepath>(cfg, step);
+          cfg.update_tsig_key_file = get_filepath<exception::Bad_Filepath>(cfg, step);
           break;
         case oi::DID_DOCUMENT_GUESS:
           {
@@ -186,12 +186,12 @@ namespace app::publish::options {
       /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "the name server into which to load this DID Document not defined\n";
       return Result{std::error_code{error::Code::OPTIONS}};
     }
-    if (!cfg.update_secret_value && !cfg.update_secret_file) {
+    if (!cfg.update_tsig_key_value && !cfg.update_tsig_key_file) {
       notice(cfg) << "the update secret must be given literally or from a file\n";
       /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "the update secret is not defined at all\n";
       return Result{std::error_code{error::Code::OPTIONS}};
     }
-    if (cfg.update_secret_value && cfg.update_secret_file) {
+    if (cfg.update_tsig_key_value && cfg.update_tsig_key_file) {
       notice(cfg) << "the both --name-server-update-secret-value=SECRET and --name-server-update-secret-file=FILEPATH appear\n";
       /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "the update secret cannot be both from a file and literally\n";
       return Result{std::error_code{error::Code::OPTIONS}};

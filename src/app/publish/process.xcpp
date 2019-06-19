@@ -16,10 +16,77 @@ namespace app::publish {
 }
 #endiv
 #divert <cpp>
+#import tunitas.scarpet.did.Document.ZONE
+#import tunitas.scarpet.dns.update.Program
+#import app.publish.tsig.load
+#import app.publish.json.load
+#import app.publish.zone.load
 #import nonstd.exception.Unimplemented
+#import nonstd.exception.Unreachable
 #import sys.exits.constants
+#import std.cerr
 auto app::publish::process(Configuration const &cfg) -> sys::exits::Code {
-  throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
-  return sys::exits::OK;
+  auto loaded_tsig_key = tsig::load(cfg);
+  if (!ok(loaded_tsig_key)) {
+    error(cfg) << "could not load the update tsig because " << error_code(loaded_tsig_key).message() << '\n';
+    return sys::exits::FAIL;
+  }
+  auto tsig_key_value = value(std::move(loaded_tsig_key));
+  using namespace tunitas::scarpet;
+  auto loaded_zone_document = [&cfg]() -> tunitas::Outcome<did::Document<did::ZONE>> {
+    if (false) {
+    } else if (cfg.did_document_zone) {
+      return zone::load(*cfg.did_document_zone);
+    } else if (cfg.did_document_json) {
+      auto loaded = json::load(*cfg.did_document_json);
+      if (!ok(loaded)) {
+        return tunitas::Outcome<did::Document<did::ZONE>>{error_code(loaded)};
+      }
+#warning #if 0
+#if 0
+      auto zoned = did::Document<did::ZONE>{};
+      auto sink = compiler::output::Stream{std::cerr};
+      if (!compile(value(loaded), zoned, sink)) {
+        return Result{std::error_code{}};
+      }
+      return Result{std::move(zoned)};
+#else
+      throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+#endif
+    } else {
+      // this was to have been checked before
+      throw nonstd::exception::Unreachable{__FUNCTION__, __FILE__, __LINE__};
+    }
+  }();
+  if (!ok(loaded_zone_document)) {
+    /*ee(cfg)*/ ::options::error(cfg) << "could not load the update tsig because " << error_code(loaded_zone_document).message() << '\n';
+    return sys::exits::FAIL;
+  }
+  auto zone_document = tunitas::outcome::value(std::move(loaded_zone_document));
+  dns::update::Program program;
+  auto started = program.start();
+  if (!ok(started)) {
+    /*ee(cfg)*/ ::options::error(cfg) << "could not start the name server update process because " << error_code(started).message() << '\n';
+    return sys::exits::FAIL;
+  }
+  program.server(*cfg.name_server);
+  program.key(*cfg.update_tsig_key_name, tsig_key_value);
+  program.document(zone_document);
+  auto waited = program.wait();
+  if (!ok(waited)) {
+    /*ee(cfg)*/ ::options::error(cfg) << "could not finish the name server update process because " << error_code(waited).message() << '\n';
+    return sys::exits::FAIL;
+  }
+  auto status = value(waited);
+  if (ifexited(status)) {
+    auto ex = exitstatus(status);
+    if (0 != ex) {
+      verbose(cfg) << "nsupdate exited " << ex << '\n';
+    }
+    return sys::exits::Code{ex};
+  }
+  // ifexited(status) ^ ifsignaled(status)
+  verbose(cfg) << "nsupdate was killed with " << termsig(status) << '\n';
+  return sys::exits::SOFTWARE;
 }
 #endiv

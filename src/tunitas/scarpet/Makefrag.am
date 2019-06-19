@@ -8,6 +8,8 @@ lib_libtunitas_scarpet_la_LIBADD = \
   $(lib_libtunitas_scarpet_pki_la) \
   $(lib_libwant_la) \
   -ltunitas-app \
+  -ljson-module \
+  -lshell-module \
   -lopenssl-module \
   -lnonstd-module \
   $(end)
@@ -17,6 +19,18 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/namespace.cpp \
   obj/src/tunitas/scarpet/Configuration.cpp \
   obj/src/tunitas/scarpet/Program.cpp \
+  \
+  obj/src/tunitas/scarpet/dns/namespace.cpp \
+  obj/src/tunitas/scarpet/dns/Name.cpp \
+  \
+  obj/src/tunitas/scarpet/did/namespace.cpp \
+  obj/src/tunitas/scarpet/did/Document.declaration.cpp \
+  obj/src/tunitas/scarpet/did/Document.JSON.cpp \
+  obj/src/tunitas/scarpet/did/Document.ZONE.cpp \
+  obj/src/tunitas/scarpet/did/Document.cpp \
+  \
+  obj/src/tunitas/scarpet/dns/update/namespace.cpp \
+  obj/src/tunitas/scarpet/dns/update/Program.cpp \
   \
   obj/src/tunitas/scarpet/error/namespace.cpp \
   obj/src/tunitas/scarpet/error/Condition.cpp \
@@ -29,6 +43,7 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/exception/aspect.Exiting.cpp \
   obj/src/tunitas/scarpet/exception/Coding.cpp \
   obj/src/tunitas/scarpet/exception/Crypto.cpp \
+  obj/src/tunitas/scarpet/exception/Invariant.cpp \
   obj/src/tunitas/scarpet/exception/Options.cpp \
   obj/src/tunitas/scarpet/exception/Quitting.cpp \
   obj/src/tunitas/scarpet/exception/Version.cpp \

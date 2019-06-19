@@ -49,17 +49,30 @@ namespace app::publish::options {
                 {"name-server", oa::REQUIRED, oi::NAME_SERVER},
                 {"server", oa::REQUIRED, oi::NAME_SERVER},
                 {"ns", oa::REQUIRED, oi::NAME_SERVER},
-                // -k
-                {"name-server-update-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
-                {"name-server-update-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
-                {"update-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
-                {"update-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
-                {"secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
-                {"secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_VALUE},
-                // -K
-                {"name-server-update-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_FILEPATH},
-                {"update-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_FILEPATH},
-                {"secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_SECRET_FILEPATH},
+                // -k for the TSIG secret in literal form on the command line
+                //
+                // Blurg ... all the possible variants.  Because, why not?
+                {"name-server-update-tsig-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"name-server-update-tsig-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"update-tsig-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"update-tsig-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"tsig-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"tsig-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"name-server-update-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"name-server-update-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"update-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"update-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                // -K for the TSIG secret in file form ; e.g. .../Kstorage.scarpet.tunitas.solutions.+157+26437.private
+                //
+                // Blubg blurg blurg ... all the possible variants.  Because, why not?
+                {"name-server-update-tsig-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                {"update-tsig-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                {"tsig-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                {"name-server-update-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                {"update-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                {"secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
                 //
                 // Below here, there are no short options for these
                 //

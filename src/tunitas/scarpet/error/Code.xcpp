@@ -16,6 +16,9 @@ namespace tunitas::scarpet::error {
     SUCCESS = (int) Condition::SUCCESS,
     FAILURE = (int) Condition::FAILURE,
     OPTIONS, // ........................ there was a problem with the options (parser)
+    BAD_UPDATE_TSIG_PRIVATE, //......... the name server update tsig secret was bad
+    BAD_JSON, // in a file
+    BAD_ZONE, // in a file
   };
 }
 #import std.is_error_code_enum

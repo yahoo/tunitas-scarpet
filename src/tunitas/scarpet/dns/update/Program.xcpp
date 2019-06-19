@@ -1,0 +1,83 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::dns::update {
+  //
+  // The nsupdate (which is a program)
+  //
+  // Update:
+  //
+  //   auto zone = did::Document<ZONE>{...somehow...};
+  //
+  //   auto program = Program{};
+  //   auto started = program.start();
+  //   program.server(name_server);
+  //   program.key(secret_name, secret_value);
+  //   program.document(zone);
+  //   program.send();
+  //   auto waited = program.wait();
+  //   if (ok(wanted)) {
+  //      ...yay, the update was applied...
+  //   } else {
+  //      ...nay, the update did not work...
+  //   }
+  //
+  class Program;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.dns.Name
+#forward tunitas.scarpet.did.Document.ZONE
+#import shell.run.Program.NSUPDATE
+#import std.string
+class tunitas::scarpet::dns::update::Program : public shell::run::Program<shell::run::NSUPDATE> {
+  using ancestor = shell::run::Program<shell::run::NSUPDATE>;
+  using Document = tunitas::scarpet::did::Document<tunitas::scarpet::did::ZONE>;
+public:
+  Program() = default;
+  // These "can't fail" and if they do have problems then those issues can be recognized later.
+  // [[FIXTHIS]] except for document(...) these members should be up in the ancestor, Program<NSUPDATE>
+  inline auto server(dns::Name const &) -> void;
+  inline auto key(std::string const &name, std::string const &value) -> void;
+  auto document(Document const &) -> void;
+  inline auto send() -> void;
+};
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.Document.ZONE
+#import tunitas.scarpet.exception.Invariant
+namespace tunitas::scarpet::dns::update {
+  auto Program::server(dns::Name const &name) -> void {
+    if (name.empty()) { throw exception::Invariant{"empty"}; }
+    stream() << "server " << /*view*/name << '\n';
+  }
+  auto Program::key(std::string const &name, std::string const &value) -> void {
+    // Not checking that the name and value are easonably shaped, just that they aren't empty
+    if (name.empty() || value.empty()) { throw exception::Invariant{"empty"}; }
+    stream() << "key " << name << ' ' << value << '\n';
+  }
+  auto Program::send() -> void {
+    stream() << "send\n";
+  }
+}
+#endiv
+#divert <cpp>
+// #import tunitas.scarpet.did.document.zone.Serializer
+#import nonstd.exception.Unimplemented
+namespace tunitas::scarpet::dns::update {
+  auto Program::document(Document const &document) -> void {
+    throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+#if 0
+    // There is no check that the document.flat is empty;  That's pointless, but not wholly erroneous.
+    auto &outbound = this->stream();
+    auto serialize = document::zone::Serializer{};
+    for (auto const &variant : document.flat) {
+      outbound << "update add ";
+      // The serialization format is basically the same as the nsupdate "update add" format.
+      serialize(outbound, variant); // includes a '\n'
+    }
+#endif
+  }
+}
+#endiv

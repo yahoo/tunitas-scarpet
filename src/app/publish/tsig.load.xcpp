@@ -1,0 +1,59 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.Outcome
+#import app.publish.Configuration
+#import std.string
+namespace app::publish::tsig {
+  //
+  // Load the tsig from the Configuration
+  // The Configuration specifies the tsig explicitly or by naming a file which contains it.
+  // Do some basic validation on the tsig.
+  //
+  // Usage:
+  //
+  //   auto cfg = Configuration{...};
+  //   auto loaded = load(cfg);
+  //   if (ok(loaded)) {
+  //     ...yay, got the tsig...
+  //     std::string tsig = value(std::move(loaded));
+  //     ...use the tsig...
+  //   } else {
+  //     ...nay, the tsig can't be acquired...
+  //     cerr << "failed because " << error_code(loaded).message();
+  //   }
+  //
+  namespace packaging::load::function {
+    using Result = tunitas::Outcome<std::string>;
+    auto load(Configuration const &) -> Result;
+  }
+  using packaging::load::function::load;
+}
+#endiv
+#divert <cpp>
+#import slurp.file.read
+#import slurp.Failure
+#import app.publish.tsig.validate
+#import std.error_code
+#import tunitas.scarpet.error.Code
+namespace app::publish::tsig::packaging::load { 
+  auto function::load(Configuration const &cfg) -> Result {
+    auto candidate = [&cfg]() -> std::string {
+                       if (cfg.update_tsig_key_value) {
+                         return *cfg.update_tsig_key_value; // have to copy this because cfg is const
+                       } else {
+                         return slurp::file::read<std::string>(*cfg.update_tsig_key_file);
+                       }
+                     }();
+    auto const Bad_Secret = []() { return Result{std::error_code{tunitas::scarpet::error::Code::BAD_UPDATE_TSIG_PRIVATE}}; };
+    if (candidate.empty()) {
+      return Bad_Secret();
+    }
+    if (!validate(candidate)) {
+      return Bad_Secret();
+    }
+    return Result{std::move(candidate)};
+  }
+}
+#endiv

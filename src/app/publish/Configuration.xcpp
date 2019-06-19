@@ -25,6 +25,9 @@ class app::publish::Configuration : public app::Configuration {
   using ancestor = app::Configuration;
 public:
   inline explicit Configuration(Program const &);
+  //
+  // Either one or the other, but not both, and not neither.
+  //
   std::optional<std::filesystem::path> did_document_json;
   std::optional<std::filesystem::path> did_document_zone;
   //
@@ -35,11 +38,12 @@ public:
   std::optional<std::string> did_document_storage_service_domain;
   std::optional<std::string> name_server; // a master recepitive to updates from us
   //
-  // Either one or the other, but not both
-  // See defaults::UPDATE_SECRET_FILE for the default secret file when neither appears
+  // Either one or the other, but not both, and not neither
+  // There is no default value for either of these.
   //
-  std::optional<std::string> update_secret_value; // the magic secret hash to allow the update to be accepted
-  std::optional<std::filesystem::path> update_secret_file; // when that secret is located in a file
+  std::optional<std::string> update_tsig_key_value; // ............. the magic secret hash to allow the update to be accepted
+  std::optional<std::filesystem::path> update_tsig_key_file; // .... when that secret is located in a file
+  std::optional<std::string> update_tsig_key_name; // .............. the name of the secret, which comes either from a file or is given literally
 };
 #endiv
 #divert <ipp>

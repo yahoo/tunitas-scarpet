@@ -173,4 +173,4 @@ This project is licensed under the terms of the [Apache 2.0](LICENSE-Apache-2.0)
 
 ## Origin of the Name
 
-[Scarpet Peak](https://openthewatershed.org/the-scarper-scarpet-scarpa-peak/) is one of the Summits in San Mateo County, CA.
+[Scarpet Peak](https://openthewatershed.org/the-scarper-scarpet-scarpa-peak/) is one of the Summits in San Mateo County, CA.  Also interesting is the colorfhl history of the names [Scarper, Scarpet, Scarpa](https://openthewatershed.org/the-scarper-scarpet-scarpa-peak/).

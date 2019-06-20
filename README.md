@@ -1,6 +1,6 @@
 # Tunitas Scarpet
 
-This repository contains a reference implementation of a resolver and document storage service for [W3C Decentralized Identifiers](https://w3c-ccg.github.io/did-spec/).  The majority of the service capability is provided through the Domain Name Service using the <em>A DID Document is a Zone</em> paradigm, as is described below and elsewhere.  The system is "self-sovereign" in the sense that anyone (you) is able to stand up an identity service and announce identifiers, their ownership proofs and the service endpoints associated with them.  There are procedures for validating the origin and veracity of the identifiers which have been published through the system.
+This repository contains a reference implementation of an identifier resolver and identifier (document) storage service for [W3C Decentralized Identifiers](https://w3c-ccg.github.io/did-spec/).  The majority of the service capability is provided through the Domain Name Service using the <em>A DID Document is a Zone</em> paradigm, as is described below and elsewhere.  The system is "self-sovereign" in the sense that anyone (you) is able to stand up an identity service and announce identifiers, their ownership proofs and the service endpoints associated with them.  There are procedures for validating the origin and veracity of the identifiers which have been published through the system.
 
 The main body of documentation for the Tunitas family of components and services can be found with the [packaging](https://github.com/yahoo/tunitas-packaging) and with [build system](https://github.com/yahoo/temerarious-flagship]).  The overview and administrative declarations herein are necessarily summary in nature. The declarations and definitions in the packaging and build system areas are complete and should be interpreted as superceding these when the two are in conflict.
 
@@ -173,4 +173,4 @@ This project is licensed under the terms of the [Apache 2.0](LICENSE-Apache-2.0)
 
 ## Origin of the Name
 
-[Scarpet Peak](https://openthewatershed.org/the-scarper-scarpet-scarpa-peak/) is one of the Summits in San Mateo County, CA.  Also interesting is the colorfhl history of the names [Scarper, Scarpet, Scarpa](https://openthewatershed.org/the-scarper-scarpet-scarpa-peak/).
+[Scarpet Peak](https://openthewatershed.org/the-scarper-scarpet-scarpa-peak/) is one of the Summits in San Mateo County, California.  Also interesting is the colorful history of the names [Scarper, Scarpet, Scarpa](https://openthewatershed.org/the-scarper-scarpet-scarpa-peak/).

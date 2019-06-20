@@ -2,9 +2,9 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace app::keygen::options {
+namespace app::genesis::options {
   //
-  // The keygen option parser
+  // The genesis option parser
   //
   // Usage:
   //
@@ -26,9 +26,9 @@ namespace app::keygen::options {
 #divert <hpp>
 #import app.options.Parser
 #import tunitas.Success
-#import app.keygen.Configuration
+#import app.genesis.Configuration
 #import tunitas.app.options.Args
-class app::keygen::options::Parser : public app::options::Parser {
+class app::genesis::options::Parser : public app::options::Parser {
   using ancestor = app::options::Parser;
 public:
   inline explicit Parser(Specification const &, Configuration &);
@@ -40,7 +40,7 @@ protected:
 };
 #endiv
 #divert <ipp>
-namespace app::keygen::options {
+namespace app::genesis::options {
   Parser::Parser(Specification const &spc, Configuration &cfg)
     : ancestor{spc}
     , cfg{cfg}
@@ -51,10 +51,10 @@ namespace app::keygen::options {
 #import app.options.get_encoding
 #import app.exception.Bad_Encoding
 #import app.exception.Bad_Filepath
-#import app.keygen.defaults
-#import app.keygen.exception.Usage
-#import app.keygen.options.indicator.constants
-#import app.keygen.options.Specification
+#import app.genesis.defaults
+#import app.genesis.exception.Usage
+#import app.genesis.options.indicator.constants
+#import app.genesis.options.Specification
 #import options.longish.Getter
 #import options.longish.Step
 #import std.error_code
@@ -64,7 +64,7 @@ namespace app::keygen::options {
 #import tunitas.scarpet.error.Code
 #import tunitas.scarpet.exception.Version
 #import tunitas.scarpet.error.Code
-namespace app::keygen::options {
+namespace app::genesis::options {
   auto Parser::operator()(Args av) -> Result {
     namespace error = tunitas::scarpet::error;
     // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::app::options

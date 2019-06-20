@@ -57,7 +57,7 @@ module_SOURCE_SET = \
 include src/app/Makefrag.am
 include src/app/authgen/Makefrag.am
 include src/app/diggity/Makefrag.am
-include src/app/keygen/Makefrag.am
+include src/app/genesis/Makefrag.am
 include src/app/publish/Makefrag.am
 include src/app/scissor/Makefrag.am
 include src/app/signify/Makefrag.am
@@ -72,7 +72,7 @@ include src/want/Makefrag.am
 bin_PROGRAMS = \
   $(bin_did_authgen) \
   $(bin_did_diggity) \
-  $(bin_did_keygen) \
+  $(bin_did_genesis) \
   $(bin_did_publish) \
   $(bin_did_scissor) \
   $(bin_did_signify) \
@@ -118,7 +118,7 @@ $(autotools_autoconf_DEPENDENT_OBJECTS_SET) : $(autotools_autoconf_DEPENDENT_GEN
 # alphabetical is fine
 include tests/authgen/Makefrag.am
 include tests/diggity/Makefrag.am
-include tests/keygen/Makefrag.am
+include tests/genesis/Makefrag.am
 include tests/publish/Makefrag.am
 include tests/scissor/Makefrag.am
 include tests/signify/Makefrag.am
@@ -136,7 +136,7 @@ endif
 # ordered by complexity of the tests
 XFAIL_TESTS = \
   $(tests_unit_XFAIL_TESTS) \
-  $(tests_keygen_XFAIL_TESTS) \
+  $(tests_genesis_XFAIL_TESTS) \
   $(tests_authgen_XFAIL_TESTS) \
   $(tests_publish_XFAIL_TESTS) \
   $(tests_diggity_XFAIL_TESTS) \
@@ -147,7 +147,7 @@ XFAIL_TESTS = \
   $(end)
 TESTS = \
   $(tests_unit_TESTS) \
-  $(tests_keygen_TESTS) \
+  $(tests_genesis_TESTS) \
   $(tests_authgen_TESTS) \
   $(tests_publish_TESTS) \
   $(tests_diggity_TESTS) \

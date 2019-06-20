@@ -86,8 +86,9 @@ namespace app::diggity::exception {
         << "--name-server=HOSTNAME               direct the query to this name server\n"
         << "     --server=HOSTNAME               the default is the servers in " << well_known::RESOLV_CONF << "\n"
         << "         --ns=HOSTNAME               e.g. " << examples::NAME_SERVER << '\n'
-        << "\n"
+        << '\n'
         << "General Options:\n"
+        << '\n'
         << "--usage, --help, -h                  emit this message, and exit\n"
         << "--version, -  V                      emit the package version, and exit\n"
         << "--dry-run, --dryrun, -y              dry run, do not start the server\n"

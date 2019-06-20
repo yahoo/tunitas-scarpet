@@ -4,23 +4,23 @@
 #divert <hpp>
 #import tunitas.app.options.Args
 #import sys.exits.Code
-namespace app::keygen {
+namespace app::genesis {
   using Args = tunitas::app::options::Args;
   auto main(Args) -> sys::exits::Code;
 }
 #endiv
 #divert <cpp>
 auto main(int cc, char *vv[]) -> int {
-  return app::keygen::main(app::keygen::Args(cc, vv));
+  return app::genesis::main(app::genesis::Args(cc, vv));
 }
-#import app.keygen.Configuration
-#import app.keygen.options.Parser
-#import app.keygen.options.Specification
-#import app.keygen.process
+#import app.genesis.Configuration
+#import app.genesis.options.Parser
+#import app.genesis.options.Specification
+#import app.genesis.process
 #import tunitas.scarpet.exception.aspect.Exiting
 #import sys.exits.constants
 #import std.exception
-auto app::keygen::main(Args av) -> sys::exits::Code try {
+auto app::genesis::main(Args av) -> sys::exits::Code try {
   auto program = Configuration::Program{av.front()};
   auto cfg = Configuration{program};
   auto spc = options::Specification{};

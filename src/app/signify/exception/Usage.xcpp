@@ -96,6 +96,7 @@ namespace app::signify::exception {
         << "                        --csr=FILEPATH    simplest\n"
         << '\n'
         << "General Options:\n"
+        << '\n'
         << "--usage, --help, -h                       emit this message, and exit\n"
         << "--version, -V                             emit the package version, and exit\n"
         << "--dry-run, --dryrun, -y                   dry run, do not start the server\n"

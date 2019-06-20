@@ -7,7 +7,7 @@ namespace app::exception {
   // Bloffo ... all this does is create a new type, a new descendant of Quitting.
   //
   // Transform the failure of tunitas::app::options::get_filepath<...>(...)
-  // into a well-known exception that the application { keygen, publish, etc. } can capture and redirect elsewhere.o
+  // into a well-known exception that the application { genesis, publish, etc. } can capture and redirect elsewhere.o
   //
   // In order to clear the template requirements for get_filepath<QUITTING>(...)
   // the exception must be "shaped like" a Tunitas Quitting exception; hence the ancestry.

@@ -1,0 +1,34 @@
+tests_genesis_TESTS = \
+  tests/genesis/option.help.test \
+  tests/genesis/option.dry-run.test \
+  tests/genesis/option.dryrun.test \
+  tests/genesis/option.d.test \
+  tests/genesis/option.help.test \
+  tests/genesis/option.h.test \
+  tests/genesis/option.q.test \
+  tests/genesis/option.quiet.test \
+  tests/genesis/option.s.test \
+  tests/genesis/option.strip-armor.test \
+  tests/genesis/option.usage.test \
+  tests/genesis/option.verbose.test \
+  tests/genesis/option.version.test \
+  tests/genesis/option.v.test \
+  tests/genesis/option.V.test \
+  tests/genesis/option.warnings.test \
+  tests/genesis/option.warning.test \
+  tests/genesis/option.w.test \
+  tests/genesis/option.y.test \
+  \
+  tests/genesis/run.01.test \
+  tests/genesis/run.02.test \
+  tests/genesis/run.03.pem-keep.test \
+  tests/genesis/run.04.pem-strip.test \
+  tests/genesis/run.05.der.test \
+  tests/genesis/run.06.der+base64.test \
+  tests/genesis/run.07.der+base64url.test \
+  $(end)
+
+tests_genesis_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/genesis/*.test)
+tests_genesis_TESTS_SELFCHECK_EXPECTED = $(tests_genesis_TESTS)
+tests_genesis_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_genesis_TESTS_SELFCHECK_EXPECTED), $(tests_genesis_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_genesis_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_genesis_TESTS_SELFCHECK_ORPHANS)))

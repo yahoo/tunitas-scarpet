@@ -1,0 +1,37 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/genesis-scarpet/blob/master/LICENSE for terms.
+
+bin_did_genesis = bin/did-genesis
+bin_did_genesis_LDADD = \
+  $(lib_libapp_la) \
+  $(lib_libtunitas_scarpet_la) \
+  -lopenssl-module \
+  $(end)
+bin_did_genesis_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+bin_did_genesis_MODULES = $(call TF_SOURCEStoMODULES, $(bin_did_genesis_SOURCES))
+bin_did_genesis_SOURCES = \
+  obj/src/app/genesis/namespace.cpp \
+  obj/src/app/genesis/defaults.cpp \
+  obj/src/app/genesis/main.cpp \
+  obj/src/app/genesis/Configuration.cpp \
+  obj/src/app/genesis/process.cpp \
+  \
+  obj/src/app/genesis/exception/namespace.cpp \
+  obj/src/app/genesis/exception/Usage.cpp \
+  \
+  obj/src/app/genesis/options/namespace.cpp \
+  obj/src/app/genesis/options/indicator.cpp \
+  obj/src/app/genesis/options/indicator.constants.cpp \
+  obj/src/app/genesis/options/Parser.cpp \
+  obj/src/app/genesis/options/Specification.cpp \
+  $(end)
+
+$(scold_cxxdir)/app/genesis/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(bin_did_genesis_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(bin_did_genesis_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/app/genesis/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/app/genesis/dependencies.mk

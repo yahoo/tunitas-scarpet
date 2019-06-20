@@ -2,7 +2,7 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <hpp>
-namespace app::keygen::defaults {
+namespace app::genesis::defaults {
   inline namespace constants {
     inline auto const WHAT = false;
   }

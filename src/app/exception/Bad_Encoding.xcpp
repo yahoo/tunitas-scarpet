@@ -7,7 +7,7 @@ namespace app::exception {
   // Blurg ... all this does is create a new type, a new descendant of Quitting.
   //
   // Transform the failure of app::options::get_encoding<...>(...)
-  // into a well-known exception that the application { keygen, publish, etc. } can capture and redirect elsewhere.
+  // into a well-known exception that the application { genesis, publish, etc. } can capture and redirect elsewhere.
   //
   // In order to clear the template requirements for get_encoding<QUITTING>(...)
   // the exception must be "shaped like" a Tunitas Quitting exception; hence the ancestry.

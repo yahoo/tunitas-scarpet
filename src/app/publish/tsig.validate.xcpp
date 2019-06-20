@@ -15,7 +15,7 @@ namespace app::publish::tsig {
   // RFC 2136, RFC 3007, RFC 2104, RFC 2845, RFC 1034, RFC 2535, RFC 2931, 
   //
   // Example:
-  //   $ dnssec-keygen -a HMAC-MD5 -b 512 -n USER -r /dev/urandom -K . storage.scarpet.tunitas.solutions.
+  //   $ dnssec-genesis -a HMAC-MD5 -b 512 -n USER -r /dev/urandom -K . storage.scarpet.tunitas.solutions.
   //   Kstorage.scarpet.tunitas.solutions.+157+26437
   //
   //   cat Kstorage.scarpet.tunitas.solutions.+157+26437.key 

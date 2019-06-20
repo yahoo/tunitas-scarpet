@@ -86,7 +86,7 @@ namespace app::authgen::exception {
         << '\n'
         << "Generation Options\n"
         << '\n'
-        << "--generate-common-name             generate the common name with 128-bits\n"
+        << "--generate-common-name             generate the common name with 256 bits\n"
         << "         --generate-cn             this option precludes the use of CN=name\n"
         << "               --gencn\n"
         << '\n'
@@ -99,6 +99,7 @@ namespace app::authgen::exception {
         << "     --public=FILEPATH             simplest\n"
         << '\n'
         << "General Options:\n"
+        << '\n'
         << "--usage, --help, -h                emit this message, and exit\n"
         << "--version, -V                      emit the package version, and exit\n"
         << "--dry-run, --dryrun, -y            dry run, do not start the server\n"

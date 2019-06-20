@@ -2,7 +2,7 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace app::keygen {
+namespace app::genesis {
   //
   // The configuration of the key generator
   //
@@ -20,7 +20,7 @@ namespace app::keygen {
 #import tunitas.scarpet.options.Encoding
 #import std.filesystem.path
 #import std.optional
-class app::keygen::Configuration : public app::Configuration {
+class app::genesis::Configuration : public app::Configuration {
   using ancestor = app::Configuration;
 public:
   inline explicit Configuration(Program const &);
@@ -31,7 +31,7 @@ public:
 };
 #endiv
 #divert <ipp>
-namespace app::keygen {
+namespace app::genesis {
   Configuration::Configuration(Program const &program)
     : ancestor{program}
   { }

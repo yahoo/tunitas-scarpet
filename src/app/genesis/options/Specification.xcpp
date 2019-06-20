@@ -2,7 +2,7 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace app::keygen::options {
+namespace app::genesis::options {
   //
   // The options specification of the key generator
   //
@@ -17,7 +17,7 @@ namespace app::keygen::options {
 #endiv
 #divert <hpp>
 #import app.options.Specification
-class app::keygen::options::Specification : public app::options::Specification {
+class app::genesis::options::Specification : public app::options::Specification {
   using ancestor = app::options::Specification;
 public:
   Specification();
@@ -25,10 +25,10 @@ public:
 #endiv
 #divert <cpp>
 #import options.argument.constants
-#import app.keygen.options.indicator.constants
-namespace app::keygen::options {
+#import app.genesis.options.indicator.constants
+namespace app::genesis::options {
   namespace oa = ::options::argument;
-  namespace oi = app::keygen::options::indicator;
+  namespace oi = app::genesis::options::indicator;
   Specification::Specification()
     //
     //          /-------------- enable MISSING processing

@@ -35,6 +35,7 @@ namespace tunitas::scarpet::pki::cn {
 #import std.runtime_error // [[FIXTHIS]] tunitas::scarpet::exception::invariant
 #import uuid.unparse
 #import uuid.generate.random
+#import tunitas.scarpet.exception.Invariant
 auto tunitas::scarpet::pki::cn::generate() -> std::string {
   std::string ret;
   unparse(uuid::generate::random(), ret);
@@ -44,11 +45,8 @@ auto tunitas::scarpet::pki::cn::generate() -> std::string {
   }
   if (64 != ret.size()) {
     // This is unexpected and troublesome.
-    throw std::runtime_error{"not 64 hex chars, not 256 bits"};
+    throw exception::Invariant{"not 64 hex chars (not 256 bits)"};
   }
   return std::move(ret);
 }
-#endiv
-#divert <cpp>
-#warning when available convert s/std::runtime_error/exception::Invariant/g
 #endiv

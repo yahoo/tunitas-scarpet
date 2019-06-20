@@ -63,6 +63,7 @@ namespace app::scissor::options {
 #import tunitas.scarpet.error.Code
 #import tunitas.scarpet.exception.Version
 #import tunitas.scarpet.error.Code
+#import tunitas.scarpet.pki.cn.generate
 namespace app::scissor::options {
   auto Parser::operator()(Args av) -> Result {
     namespace error = tunitas::scarpet::error;
@@ -158,7 +159,7 @@ namespace app::scissor::options {
         return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
     }
     if (cfg.generate_common_name) {
-      cfg.fields.CN.value = generate_common_name();
+      cfg.fields.CN.value = tunitas::scarpet::pki::cn::generate();
     };
     if (!cfg.fields.CN.value) {
       notice(cfg) << "either --generate-common-name or CN=<name> is required, the other fields are optional\n";

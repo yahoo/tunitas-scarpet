@@ -16,7 +16,6 @@ bin_did_authgen_SOURCES = \
   obj/src/app/authgen/namespace.cpp \
   obj/src/app/authgen/Configuration.cpp \
   obj/src/app/authgen/defaults.cpp \
-  obj/src/app/authgen/generate_common_name.cpp \
   obj/src/app/authgen/main.cpp \
   obj/src/app/authgen/process.cpp \
   \

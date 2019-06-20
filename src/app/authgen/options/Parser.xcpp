@@ -62,6 +62,7 @@ namespace app::authgen::options {
 #import tunitas.app.options.get_filepath
 #import tunitas.scarpet.error.Code
 #import tunitas.scarpet.exception.Version
+#import tunitas.scarpet.pki.cn.generate
 #import tunitas.scarpet.error.Code
 namespace app::authgen::options {
   auto Parser::operator()(Args av) -> Result {
@@ -162,8 +163,8 @@ namespace app::authgen::options {
       return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
     }
     if (cfg.generate_common_name) {
-      notice(cfg) << "the use of CN is gently contra-indicated when generating a trust anchor\n";
-      cfg.fields.CN.value = generate_common_name();
+      notice(cfg) << "the use of CN is gently contra-indicated when generating a trust anchor (you shouldn't do that)\n";
+      cfg.fields.CN.value = tunitas::scarpet::pki::cn::generate();
     }
     if (!cfg.public_side || !cfg.private_side) {
       if (!cfg.public_side) {

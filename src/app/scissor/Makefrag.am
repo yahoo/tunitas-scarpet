@@ -16,7 +16,6 @@ bin_did_scissor_SOURCES = \
   obj/src/app/scissor/namespace.cpp \
   obj/src/app/scissor/Configuration.cpp \
   obj/src/app/scissor/defaults.cpp \
-  obj/src/app/scissor/generate_common_name.cpp \
   obj/src/app/scissor/main.cpp \
   obj/src/app/scissor/process.cpp \
   \

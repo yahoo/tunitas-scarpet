@@ -51,7 +51,6 @@ namespace app::authgen::options {
 #import app.exception.Bad_Filepath
 #import app.authgen.defaults
 #import app.authgen.exception.Usage
-#import app.authgen.generate_common_name
 #import app.authgen.options.indicator.constants
 #import app.authgen.options.Specification
 #import options.longish.Getter

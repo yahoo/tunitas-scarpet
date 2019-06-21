@@ -51,7 +51,6 @@ namespace app::scissor::options {
 #import app.exception.Bad_Filepath
 #import app.scissor.defaults
 #import app.scissor.exception.Usage
-#import app.scissor.generate_common_name
 #import app.scissor.options.indicator.constants
 #import app.scissor.options.Specification
 #import options.longish.Getter

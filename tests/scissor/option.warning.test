@@ -1,5 +1,5 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
 # enters warning mode, but we need to dry-run this
-${exe?} --warning -y --private=private --public=public --gencn
+${exe?} --warning -y --private=FILEPATH --request=FILEPATH --gencn
 test 0 == $?

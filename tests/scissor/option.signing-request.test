@@ -1,0 +1,4 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+${exe?} -y --private=FILEPATH --signing-request=FILEPATH --gencn
+test 0 == $?

@@ -27,6 +27,7 @@ namespace app::signify {
 #import openssl.x509.serial.generate
 #import std.error_code
 #import std.filesystem.path
+#import std.ofstream
 #import std.string_view_literals
 #import sys.exits.constants
 #import sys.posix.exists // equivalently: std::filesystem::exists
@@ -48,7 +49,10 @@ auto app::signify::process(Configuration const &cfg) -> sys::exits::Code try {
   their_crt.set_pubkey(their_csr.get_pubkey());
   their_crt.sign(ca_key, EVP_sha256());
   // [[FIXTHIS]] write to one of those fancy File objects that goes to stdout or a file depending
-  std::cout << pem::to_string(their_crt);
+  std::ofstream outbound;
+  outbound.exceptions(std::ios::badbit|std::ios::failbit);
+  outbound.open(*cfg.certificate);
+  outbound << pem::to_string(their_crt);
   return sys::exits::OK;
 } catch (std::error_code const &ec) {
   if (openssl::error::Code::PEM != ec) {
@@ -64,6 +68,7 @@ auto app::signify::process(Configuration const &cfg) -> sys::exits::Code try {
            << "  [in]ca key: " << *cfg.authority_private_side << " is " << present(*cfg.authority_private_side) << '\n'
            << "  [in]ca crt: " << *cfg.authority_public_side << " is " << present(*cfg.authority_public_side) << '\n'
            << "  [in]csr:    " << *cfg.request << " is " << present(*cfg.request) << '\n'
+           << " [out]crt:    " << *cfg.certificate << " is " << present(*cfg.certificate) << '\n'
     ;
   return sys::exits::FAIL;
 }

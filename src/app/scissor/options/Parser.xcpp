@@ -67,6 +67,7 @@ namespace app::scissor::options {
 namespace app::scissor::options {
   auto Parser::operator()(Args av) -> Result {
     namespace error = tunitas::scarpet::error;
+    auto bad_options = []() { return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}}; };
     // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::app::options
     using ::options::longish::Getter;
     using ::options::longish::Step;
@@ -110,12 +111,18 @@ namespace app::scissor::options {
         case oi::REQUEST_SIDE:
           cfg.request_side = get_filepath<exception::Bad_Filepath>(cfg, step);
           break;
+        case oi::CERTIFICATE_NOT_AN_OPTION:
+          notice(cfg) << "the option --" << word(step) << " for a certificate signing request (CSR)\n";
+          notice(cfg) << "instead use --request=FILEPATH to indicate the output location of the CSR\n";
+          warning(cfg) << "ignoring option --" << word(step) << '\n';
+          return bad_options();
+          break;
         case oi::MISSING:
           ::options::error(cfg) << "missing value on " << word_in_error(step) << '\n';
           return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
         case oi::UNKNOWN:
           ::options::error(cfg) << "invalid option " << word_in_error(step) << '\n';
-          return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+          return bad_options();
         default:
           // This is a programmer error.
           // It means that the specification of the option parser is wider than this switch statement.
@@ -124,7 +131,7 @@ namespace app::scissor::options {
         }
       } catch (exception::Bad_Filepath const &e) {
         /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "invalid file path " << /* [[FIXTHIS]] format::q(required(step)) */ required(step) << " value on --" << word(step) << 'n';
-        return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+        return bad_options();
       }
     }
     auto const remaining = Arguments{get.begin(), get.end()};
@@ -148,15 +155,15 @@ namespace app::scissor::options {
         cfg.fields.CN.value = syntax.substr(3);
       } else if (std::string::npos != syntax.find('=')) {
         /* [[FIXTHIS]] */ ::options::error(cfg) << "unknown field binding " << /*[[FIXTHIS]] format::q*/ syntax << '\n';
-        return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+        return bad_options();
       } else {
         /* [[FIXTHIS]] */ ::options::error(cfg) << "not a field binding at all " << /*[[FIXTHIS]] format::q*/ syntax << '\n';
-        return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+        return bad_options();
       }
     }
     if (cfg.generate_common_name && cfg.fields.CN.value) {
       /* [[FIXTHIS]] */ ::options::error(cfg) << "the options cannot have both --generate-common-name and also CN=<name>\n";
-        return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+        return bad_options();
     }
     if (cfg.generate_common_name) {
       cfg.fields.CN.value = tunitas::scarpet::pki::cn::generate();
@@ -164,7 +171,7 @@ namespace app::scissor::options {
     if (!cfg.fields.CN.value) {
       notice(cfg) << "either --generate-common-name or CN=<name> is required, the other fields are optional\n";
       /* [[FIXTHIS]] ee(cfg) */::options::error(cfg) << "the certificate would be empty\n";
-      return Result{std::error_code{error::Code::OPTIONS}};
+      return bad_options();
     }
     if (!cfg.request_side || !cfg.private_side) {
       if (!cfg.request_side) {
@@ -173,7 +180,7 @@ namespace app::scissor::options {
       if (!cfg.private_side) {
         ::options::error(cfg) << "the --private=FILEPATH is not set, but it is required\n";
       }
-      return Result{std::error_code{error::Code::OPTIONS}};
+      return bad_options();
     }
     return Result{tunitas::SUCCESS};
   }

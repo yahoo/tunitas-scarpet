@@ -1,5 +1,5 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
 # enters verbose mode, but we need to dry-run this
-${exe?} --verbose -y --private=private --public=public --gencn
+${exe?} --verbose -y --private=FILEPATH --request=FILEPATH --gencn
 test 0 == $?

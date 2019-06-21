@@ -65,6 +65,7 @@ namespace app::signify::options {
 namespace app::signify::options {
   auto Parser::operator()(Args av) -> Result {
     namespace error = tunitas::scarpet::error;
+    auto bad_options = []() { return Result{std::error_code{error::Code::OPTIONS}}; };
     // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::app::options
     using ::options::longish::Getter;
     using ::options::longish::Step;
@@ -108,12 +109,15 @@ namespace app::signify::options {
         case oi::REQUEST:
           cfg.request = get_filepath<exception::Bad_Filepath>(cfg, step);
           break;
+        case oi::CERTIFICATE:
+          cfg.certificate = get_filepath<exception::Bad_Filepath>(cfg, step);
+          break;
         case oi::MISSING:
           ::options::error(cfg) << "missing value on " << word_in_error(step) << '\n';
-          return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+          return bad_options();
         case oi::UNKNOWN:
           ::options::error(cfg) << "invalid option " << word_in_error(step) << '\n';
-          return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+          return bad_options();
         default:
           // This is a programmer error.
           // It means that the specification of the option parser is wider than this switch statement.
@@ -122,22 +126,32 @@ namespace app::signify::options {
         }
       } catch (exception::Bad_Filepath const &e) {
         /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "invalid file path " << /* [[FIXTHIS]] format::q(required(step)) */ required(step) << " value on --" << word(step) << 'n';
-        return Result{std::error_code{tunitas::scarpet::error::Code::OPTIONS}};
+          return bad_options();
       }
     }
     auto const remaining = Arguments{get.begin(), get.end()};
     if (!std::empty(get)) {
       ::options::error(cfg) << "no more words after the options\n";
-      return Result{std::error_code{error::Code::OPTIONS}};
+      return bad_options();
     }
     if (!cfg.authority_public_side || !cfg.authority_private_side) {
       if (!cfg.authority_public_side) {
-        ::options::error(cfg) << "the --public=FILEPATH is not set, but it is required\n";
+        ::options::error(cfg) << "the --authority-public=FILEPATH is not set, but it is required\n";
       }
       if (!cfg.authority_private_side) {
-        ::options::error(cfg) << "the --private=FILEPATH is not set, but it is required\n";
+        ::options::error(cfg) << "the --authority-private=FILEPATH is not set, but it is required\n";
       }
-      return Result{std::error_code{error::Code::OPTIONS}};
+      return bad_options();
+    }
+    if (!cfg.request) {
+      notice(cfg) << "there is no request to sign, there is nothing to do\n";
+      ::options::error(cfg) << "the --request=FILEPATH is not set, there is no request to sign\n";
+      return bad_options();
+    }
+    if (!cfg.certificate) {
+      notice(cfg) << "there is no place to put the signed certificate\n";
+      ::options::error(cfg) << "the --certificate=FILEPATH is not set\n";
+      return bad_options();
     }
     return Result{tunitas::SUCCESS};
   }

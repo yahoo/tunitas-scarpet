@@ -1,0 +1,23 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+here=${0%/*}
+set -e
+test ${DEBUG:-0} && did-genesis --usage
+did-genesis --version
+did-genesis --public=$here/mykey.public --private=$here/mykey.private
+
+test ${DEBUG:-0} && did-authgen --usage
+did-authgen --version
+# https://en.wikipedia.org/wiki/Geography_of_Mars                       C has to be 2 characters
+did-authgen --public=$here/marvin.public --private=$here/marvin.private C='MM' ST='Tithonius Lacus' O='Marvin LLC' 
+openssl x509 -in $here/marvin.public -noout -text
+
+test ${DEBUG:-0} && did-scissor --usage
+did-scissor --version
+#                                                                 C has to be 2 characters
+did-scissor --csr=$here/gordon.csr --private=$here/gordon.private C='MM' ST='Tithonius Lacus' O='Gordon LLC' OU='Flash Player' --gencn
+
+test ${DEBUG:-0} && did-signify --usage
+did-signify --version
+did-signify --authority-public=$here/marvin.public --authority-private=$here/marvin.private --csr=$here/gordon.csr --public=$here/gordon.public
+openssl x509 -in $here/gordon.public -noout -text

@@ -51,18 +51,26 @@ namespace app::scissor::options {
                 {"generate-cn", oa::NO, oi::GENERATE_COMMON_NAME},
                 {"gen-cn", oa::NO, oi::GENERATE_COMMON_NAME},
                 {"gencn", oa::NO, oi::GENERATE_COMMON_NAME},
-                //
+                // (outbound)
                 {"private-key", oa::REQUIRED, oi::PRIVATE_SIDE},
                 {"key", oa::REQUIRED, oi::PRIVATE_SIDE},
                 {"private-side", oa::REQUIRED, oi::PRIVATE_SIDE},
                 {"private", oa::REQUIRED, oi::PRIVATE_SIDE},
-                //
+                // (outbound)
                 {"certificate-signing-request", oa::REQUIRED, oi::REQUEST_SIDE},
                 {"signing-request", oa::REQUIRED, oi::REQUEST_SIDE},
                 {"sign", oa::REQUIRED, oi::REQUEST_SIDE},
                 {"request-side", oa::REQUIRED, oi::REQUEST_SIDE},
                 {"request", oa::REQUIRED, oi::REQUEST_SIDE},
-                {"csr", oa::REQUIRED, oi::REQUEST_SIDE}}}
+                {"csr", oa::REQUIRED, oi::REQUEST_SIDE},
+                // warn that this is not an option at all (not for CSR generation)
+                {"certificate", oa::REQUIRED, oi::CERTIFICATE_NOT_AN_OPTION},
+                {"public-certificate", oa::REQUIRED, oi::CERTIFICATE_NOT_AN_OPTION},
+                {"crt", oa::REQUIRED, oi::CERTIFICATE_NOT_AN_OPTION},
+                {"public-crt", oa::REQUIRED, oi::CERTIFICATE_NOT_AN_OPTION},
+                {"public-key", oa::REQUIRED, oi::CERTIFICATE_NOT_AN_OPTION},
+                {"public-side", oa::REQUIRED, oi::CERTIFICATE_NOT_AN_OPTION},
+                {"public", oa::REQUIRED, oi::CERTIFICATE_NOT_AN_OPTION}}}
   { }
 }
 #endiv

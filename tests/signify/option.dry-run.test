@@ -1,5 +1,5 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
 # the --dry-run option enters dry-run mode, but we need to dry-run this (sic)
-${exe?} --dry-run --private=/dev/null.private --public=/dev/null.public --request=/dev/null.request
+${exe?} --dry-run --authority-public-key=/dev/null.public --authority-private=/dev/null.private --public=/dev/null.public --request=/dev/null.request
 test 0 == $?

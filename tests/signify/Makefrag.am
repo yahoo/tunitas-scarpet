@@ -1,17 +1,21 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
 tests_signify_TESTS = \
   tests/signify/option.authority-private-side.test \
   tests/signify/option.authority-private-key.test \
   tests/signify/option.authority-private.test \
-  tests/signify/option.private-side.test \
-  tests/signify/option.private-key.test \
-  tests/signify/option.private.test \
-  tests/signify/option.key.test \
+  tests/signify/option.public-certificate.test \
   tests/signify/option.authority-public-side.test \
   tests/signify/option.authority-public-crt.test \
   tests/signify/option.authority-public.test \
+  tests/signify/option.certificate.test \
+  tests/signify/option.crt.test \
+  tests/signify/option.public-crt.test \
   tests/signify/option.public-side.test \
   tests/signify/option.public.test \
-  tests/signify/option.crt.test \
   tests/signify/option.dry-run.test \
   tests/signify/option.dryrun.test \
   tests/signify/option.d.test \
@@ -33,6 +37,10 @@ tests_signify_TESTS = \
   tests/signify/run.01.test \
   tests/signify/run.02.test \
   $(end)
+local-clean:: local-clean/tests/signify
+	rm -f tests/scissor/*.csr.pem
+	rm -f tests/scissor/*.crt.pem
+	rm -f tests/scissor/*.key.pem
 
 tests_signify_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/signify/*.test)
 tests_signify_TESTS_SELFCHECK_EXPECTED = $(tests_signify_TESTS)

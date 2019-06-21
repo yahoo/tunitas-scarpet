@@ -45,28 +45,31 @@ namespace app::signify::options {
                 {"debug", oa::NO, oi::DEBUG_MODE},
                 {"dry-run", oa::NO, oi::DRY_RUN_MODE},
                 {"dryrun", oa::NO, oi::DRY_RUN_MODE},
-                // there are no short options for these --public and --private options
+                // there are no short options for these
                 //
+                // (inbound, of course)
                 {"authority-private-side", oa::REQUIRED, oi::AUTHORITY_PRIVATE_SIDE},
                 {"authority-private-key", oa::REQUIRED, oi::AUTHORITY_PRIVATE_SIDE},
                 {"authority-private", oa::REQUIRED, oi::AUTHORITY_PRIVATE_SIDE},
-                {"private-side", oa::REQUIRED, oi::AUTHORITY_PRIVATE_SIDE},
-                {"private-key", oa::REQUIRED, oi::AUTHORITY_PRIVATE_SIDE},
-                {"private", oa::REQUIRED, oi::AUTHORITY_PRIVATE_SIDE},
-                {"key", oa::REQUIRED, oi::AUTHORITY_PRIVATE_SIDE},
-                //
+                // (inbound, of course)
                 {"authority-public-side", oa::REQUIRED, oi::AUTHORITY_PUBLIC_SIDE},
+                {"authority-public-key", oa::REQUIRED, oi::AUTHORITY_PUBLIC_SIDE},
                 {"authority-public-crt", oa::REQUIRED, oi::AUTHORITY_PUBLIC_SIDE},
                 {"authority-public", oa::REQUIRED, oi::AUTHORITY_PUBLIC_SIDE},
-                {"public-side", oa::REQUIRED, oi::AUTHORITY_PUBLIC_SIDE},
-                {"public", oa::REQUIRED, oi::AUTHORITY_PUBLIC_SIDE},
-                {"crt", oa::REQUIRED, oi::AUTHORITY_PUBLIC_SIDE},
-                //
+                // inbound
                 {"certificate-signing-request", oa::REQUIRED, oi::REQUEST},
                 {"signing-request", oa::REQUIRED, oi::REQUEST},
                 {"request", oa::REQUIRED, oi::REQUEST},
                 {"sign", oa::REQUIRED, oi::REQUEST},
-                {"csr", oa::REQUIRED, oi::REQUEST}}}
+                {"csr", oa::REQUIRED, oi::REQUEST},
+                // outbound
+                {"certificate", oa::REQUIRED, oi::CERTIFICATE},
+                {"public-certificate", oa::REQUIRED, oi::CERTIFICATE},
+                {"crt", oa::REQUIRED, oi::CERTIFICATE},
+                {"public-crt", oa::REQUIRED, oi::CERTIFICATE},
+                {"public-key", oa::REQUIRED, oi::CERTIFICATE},
+                {"public-side", oa::REQUIRED, oi::CERTIFICATE},
+                {"public", oa::REQUIRED, oi::CERTIFICATE}}}
   { }
 }
 #endiv

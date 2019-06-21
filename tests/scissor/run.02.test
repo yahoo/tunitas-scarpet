@@ -1,8 +1,8 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
 set -e
-rm -f ${0%.test}.key.pem ${0%.test}.crt.pem
-${exe?} --key=${0%.test}.key.pem --crt=${0%.test}.crt.pem C=US ST=California L='Mayfield' O='My Little Startup' OU='Baseball' --generate-common-name
+rm -f ${0%.test}.key.pem ${0%.test}.csr.pem
+${exe?} --key=${0%.test}.key.pem --csr=${0%.test}.csr.pem C=US ST=California L='Mayfield' O='My Little Startup' OU='Baseball' --generate-common-name
 sed -e 's/^/key.pem> /' ${0%.test}.key.pem
 echo
-sed -e 's/^/crt.pem> /' ${0%.test}.crt.pem
+sed -e 's/^/csr.pem> /' ${0%.test}.csr.pem

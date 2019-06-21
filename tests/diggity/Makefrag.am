@@ -1,3 +1,8 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
 tests_diggity_XFAIL_TESTS = \
   tests/diggity/run.01.test \
   tests/diggity/run.02.test \

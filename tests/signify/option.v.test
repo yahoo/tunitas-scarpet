@@ -1,5 +1,5 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
 # enters verbose mode, but we need to dry-run this
-${exe?} -v -y --private=/dev/null.private --public=/dev/null.public --request=/dev/null.request
+${exe?} -v -y --authority-public-key=/dev/null.public --authority-private=/dev/null.private --public=/dev/null.public --request=/dev/null.request
 test 0 == $?

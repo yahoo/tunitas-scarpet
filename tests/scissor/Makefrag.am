@@ -1,3 +1,8 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
 tests_scissor_TESTS = \
   tests/scissor/option.help.test \
   tests/scissor/option.dry-run.test \
@@ -12,9 +17,12 @@ tests_scissor_TESTS = \
   tests/scissor/option.private-side.test \
   tests/scissor/option.private-key.test \
   tests/scissor/option.private.test \
-  tests/scissor/option.public-side.test \
-  tests/scissor/option.public-key.test \
-  tests/scissor/option.public.test \
+  tests/scissor/option.certificate-signing-request.test \
+  tests/scissor/option.signing-request.test \
+  tests/scissor/option.sign.test \
+  tests/scissor/option.request-side.test \
+  tests/scissor/option.request.test \
+  tests/scissor/option.csr.test \
   tests/scissor/option.q.test \
   tests/scissor/option.quiet.test \
   tests/scissor/option.usage.test \
@@ -40,6 +48,10 @@ tests_scissor_TESTS = \
   tests/scissor/run.01.test \
   tests/scissor/run.02.test \
   $(end)
+local-clean:: local-clean/tests/scissor
+	rm -f tests/scissor/*.csr.pem
+	rm -f tests/scissor/*.crt.pem
+	rm -f tests/scissor/*.key.pem
 
 tests_scissor_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/scissor/*.test)
 tests_scissor_TESTS_SELFCHECK_EXPECTED = $(tests_scissor_TESTS)

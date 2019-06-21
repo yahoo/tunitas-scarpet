@@ -90,9 +90,9 @@ namespace app::signify::exception {
         << "               --public=FILEPATH          simplest\n"
         << '\n'
         << "--certificate-signing-request=FILEPATH    the Certificate Signing Request (CSR)\n"
-        << "            --signing-request=FILEPATH    the Certificate Signing Request (CSR)\n"
-        << "                    --request=FILEPATH    simple\n"
-        << "                       --sign=FILEPATH    simpler\n"
+        << "            --signing-request=FILEPATH    simple\n"
+        << "                    --request=FILEPATH    simpler\n"
+        << "                       --sign=FILEPATH    simplest\n"
         << "                        --csr=FILEPATH    simplest\n"
         << '\n'
         << "General Options:\n"

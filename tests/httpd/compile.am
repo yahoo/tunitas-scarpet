@@ -1,5 +1,7 @@
-# This -*- Makefile -*- fragment is included by automake in ../../Makefile.am
-# it is never ever used herein within ./Makefile (.../tests/httpd/Makefile)
+# This is a GNU -*- Makefile -*- fragment that is included by Automake into ../../Makefile.am
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 
 tests_httpd_MAKE_OPTIONS = $(none)
 

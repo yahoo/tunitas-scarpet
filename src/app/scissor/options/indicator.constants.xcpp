@@ -8,5 +8,6 @@ namespace app::scissor::options::indicator {
   inline auto const PRIVATE_SIDE = Code::CODE_254;
   inline auto const REQUEST_SIDE = Code::CODE_253;
   inline auto const GENERATE_COMMON_NAME = Code::CODE_252;
+  inline auto const CERTIFICATE_NOT_AN_OPTION = Code::CODE_251;
 }
 #endiv

@@ -1,0 +1,27 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+here=${0%/*}
+set -e
+#
+# Sooo ... this is the same as run.01.test (right now)
+# Is there anything else that's reasonable to test?
+# If so, then this is the place to do it.
+#
+test ${DEBUG:-0} && did-genesis --usage
+did-genesis --version
+did-genesis --public=$here/mykey.public --private=$here/mykey.private
+
+test ${DEBUG:-0} && did-authgen --usage
+did-authgen --version
+did-authgen --public=$here/artsy.public --private=$here/artsy.private C='US' ST='Utah' L="Salt Lake" O='Artisanal Lake Salt LLC' 
+openssl x509 -in $here/artsy.public -noout -text
+
+test ${DEBUG:-0} && did-scissor --usage
+did-scissor --version
+#                                                                 C has to be 2 characters
+did-scissor --csr=$here/everything.csr --private=$here/everything.private C='US' ST='California' L=Ukiah O='Ukiah' OU='Eukaryotes 4 U' --gencn
+
+test ${DEBUG:-0} && did-signify --usage
+did-signify --version
+did-signify --authority-public=$here/artsy.public --authority-private=$here/artsy.private --csr=$here/everything.csr --public=$here/everything.public
+openssl x509 -in $here/everything.public -noout -text

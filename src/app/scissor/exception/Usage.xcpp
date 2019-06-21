@@ -99,7 +99,7 @@ namespace app::scissor::exception {
         << "     --private=FILEPATH            simplest\n"
         << '\n'
         << "--public-side=FILEPATH             write the public certificate to the FILEPATH\n"
-        << " --public-crt=FILEPATH             simpler\n"
+        << " --public-csr=FILEPATH             simpler\n"
         << "     --public=FILEPATH             simplest\n"
         << '\n'
         << "General Options:\n"

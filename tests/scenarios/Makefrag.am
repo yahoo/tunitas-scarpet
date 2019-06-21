@@ -1,0 +1,17 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+tests_scenarios_TESTS = \
+  tests/scenarios/run.01.test \
+  tests/scenarios/run.02.test \
+  $(tests_scenarios_XFAIL_TESTS)
+  $(end)
+tests_scenarios_XFAIL_TESTS = \
+  $(end)
+
+tests_scenarios_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/scenarios/*.test)
+tests_scenarios_TESTS_SELFCHECK_EXPECTED = $(tests_scenarios_TESTS)
+tests_scenarios_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_scenarios_TESTS_SELFCHECK_EXPECTED), $(tests_scenarios_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_scenarios_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_scenarios_TESTS_SELFCHECK_ORPHANS)))

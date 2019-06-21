@@ -1,4 +1,4 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
-${exe?} -y --private=private --public-side=public --gencn
+${exe?} -y --private=FILEPATH --sign=FILEPATH --gencn
 test 0 == $?

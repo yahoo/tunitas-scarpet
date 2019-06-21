@@ -28,8 +28,7 @@ public:
   std::optional<std::filesystem::path> authority_private_side;
   std::optional<std::filesystem::path> authority_public_side;
   std::optional<std::filesystem::path> request;
-  openssl::x509::Fields fields; // this has optionals within
-  options::Boolean generate_common_name;
+  std::optional<std::filesystem::path> certificate;
 };
 #endiv
 #divert <ipp>

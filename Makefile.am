@@ -121,6 +121,7 @@ include tests/diggity/Makefrag.am
 include tests/genesis/Makefrag.am
 include tests/publish/Makefrag.am
 include tests/scissor/Makefrag.am
+include tests/scenarios/Makefrag.am
 include tests/signify/Makefrag.am
 include tests/unit/Makefrag.am
 include tests/zonegen/Makefrag.am
@@ -143,6 +144,7 @@ XFAIL_TESTS = \
   $(tests_scissor_XFAIL_TESTS) \
   $(tests_signify_XFAIL_TESTS) \
   $(tests_zonegen_XFAIL_TESTS) \
+  $(tests_scenarios_XFAIL_TESTS) \
   $(ENABLED_SERVER_XFAIL_TESTS)
   $(end)
 TESTS = \
@@ -151,9 +153,10 @@ TESTS = \
   $(tests_authgen_TESTS) \
   $(tests_publish_TESTS) \
   $(tests_diggity_TESTS) \
-  $(tests_scissordiggity_TESTS) \
+  $(tests_scissor_TESTS) \
   $(tests_signify_TESTS) \
   $(tests_zonegen_TESTS) \
+  $(tests_scenarios_TESTS) \
   $(ENABLED_SERVER_TESTS)
   $(end)
 

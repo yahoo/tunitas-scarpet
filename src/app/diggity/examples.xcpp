@@ -1,0 +1,36 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import std.filesystem.path
+namespace app::diggity::examples {
+  inline namespace constants {
+    inline auto const UPDATE_SECRET_FILEPATH = "/etc/named/scarpet-secret.key"s;
+    inline auto const NAME_SERVER = "ns1.scarpet.tunitas.net."s;
+    inline auto const DOCUMENT_JSON = std::filesystem::path{"/home/USER/did-document.json"};
+    inline auto const DOCUMENT_ZONE = std::filesystem::path{"/home/USER/did-document.zone"};
+    inline auto const DID_DOCUMENT_STORAGE_SERVICE_DOMAIN = "storage.scarpet.tunitas.solutions."s;
+    // 
+    //                                              11111111
+    //                                    012345678901234567 (18 characters => 72 bits)
+    inline auto const DID0 = "did:example:123456789abcdefghi"s;
+    // 
+    //                                            1111111111222222222233 (32 characters => 128 bits)
+    //                                  01234567890123456789012345678901
+    inline auto const DID1 = "did:lo-fi:d41d8cd98f00b204e9800998ecf8427e"s;
+    //
+    //                                              111111111122222222223333333333 (40 characters => 160 bits)
+    //                                    0123456789012345678901234567890123456789
+    inline auto const DID2 = "did:ambient:da39a3ee5e6b4b0d3255bfef95601890afd80709"s;
+    //
+    // Super unlikely that this will fit into DNS (with that 64 character limit on hostnames).
+    //
+    //                                  0123456789012345678901234567890123456789012345678901234567890123 (64 characters => 256 bits)
+    inline auto const DID3 = "did:hi-fi:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"s;
+    //
+    // Not a chance this fits into DNS (512 bits)
+    //
+    inline auto const DID4 = "did:artisanal:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e";
+  }
+}
+#endiv

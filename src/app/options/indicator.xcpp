@@ -7,3 +7,4 @@ namespace app::options::indicator {
   using namespace tunitas::scarpet::options::indicator;
 }
 #endiv
+ind

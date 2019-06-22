@@ -1,0 +1,59 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+tests_scissor_TESTS = \
+  tests/scissor/option.help.test \
+  tests/scissor/option.dry-run.test \
+  tests/scissor/option.dryrun.test \
+  tests/scissor/option.d.test \
+  tests/scissor/option.generate-common-name.test \
+  tests/scissor/option.generate-cn.test \
+  tests/scissor/option.gen-cn.test \
+  tests/scissor/option.gencn.test \
+  tests/scissor/option.help.test \
+  tests/scissor/option.h.test \
+  tests/scissor/option.private-side.test \
+  tests/scissor/option.private-key.test \
+  tests/scissor/option.private.test \
+  tests/scissor/option.certificate-signing-request.test \
+  tests/scissor/option.signing-request.test \
+  tests/scissor/option.sign.test \
+  tests/scissor/option.request-side.test \
+  tests/scissor/option.request.test \
+  tests/scissor/option.csr.test \
+  tests/scissor/option.q.test \
+  tests/scissor/option.quiet.test \
+  tests/scissor/option.usage.test \
+  tests/scissor/option.verbose.test \
+  tests/scissor/option.version.test \
+  tests/scissor/option.v.test \
+  tests/scissor/option.V.test \
+  tests/scissor/option.warnings.test \
+  tests/scissor/option.warning.test \
+  tests/scissor/option.w.test \
+  tests/scissor/option.y.test \
+  \
+  tests/scissor/field.C.test \
+  tests/scissor/field.ST.test \
+  tests/scissor/field.L.test \
+  tests/scissor/field.O.test \
+  tests/scissor/field.OU.test \
+  tests/scissor/field.CN.test \
+  tests/scissor/field.all.test \
+  \
+  tests/scissor/error.CN+gencn.test \
+  \
+  tests/scissor/run.01.test \
+  tests/scissor/run.02.test \
+  $(end)
+local-clean:: local-clean/tests/scissor
+	rm -f tests/scissor/*.csr.pem
+	rm -f tests/scissor/*.crt.pem
+	rm -f tests/scissor/*.key.pem
+
+tests_scissor_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/scissor/*.test)
+tests_scissor_TESTS_SELFCHECK_EXPECTED = $(tests_scissor_TESTS)
+tests_scissor_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_scissor_TESTS_SELFCHECK_EXPECTED), $(tests_scissor_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_scissor_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_scissor_TESTS_SELFCHECK_ORPHANS)))

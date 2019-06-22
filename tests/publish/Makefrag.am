@@ -1,9 +1,36 @@
-tests_publish_TESTS = $(tests_publish_XFAIL_TESTS)
-tests_publish_XFAIL_TESTS = \
+tests_publish_TESTS = \
   tests/publish/option.help.test \
   tests/publish/option.dry-run.test \
   tests/publish/option.dryrun.test \
   tests/publish/option.d.test \
+  tests/publish/option.did-document-storage-service.test \
+  tests/publish/option.ddss.test \
+  tests/publish/option.did-document.test \
+  tests/publish/option.did-document-json.test \
+  tests/publish/option.did-document-zone.test \
+  tests/publish/option.document.test \
+  tests/publish/option.doc.test \
+  tests/publish/option.document.guess-json.test \
+  tests/publish/option.document.guess-zone.test \
+  tests/publish/option.document-json.test \
+  tests/publish/option.document-zone.test \
+  tests/publish/option.json.test \
+  tests/publish/option.zone.test \
+  tests/publish/option.did-domain.test \
+  tests/publish/option.domain.test \
+  tests/publish/option.name-server-update-secret-value.test \
+  tests/publish/option.name-server-update-secret.test \
+  tests/publish/option.update-secret-value.test \
+  tests/publish/option.update-secret.test \
+  tests/publish/option.secret.test \
+  tests/publish/option.name-server-update-secret-file.test \
+  tests/publish/option.update-secret-file.test \
+  tests/publish/option.secret-file.test \
+  tests/publish/option.secret-value.test \
+  tests/publish/option.name-server.test \
+  tests/publish/option.server.test \
+  tests/publish/option.ns.test \
+  tests/publish/option.n.test \
   tests/publish/option.help.test \
   tests/publish/option.h.test \
   tests/publish/option.q.test \
@@ -17,9 +44,15 @@ tests_publish_XFAIL_TESTS = \
   tests/publish/option.warning.test \
   tests/publish/option.w.test \
   tests/publish/option.y.test \
+  $(tests_publish_XFAIL_TESTS)
+  $(end)
+tests_publish_XFAIL_TESTS = \
+  tests/publish/run.01.test \
+  tests/publish/run.02.test \
+  tests/publish/run.03.test \
   $(end)
 
 tests_publish_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/publish/*.test)
 tests_publish_TESTS_SELFCHECK_EXPECTED = $(tests_publish_TESTS)
 tests_publish_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_publish_TESTS_SELFCHECK_EXPECTED), $(tests_publish_TESTS_SELFCHECK_ACTUAL))
-$(if $(tests_publish_TESTS_SELFCHECK_ORPHANS),$(error Orphaned tests: $(tests_publish_TESTS_SELFCHECK_ORPHANS)))
+$(if $(tests_publish_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_publish_TESTS_SELFCHECK_ORPHANS)))

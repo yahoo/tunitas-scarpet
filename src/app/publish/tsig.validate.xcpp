@@ -1,0 +1,66 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import std.string
+namespace app::publish::tsig {
+  //
+  // Perform some simple validations on the Transaction Signature (TSIG)
+  // Not too big, not too small, not too weird.
+  // At least ensure that nsupdate can accept the secret and send it on up to the server.
+  //
+  // No explanation about the problem is attempted.
+  //
+  // ftp://ftp.isc.org/isc/bind9/9.11.0b2/doc/arm/man.nsupdate.html
+  // RFC 2136, RFC 3007, RFC 2104, RFC 2845, RFC 1034, RFC 2535, RFC 2931, 
+  //
+  // Example:
+  //   $ dnssec-genesis -a HMAC-MD5 -b 512 -n USER -r /dev/urandom -K . storage.scarpet.tunitas.solutions.
+  //   Kstorage.scarpet.tunitas.solutions.+157+26437
+  //
+  //   cat Kstorage.scarpet.tunitas.solutions.+157+26437.key 
+  //   storage.scarpet.tunitas.solutions. IN KEY 0 3 157 buslyR6JBCxiTqbHLZ9dUkvN+/VYLeERPwwljcYCc0muXhSWV5iDAhrz ziJA3eN/vVLnkQ/K92fZ8Sc0ZUA7zw==
+  //
+  //   $ cat Kstorage.scarpet.tunitas.solutions.+157+26437.private
+  //   Private-key-format: v1.3
+  //   Algorithm: 157 (HMAC_MD5)
+  //   Key: buslyR6JBCxiTqbHLZ9dUkvN+/VYLeERPwwljcYCc0muXhSWV5iDAhrzziJA3eN/vVLnkQ/K92fZ8Sc0ZUA7zw==
+  //   Bits: AAA=
+  //   Created: 20190618190441
+  //   Publish: 20190618190441
+  //   Activate: 20190618190441
+  //
+  // Usage:
+  //
+  //   auto secret = ...somehow...;
+  //   if (!validate(secret)) {
+  //     ...sad... not a valid secret...
+  //   }
+  //
+  inline auto validate(std::string const &secret) -> bool;
+}
+#endiv
+#divert <ipp>
+#import std.isalnum
+#import std.all_of
+auto app::publish::tsig::validate(std::string const &candidate) -> bool {
+  // Choose some arbitrary large number for the size.
+  // If the candidate is bigger than that then it's gotta be bad.
+  if (candidate.empty() || 8192u < candidate.size()) {
+    return false;
+  }
+  auto valid_character = [](char c) -> bool {
+                           // https://en.wikipedia.org/wiki/Base64
+                           // Sloppy here to allow more than the standard; just ensure they are "safe"
+                           auto isextra = [](char c) {
+                                            return ('=' == c ||
+                                                    '+' == c || '/' == c ||
+                                                    '-' == c || '_' == c ||
+                                                    ',' == c || '.' == c ||
+                                                    '~' == c);
+                                          };
+                           return std::isalnum(c) || isextra(c);
+                         };
+  return std::all_of(candidate.begin(), candidate.end(), valid_character);
+}
+#endiv

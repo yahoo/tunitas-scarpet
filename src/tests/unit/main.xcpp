@@ -6,6 +6,7 @@
 #import tests.unit.error.Fixture
 #import tests.unit.exception.Fixture
 #import tests.unit.options.Fixture
+#import tests.unit.pki.Fixture
 #import tests.unit.scarpet.Fixture
 #import tests.unit.url.Fixture
 #import tests.unit.want.Fixture
@@ -15,6 +16,7 @@ auto main(int argc, char **argv) -> int {
   Main remain(error::Fixture::suite(),
               exception::Fixture::suite(),
               options::Fixture::suite(),
+              pki::Fixture::suite(),
               scarpet::Fixture::suite(),
               url::Fixture::suite(),
               want::Fixture::suite());

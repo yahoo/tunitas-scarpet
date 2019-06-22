@@ -1,0 +1,75 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#forward app.Configuration
+#import options.longish.Step
+#import tunitas.scarpet.exception
+#import tunitas.scarpet.options.Encoding
+#import tunitas.required.exception.app.Quitting
+namespace app::options {
+  //
+  // Get the encoding by its keyword
+  // Follows the style (rhymes with)
+  // the "get_<thing>"(Configuration const &, Step) functions from tunitas::app::options
+  //
+  // The Configuration is supplied to give ADL context towards the error reporting.
+  // The recovered value is returned.
+  //
+  // Syntax:
+  //
+  //   -e ENCODING
+  //   --encoding=ENCODING
+  //
+  // Example:
+  //
+  //   --encoding=pem
+  //   --encoding=der
+  //   --encoding=der+base64
+  //   --encoding=der+base64url
+  //
+  // Exceptions:
+  //
+  //    tunitas::scarpet::exception::Quitting is thrown on failure to recover an Encoding
+  //
+  // Usage:
+  //
+  //    case oi::CHR_e:
+  //    case oi::ENCODING:
+  //      cfg.encoding = get_encoding(cfg, step);
+  //      break;
+  //
+  namespace packaging::get_encoding::function {
+    namespace exception = tunitas::scarpet::exception;
+    using Step = ::options::longish::Step;
+    template<tunitas::required::exception::app::Quitting QUITTING> inline auto get_encoding(Configuration const &, Step const &) -> Encoding;
+  }
+  using packaging::get_encoding::function::get_encoding;
+}
+#endiv
+#divert <ipp>
+#import app.Configuration
+#import options.longish.Step
+#import tunitas.scarpet.exception.aspect.Exiting
+#import tunitas.scarpet.options.Encoding // from_string
+#import sys.exits.constants
+namespace app::options::packaging::get_encoding {
+  template<tunitas::required::exception::app::Quitting QUITTING> auto function::get_encoding(Configuration const &cfg, Step const &step) -> Encoding try {
+    //
+    // Either we get the Encoding or we don't.
+    // If we don't then escalate that exception into QUITTING.
+    //
+    return from_string<Encoding>(required(step));
+  } catch (...) {
+    error(cfg) << "cannot recover an encoding out of " << /*FIXTHIS format::q*/ required(step) << '\n';
+    try {
+      throw;
+    } catch (exception::aspect::Exiting const &) {
+      throw;
+    } catch (...) {
+      // throw exception::Quitting(cfg.NAME, sys::exits::CONFIG);
+      throw QUITTING(cfg.NAME, sys::exits::CONFIG);
+    }
+  }
+}
+#endiv

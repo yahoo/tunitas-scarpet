@@ -1,6 +1,19 @@
 # yes bin should exist
 .libs
+# lots of renames
+did-genesis
 did-keygen
+did-gen-key
+did-generate-key-pair
+# lots of renames
+did-authgen
+did-cagen
+did-gen-ca
+did-generate-trust-anchor
+# stable names
+did-diggity
 did-publish
+did-scissor
+did-signify
 did-zonegen
 #end

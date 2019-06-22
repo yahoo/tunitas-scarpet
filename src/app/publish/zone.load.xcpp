@@ -1,0 +1,49 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.Outcome
+#import tunitas.scarpet.did.Document.ZONE
+#import std.filesystem.path
+namespace app::publish::zone {
+  //
+  // Load the DID Document in ZONE format (a did::Document<ZONE>)
+  //
+  // Usage:
+  //
+  //   auto filepath = std::filesystem::path{...somehow...};
+  //   auto loaded = load(filepath);
+  //   if (ok(loaded)) {
+  //      auto document = value(std::move(loaded));
+  //      ... use that document...
+  //   } else {
+  //      cerr << "complain " << error_code(loaded).message()
+  //   }
+  //
+  namespace packaging::load::function {
+    using tunitas::Outcome;
+    using tunitas::scarpet::did::Document;
+    using tunitas::scarpet::did::ZONE;
+    using Filepath = std::filesystem::path;
+    using Result = Outcome<Document<ZONE>>;
+    auto load(Filepath const &) -> Result;
+  }
+  using packaging::load::function::load;
+}
+#endiv
+#divert <cpp>
+#import slurp.file.read
+#import slurp.Failure
+#import std.vector
+#import std.string
+#import nonstd.exception.Unimplemented
+namespace app::publish::zone::packaging::load {
+  auto function::load(Filepath const &filepath) -> Result try {
+    auto slurped = slurp::file::read<std::vector<std::string>>(filepath); 
+#warning WRITETHIS function::load(Filepath const &filepath) -> Result
+    throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+  } catch (slurp::Failure const &e) {
+    return Result{e.code()};
+  }
+}
+#endiv

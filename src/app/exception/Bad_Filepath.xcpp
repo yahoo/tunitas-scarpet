@@ -1,0 +1,47 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace app::exception {
+  //
+  // Bloffo ... all this does is create a new type, a new descendant of Quitting.
+  //
+  // Transform the failure of tunitas::app::options::get_filepath<...>(...)
+  // into a well-known exception that the application { genesis, publish, etc. } can capture and redirect elsewhere.o
+  //
+  // In order to clear the template requirements for get_filepath<QUITTING>(...)
+  // the exception must be "shaped like" a Tunitas Quitting exception; hence the ancestry.
+  //
+  // The NAME and reason which are often supplied in the constructor are unimportant here.
+  // Because we're using the exception to capture and redirect, we don't care what the message might be.
+  //
+  // Usage:
+  //
+  //   try {
+  //     auto cfg = Configuration{...somehow...};
+  //     auto step = Step{...somehow...};
+  //     ...
+  //     cfg.public_side = get_filepath<exception::Bad_Filepath>(cfg, step);
+  //     ...
+  //   } catch (Bad_Filepath const &) {
+  //     ...that was a bad bad file...
+  //     return Result{std:error_code{error::Code::OPTIONS}};
+  //   }
+  //
+  class Bad_Filepath;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.exception.Quitting
+#import sys.exits.Code
+class app::exception::Bad_Filepath : public tunitas::scarpet::exception::Quitting {
+  using ancestor = tunitas::scarpet::exception::Quitting;
+public:
+  inline explicit Bad_Filepath(std::string const &NAME, sys::exits::Code);
+};
+#endiv
+#divert <ipp>
+app::exception::Bad_Filepath::Bad_Filepath(std::string const &NAME, sys::exits::Code code)
+  : ancestor{NAME, code}
+{ }
+#endiv

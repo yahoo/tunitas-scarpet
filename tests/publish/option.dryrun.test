@@ -1,5 +1,5 @@
 #!/bin/sh
 source ${0%/*}/rigging.sh || exit 70
-${exe?} --dryrun -y
+${exe?} --dryrun -y  -K /dev/null -n localhost.localdomain --doc=/dev/null.json --domain=ddss.example.
 # the --dryrun option enters dry-run mode, but we need to dry-run this (sic)
 test 0 == $?

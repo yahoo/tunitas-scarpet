@@ -1,0 +1,52 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import std.string
+namespace tunitas::scarpet::pki::cn {
+  //
+  // Generate a 256-bit common name
+  //
+  // The Common Name (CN) field of X.509 must be no more than 64 characters, per RFC 2459 (ahem, page 81)
+  // Considering hexadecimal characters, that gives us 4 * 64 = 256 bits.
+  // Considering 64^85 == 2^(6*85) == 2^510
+  //
+  // In this case, we're using two (2) UUIDs without the dashes; concatenated.
+  // Acquire from the uuid module,
+  // or else reading from /dev/urandom directly
+  //
+  // Example:
+  //
+  //                       111111111122222222223333333333444444444455555555556666
+  //   counting: 0123456789012345678901234567890123456789012345678901234567890123
+  //             |                                                              |
+  //             v                                                              v
+  //   specimen: 28c3d85dcf2a481cb403de6db136f136d5ad3e1b68164e14986c744b54be6a81
+  //
+  // Usage:
+  //
+  //   auto name = cn::generate()
+  //
+  inline auto generate() -> std::string;
+}
+#endiv
+#divert <ipp>
+#import std.move
+#import std.runtime_error // [[FIXTHIS]] tunitas::scarpet::exception::invariant
+#import uuid.unparse
+#import uuid.generate.random
+#import tunitas.scarpet.exception.Invariant
+auto tunitas::scarpet::pki::cn::generate() -> std::string {
+  std::string ret;
+  unparse(uuid::generate::random(), ret);
+  unparse(uuid::generate::random(), ret);
+  for (std::string::size_type pos; ret.size() && std::string::npos != (pos = ret.rfind('-')); ) {
+    ret.erase(pos + ret.begin());
+  }
+  if (64 != ret.size()) {
+    // This is unexpected and troublesome.
+    throw exception::Invariant{"not 64 hex chars (not 256 bits)"};
+  }
+  return std::move(ret);
+}
+#endiv

@@ -1,0 +1,54 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace app::diggity::options {
+  //
+  // The options specification of (the) DID Diggity
+  //
+  // Usage:
+  //
+  //   auto spc = Specification{};
+  //   auto cfg = Configuration{};
+  //   auto parsed = Parser{spc, cfg};
+  //
+  class Specification;
+}
+#endiv
+#divert <hpp>
+#import app.options.Specification
+class app::diggity::options::Specification : public app::options::Specification {
+  using ancestor = app::options::Specification;
+public:
+  Specification();
+};
+#endiv
+#divert <cpp>
+#import options.argument.constants
+#import app.diggity.options.indicator.constants
+namespace app::diggity::options {
+  namespace oa = ::options::argument;
+  namespace oi = app::diggity::options::indicator;
+  Specification::Specification()
+    //
+    //          /-------------- enable MISSING processing
+    //          |
+    //          v
+    : ancestor{":hVwqvdyn:",
+               {{"usage", oa::NO, oi::USAGE_SUBCOMMAND},
+                {"help", oa::NO, oi::USAGE_SUBCOMMAND},
+                {"version", oa::NO, oi::VERSION_SUBCOMMAND},
+                {"warning", oa::NO, oi::WARNING_MODE},
+                {"warnings", oa::NO, oi::WARNING_MODE},
+                {"quiet", oa::NO, oi::QUIET_MODE},
+                {"verbose", oa::NO, oi::VERBOSE_MODE},
+                {"debug", oa::NO, oi::DEBUG_MODE},
+                {"dry-run", oa::NO, oi::DRY_RUN_MODE},
+                {"dryrun", oa::NO, oi::DRY_RUN_MODE},
+                // -n
+                {"name-server", oa::REQUIRED, oi::NAME_SERVER},
+                {"server", oa::REQUIRED, oi::NAME_SERVER},
+                {"ns", oa::REQUIRED, oi::NAME_SERVER}}}
+  { }
+}
+#endiv

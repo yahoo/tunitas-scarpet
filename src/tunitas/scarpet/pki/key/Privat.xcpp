@@ -1,0 +1,50 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::pki::key {
+  //
+  // A private key (which of course includes the public side)
+  //
+  // Usage:
+  //
+  //   auto priv = generate<Privat>();
+  //   auto publ = publik(priv); <--------------- but much more efficient to use generate<Pair>()
+  //   auto s = to_string(priv);
+  //   to_stream(cout, privat);
+  //
+  class Privat;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.pki.key.privat
+#import tunitas.scarpet.pki.key.publik
+#import tunitas.scarpet.pki.key.to_string
+#import want.openssl.memory.Buffer
+class tunitas::scarpet::pki::key::Privat : private want::openssl::memory::Buffer {
+  using ancestor = want::openssl::memory::Buffer;
+  inline explicit Privat(ancestor &&);
+  friend auto key::privat(Activated const &) -> Privat;
+  friend auto key::publik(Activated const &) -> Publik;
+  friend auto key::publik(Privat const &) -> Publik;
+  friend auto key::to_string(Privat const &) -> std::string;
+  friend auto key::to_string(Publik const &) -> std::string;
+public:
+  Privat() = default;
+};
+namespace tunitas::scarpet::pki::key {
+  static_assert(std::is_default_constructible<Privat>::value);
+  static_assert(std::is_move_constructible<Privat>::value);
+  static_assert(std::is_move_assignable<Privat>::value);
+  static_assert(!std::is_copy_constructible<Privat>::value);
+  static_assert(!std::is_copy_assignable<Privat>::value);
+}
+#endiv
+#divert <ipp>
+#import std.forward
+namespace tunitas::scarpet::pki::key {
+  Privat::Privat(Buffer &&buffer)
+    : ancestor{std::forward<Buffer>(buffer)}
+  { }
+}
+#endiv

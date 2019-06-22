@@ -1,0 +1,66 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import json
+namespace app::publish::json {
+  using namespace ::json; // cascade the namespaces to it easy
+}
+#endiv
+#divert <hpp>
+#import tunitas.Outcome
+#import tunitas.scarpet.did.Document.JSON
+#import std.filesystem.path
+namespace app::publish::json {
+  //
+  // Load the DID Document in JSON format (a did::Document<JSON>)
+  //
+  // Absolutely no checking is done to ensure that the JSON is conformant to any schema at all.
+  //
+  // Usage:
+  //
+  //   auto filepath = std::filesystem::path{...somehow...};
+  //   auto loaded = load(filepath);
+  //   if (ok(loaded)) {
+  //      auto document = value(std::move(loaded));
+  //      ... use that document...
+  //   } else {
+  //      cerr << "complain " << error_code(loaded).message()
+  //   }
+  //
+  namespace packaging::load::function {
+    using tunitas::Outcome;
+    using tunitas::scarpet::did::Document;
+    using tunitas::scarpet::did::JSON;
+    using Filepath = std::filesystem::path;
+    using Result = Outcome<Document<JSON>>;
+    auto load(Filepath const &) -> Result;
+  }
+  using packaging::load::function::load;
+}
+#endiv
+#divert <cpp>
+#import json.Reader
+#import json.String
+#import json.to
+#import slurp.file.read
+#import slurp.Failure
+#import std.move
+#import tunitas.scarpet.error.Code
+#import std.error_code
+namespace app::publish::json::packaging::load {
+  auto function::load(Filepath const &filepath) -> Result try {
+    auto s_string = slurp::file::read<std::string>(filepath);
+    auto j_string = json::to(json::STRING{}, std::move(s_string)); // [[FIXTHIS]] blik this is a gratuitous copy because slurp::file::read won't produce a json::String
+    auto red = (json::Reader{})(j_string);
+    if (!ok(red)) {
+      return Result{std::error_code{tunitas::scarpet::error::Code::BAD_JSON}};
+    }
+    Document<JSON> doc;
+    doc.object = vv(std::move(red));
+    return Result{std::move(doc)};
+  } catch (slurp::Failure const &e) {
+    return Result{e.code()};
+  }
+}
+#endiv

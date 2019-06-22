@@ -1,3 +1,8 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
 tests_zonegen_TESTS = $(tests_zonegen_XFAIL_TESTS)
 tests_zonegen_XFAIL_TESTS = \
   tests/zonegen/option.help.test \
@@ -22,4 +27,4 @@ tests_zonegen_XFAIL_TESTS = \
 tests_zonegen_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/zonegen/*.test)
 tests_zonegen_TESTS_SELFCHECK_EXPECTED = $(tests_zonegen_TESTS)
 tests_zonegen_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_zonegen_TESTS_SELFCHECK_EXPECTED), $(tests_zonegen_TESTS_SELFCHECK_ACTUAL))
-$(if $(tests_zonegen_TESTS_SELFCHECK_ORPHANS),$(error Orphaned tests: $(tests_zonegen_TESTS_SELFCHECK_ORPHANS)))
+$(if $(tests_zonegen_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_zonegen_TESTS_SELFCHECK_ORPHANS)))

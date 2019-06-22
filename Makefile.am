@@ -20,10 +20,12 @@ DEVELOPMENT_AREAS = \
   $(module_boost_prefix) \
   $(module_c_prefix) \
   $(module_format_prefix) \
+  $(module_json_prefix) \
   $(module_nonstd_prefix) \
+  $(module_openssl_prefix) \
   $(module_options_prefix) \
   $(module_posix_prefix) \
-  $(module_sqlite_prefix) \
+  $(module_shell_prefix) \
   $(module_std_prefix) \
   $(module_slurp_prefix) \
   $(module_sqlite_prefix) \
@@ -52,24 +54,34 @@ module_SOURCE_SET = \
   $(lib_libwant_la_SOURCES) \
   $(end)
 
-include src/app/keygen/Makefrag.am
 include src/app/Makefrag.am
+include src/app/authgen/Makefrag.am
+include src/app/diggity/Makefrag.am
+include src/app/genesis/Makefrag.am
 include src/app/publish/Makefrag.am
+include src/app/scissor/Makefrag.am
+include src/app/signify/Makefrag.am
 include src/app/zonegen/Makefrag.am
 include src/autotools/autoconf/Makefrag.am
 include src/mod/scarpet/Makefrag.am
 include src/tests/unit/Makefrag.am
 include src/tunitas/scarpet/Makefrag.am
+include src/tunitas/scarpet/pki/Makefrag.am
 include src/want/Makefrag.am
 
 bin_PROGRAMS = \
-  $(bin_did_keygen) \
+  $(bin_did_authgen) \
+  $(bin_did_diggity) \
+  $(bin_did_genesis) \
   $(bin_did_publish) \
+  $(bin_did_scissor) \
+  $(bin_did_signify) \
   $(bin_did_zonegen) \
   $(end)
 noinst_LTLIBRARIES = \
   $(lib_libautotools_autoconf_la) \
   $(lib_libautotools_autoconf_a_b_la) \
+  $(lib_libtunitas_scarpet_pki_la) \
   $(lib_libwant_la) \
   $(lib_libapp_la) \
   $(end)
@@ -103,9 +115,15 @@ autotools_autoconf_DEPENDENT_GENERATED_SET = \
   $(end)
 $(autotools_autoconf_DEPENDENT_OBJECTS_SET) : $(autotools_autoconf_DEPENDENT_GENERATED_SET)
 
-include tests/unit/Makefrag.am
-include tests/keygen/Makefrag.am
+# alphabetical is fine
+include tests/authgen/Makefrag.am
+include tests/diggity/Makefrag.am
+include tests/genesis/Makefrag.am
 include tests/publish/Makefrag.am
+include tests/scissor/Makefrag.am
+include tests/scenarios/Makefrag.am
+include tests/signify/Makefrag.am
+include tests/unit/Makefrag.am
 include tests/zonegen/Makefrag.am
 
 if ENABLE_SERVER_TESTS
@@ -116,18 +134,29 @@ else
 ENABLED_SERVER_TESTS = 
 endif
 
+# ordered by complexity of the tests
 XFAIL_TESTS = \
   $(tests_unit_XFAIL_TESTS) \
-  $(tests_keygen_XFAIL_TESTS) \
+  $(tests_genesis_XFAIL_TESTS) \
+  $(tests_authgen_XFAIL_TESTS) \
   $(tests_publish_XFAIL_TESTS) \
+  $(tests_diggity_XFAIL_TESTS) \
+  $(tests_scissor_XFAIL_TESTS) \
+  $(tests_signify_XFAIL_TESTS) \
   $(tests_zonegen_XFAIL_TESTS) \
+  $(tests_scenarios_XFAIL_TESTS) \
   $(ENABLED_SERVER_XFAIL_TESTS)
   $(end)
 TESTS = \
   $(tests_unit_TESTS) \
-  $(tests_keygen_TESTS) \
+  $(tests_genesis_TESTS) \
+  $(tests_authgen_TESTS) \
   $(tests_publish_TESTS) \
+  $(tests_diggity_TESTS) \
+  $(tests_scissor_TESTS) \
+  $(tests_signify_TESTS) \
   $(tests_zonegen_TESTS) \
+  $(tests_scenarios_TESTS) \
   $(ENABLED_SERVER_TESTS)
   $(end)
 

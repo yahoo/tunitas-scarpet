@@ -1,0 +1,35 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::pki::key {
+  //
+  // A key pair
+  //
+  // Usage:
+  //
+  //   auto pare = Pair{};
+  //   auto pare = generate<Pair>();
+  //   auto pare = Pair{Privat{...}, Publik{...}};
+  //   auto pare = Pair{Privat{Buffer{...data..., ...size...}}, Publik{Buffer{...data..., ...size...}}};
+  //   auto s = to_string(pare);
+  //   to_stream(cout, pare);
+  //
+  class Pair;
+}
+#endiv
+#divert <hpp>
+#import std.pair
+#import tunitas.scarpet.pki.key.Privat
+#import tunitas.scarpet.pki.key.Publik
+class tunitas::scarpet::pki::key::Pair : private std::pair<Privat, Publik> {
+  using ancestor = std::pair<Privat, Publik>;
+public:
+  Pair() = default;
+  using ancestor::pair;
+  inline auto privat() -> Privat & { return first; }
+  inline auto privat() const -> Privat const & { return first; }
+  inline auto publik() -> Publik & { return second; }
+  inline auto publik() const -> Publik const & { return second; }
+};
+#endiv

@@ -1,0 +1,95 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace want::openssl::memory {
+  //
+  // A memory managed buffer
+  // like std::unique_ptr but uses an openssl-compatible call to free(3), as expected
+  // Like nonstd::span with a data() and a size()
+  //
+  // WATCHOUT - cannot use nonstd::span<std::byte> for implementation here because Holder<INDIRECTION> ensures no nullptr by using the EMPTEE system
+  // We need to manage a buffer here ::free(3) on destruction yet *also* has the same interface signature as nonstd::span (std::span)
+  //
+  // Usage
+  //
+  //   auto pkey = openssl::evp::PKey{...somehow...};
+  //   char *data{nullptr};
+  //   int size = i2d_PrivateKey(pkey, &data);
+  //   auto buffer = Buffer{data, size};
+  //   ...use the buffer...
+  //
+  class Buffer;
+}
+#endiv
+#divert <hpp>
+namespace want::openssl::memory {
+  inline auto swap(Buffer &, Buffer &) noexcept -> void;
+}
+// NOT THIS ---> #import nonstd.span <--- NOT THIS
+#import std.byte
+class want::openssl::memory::Buffer {
+public:
+  // WATCHOUT - the pointers here must be allocated with malloc
+  // They MUST be disposed of with free(3) as is normal for the C runtime.
+  // If you want C++-managed storage then use std::vector<std::byte>
+  using Value = std::byte;
+  using Size = std::size_t;
+  inline Buffer();
+  inline Buffer(Value *, Size);
+  inline ~Buffer();
+  Buffer(Buffer const &) = delete;
+  auto operator=(Buffer const &) -> Buffer & = delete;
+  inline explicit Buffer(Buffer &&);
+  inline auto operator=(Buffer &&) -> Buffer &;
+  // A very much simplified version of the nonstd::span interface
+  inline auto empty() const -> bool;
+  inline auto size() const -> Size;
+  inline auto data() const -> Value const *;
+  inline auto data() -> Value *;
+protected:
+  friend auto memory::swap(Buffer &, Buffer &) noexcept -> void;
+  Value *managed_value;
+  Size managed_size;
+};
+#endiv
+#divert <ipp>
+#import std.swap
+namespace want::openssl {
+  auto memory::swap(Buffer &a, Buffer &b) noexcept -> void {
+    std::swap(a.managed_value, b.managed_value);
+    std::swap(a.managed_size, b.managed_size);
+  }
+}
+#import free
+namespace want::openssl::memory {
+  Buffer::Buffer()
+    : managed_value{nullptr} // <--------------- REMINDER this is different than nonstd::span<std::byte> which cannot store a nullptr
+    , managed_size{0u}
+  { }
+  Buffer::Buffer(Value *value, Size size)
+    : managed_value{value} // <----------------- REMINDER can tolerate nullptr
+    , managed_size{size}
+  { }
+  Buffer::~Buffer() {
+    auto *raw{managed_value};
+    if (nullptr != raw) {
+      managed_value = nullptr;
+      managed_size = 0u;
+      ::free(raw);
+    }
+  }
+  Buffer::Buffer(Buffer &&other)
+    : Buffer{} {
+    swap(*this, other);
+  }
+  auto Buffer::operator=(Buffer &&other) -> Buffer & {
+    swap(*this, other);
+    return *this;
+  }
+  auto Buffer::empty() const -> bool { return 0u == managed_size; }
+  auto Buffer::size() const -> Size { return managed_size; }
+  auto Buffer::data() const -> Value const * { return managed_value; }
+  auto Buffer::data() -> Value * { return managed_value; }
+}
+#endiv

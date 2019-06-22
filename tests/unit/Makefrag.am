@@ -1,6 +1,12 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
 tests_unit_TESTS = \
   tests/unit/list.test \
   \
+  tests/unit/pki.test \
   tests/unit/error.test \
   tests/unit/exception.test \
   tests/unit/options.test \
@@ -9,3 +15,8 @@ tests_unit_TESTS = \
   \
   tests/unit/all.test \
   $(end)
+
+tests_unit_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/unit/*.test)
+tests_unit_TESTS_SELFCHECK_EXPECTED = $(tests_unit_TESTS)
+tests_unit_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_unit_TESTS_SELFCHECK_EXPECTED), $(tests_unit_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_unit_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_unit_TESTS_SELFCHECK_ORPHANS)))

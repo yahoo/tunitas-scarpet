@@ -1,0 +1,56 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import app.scissor.Configuration
+#import sys.exits.Code
+namespace app::scissor {
+  //
+  // Process ... generate the Certificate Signing Request (CSR) and the associated (private) key
+  //
+  // Usage:
+  //
+  //   ...oh come on...
+  //
+  auto process(Configuration const &) -> sys::exits::Code;
+}
+#endiv
+#divert <cpp>
+#import app.scissor.exception
+#import openssl.ec.generate
+#import openssl.evp.PKey
+#import openssl.pem.to_string
+#import openssl.x509.Req
+#import std.error_code
+#import std.move
+#import sys.exits.constants
+#import tunitas.scarpet.exception.Quitting
+#import want.stream.duo.Files
+#import want.stream.duo.gang
+auto app::scissor::process(Configuration const &cfg) -> sys::exits::Code try {
+  using namespace openssl;
+  auto pkey = []() -> evp::PKey {
+                evp::PKey pkey;
+                pkey.assign(ec::generate(ec::group::Name::PRIME256V1));
+                return std::move(pkey);
+              }();
+  auto req = [&pkey, &cfg]() -> x509::Req {
+               x509::Req req;
+               req.set_pubkey(pkey);
+               // This is slick of course but it does throw std::error_code if openssl refuses the field values
+               req.get_subject_name().add_entry_by_txt(cfg.fields); // <----------- Wowza is this slick!
+               req.sign(pkey, EVP_sha256());
+               return std::move(req);
+             }();
+  using namespace want::stream::duo;
+  Files out;
+  out.exceptions(std::ios::badbit|std::ios::failbit);
+  out.open(*cfg.private_side, *cfg.request_side);
+  debug(cfg) << "also writing to " << *cfg.private_side << " and " << *cfg.request_side << '\n';
+  out << gang(pem::to_string(pkey), pem::to_string(req));
+  return sys::exits::OK;
+} catch (std::error_code const &ec) {
+  error(cfg) << "failing because " << ec.message() << '\n';
+  throw exception::Quitting{cfg.NAME, sys::exits::FAIL};
+}
+#endiv

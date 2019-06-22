@@ -1,0 +1,25 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright (c) 2019-2019, Wendell Craig Baker, wbaker@scold-lang.org
+#divert <hpp>
+#import std.pair
+namespace want::stream::duo {
+  //
+  // Produce the pair to write both to the Files
+  // A convenience function whcih uses references, not copies
+  //
+  // Usage:
+  //
+  //   Files out{keyfile, crtfile};
+  //   out << gang(key, crt);
+  // 
+  template<typename TYPE> inline auto gang(TYPE const &, TYPE const &) -> std::pair<TYPE const &, TYPE const &>;
+}
+#endiv
+#divert <ipp>
+namespace want::stream {
+  template<typename TYPE> auto duo::gang(TYPE const &firsty, TYPE const &secondy) -> std::pair<TYPE const &, TYPE const &> {
+    // This is an unbelievable amount of boilerplate declarations to get the desired effect.
+    return std::pair<TYPE const &, TYPE const &>{firsty, secondy};
+  }
+}
+#endiv

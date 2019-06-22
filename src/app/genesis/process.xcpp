@@ -1,0 +1,94 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import app.genesis.Configuration
+#import sys.exits.Code
+namespace app::genesis {
+  //
+  // Process ... generate that key pair
+  //
+  // Usage:
+  //
+  //   ...oh come on...
+  //
+  auto process(Configuration const &) -> sys::exits::Code;
+  namespace detail {
+    auto strip(std::string) -> std::string;
+  }
+}
+#endiv
+#divert <cpp>
+#import app.genesis.defaults
+#import openssl.ec.generate
+#import openssl.evp.PKey
+#import openssl.pem.to_string // includes pem::pub::to_string(...)
+#import sys.exits.constants
+#import tunitas.scarpet.pki.key.generate
+#import tunitas.scarpet.pki.key.to_string
+#import tunitas.scarpet.pki.key.privat
+#import tunitas.scarpet.pki.key.publik
+#import tunitas.scarpet.pki.key.Pair
+#import tunitas.scarpet.exception.Coding
+#import want.stream.duo.Files
+#import want.stream.duo.gang
+auto app::genesis::process(Configuration const &cfg) -> sys::exits::Code {
+  using namespace want::stream::duo;
+  Files out;
+  out.exceptions(std::ios::badbit|std::ios::failbit);
+  out.open(*cfg.private_side, *cfg.public_side);
+  debug(cfg) << "also writing to " << *cfg.private_side << " and " << *cfg.public_side << '\n';
+  switch (cfg.encoding.value_or(defaults::ENCODING)) {
+    using tunitas::scarpet::options::Encoding;
+  case Encoding::PEM:
+    {
+      using namespace openssl;
+      evp::PKey pkey;
+      pkey.assign(ec::generate(ec::group::Name::PRIME256V1));
+      debug(cfg) << pem::to_string(pkey) << '\n' << pem::pub::to_string(pkey);
+      if (cfg.strip_armor) {
+        out << gang(detail::strip(pem::to_string(pkey)), detail::strip(pem::pub::to_string(pkey)));
+      } else {
+        out << gang(pem::to_string(pkey), pem::pub::to_string(pkey));
+      }
+      break;
+    }
+  case Encoding::DER_BASE64URL:
+    {
+      using namespace tunitas::scarpet::pki::key;
+      auto generated = generate<Pair>();
+      debug(cfg) << to_string(generated) << '\n';
+      out << gang(to_string(privat(generated)), to_string(publik(generated)));
+    }
+    break;
+  default:
+    // This is actually a programmer error; the options processing should have dealt with this previously.
+    throw tunitas::scarpet::exception::Coding{"processs"};
+  }
+  return sys::exits::OK;
+}
+#import std.regex
+#import std.smatch
+#import std.regex_match
+#import tunitas.scarpet.exception.Crypto
+auto app::genesis::detail::strip(std::string source) -> std::string {
+  // WATCHOUT in gcc-c++-8.2.1-5.fc28.x86_64 does not have std::regex::multiline ... std::regex::ECMAScript|std::regex::multiline};
+  // So we remove the '\n' replacing them with ' ' to pretend we have a single line
+  for (auto &c : source) { if ('\n' == c) { c = ' '; } }
+  std::regex const ARMORED{R"regex(-----[^-]+-----\s+(.*)\s+-----[^-]+-----\s*)regex"};
+  std::smatch capture;
+  std::cerr << "DEBUG " << source << '\n';
+  if (!std::regex_match(source, capture, ARMORED)) {
+    // [[FIXTHIS]] there has to be a more relevant exception than this; maybe strip(...) should be in namespace tunitas::scarpet::pki
+    throw tunitas::scarpet::exception::Crypto{"std::match"};
+  }
+  auto body = capture[1].str();
+  for (auto i{body.begin()}; body.end() != i; ++i) {
+    if (std::isspace(*i)) {
+      auto doomed = i--;
+      body.erase(doomed);
+    }
+  }
+  return body;
+}
+#endiv

@@ -1,0 +1,49 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::exception {
+  //
+  // The Scarpet-flavored coding (encoding, decoding) exception
+  // How can something be "scarpet flavored" being that Scarpet is a mountain. Is it flavored like dirt?  Who discovered that?
+  //
+  // Encompases at least
+  // - character set problems
+  // - BASE64 encoding (base64url)
+  // - BASE64 decoding (base64url)
+  // 
+  // Usage:
+  //
+  //   auto location = std::string{...};        location meaning something simpler __FUNCTION__
+  //   throw Coding{location}                   where reason is expected to be terse
+  //
+  class Coding;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.exception.Aspect
+#import std.runtime_error
+class tunitas::scarpet::exception::Coding : public Aspect, public std::runtime_error {
+  struct ancestors {
+    using Aspect = scarpet::exception::Aspect;
+    using Exception = std::runtime_error;
+  };
+public:
+  inline explicit Coding(std::string const &location);
+  auto what() const noexcept -> char const * final;
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::exception {
+  Coding::Coding(std::string const &location)
+    : ancestors::Exception{location}
+  { }
+}
+#endiv
+#divert <cpp>
+namespace tunitas::scarpet::exception {
+  auto Coding::what() const noexcept -> char const * {
+    return ancestors::Exception::what();
+  }
+}
+#endiv

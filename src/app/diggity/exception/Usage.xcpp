@@ -1,0 +1,111 @@
+// This is -*- c++ -*- in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace app::diggity::exception {
+  //
+  // The diggity usage message, as an application exception
+  //
+  // Usage: (sic)
+  //
+  //   throw Usage{"program"};
+  //
+  // Usage: (sic)
+  //
+  //   try {
+  //     ...
+  //     throw Usage{"program"};
+  //     ...
+  //   } catch (tunitas::scarpet::exception::Aspect const &g) {
+  //     g.stream() << g << '\n';
+  //     return g.code();          ... equivalently ::exit(g.code());
+  //   }
+  //
+  class [[nodiscard]] Usage;
+}
+#endiv
+#divert <hpp>
+#import tunitas.app.exception.Usage
+#import tunitas.app.exception.Messaging
+#import tunitas.scarpet.exception.aspect.Exiting
+#import std.exception
+#import std.string
+class app::diggity::exception::Usage
+  : public tunitas::scarpet::exception::aspect::Exiting,
+    public tunitas::app::exception::Usage,
+    public tunitas::app::exception::Messaging,
+    public std::exception {
+  struct ancestors {
+    using Aspect = tunitas::scarpet::exception::aspect::Exiting;
+    using Usage = tunitas::app::exception::Usage;
+    using Messaging = tunitas::app::exception::Messaging;
+    using Exception = std::exception;
+  };
+public:
+  inline explicit Usage(std::string const &NAME);
+  inline Usage(std::string const &NAME, sys::exits::Code);
+  auto what() const noexcept -> char const * final;
+  auto stream() const noexcept -> std::ostream & final;
+  auto code() const noexcept -> sys::exits::Code final;
+private:
+  static auto format(std::string const &NAME) -> std::string;
+};
+#endiv
+#divert <ipp>
+#import sys.exits.constants
+app::diggity::exception::Usage::Usage(std::string const &NAME)
+  : Usage{NAME, sys::exits::OK}
+{ }
+app::diggity::exception::Usage::Usage(std::string const &NAME, sys::exits::Code code)
+  : ancestors::Usage{code}
+  , ancestors::Messaging{format(NAME)}
+  , ancestors::Exception{}
+{ }
+#endiv
+#divert <cpp>
+#import std.ostringstream
+#import app.diggity.examples
+#import app.well_known
+namespace app::diggity::exception {
+  auto Usage::format(std::string const &NAME) -> std::string {
+    std::ostringstream buf;
+    buf << "Look up (dig up, resolve) the DID Document behind the Decentralized Identifier (DID).\n"
+        << "The DID Document is disgorged onto the standard output.\n"
+        << '\n'
+        << "usage: " << NAME << " [...options...] did { ...did... }\n"
+        << '\n'
+        << "DID (Decentralized Identifier):\n"
+        << "  " << examples::DID0 << '\n'
+        << "  " << examples::DID1 << '\n'
+        << "  " << examples::DID2 << '\n'
+        << "  " << examples::DID3 << '\n'
+        << "  " << examples::DID4 << '\n'
+        << "\n"
+        << "Lookup (Digging) Options:\n"
+        << '\n'
+        << "--name-server=HOSTNAME               direct the query to this name server\n"
+        << "     --server=HOSTNAME               the default is the servers in " << well_known::RESOLV_CONF << "\n"
+        << "         --ns=HOSTNAME               e.g. " << examples::NAME_SERVER << '\n'
+        << '\n'
+        << "General Options:\n"
+        << '\n'
+        << "--usage, --help, -h                  emit this message, and exit\n"
+        << "--version, -  V                      emit the package version, and exit\n"
+        << "--dry-run, --dryrun, -y              dry run, do not start the server\n"
+        << "--warnings, --warning, -w            emit warnings\n"
+        << "--quiet, -q                          be quiet, emit no notices or warnings\n"
+        << "--verbose, -v                        be verbose (independent of --quiet)\n"
+        << "--debug, -d                          debug output (you should not need this)"; // no '\n'
+    return buf.str();
+  }
+  auto Usage::what() const noexcept -> char const * {
+    return ancestors::Messaging::what();
+  }
+  auto Usage::stream() const noexcept -> std::ostream & {
+    return ancestors::Usage::stream();                                                         
+  }
+  auto Usage::code() const noexcept -> sys::exits::Code {
+    return ancestors::Usage::code();
+  }
+}
+#endiv

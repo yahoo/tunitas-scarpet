@@ -13,10 +13,35 @@ namespace app::publish {
 auto main(int cc, char *vv[]) -> int {
   return app::publish::main(app::publish::Args(cc, vv));
 }
+#import app.publish.Configuration
+#import app.publish.options.Parser
+#import app.publish.options.Specification
+#import app.publish.process
+#import tunitas.scarpet.exception.aspect.Exiting
 #import sys.exits.constants
-#import nonstd.exception.Unimplemented
-auto app::publish::main(Args) -> sys::exits::Code {
-  throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+#import std.exception
+auto app::publish::main(Args av) -> sys::exits::Code try {
+  auto program = Configuration::Program{av.front()};
+  auto cfg = Configuration{program};
+  auto spc = options::Specification{};
+  auto parser = options::Parser{spc, cfg};
+  auto parsed = parser(av);
+  if (!ok(parsed)) {
+    // [[FIXTHIS]] the error_code does not provide much fidelity on the problem ... "there was some problem"
+    error(cfg) << "could not grok the options\n";
+    return sys::exits::FAIL;
+  }
+  if (cfg.dry_run_mode) {
+    notice(cfg) << "not doing anything in dry-run mode\n";
+  } else {
+    return process(cfg);
+  }
   return sys::exits::OK;
+} catch (tunitas::scarpet::exception::aspect::Exiting const &e) {
+  e.stream() << e.what() << '\n';
+  return e.code();
+} catch (std::exception const &e) {
+  std::cerr << NAME << ": error, unexpected " << e.what() << '\n';
+  return sys::exits::SOFTWARE;
 }
 #endiv

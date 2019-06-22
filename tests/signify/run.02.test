@@ -1,0 +1,14 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+set -e
+did-authgen --public=${0%.test}.ca.crt.pem --private=${0%.test}.ca.key.pem &&
+did-scissor --request=${0%.test}.req.pem --key=${0%.test}.key.pem C=US ST=Florida L=Clearwater O='Fly By Nite' OU='Boiler Room Oppo' --gencn &&
+${exe?} --authority-public=${0%.test}.ca.crt.pem --authority-private-=${0%.test}.ca.key.pem --request=${0%.test}.req.pem --public=${0%.test}.crt.pem && {
+    sed -e 's/^/ca.key.pem> /' ${0%.test}.ca.key.pem
+    echo
+    sed -e 's/^/ca.crt.pem> /' ${0%.test}.ca.crt.pem
+    echo
+    sed -e 's/^/crt.pem> /' ${0%.test}.crt.pem
+    echo
+    sed -e 's/^/req.pem> /' ${0%.test}.req.pem
+}

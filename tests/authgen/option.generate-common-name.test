@@ -1,0 +1,5 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+# the -d option enters debug mode, but we need to dry-run this
+${exe?} -d -y --private=private --public=public --generate-common-name
+test 0 == $?

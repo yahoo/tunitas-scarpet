@@ -1,0 +1,83 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#forward app.Configuration
+#import options.longish.Step
+#import tunitas.scarpet.exception
+#import tunitas.required.exception.app.Quitting
+#import std.string
+namespace app::options {
+  //
+  // Get a word that is shaped like a domain name (a QDN, a FQDN).
+  // Don't do too much validation on it; just enough to identify wholly inapproprite candidates.
+  //
+  // The interface follows the style (rhymes with)
+  // the "get_<thing>"(Configuration const &, Step) functions from tunitas::app::options
+  //
+  // The Configuration is supplied to give ADL context towards the error reporting.
+  // The recovered value is returned.
+  //
+  // Syntax:
+  //
+  //   -X DOMAIN
+  //   --xxxxxxx=DOMAIN
+  //
+  // Example:
+  //
+  //   --did-domain=something.something.dark.side.
+  //
+  // Exceptions: (descendants of...)
+  //
+  //    tunitas::scarpet::exception::Quitting is thrown on failure to recover an Encoding
+  //
+  // Usage:
+  //
+  //    case oi::CHR_X:
+  //    case oi::XXXXXXXX:
+  //      cfg.did_domain = get_domain(cfg, step);
+  //      break;
+  //
+  namespace packaging::get_domain::function {
+    namespace exception = tunitas::scarpet::exception;
+    using Step = ::options::longish::Step;
+    template<tunitas::required::exception::app::Quitting QUITTING> inline auto get_domain(Configuration const &, Step const &) -> std::string;
+  }
+  using packaging::get_domain::function::get_domain;
+}
+#endiv
+#divert <ipp>
+#import app.Configuration
+#import options.longish.Step
+#import tunitas.scarpet.exception.aspect.Exiting
+#import tunitas.app.options.get_word
+#import std.all_of
+#import std.isalnum
+#import std.move
+#import sys.exits.constants
+namespace app::options::packaging::get_domain {
+  template<tunitas::required::exception::app::Quitting QUITTING> auto function::get_domain(Configuration const &cfg, Step const &step) -> std::string try {
+    //
+    // Get the word.  See if it is appropriately (enough) shaped.
+    //
+    auto word = get_word<QUITTING>(cfg, step, "domain");
+    auto const good_enough_for_a_domain = [](char c) { return '.' == c || '_' == c || '-' == c || isalnum(c); };
+    // Prove that all the characters are good; but allow for syntax problems (e.g. duplicated dots).  We let the library discover those
+    if (!std::all_of(word.begin(), word.end(), good_enough_for_a_domain)) {
+      error(cfg) << "in inappropriate characters in the domain name\n";
+      throw QUITTING{cfg.NAME, sys::exits::CONFIG};
+    }
+    return std::move(word);
+  } catch (...) {
+    error(cfg) << "cannot recover an domain out of " << /*FIXTHIS format::q*/ required(step) << '\n';
+    try {
+      throw;
+    } catch (exception::aspect::Exiting const &) {
+      throw;
+    } catch (...) {
+      // throw exception::Quitting(cfg.NAME, sys::exits::CONFIG);
+      throw QUITTING(cfg.NAME, sys::exits::CONFIG);
+    }
+  }
+}
+#endiv

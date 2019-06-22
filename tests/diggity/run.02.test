@@ -1,0 +1,8 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+set -e
+${exe?} \
+    did:example:123456789abcdefghi.scarpet.tunitas.club \
+    did:example:234567890bcdefghij.scarpet.tunitas.club \
+    did:example:345678901cdefghijk.scarpet.tunitas.club \
+    ${end}

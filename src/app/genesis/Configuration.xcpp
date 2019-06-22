@@ -1,0 +1,39 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace app::genesis {
+  //
+  // The configuration of the key generator
+  //
+  // Usage:
+  //
+  //   auto av = Args{cc, vv};
+  //   auto program = Program{av};
+  //   auto cfg = Configuration{program};
+  //
+  class Configuration;
+}
+#endiv
+#divert <hpp>
+#import app.Configuration
+#import tunitas.scarpet.options.Encoding
+#import std.filesystem.path
+#import std.optional
+class app::genesis::Configuration : public app::Configuration {
+  using ancestor = app::Configuration;
+public:
+  inline explicit Configuration(Program const &);
+  std::optional<tunitas::scarpet::options::Encoding> encoding;
+  std::optional<bool> strip_armor;
+  std::optional<std::filesystem::path> private_side;
+  std::optional<std::filesystem::path> public_side;
+};
+#endiv
+#divert <ipp>
+namespace app::genesis {
+  Configuration::Configuration(Program const &program)
+    : ancestor{program}
+  { }
+}
+#endiv

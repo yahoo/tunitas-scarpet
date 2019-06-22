@@ -98,9 +98,11 @@ function set_all_defaults_no() {
     : ${with_module_half:=no}
     : ${with_module_json:=no}
     : ${with_module_nonstd:=no}
+    : ${with_module_openssl:=no}
     : ${with_module_options:=no}
     : ${with_module_posix:=no}
     : ${with_module_rigging:=no}
+    : ${with_module_shell:=no}
     : ${with_module_std:=no}
     : ${with_module_string:=no}
     : ${with_module_sys:=no}
@@ -115,9 +117,11 @@ function set_all_defaults_relatively() {
     : ${with_module_half:=$1/module-half}
     : ${with_module_json:=$1/module-json}
     : ${with_module_nonstd:=$1/module-nonstd}
+    : ${with_module_openssl:=$1/module-openssl}
     : ${with_module_options:=$1/module-options}
     : ${with_module_posix:=$1/module-posix}
     : ${with_module_rigging:=$1/module-rigging}
+    : ${with_module_shell:=$1/module-shell}
     : ${with_module_std:=$1/module-std}
     : ${with_module_string:=$1/module-string}
     : ${with_module_sys:=$1/module-sys}
@@ -164,9 +168,11 @@ eval \
     ${with_nonstd_half:+--with-nonstd-half=$with_nonstd_half} \
     ${with_module_json:+--with-module-json=$with_module_json} \
     ${with_module_nonstd:+--with-module-nonstd=$with_module_nonstd} \
+    ${with_module_openssl:+--with-module-openssl=$with_module_openssl} \
     ${with_module_options:+--with-module-options=$with_module_options} \
     ${with_module_posix:+--with-module-posix=$with_module_posix} \
     ${with_module_rigging:+--with-module-rigging=$with_module_rigging} \
+    ${with_module_shell:+--with-module-shell=$with_module_shell} \
     ${with_module_std:+--with-module-std=$with_module_std} \
     ${with_module_string:+--with-module-string=$with_module_string} \
     ${with_module_sys:+--with-module-sys=$with_module_sys} \

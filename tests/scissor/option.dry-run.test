@@ -1,0 +1,5 @@
+#!/bin/sh
+source ${0%/*}/rigging.sh || exit 70
+# the --dry-run option enters dry-run mode, but we need to dry-run this (sic)
+${exe?} --dry-run --private=FILEPATH --csr=FILEPATH --gencn
+test 0 == $?

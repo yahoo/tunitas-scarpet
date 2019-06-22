@@ -1,0 +1,36 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+lib_libtunitas_scarpet_pki_la = lib/libtunitas-scarpet-pki.la
+lib_libtunitas_scarpet_pki_la_LIBADD = -lopenssl-module -lnonstd-module
+lib_libtunitas_scarpet_pki_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+lib_libtunitas_scarpet_pki_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_pki_la_SOURCES))
+lib_libtunitas_scarpet_pki_la_SOURCES = \
+  obj/src/tunitas/scarpet/pki/namespace.cpp \
+  obj/src/tunitas/scarpet/pki/cn.generate.cpp \
+  obj/src/tunitas/scarpet/pki/key/namespace.cpp \
+  obj/src/tunitas/scarpet/pki/key/Privat.cpp \
+  obj/src/tunitas/scarpet/pki/key/Publik.cpp \
+  obj/src/tunitas/scarpet/pki/key/Pair.cpp \
+  obj/src/tunitas/scarpet/pki/key/Activated.cpp \
+  obj/src/tunitas/scarpet/pki/key/publik.cpp \
+  obj/src/tunitas/scarpet/pki/key/privat.cpp \
+  obj/src/tunitas/scarpet/pki/key/pair.cpp \
+  obj/src/tunitas/scarpet/pki/key/from_string.cpp \
+  obj/src/tunitas/scarpet/pki/key/to_string.cpp \
+  obj/src/tunitas/scarpet/pki/key/to_stream.cpp \
+  obj/src/tunitas/scarpet/pki/key/generate.cpp \
+  obj/src/tunitas/scarpet/pki/key/detail.Pointer.cpp \
+  obj/src/tunitas/scarpet/pki/key/d2i.cpp \
+  $(end)
+
+$(scold_cxxdir)/tunitas/scarpet/pki/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_pki_la_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_pki_la_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/tunitas/scarpet/pki/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/tunitas/scarpet/pki/dependencies.mk
+#end

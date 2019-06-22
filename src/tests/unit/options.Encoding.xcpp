@@ -1,0 +1,174 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::options { class Encoding; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tunitas.scarpet.options.Encoding
+class tests::unit::options::Encoding : public cppunit::test::Fixture {
+public:
+  using Subject = ::tunitas::scarpet::options::Encoding;
+  auto test_constants() -> void;
+  auto test_operator_insert_good() -> void;
+  auto test_operator_insert_bad() -> void;
+  auto test_operator_extract_bad() -> void;
+  auto test_operator_extract_good() -> void;
+  auto test_to_string_good() -> void;
+  auto test_to_string_bad() -> void;
+  auto test_from_string_throwing_good() -> void;
+  auto test_from_string_throwing_bad() -> void;
+  auto test_from_string_nothrow_good() -> void;
+  auto test_from_string_nothrow_bad() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+auto tests::unit::options::Encoding::test_constants() -> void {
+  auto p = Subject::PEM;
+  auto d = Subject::DER_BASE64URL;
+  CPPUNIT_ASSERT(p != d);
+}
+#import std.empty
+#import std.ostringstream
+auto tests::unit::options::Encoding::test_operator_insert_good() -> void {
+  std::ostringstream buf;
+  auto const p = Subject::PEM;
+  auto const d = Subject::DER_BASE64URL;
+  buf << p << ' ' << d;
+  auto const actual = buf.str();
+  std::cerr << actual;
+  CPPUNIT_ASSERT(!std::empty(actual));
+}
+auto tests::unit::options::Encoding::test_operator_insert_bad() -> void {
+  std::ostringstream buf;
+  buf << Subject{99};
+  auto const actual = buf.str();
+  std::cerr << actual;
+  CPPUNIT_ASSERT(!std::empty(actual));
+}
+#import std.istringstream
+auto tests::unit::options::Encoding::test_operator_extract_good() -> void {
+  std::istringstream buf{"pem der der+base64 der+base64url 99"};
+  Subject p{}, d1{}, d2{}, d3{};
+  int i;
+  auto &stream = buf >> p >> d1 >> d2 >> d3 >> i;
+  CPPUNIT_ASSERT((bool) stream);
+  CPPUNIT_ASSERT(Subject::PEM == p);
+  CPPUNIT_ASSERT(Subject::DER_BASE64URL == d1);
+  CPPUNIT_ASSERT(Subject::DER_BASE64URL == d2);
+  CPPUNIT_ASSERT(Subject::DER_BASE64URL == d3);
+  CPPUNIT_ASSERT(99 == i);
+}
+auto tests::unit::options::Encoding::test_operator_extract_bad() -> void {
+  std::istringstream buf{"pemican dirt 99"};
+  Subject p, d;
+  int i;
+  auto &stream = buf >> p >> d >> i;
+  CPPUNIT_ASSERT(false == (bool) stream);
+}
+auto tests::unit::options::Encoding::test_to_string_good() -> void {
+  auto sp = to_string(Subject::PEM);
+  auto sd = to_string(Subject::DER_BASE64URL);
+  CPPUNIT_ASSERT("pem"s == sp);
+  CPPUNIT_ASSERT("der+base64url" == sd);
+}
+auto tests::unit::options::Encoding::test_to_string_bad() -> void {
+  auto bogus = Subject{99};
+  auto sogus = to_string(bogus);
+  CPPUNIT_ASSERT(!std::empty(sogus));
+}
+auto tests::unit::options::Encoding::test_from_string_throwing_good() -> void {
+  auto const ps = "pem"s;
+  auto const d1s = "der+base64"s;
+  auto const d2s = "der+base64url"s;
+  using namespace ::tunitas::scarpet::options;
+  using ::tunitas::scarpet::options::Encoding;
+  auto p = from_string<Encoding>(ps);
+  auto d1 = from_string<Encoding>(d1s);
+  auto d2 = from_string<Encoding>(d2s);
+  CPPUNIT_ASSERT(Subject::PEM == p);
+  CPPUNIT_ASSERT(Subject::DER_BASE64URL == d1);
+  CPPUNIT_ASSERT(Subject::DER_BASE64URL == d2);
+}
+auto tests::unit::options::Encoding::test_from_string_throwing_bad() -> void {
+  try {
+    using namespace ::tunitas::scarpet::options;
+    using ::tunitas::scarpet::options::Encoding;
+    from_string<Encoding>("this-is-not-a-pipe");
+    CPPUNIT_ASSERT(false);
+  } catch (...) {
+    CPPUNIT_ASSERT(true);
+  }
+}
+#import std.nothrow
+auto tests::unit::options::Encoding::test_from_string_nothrow_good() -> void {
+  auto const ps = "pem"s;
+  auto const d1s = "der+base64"s;
+  auto const d2s = "der+base64url"s;
+  using namespace ::tunitas::scarpet::options;
+  using ::tunitas::scarpet::options::Encoding;
+  auto p = from_string<Encoding>(std::nothrow, ps);
+  auto d1 = from_string<Encoding>(std::nothrow, d1s);
+  auto d2 = from_string<Encoding>(std::nothrow, d2s);
+  CPPUNIT_ASSERT(ok(p) && Subject::PEM == value(p));
+  CPPUNIT_ASSERT(ok(d1) && Subject::DER_BASE64URL == value(d1));
+  CPPUNIT_ASSERT(ok(d2) && Subject::DER_BASE64URL == value(d2));
+}
+auto tests::unit::options::Encoding::test_from_string_nothrow_bad() -> void {
+  try {
+    using namespace ::tunitas::scarpet::options;
+    using ::tunitas::scarpet::options::Encoding;
+    auto fail = from_string<Encoding>(std::nothrow, "sometimes a cigar is just a cigar");
+    CPPUNIT_ASSERT(!ok(fail));
+  } catch (...) {
+    CPPUNIT_ASSERT(false);
+  }
+}
+#import rigging.suite.io
+auto tests::unit::options::Encoding::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series("Encoding");
+  series << call("constants", &Encoding::test_constants)
+    ;
+  {
+    Stream ins("operator<<");
+    ins << call("good", &Encoding::test_operator_insert_good)
+        << call("bad", &Encoding::test_operator_insert_bad)
+      ;
+    series << move(ins);
+  } {
+    Stream ext("operator>>");
+    ext << call("good", &Encoding::test_operator_extract_good)
+        << call("bad", &Encoding::test_operator_extract_bad)
+      ;
+    series << move(ext);
+  } {
+    Stream tos("to_string");
+    tos << call("good", &Encoding::test_to_string_good)
+        << call("bad", &Encoding::test_to_string_bad)
+      ;
+    series << move(tos);
+  } {
+    Stream fro("from_string");
+    {
+      Stream thro("throwing");
+      thro << call("good", &Encoding::test_from_string_throwing_good)
+           << call("bad", &Encoding::test_from_string_throwing_bad)
+        ;
+      fro << move(thro);
+    } {
+      Stream noth("nothrow");
+      noth << call("good", &Encoding::test_from_string_nothrow_good)
+           << call("bad", &Encoding::test_from_string_nothrow_bad)
+        ;
+      fro << move(noth);
+    }
+    series << move(fro);
+  }
+    ;
+  return finalize(series);
+}
+#endiv

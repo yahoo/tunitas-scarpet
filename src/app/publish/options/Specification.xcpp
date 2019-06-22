@@ -1,0 +1,97 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace app::publish::options {
+  //
+  // The options specification of the did document publisher
+  //
+  // Usage:
+  //
+  //   auto spc = Specification{};
+  //   auto cfg = Configuration{};
+  //   auto parsed = Parser{spc, cfg};
+  //
+  class Specification;
+}
+#endiv
+#divert <hpp>
+#import app.options.Specification
+class app::publish::options::Specification : public app::options::Specification {
+  using ancestor = app::options::Specification;
+public:
+  Specification();
+};
+#endiv
+#divert <cpp>
+#import options.argument.constants
+#import app.publish.options.indicator.constants
+namespace app::publish::options {
+  namespace oa = ::options::argument;
+  namespace oi = app::publish::options::indicator;
+  Specification::Specification()
+    //
+    //          /-------------- enable MISSING processing
+    //          |
+    //          v
+    : ancestor{":hVwqvdyn:k:K:",
+               {{"usage", oa::NO, oi::USAGE_SUBCOMMAND},
+                {"help", oa::NO, oi::USAGE_SUBCOMMAND},
+                {"version", oa::NO, oi::VERSION_SUBCOMMAND},
+                {"warning", oa::NO, oi::WARNING_MODE},
+                {"warnings", oa::NO, oi::WARNING_MODE},
+                {"quiet", oa::NO, oi::QUIET_MODE},
+                {"verbose", oa::NO, oi::VERBOSE_MODE},
+                {"debug", oa::NO, oi::DEBUG_MODE},
+                {"dry-run", oa::NO, oi::DRY_RUN_MODE},
+                {"dryrun", oa::NO, oi::DRY_RUN_MODE},
+                // -n
+                {"name-server", oa::REQUIRED, oi::NAME_SERVER},
+                {"server", oa::REQUIRED, oi::NAME_SERVER},
+                {"ns", oa::REQUIRED, oi::NAME_SERVER},
+                // -k for the TSIG secret in literal form on the command line
+                //
+                // Blurg ... all the possible variants.  Because, why not?
+                {"name-server-update-tsig-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"name-server-update-tsig-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"update-tsig-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"update-tsig-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"tsig-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"tsig-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"name-server-update-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"name-server-update-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"update-secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"update-secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"secret-value", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                {"secret", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_VALUE},
+                // -K for the TSIG secret in file form ; e.g. .../Kstorage.scarpet.tunitas.solutions.+157+26437.private
+                //
+                // Blubg blurg blurg ... all the possible variants.  Because, why not?
+                {"name-server-update-tsig-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                {"update-tsig-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                {"tsig-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                {"name-server-update-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                {"update-secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                {"secret-file", oa::REQUIRED, oi::NAME_SERVER_UPDATE_TSIG_SECRET_FILEPATH},
+                //
+                // Below here, there are no short options for these
+                //
+                // DID Document Storage Service (DSSS)
+                //
+                {"did-document-storage-service", oa::REQUIRED, oi::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN},
+                {"ddss", oa::REQUIRED, oi::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN},
+                {"did-domain", oa::REQUIRED, oi::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN},
+                {"domain", oa::REQUIRED, oi::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN},
+                // The DID Document (itself)
+                {"did-document", oa::REQUIRED, oi::DID_DOCUMENT_GUESS},
+                {"document", oa::REQUIRED, oi::DID_DOCUMENT_GUESS},
+                {"doc", oa::REQUIRED, oi::DID_DOCUMENT_GUESS},
+                {"did-document-json", oa::REQUIRED, oi::DID_DOCUMENT_JSON},
+                {"document-json", oa::REQUIRED, oi::DID_DOCUMENT_JSON},
+                {"json", oa::REQUIRED, oi::DID_DOCUMENT_JSON},
+                {"did-document-zone", oa::REQUIRED, oi::DID_DOCUMENT_ZONE},
+                {"document-zone", oa::REQUIRED, oi::DID_DOCUMENT_ZONE},
+                {"zone", oa::REQUIRED, oi::DID_DOCUMENT_ZONE}}}
+  { }
+}
+#endiv

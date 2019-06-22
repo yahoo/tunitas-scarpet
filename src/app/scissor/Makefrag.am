@@ -1,0 +1,38 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tscissoras-scarpet/blob/master/LICENSE for terms.
+
+bin_did_scissor = bin/did-scissor
+bin_did_scissor_LDADD = \
+  $(lib_libapp_la) \
+  $(lib_libtunitas_scarpet_la) \
+  -lopenssl-module \
+  -luuid-module \
+  $(end)
+bin_did_scissor_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+bin_did_scissor_MODULES = $(call TF_SOURCEStoMODULES, $(bin_did_scissor_SOURCES))
+bin_did_scissor_SOURCES = \
+  obj/src/app/scissor/namespace.cpp \
+  obj/src/app/scissor/Configuration.cpp \
+  obj/src/app/scissor/defaults.cpp \
+  obj/src/app/scissor/main.cpp \
+  obj/src/app/scissor/process.cpp \
+  \
+  obj/src/app/scissor/exception/namespace.cpp \
+  obj/src/app/scissor/exception/Usage.cpp \
+  \
+  obj/src/app/scissor/options/namespace.cpp \
+  obj/src/app/scissor/options/indicator.cpp \
+  obj/src/app/scissor/options/indicator.constants.cpp \
+  obj/src/app/scissor/options/Parser.cpp \
+  obj/src/app/scissor/options/Specification.cpp \
+  $(end)
+
+$(scold_cxxdir)/app/scissor/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(bin_did_scissor_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(bin_did_scissor_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/app/scissor/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/app/scissor/dependencies.mk

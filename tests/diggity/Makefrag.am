@@ -1,0 +1,39 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+tests_diggity_XFAIL_TESTS = \
+  tests/diggity/run.01.test \
+  tests/diggity/run.02.test \
+  $(end)
+tests_diggity_TESTS = \
+  tests/diggity/option.help.test \
+  tests/diggity/option.dry-run.test \
+  tests/diggity/option.dryrun.test \
+  tests/diggity/option.d.test \
+  tests/diggity/option.help.test \
+  tests/diggity/option.h.test \
+  tests/diggity/option.name-server.test \
+  tests/diggity/option.server.test \
+  tests/diggity/option.ns.test \
+  tests/diggity/option.n.test \
+  tests/diggity/option.q.test \
+  tests/diggity/option.quiet.test \
+  tests/diggity/option.usage.test \
+  tests/diggity/option.verbose.test \
+  tests/diggity/option.version.test \
+  tests/diggity/option.v.test \
+  tests/diggity/option.V.test \
+  tests/diggity/option.warnings.test \
+  tests/diggity/option.warning.test \
+  tests/diggity/option.w.test \
+  tests/diggity/option.y.test \
+  \
+  $(tests_diggity_XFAIL_TESTS) \
+  $(end)
+
+tests_diggity_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/diggity/*.test)
+tests_diggity_TESTS_SELFCHECK_EXPECTED = $(tests_diggity_TESTS)
+tests_diggity_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_diggity_TESTS_SELFCHECK_EXPECTED), $(tests_diggity_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_diggity_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_diggity_TESTS_SELFCHECK_ORPHANS)))

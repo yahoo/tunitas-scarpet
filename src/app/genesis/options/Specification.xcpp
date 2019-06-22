@@ -1,0 +1,60 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace app::genesis::options {
+  //
+  // The options specification of the key generator
+  //
+  // Usage:
+  //
+  //   auto spc = Specification{};
+  //   auto cfg = Configuration{};
+  //   auto parsed = Parser{spc, cfg};
+  //
+  class Specification;
+}
+#endiv
+#divert <hpp>
+#import app.options.Specification
+class app::genesis::options::Specification : public app::options::Specification {
+  using ancestor = app::options::Specification;
+public:
+  Specification();
+};
+#endiv
+#divert <cpp>
+#import options.argument.constants
+#import app.genesis.options.indicator.constants
+namespace app::genesis::options {
+  namespace oa = ::options::argument;
+  namespace oi = app::genesis::options::indicator;
+  Specification::Specification()
+    //
+    //          /-------------- enable MISSING processing
+    //          |
+    //          v
+    : ancestor{":hVwqvdyase",
+               {{"usage", oa::NO, oi::USAGE_SUBCOMMAND},
+                {"help", oa::NO, oi::USAGE_SUBCOMMAND},
+                {"version", oa::NO, oi::VERSION_SUBCOMMAND},
+                {"warning", oa::NO, oi::WARNING_MODE},
+                {"warnings", oa::NO, oi::WARNING_MODE},
+                {"quiet", oa::NO, oi::QUIET_MODE},
+                {"verbose", oa::NO, oi::VERBOSE_MODE},
+                {"debug", oa::NO, oi::DEBUG_MODE},
+                {"dry-run", oa::NO, oi::DRY_RUN_MODE},
+                {"dryrun", oa::NO, oi::DRY_RUN_MODE},
+                {"keep-armor", oa::NO, oi::STRIP_ARMOR},
+                {"strip-armor", oa::NO, oi::STRIP_ARMOR},
+                {"encoding", oa::REQUIRED, oi::ENCODING},
+                // there are no short options for these --public and --private options
+                {"private", oa::REQUIRED, oi::PRIVATE_SIDE},
+                {"private-key", oa::REQUIRED, oi::PRIVATE_SIDE},
+                {"private-side", oa::REQUIRED, oi::PRIVATE_SIDE},
+                {"public", oa::REQUIRED, oi::PUBLIC_SIDE},
+                {"public-key", oa::REQUIRED, oi::PUBLIC_SIDE},
+                {"public-side", oa::REQUIRED, oi::PUBLIC_SIDE}}}
+  { }
+}
+#endiv

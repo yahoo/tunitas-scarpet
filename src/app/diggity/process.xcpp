@@ -1,0 +1,39 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import app.diggity.Configuration
+#import sys.exits.Code
+#import tunitas.scarpet.options.Arguments
+namespace app::diggity {
+  //
+  // Process ... perform the lookup (the digging)
+  // Go digging to get the DID Document.
+  // Display what was discovered (the document or an error)
+  //
+  // Usage:
+  //
+  //   ...oh come on...
+  //
+  namespace packaging::process::function {
+    using tunitas::scarpet::options::Arguments;
+    auto process(Configuration const &, Arguments) -> sys::exits::Code;
+  }
+  using packaging::process::function::process;
+}
+#endiv
+#divert <cpp>
+#import nonstd.exception.Unimplemented
+#import std.cout
+#import sys.exits.constants
+namespace app::diggity::packaging::process {
+  auto function::process(Configuration const &cfg, Arguments arguments) -> sys::exits::Code {
+    auto &outbound{std::cout};
+    for (auto const &argument : arguments) {
+      outbound << "did specimen: " << argument << '\n';
+    }
+    throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+    return sys::exits::OK;
+  }
+}
+#endiv

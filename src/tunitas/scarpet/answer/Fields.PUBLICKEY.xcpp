@@ -12,14 +12,14 @@ namespace tunitas::scarpet::answer::packaging {
   //
   //   See Fields<STANZAS> and launch(...)
   //
-  template<> class Fields<fields::KEY>;
+  template<> class Fields<fields::PUBLICKEY>;
 }
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.answer.PublicKey
 namespace tunitas::scarpet::answer::packaging {
-  template<> class Fields<fields::KEY> : public PublicKey<stanza::KEYS> {
-    using ancestor = PublicKey<stanza::KEYS>;
+  template<> class Fields<fields::PUBLICKEY> : public PublicKey<stanza::PUBLICKEYS> {
+    using ancestor = PublicKey<stanza::PUBLICKEYS>;
   public:
     Fields() = default;
   };

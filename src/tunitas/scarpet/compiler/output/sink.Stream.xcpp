@@ -1,0 +1,73 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::compiler::output::sink {
+  //
+  // The substream after the initial error class notifier
+  //
+  //   auto sink = ...somehow... e.g. output::Null{};
+  //
+  //   error(sink) << "bad bad bad" << end(sink);
+  //   warning(sink) << "be careful now" << end(sink);
+  //   notice(sink) << "no trespassing" << end(sink);
+  //   verbose(sink) << "oh come on" << end(sink);
+  //   debug(sink) << "it never ends" << end(sink);
+  //
+  class [[nodiscard]] Stream;
+}
+#endiv
+#divert <hpp>
+#forward tunitas.scarpet.compiler.output.Sink
+#import tunitas.scarpet.compiler.output.sink.Counters
+namespace tunitas::scarpet::compiler::output::sink {
+  inline auto header(Sink &, Counters::Count Counters::*channel) -> sink::Stream;
+}
+#import tunitas.scarpet.compiler.output.sink.End
+#import std.unique_ptr
+#import std.ostringstream
+class tunitas::scarpet::compiler::output::sink::Stream {
+protected:
+  friend auto sink::header(Sink &, Counters::Count Counters::*) -> Stream;
+  inline explicit Stream(Sink &owner);
+public:
+  Stream(Stream const &) = delete;
+  auto operator=(Stream const &) -> Stream & = delete;
+  Stream(Stream &&) = default;
+  auto operator=(Stream &&) -> Stream & = default;
+  template<typename TYPE> inline auto operator<<(TYPE const &) -> Stream;
+  auto operator<<(End) -> void;
+protected:
+  Sink &owner;
+  std::unique_ptr<std::ostringstream> buf;
+};
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.compiler.output.Sink
+namespace tunitas::scarpet::compiler::output {
+  auto sink::header(Sink &s, Counters::Count Counters::*channel) -> Stream {
+    ++(s.counters.*channel);
+    return Stream{s};
+  }
+}
+#import std.make_unique
+namespace tunitas::scarpet::compiler::output::sink {
+  Stream::Stream(Sink &owner)
+    : owner{owner}
+    , buf{std::make_unique<std::ostringstream>()}
+  { }
+  template<typename TYPE> auto Stream::operator<<(TYPE const &that) -> Stream {
+    *buf << that;
+    return std::move(*this);
+  }
+}
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.compiler.output.Sink
+namespace tunitas::scarpet::compiler::output::sink {
+  auto Stream::operator<<(End) -> void {
+    *buf << '\n';
+    owner.record(buf->str());
+  }
+}
+#endiv

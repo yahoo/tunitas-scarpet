@@ -16,6 +16,23 @@ check_bin_unit_SOURCES = \
   obj/src/tests/unit/namespace.cpp \
   obj/src/tests/unit/main.cpp \
   \
+  obj/src/tests/unit/answer.Fixture.cpp \
+  obj/src/tests/unit/answer.Document.cpp \
+  obj/src/tests/unit/answer.Fields.declaration.cpp \
+  obj/src/tests/unit/answer.Fields.STANZA.cpp \
+  obj/src/tests/unit/answer.Fields.PUBLICKEY.cpp \
+  obj/src/tests/unit/answer.Fields.AUTHENTICATION.cpp \
+  obj/src/tests/unit/answer.Fields.SERVICE.cpp \
+  obj/src/tests/unit/answer.Fields.PROOF.cpp \
+  obj/src/tests/unit/answer.Fields.cpp \
+  \
+  obj/src/tests/unit/compiler.Fixture.cpp \
+  obj/src/tests/unit/compiler.Compile.declaration.cpp \
+  obj/src/tests/unit/compiler.Compile.ANSWER.DOME.cpp \
+  obj/src/tests/unit/compiler.Compile.DOME.JSON.cpp \
+  obj/src/tests/unit/compiler.Compile.DOME.ZONE.cpp \
+  obj/src/tests/unit/compiler.Compile.cpp \
+  \
   obj/src/tests/unit/did.Fixture.cpp \
   obj/src/tests/unit/did.Parser.cpp \
   obj/src/tests/unit/did.Document.declaration.cpp \
@@ -24,9 +41,13 @@ check_bin_unit_SOURCES = \
   obj/src/tests/unit/did.Document.ZONE.cpp \
   \
   obj/src/tests/unit/dns.Fixture.cpp \
+  obj/src/tests/unit/dns.unparse.Function.cpp \
+  obj/src/tests/unit/dns.unparse.Template.cpp \
   \
   obj/src/tests/unit/drrs.Fixture.cpp \
   obj/src/tests/unit/drrs.Allocator.cpp \
+  obj/src/tests/unit/drrs.Flat.cpp \
+  obj/src/tests/unit/drrs.Flat.Populator.cpp \
   obj/src/tests/unit/drrs.Record.declaration.cpp \
   obj/src/tests/unit/drrs.Record.DAPTR.cpp \
   obj/src/tests/unit/drrs.Record.NAPTR.cpp \
@@ -44,11 +65,18 @@ check_bin_unit_SOURCES = \
   obj/src/tests/unit/exception.Fixture.cpp \
   obj/src/tests/unit/exception.Fixture.Thrower.cpp \
   \
+  obj/src/tests/unit/model.Fixture.cpp \
   obj/src/tests/unit/names.Fixture.cpp \
   \
   obj/src/tests/unit/options.Fixture.cpp \
   obj/src/tests/unit/options.Fixture.Parser.cpp \
   obj/src/tests/unit/options.Fixture.Specification.cpp \
+  \
+  obj/src/tests/unit/output.Fixture.cpp \
+  obj/src/tests/unit/pki.Fixture.cpp \
+  obj/src/tests/unit/pki.Algorithm.cpp \
+  obj/src/tests/unit/pki.Encoding.cpp \
+  obj/src/tests/unit/pki.Material.cpp \
   \
   obj/src/tests/unit/resolve.aspect.Configuration.cpp \
   obj/src/tests/unit/resolve.aspect.Service.cpp \

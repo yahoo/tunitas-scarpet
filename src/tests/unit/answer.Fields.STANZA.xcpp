@@ -1,0 +1,57 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tests.unit.answer.Fields.declaration
+namespace tests::unit::answer {
+  template<> class Fields<subject::Fields<fields::STANZA>>;
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tunitas.scarpet.answer.Fields.STANZA
+namespace tests::unit::answer {
+  template<> class Fields<subject::Fields<fields::STANZA>> : public cppunit::test::Fixture {
+  public:
+    using Subject = subject::Fields<fields::STANZA>;
+    auto test_constructor_default() -> void;
+    // We don't care about hte copy constructor (why would you copy one of these?)
+    // We don't care (much) about the move-constructor or move-assignment (why would you move one of these?)
+    static auto suite() -> cppunit::Test *;
+  };
+}
+#endiv
+#divert <cpp>
+namespace tests::unit::answer {
+  auto Fields<subject::Fields<fields::STANZA>>::test_constructor_default() -> void {
+#warning #if 0 COMPILER BUG YES MAYBE YES WE THINK SO src/tests/unit/answer.Fields.STANZA.xcpp:36:8: error: ‘tunitas::scarpet::answer::query::Prototype<DNS, PROCESSOR, RECORDATION>::Prototype() [with __ns_type DNS = (__ns_type)256; PROCESSOR = tunitas::scarpet::answer::processor::Stanza<(tunitas::scarpet::answer::processor::stanza::Name)0>; RECORDATION = tunitas::scarpet::drrs::Record<(__ns_type)256>]’ is protected within this context
+#if 0
+    {
+      using namespace ::tunitas::scarpet::answer;
+      using namespace ::tunitas::scarpet::answer::packaging;
+      using Id              = Query<Stanza<stanza::ID>>;
+      using Contexts        = Query<Stanza<stanza::CONTEXTS>>;
+      using PublicKeys      = Query<Stanza<stanza::PUBLICKEYS>>;
+      using Authentications = Query<Stanza<stanza::AUTHENTICATIONS>>;
+      using Services        = Query<Stanza<stanza::SERVICES>>;
+      using Proofs          = Query<Stanza<stanza::PROOFS>>;
+      Id{};
+      Contexts{};
+    }
+#endif
+    auto subject = Subject{};
+    CPPUNIT_ASSERT(sizeof(subject));
+  }
+}
+#import rigging.suite.io
+namespace tests::unit::answer {
+  auto Fields<subject::Fields<fields::STANZA>>::suite() -> cppunit::Test * {
+    using namespace ::rigging::suite;
+    Stream series{"Fields<STANZA>"};
+    series << call("constructor", &Fields::test_constructor_default)
+      ;
+    return finalize(series);
+  }
+}
+#endiv

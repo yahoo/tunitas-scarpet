@@ -47,6 +47,8 @@ namespace tunitas::scarpet::error {
       return "options";
     case Code::ROUTER:
       return "router";
+    case Code::COMPILER:
+      return "compiler";
     case Code::NOT_IMPLEMENTED:
       return "not implemented";
     case Code::INVALID_URN:

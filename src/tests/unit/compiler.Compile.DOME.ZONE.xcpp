@@ -1,0 +1,56 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tests.unit.compiler.Compile.declaration
+#forward tunitas.scarpet.did.Document.DOME
+#forward tunitas.scarpet.did.Document.ZONE
+namespace tests::unit::compiler {
+  namespace dome_zone {
+    using Source = ::tunitas::scarpet::did::Document<::tunitas::scarpet::did::DOME>;
+    using Destination = ::tunitas::scarpet::did::Document<::tunitas::scarpet::did::ZONE>;
+  }
+  template<> struct Compile<dome_zone::Source, dome_zone::Destination>;
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+namespace tests::unit::compiler {
+  template<> class Compile<dome_zone::Source, dome_zone::Destination> : public cppunit::test::Fixture {
+  public:
+    auto test_simple() -> void;
+    static auto suite() -> cppunit::Test *;
+  };
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.Document.DOME
+#import tunitas.scarpet.did.Document.ZONE
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.compiler.output.Null
+#import tunitas.scarpet.compiler.compile.DOME.ZONE
+#import tunitas.scarpet.compiler.compile // ADL trick
+namespace tests::unit::compiler {
+  auto Compile<dome_zone::Source, dome_zone::Destination>::test_simple() -> void {
+    namespace output = ::tunitas::scarpet::compiler::output;
+    auto sink = output::Null{};
+    auto source = dome_zone::Source{};
+    auto destination = dome_zone::Destination{};
+    auto compiled = compile(source, destination, sink);
+    // An empty DOME cannot compile to a ZONE.  At least the "self" identifier is missing.
+    CPPUNIT_ASSERT(!compiled);
+  }
+}
+#import rigging.suite.io
+namespace tests::unit::compiler {
+  auto Compile<dome_zone::Source, dome_zone::Destination>::suite() -> cppunit::Test * {
+    using namespace ::rigging::suite;
+    Stream series{"compile(DOME const &, ZONE &, Sink &)"};
+    series << call("simple", &Compile::test_simple)
+      ;
+    return finalize(series);
+  }
+}
+#endiv

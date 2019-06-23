@@ -6,6 +6,13 @@
 lib_libtunitas_scarpet_la = lib/libtunitas-scarpet.la
 lib_libtunitas_scarpet_la_LIBADD = \
   $(lib_libtunitas_scarpet_answer_la) \
+  $(lib_libtunitas_scarpet_compiler_la) \
+  $(lib_libtunitas_scarpet_did_la) \
+  $(lib_libtunitas_scarpet_dns_la) \
+  $(lib_libtunitas_scarpet_drrs_la) \
+  $(lib_libtunitas_scarpet_model_la) \
+  $(lib_libtunitas_scarpet_pki_la) \
+  $(lib_libtunitas_scarpet_resolve_la) \
   $(lib_libwant_la) \
   -ltunitas-app \
   -lares-module \
@@ -16,56 +23,11 @@ lib_libtunitas_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 lib_libtunitas_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_la_SOURCES))
 lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/namespace.cpp \
+  obj/src/tunitas/scarpet/tracing.cpp \
   obj/src/tunitas/scarpet/Configuration.cpp \
   obj/src/tunitas/scarpet/Program.cpp \
   obj/src/tunitas/scarpet/Club.cpp \
   obj/src/tunitas/scarpet/Protocol.cpp \
-  \
-  obj/src/tunitas/scarpet/did/namespace.cpp \
-  obj/src/tunitas/scarpet/did/Parser.cpp \
-  obj/src/tunitas/scarpet/did/parser.Result.cpp \
-  obj/src/tunitas/scarpet/did/Method.cpp \
-  obj/src/tunitas/scarpet/did/Identifier.cpp \
-  obj/src/tunitas/scarpet/did/document.Prototype.cpp \
-  obj/src/tunitas/scarpet/did/Document.declaration.cpp \
-  obj/src/tunitas/scarpet/did/Document.DOME.cpp \
-  obj/src/tunitas/scarpet/did/Document.JSON.cpp \
-  obj/src/tunitas/scarpet/did/Document.ZONE.cpp \
-  obj/src/tunitas/scarpet/did/Document.cpp \
-  obj/src/tunitas/scarpet/did/isa.cpp \
-  \
-  obj/src/tunitas/scarpet/dns/namespace.cpp \
-  obj/src/tunitas/scarpet/dns/Label.cpp \
-  obj/src/tunitas/scarpet/dns/Labels.cpp \
-  obj/src/tunitas/scarpet/dns/Name.cpp \
-  obj/src/tunitas/scarpet/dns/Type.cpp \
-  obj/src/tunitas/scarpet/dns/type.constants.cpp \
-  \
-  obj/src/tunitas/scarpet/drrs/namespace.cpp \
-  obj/src/tunitas/scarpet/drrs/record.Prototype.cpp \
-  obj/src/tunitas/scarpet/drrs/aspect.Endpoint.cpp \
-  obj/src/tunitas/scarpet/drrs/aspect.Redirect.cpp \
-  obj/src/tunitas/scarpet/drrs/Record.declaration.cpp \
-  obj/src/tunitas/scarpet/drrs/Record.DAPTR.cpp \
-  obj/src/tunitas/scarpet/drrs/Record.NAPTR.cpp \
-  obj/src/tunitas/scarpet/drrs/Record.PTR.cpp \
-  obj/src/tunitas/scarpet/drrs/Record.SRV.cpp \
-  obj/src/tunitas/scarpet/drrs/Record.TXT.cpp \
-  obj/src/tunitas/scarpet/drrs/Record.URI.cpp \
-  obj/src/tunitas/scarpet/drrs/Record.cpp \
-  obj/src/tunitas/scarpet/drrs/Records.cpp \
-  obj/src/tunitas/scarpet/drrs/Tree.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/namespace.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/Allocator.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/Pointer.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/Top.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/Tree.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/Reference.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/Children.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/children.Iterator.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/children.Iterator.iterator_traits.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/Records.cpp \
-  obj/src/tunitas/scarpet/drrs/tree/records.Variant.cpp \
   \
   obj/src/tunitas/scarpet/error/namespace.cpp \
   obj/src/tunitas/scarpet/error/Condition.cpp \
@@ -91,19 +53,6 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/options/Parser.cpp \
   obj/src/tunitas/scarpet/options/parser.Result.cpp \
   obj/src/tunitas/scarpet/options/Specification.cpp \
-  \
-  obj/src/tunitas/scarpet/resolve/namespace.cpp \
-  obj/src/tunitas/scarpet/resolve/Service.cpp \
-  obj/src/tunitas/scarpet/resolve/document.declaration.cpp \
-  obj/src/tunitas/scarpet/resolve/document.DRRS.cpp \
-  obj/src/tunitas/scarpet/resolve/document.FILE.cpp \
-  obj/src/tunitas/scarpet/resolve/document.REST.cpp \
-  obj/src/tunitas/scarpet/resolve/document.ZONE.cpp \
-  obj/src/tunitas/scarpet/resolve/document.cpp \
-  obj/src/tunitas/scarpet/resolve/lookup.declaration.cpp \
-  obj/src/tunitas/scarpet/resolve/lookup.NA.cpp \
-  obj/src/tunitas/scarpet/resolve/lookup.DA.cpp \
-  obj/src/tunitas/scarpet/resolve/lookup.cpp \
   \
   obj/src/tunitas/scarpet/url/namespace.cpp \
   obj/src/tunitas/scarpet/url/Parser.cpp \

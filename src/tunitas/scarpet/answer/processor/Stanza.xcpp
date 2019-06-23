@@ -4,7 +4,7 @@
 #divert <fpp>
 #import tunitas.scarpet.answer.processor.Stanza.ID
 #import tunitas.scarpet.answer.processor.Stanza.CONTEXTS
-#import tunitas.scarpet.answer.processor.Stanza.KEYS
+#import tunitas.scarpet.answer.processor.Stanza.PUBLICKEYS
 #import tunitas.scarpet.answer.processor.Stanza.AUTHENTICATIONS
 #import tunitas.scarpet.answer.processor.Stanza.SERVICES
 #import tunitas.scarpet.answer.processor.Stanza.PROOFS

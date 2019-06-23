@@ -63,9 +63,10 @@ namespace tests::unit::drrs {
     CPPUNIT_ASSERT(sizeof (subject)); // yup, it constructed
   }
 }
+#import tests.unit.drrs.Allocator
+#import tests.unit.drrs.Flat
 #import tests.unit.drrs.Record
 #import tests.unit.drrs.Tree
-#import tests.unit.drrs.Allocator
 #import rigging.suite.io
 auto tests::unit::drrs::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
@@ -93,6 +94,7 @@ auto tests::unit::drrs::Fixture::suite() -> cppunit::Test * {
          << add(Record<dns::SRV>::suite())
          << add(Record<dns::URI>::suite())
          << add(Tree::suite())
+         << add(Flat::suite())
          << add(Allocator::suite())
               ;
   return finalize(series);

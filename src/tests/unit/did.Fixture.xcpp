@@ -9,6 +9,7 @@ namespace tests::unit::did { class Fixture; }
 #import cppunit.test.Fixture
 class tests::unit::did::Fixture : public cppunit::test::Fixture {
 public:
+  auto test_identifier_Name() -> void;
   auto test_identifier_Identifier() -> void;
   auto test_identifier_Method() -> void;
   auto test_Parser_bad() -> void;
@@ -16,11 +17,20 @@ public:
   auto test_is_a_simple_word_Identifier() -> void;
   auto test_is_a_simple_word_Method() -> void;
   auto test_is_a_simple_word_string_view() -> void;
+  auto test_unparse() -> void;
   static auto suite() -> cppunit::Test *;
 };
 #endiv
 #divert <cpp>
 #import std.empty
+#import tunitas.scarpet.did.Name
+auto tests::unit::did::Fixture::test_identifier_Name() -> void {
+  auto subject0 = ::tunitas::scarpet::did::Name{};
+  CPPUNIT_ASSERT(std::empty(subject0));
+  auto subject1 = ::tunitas::scarpet::did::Name{"1"};
+  CPPUNIT_ASSERT(!std::empty(subject1));
+  CPPUNIT_ASSERT("1"sv == view(subject1));
+}
 #import tunitas.scarpet.did.Identifier
 auto tests::unit::did::Fixture::test_identifier_Identifier() -> void {
   auto subject0 = ::tunitas::scarpet::did::Identifier{};
@@ -98,6 +108,15 @@ auto tests::unit::did::Fixture::test_is_a_simple_word_string_view() -> void {
   CPPUNIT_ASSERT(true == is_a_simple_word("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"sv));
   CPPUNIT_ASSERT(true == is_a_simple_word("cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"sv));
 }
+#import tunitas.scarpet.did.unparse
+auto tests::unit::did::Fixture::test_unparse() -> void {
+  namespace did = ::tunitas::scarpet::did;
+  auto mmm = did::Method{"freegan"};
+  auto iii = did::Identifier{"123456789abcdefghi"};
+  auto const actual = to_string(unparse(mmm, iii)); // ADL found them..
+  auto const expected = "did:freegan:123456789abcdefghi"s;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
 #import tests.unit.did.Document.DOME
 #import tests.unit.did.Document.JSON
 #import tests.unit.did.Document.ZONE
@@ -110,7 +129,8 @@ auto tests::unit::did::Fixture::suite() -> cppunit::Test * {
   Stream series{"did"};
   {
     Stream ide{"identifier"};
-    ide << call("Identifier", &Fixture::test_identifier_Identifier)
+    ide << call("Name", &Fixture::test_identifier_Name)
+        << call("Identifier", &Fixture::test_identifier_Identifier)
         << call("Method", &Fixture::test_identifier_Method)
       ;
     series << add(ide.release());
@@ -128,12 +148,13 @@ auto tests::unit::did::Fixture::suite() -> cppunit::Test * {
       ;
     series << add(isa.release());
   }
-  namespace testing = tests::unit::did;
-  namespace subjecting = ::tunitas::scarpet::did;
+  series << call("unparse", &Fixture::test_unparse)
+    ;
   series << add(Parser::suite())
-         << add(testing::Document<subjecting::Document<subjecting::DOME>>::suite())
-         << add(testing::Document<subjecting::Document<subjecting::JSON>>::suite())
-         << add(testing::Document<subjecting::Document<subjecting::ZONE>>::suite())
+    // namespace rigging is defined in module tunitas.scarpet.did.Document.declaration
+         << add(rigging::Document<did::document::DOME>::suite())
+         << add(rigging::Document<did::document::JSON>::suite())
+         << add(rigging::Document<did::document::ZONE>::suite())
     ;
   return series.release();
 }

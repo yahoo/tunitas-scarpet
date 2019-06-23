@@ -1,0 +1,46 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import nonstd
+namespace want::nonstd {
+  using namespace ::nonstd;
+}
+#endiv
+#divert <hpp>
+#import c.const_stringn
+#import c.const_stringz
+#import c.const_buffer
+#import nonstd.basic_string
+#import nonstd.basic_string_view
+#import nonstd.const_dope
+#import nonstd.span
+#import std.to_string
+namespace want::nonstd {
+  //
+  // Finish out the to_string overload series
+  //
+  using std::to_string;
+  inline auto to_string(std::string const &) -> std::string; //  yes, this is always a copy (if you wanted the reference then pass the original)
+  inline auto to_string(std::string &&) -> std::string;
+  inline auto to_string(std::string_view) -> std::string;
+  inline auto to_string(span<char const>) -> std::string;
+  inline auto to_string(const_dope<char>) -> std::string;
+  inline auto to_string(c::const_stringz) -> std::string;
+  inline auto to_string(c::const_stringn) -> std::string;
+  inline auto to_string(c::const_buffer) -> std::string;
+}
+#endiv
+#divert <ipp>
+#import std.forward
+namespace want {
+  auto nonstd::to_string(std::string const &s) -> std::string { return std::string{s.data(), s.size()}; }
+  auto nonstd::to_string(std::string &&s) -> std::string { return std::string{std::forward<std::string>(s)}; }
+  auto nonstd::to_string(std::string_view s) -> std::string { return std::string{s.data(), s.size()}; }
+  auto nonstd::to_string(span<char const> s) -> std::string { return std::string{s.data(), s.size()}; }
+  auto nonstd::to_string(const_dope<char> s) -> std::string { return std::string{s.data(), s.size()}; }
+  auto nonstd::to_string(c::const_stringz s) -> std::string { return std::string{s.data(), s.size()}; }
+  auto nonstd::to_string(c::const_stringn s) -> std::string { return std::string{s.data(), s.size()}; }
+  auto nonstd::to_string(c::const_buffer s) -> std::string { return std::string{s.data(), s.size()}; }
+}
+#endiv

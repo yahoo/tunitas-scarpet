@@ -1,0 +1,45 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.did.document.Visitor
+namespace tunitas::scarpet::did::document {
+  //
+  // [[REMOVETHIS]] it is *exactly* the same as Visitor
+  //
+  // The ancestral serializer.
+  // This is matched with the the aspect::Serializer::serialize(...)
+  //
+  // The class accepts a SERIALIZEE, which is one of the minor objects in the document.
+  //   e.g. json::Value            ... which comprises a Document<JSON>
+  //        flat::record::Variant  ... a container of which comprises a Document<ZONE>
+  //
+  // Usage:
+  //
+  //    constexpr auto MODEL = ... one among ... { MODEL, JSON, ZONE }
+  //    auto ddd = Document<MODEL>{...somehow...};
+  //    auto visitor = Visitor<CONSTIE>{...somehow...}; ... or a descendant of such
+  //    ddd.visit(visitor);
+  //    ...visitor was side-effected, but ddd was not...
+  //
+  //    auto visitor = Visitor<MUTABLE>{...somehow...}; ... or a descendant of such
+  //    ddd.visit(visitor);
+  //    ...visitor was side-effected, and ddd might have been also...
+  //
+  template<typename SERIALIZEE, Mutability> class Serializer;
+}
+#endiv
+#divert <hpp>
+#import std.conditional
+namespace tunitas::scarpet::did {
+  template<typename SERIALIZEE, document::Mutability THE_MUTABILITY> class document::Serializer : public Visitor<SERIALIZEE, THE_MUTABILITY> {
+    using ancestor = Visitor<SERIALIZEE, THE_MUTABILITY>;
+  protected:
+    virtual ~Serializer() = default;
+    Serializer() = default;
+  public:
+    using Serializee = typename ancestor::Visitee;
+    virtual auto accept(Serializee &) -> void = 0;
+  };
+}
+#endiv

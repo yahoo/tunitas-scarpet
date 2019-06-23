@@ -1,0 +1,41 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#forward tunitas.scarpet.answer.Document
+#forward tunitas.scarpet.did.Document.DOME
+#forward tunitas.scarpet.compiler.output.Sink
+namespace tunitas::scarpet::compiler {
+  //
+  // Compile from an answer::Document to a Document<DOME> from whence all things are possible.
+  //
+  // Usage:
+  //
+  //   auto answer = ...somehow... scarpet::answer::Document{}
+  //   auto dome = did::Document<DOME>{};
+  //   auto sink = compiler::output::Stream{}; ... or a compatible sibling...
+  //
+  //   if (compile(answer, dome, sink)) {
+  //     ...yay... there is happiness, the dome is good (enjoy it)
+  //     ...use the dome...
+  //   } else {
+  //      ...nay... the answer is bad,
+  //            and the dome is in an inconsistent state,
+  //            and the sink contains the explanation.
+  //   }
+  //
+  auto compile([[in]] answer::Document const &, [[out]] did::Document<did::DOME> &, [[out]] output::Sink &) -> bool;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.answer.Document
+#import tunitas.scarpet.did.Document.DOME
+#import tunitas.scarpet.compiler.output.Sink
+#endiv
+#divert <cpp>
+#import nonstd.exception.Unimplemented
+auto tunitas::scarpet::compiler::compile(answer::Document const &source, did::Document<did::DOME> &result, output::Sink &explanation) -> bool {
+#warning WRITETHIS auto tunitas::scarpet::compiler::compile(answer::Document const &source, did::Document<did::DOME> &result, output::Sink &explanation) -> bool 
+  throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+}
+#endiv

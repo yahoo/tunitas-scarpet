@@ -42,8 +42,8 @@ struct tunitas::scarpet::drrs::tree::Allocator {
   inline auto make_child(dns::Label, Reference) -> Tree &;
   template<dns::Type TYPE> auto make_record(std::string) -> Record<TYPE> & = delete;
   template<dns::Type TYPE> auto make_record(dns::Name) -> Record<TYPE> & = delete;
-  template<dns::Type TYPE> auto make_record(dns::Weight, dns::Priority, std::string) -> Record<TYPE> & = delete;
-  template<dns::Type TYPE> auto make_record(dns::Weight, dns::Priority, dns::Name) -> Record<TYPE> & = delete;
+  template<dns::Type TYPE> auto make_record(dns::Priority, dns::Weight, std::string) -> Record<TYPE> & = delete;
+  template<dns::Type TYPE> auto make_record(dns::Priority, dns::Weight, dns::Name) -> Record<TYPE> & = delete;
 protected:
   // Valid to call when (a) !referent.records().empty() and (b) that final record is actually a TYPE
   template<dns::Type TYPE> inline auto reference_back() -> Record<TYPE> &;
@@ -52,9 +52,9 @@ protected:
 };
 namespace tunitas::scarpet::drrs::tree {
   template<> inline auto Allocator::make_record<dns::PTR>(dns::Name) -> Record<dns::PTR> &;
-  template<> inline auto Allocator::make_record<dns::SRV>(dns::Weight, dns::Priority, dns::Name) -> Record<dns::SRV> &;
+  template<> inline auto Allocator::make_record<dns::SRV>(dns::Priority, dns::Weight, dns::Name) -> Record<dns::SRV> &;
   template<> inline auto Allocator::make_record<dns::TXT>(std::string) -> Record<dns::TXT> &;
-  template<> inline auto Allocator::make_record<dns::URI>(dns::Weight, dns::Priority, std::string) -> Record<dns::URI> &;
+  template<> inline auto Allocator::make_record<dns::URI>(dns::Priority, dns::Weight, std::string) -> Record<dns::URI> &;
 }
 #endiv
 #divert <ipp>
@@ -73,14 +73,14 @@ namespace tunitas::scarpet::drrs::tree {
   template<> auto Allocator::make_record<dns::PTR>(dns::Name name) -> Record<dns::PTR> & {
     return downcast<dns::PTR>(referent.records().emplace_back(Record<dns::PTR>{std::move(name)}));
   }
-  template<> auto Allocator::make_record<dns::SRV>(dns::Weight weight, dns::Priority priority, dns::Name endpoint) -> Record<dns::SRV> & {
-    return downcast<dns::SRV>(referent.records().emplace_back(Record<dns::SRV>{weight, priority, std::move(endpoint)}));
+  template<> auto Allocator::make_record<dns::SRV>(dns::Priority priority, dns::Weight weight, dns::Name endpoint) -> Record<dns::SRV> & {
+    return downcast<dns::SRV>(referent.records().emplace_back(Record<dns::SRV>{priority, weight, std::move(endpoint)}));
   }
   template<> auto Allocator::make_record<dns::TXT>(std::string text) -> Record<dns::TXT> & {
     return downcast<dns::TXT>(referent.records().emplace_back(Record<dns::TXT>{std::move(text)}));
   }
-  template<> auto Allocator::make_record<dns::URI>(dns::Weight weight, dns::Priority priority, std::string endpoint) -> Record<dns::URI> & {
-    return downcast<dns::URI>(referent.records().emplace_back(Record<dns::URI>{weight, priority, std::move(endpoint)}));
+  template<> auto Allocator::make_record<dns::URI>(dns::Priority priority, dns::Weight weight, std::string endpoint) -> Record<dns::URI> & {
+    return downcast<dns::URI>(referent.records().emplace_back(Record<dns::URI>{priority, weight, std::move(endpoint)}));
   }
 }
 #import tunitas.scarpet.exception.Invariant

@@ -11,7 +11,7 @@ namespace tunitas::scarpet::did::document {
   //
   // Usage:
   //
-  //    See the specializations of Document<MODEL>
+  //    See the specializations of Document<MODEL> for any MODEL
   //
   class Prototype;
 }
@@ -27,9 +27,6 @@ public:
   auto operator=(Prototype const &) -> Prototype & = delete;
   Prototype(Prototype &&) = default;
   auto operator=(Prototype &&) -> Prototype & = default;
-  //
-  // What else?
-  //
   virtual auto dump(std::ostream &) const -> void = 0;
 };
 #endiv

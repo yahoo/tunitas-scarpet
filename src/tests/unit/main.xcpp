@@ -3,13 +3,18 @@
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <cpp>
 #import rigging.bench.Main
+#import tests.unit.answer.Fixture
+#import tests.unit.compiler.Fixture
 #import tests.unit.did.Fixture
 #import tests.unit.dns.Fixture
 #import tests.unit.drrs.Fixture
 #import tests.unit.error.Fixture
 #import tests.unit.exception.Fixture
+#import tests.unit.model.Fixture
 #import tests.unit.names.Fixture
 #import tests.unit.options.Fixture
+#import tests.unit.output.Fixture
+#import tests.unit.pki.Fixture
 #import tests.unit.resolve.Fixture
 #import tests.unit.router.Fixture
 #import tests.unit.scarpet.Fixture
@@ -18,13 +23,18 @@
 auto main(int argc, char **argv) -> int {
   using namespace rigging::bench;
   namespace tu = tests::unit;
-  Main remain(tu::did::Fixture::suite(),
+  Main remain(tu::answer::Fixture::suite(),
+              tu::compiler::Fixture::suite(),
+              tu::did::Fixture::suite(),
               tu::dns::Fixture::suite(),
               tu::drrs::Fixture::suite(),
               tu::error::Fixture::suite(),
               tu::exception::Fixture::suite(),
+              tu::model::Fixture::suite(),
               tu::names::Fixture::suite(),
               tu::options::Fixture::suite(),
+              tu::output::Fixture::suite(),
+              tu::pki::Fixture::suite(),
               tu::resolve::Fixture::suite(),
               tu::router::Fixture::suite(),
               tu::scarpet::Fixture::suite(),

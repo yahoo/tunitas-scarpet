@@ -11,12 +11,10 @@ namespace tunitas::scarpet::drrs::tree::records {
   // The records (resource record set) at this level in the tree.
   //
   // It's container of variants (std::variant of all the possible resource records that we care about)
-  //
-  // The class is more more less "private to Tree" and is expected to be operated only thereby.
+  // The variant is more more less "private to Tree" and is expected to be operated only thereby.
   //
   // Usage:
   //
-  //   oh come on (hint: it's the reduced interface of std::list)
   //   for (auto const &variant : tree.records()) {
   //      auto const visitor = Visitor{[](Record<DAPTR> const &) { ... },
   //                                   [](Record<NAPTR> const &) { ... },

@@ -35,20 +35,23 @@ namespace tunitas::scarpet::drrs::aspect {
 #endiv
 #divert <hpp>
 #import ares.managed // Priority & Weight
+#import std.is_enum
 namespace tunitas::scarpet::drrs {
   template<aspect::required::Field FIELD> class aspect::Endpoint {
   public:
-    using Weight = ares::managed::Weight;
     using Priority = ares::managed::Priority;
+    using Weight = ares::managed::Weight;
+    static_assert(std::is_enum<Priority>::value);
+    static_assert(std::is_enum<Weight>::value);
   protected:
     virtual ~Endpoint() = default;
     inline Endpoint();
     using Field = FIELD; // Not ready to announce 'using Endpoint = FIELD' to the descendants.
-    inline Endpoint(Weight, Priority, Field const &);
-    inline Endpoint(Weight, Priority, Field &&);
+    inline Endpoint(Priority, Weight, Field const &);
+    inline Endpoint(Priority, Weight, Field &&);
   public:
-    Weight weight;
     Priority priority;
+    Weight weight;
     Field endpoint; //   e.g. something.example.com, or "https://something.example.com/myhouse"
   };
 }
@@ -57,18 +60,18 @@ namespace tunitas::scarpet::drrs {
 #import std.forward
 namespace tunitas::scarpet::drrs::aspect {
   template<aspect::required::Field _> Endpoint<_>::Endpoint()
-    : weight{Weight{}}
-    , priority{Priority{}}
+    : priority{Priority{}}
+    , weight{Weight{}}
     , endpoint{}
   { }
-  template<aspect::required::Field _> Endpoint<_>::Endpoint(Weight weight, Priority priority, Field const &field)
-    : weight{weight}
-    , priority{priority}
+  template<aspect::required::Field _> Endpoint<_>::Endpoint(Priority priority, Weight weight, Field const &field)
+    : priority{priority}
+    , weight{weight}
     , endpoint{field}
   { }
-  template<aspect::required::Field _> Endpoint<_>::Endpoint(Weight weight, Priority priority, Field &&field)
-    : weight{weight}
-    , priority{priority}
+  template<aspect::required::Field _> Endpoint<_>::Endpoint(Priority priority, Weight weight, Field &&field)
+    : priority{priority}
+    , weight{weight}
     , endpoint{std::forward<Field>(field)}
   { }
 }

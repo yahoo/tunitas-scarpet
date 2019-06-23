@@ -6,15 +6,18 @@
 namespace tests::unit::did {
   // cascade the namespaces to get enum Model and all its constituents
   using namespace ::tunitas::scarpet::did;
+  static_assert(sizeof(DOME)); // reminder, these constants exist
+  static_assert(sizeof(ZONE));
+  static_assert(sizeof(JSON));
   //
   // A Fixture ... specializations only
   //
   template<typename DOCUMENT> struct Document;
   namespace subjecting {
-    template<Model MODEL> using Document = ::tunitas::scarpet::did::Document<MODEL>;
+    template<document::Model MODEL> using Document = ::tunitas::scarpet::did::Document<MODEL>;
   }
-  namespace testing {
-    template<Model MODEL> using Document = ::tests::unit::did::Document<subjecting::Document<MODEL>>;
+  namespace rigging {
+    template<document::Model MODEL> using Document = ::tests::unit::did::Document<subjecting::Document<MODEL>>;
   }
 }
 #endiv

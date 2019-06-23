@@ -30,4 +30,3 @@ namespace tunitas::scarpet::drrs {
   Record<dns::PTR>::Record(dns::Name target) : target{std::move(target)} { }
 }
 #endiv
-

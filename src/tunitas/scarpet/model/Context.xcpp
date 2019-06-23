@@ -1,0 +1,38 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::model {
+  //
+  // A context (name); is named by a well-known URL.
+  // There are only a few of these.
+  //
+  // Usage: see Contexts (plural), nearby
+  //
+  class Context;
+}
+#endiv
+#divert <hpp>
+#import std.string
+namespace tunitas::scarpet::model {
+  inline auto to_string(Context const &) -> std::string;
+  inline auto to_string(Context &&) -> std::string;
+}
+class tunitas::scarpet::model::Context : private std::string {
+  // [[FIXTHIS]] since there are only a few of these and they are so very well known, then use a dictionary.
+  // [[FIXTHIS]] since there are only a few of these and they are so very well known, then use an enum.
+  using ancestor = std::string;
+  friend auto model::to_string(Context const &) -> std::string;
+  friend auto model::to_string(Context &&) -> std::string;
+public:
+  Context();
+  // But for now, just hack it as "another flavor of string"
+  using ancestor::basic_string;
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet {
+  auto model::to_string(Context const &context) -> std::string { return std::string{static_cast<Context::ancestor const &>(context)}; }
+  auto model::to_string(Context &&context) -> std::string { return std::string{std::move(context)}; }
+}
+#endiv

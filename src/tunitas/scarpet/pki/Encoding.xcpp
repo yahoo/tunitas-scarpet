@@ -1,0 +1,138 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::pki {
+  //
+  // The encoding of the key (verification) and proof (signature) material.
+  // Useful for declaring how pki::Material shall be presented in the delicate on-the-wire formats.
+  //
+  // Usage:
+  //
+  //   oh come on, it's an enum!
+  //
+  enum class Encoding {
+    NONE = 0, // You figure it out by looking at it.  Or maybe there is no encoding at all.  Good Luck To You
+    UNKNOWN = 1, // because "BASE1" is nonsensical and we need a "leave the bits as-is"
+    PASSTHROUGH = UNKNOWN,
+    PASSTHRU = PASSTHROUGH,
+    BASE2 = 2,
+    BASE4 [[deprecated("why bother?")]] = 4,
+    BASE8 [[deprecated("why bother?")]] = 8,
+    Base10 = 10,
+    BASE16 = 16,
+    HEX = BASE16,
+    BASE32 = 32,
+    BASE36 = 36,
+    BASE58 = 58,
+    BASE64 = 64,
+    BASE85 = 85,
+    // beyond here are >= 256
+    PEM,
+    MULTIBASE,
+    ETHEREUM,
+    JWK, // RFC 7517 // RFChttps://tools.ietf.org/html/rfc7517
+  };
+}
+#endiv
+#divert <hpp>
+#import c.const_stringz
+#import re.string
+#import tunitas.scarpet.dns.Label
+namespace tunitas::scarpet::pki {
+  auto to_string(Encoding) -> std::string;
+  inline auto to_lowercase(Encoding) -> std::string;
+  inline auto to_UPPERCASE(Encoding) -> std::string;
+  inline auto to_string(Encoding, re::string<c::const_stringz> prefix) -> std::string;
+  auto to_communityCamelCase(Encoding, re::string<c::const_stringz> prefix) -> std::string;
+  template<typename RESULT> inline auto to_communityCamelCase(Encoding, re::string<c::const_stringz> prefix) -> RESULT requires std::is_same_v<RESULT, dns::Label>;
+}
+#endiv
+#divert <ipp>
+#import std.move
+#import std.isalpha
+#import std.tolower
+#import std.toupper
+namespace tunitas::scarpet {
+  auto pki::to_string(Encoding e, re::string<c::const_stringz> prefix) -> std::string {
+    return std::string{c::str(prefix)} + to_string(e);
+  }
+  auto pki::to_lowercase(Encoding e) -> std::string {
+    auto candidate = to_string(e);
+    for (auto &c : candidate) {
+      if (std::isalpha(c)) { c = std::tolower(c); }
+    }
+    return std::move(candidate);
+  }
+  auto pki::to_UPPERCASE(Encoding e) -> std::string {
+    auto candidate = to_string(e);
+    // Just in case to_string(...) changes its policy and starts giving mixed case...  fixit.
+    for (auto &c : candidate) {
+      if (std::isalpha(c)) { c = std::toupper(c); }
+    }
+    return std::move(candidate);
+  }
+  template<typename RESULT> auto pki::to_communityCamelCase(Encoding encoding, re::string<c::const_stringz> prefix) -> RESULT requires std::is_same_v<RESULT, dns::Label> {
+    // [[FIXTHIS]] is there some way to use move semantics here by sharing the indirect storage of sss?
+    auto sss = to_communityCamelCase(encoding, prefix);
+    return dns::Label{sss.data(), sss.size()};
+  }
+}
+#endiv
+#divert <cpp>
+#import std.to_string
+namespace tunitas::scarpet {
+  auto pki::to_string(Encoding e) -> std::string {
+    auto const u = std::underlying_type<Encoding>::type(e);
+    if (0x01 <= u && u <= 0xff) {
+      // BASE1 ... BASE255 (sure ...)
+      return "BASE" + std::to_string(u);
+    } else {
+      switch (e) {
+      case Encoding::NONE:
+        return "NONE";
+      case Encoding::PEM:
+        return "PEM";
+      case Encoding::MULTIBASE:
+        return "MUTLIBASE";
+      case Encoding::ETHEREUM:
+        return "ETHEREUM";
+      case Encoding::JWK:
+        return "JWK";
+      default:
+        return "Encoding" + std::to_string(u);
+      }
+    }
+  }
+}
+#import std.isalpha
+#import std.tolower
+namespace tunitas::scarpet {
+  auto pki::to_communityCamelCase(Encoding encoding, re::string<c::const_stringz> prefix) -> std::string {
+    // Because "the [DID] community" likes it this way
+    // As stated in of https://w3c-ccg.github.io/did-spec/#public-keys
+    //
+    // <quote>publicKeyPem, publicKeyJwk, publicKeyHex, publicKeyBase64, publicKeyBase58, publicKeyMultibase, ethereumAddress</quote>
+    //
+    // ARTISTIC HACK HACK HACK HACK
+    if (Encoding::ETHEREUM == encoding) {
+      return "ethereumAddress";
+    } else {
+      auto candidate = to_string(encoding, prefix);
+      if (auto i{prefix.size()}, e{candidate.size()}; i < e) {
+        auto c = candidate.at(i);
+        if (std::isalpha(c)) {
+          candidate[i] = std::toupper(c);
+        }
+      }
+      for (auto i{1+prefix.size()}, e{candidate.size()}; i < e; ++i) {
+        auto c = candidate.at(i);
+        if (std::isalpha(c)) {
+          candidate[i] = std::tolower(c);
+        }
+      }
+      return std::move(candidate);
+    }
+  }
+}
+#endiv

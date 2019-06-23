@@ -1,0 +1,151 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::pki { class Material; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tunitas.scarpet.pki.Encoding
+#import tunitas.scarpet.pki.Material
+class tests::unit::pki::Material : public cppunit::test::Fixture {
+public:
+  using Encoding = ::tunitas::scarpet::pki::Encoding;
+  using Subject = ::tunitas::scarpet::pki::Material;
+  auto test_constructor_default() -> void;
+  auto test_constructor_ancestor_copy() -> void;
+  auto test_constructor_ancestor_move() -> void;
+  auto test_assignment_ancestor_copy() -> void;
+  auto test_assignment_ancestor_move() -> void;
+  auto test_operator_eq() -> void;
+  auto test_operator_ne() -> void;
+  auto test_to_string_none() -> void;
+  auto test_to_string_passthru() -> void;
+  auto test_to_string_foreach() -> void;
+  static auto suite() -> cppunit::Test *;
+protected:
+  static auto fillup() -> Subject;
+};
+#endiv
+#divert <cpp>
+#import std.empty
+#import std.size
+auto tests::unit::pki::Material::test_constructor_default() -> void {
+  Subject subject;
+  CPPUNIT_ASSERT(std::empty(subject));
+}
+#import std.byte
+#import std.vector
+auto tests::unit::pki::Material::test_constructor_ancestor_copy() -> void {
+  std::vector<std::byte> specimen;
+  Subject subject{specimen};
+  CPPUNIT_ASSERT(std::empty(subject));
+}
+#import std.move
+auto tests::unit::pki::Material::test_constructor_ancestor_move() -> void {
+  std::vector<std::byte> specimen;
+  Subject subject{std::move(specimen)};
+  CPPUNIT_ASSERT(std::empty(subject));
+}
+auto tests::unit::pki::Material::test_assignment_ancestor_copy() -> void {
+  std::vector<std::byte> specimen;
+  Subject subject;
+  subject = specimen;
+  CPPUNIT_ASSERT(std::empty(subject));
+}
+auto tests::unit::pki::Material::test_assignment_ancestor_move() -> void {
+  std::vector<std::byte> specimen;
+  Subject subject;
+  subject = std::move(specimen);
+  CPPUNIT_ASSERT(std::empty(subject));
+}
+auto tests::unit::pki::Material::fillup() -> Subject {
+  Subject ret;
+  for (auto i{0u}, e{0x100u}; e != i; ++i) {
+    ret.push_back(std::byte(i));
+  }
+  return std::move(ret);
+}
+auto tests::unit::pki::Material::test_operator_eq() -> void {
+  using B = std::byte;
+  Subject a12{B{1}, B{2}};
+  Subject b12{B{1}, B{2}};
+  Subject a22{B{2}, B{2}};
+  CPPUNIT_ASSERT(a12 == b12);
+  CPPUNIT_ASSERT(!(a12 == a22));
+}
+auto tests::unit::pki::Material::test_operator_ne() -> void {
+  using B = std::byte;
+  Subject a12{B{1}, B{2}};
+  Subject b12{B{1}, B{2}};
+  Subject a22{B{2}, B{2}};
+  CPPUNIT_ASSERT(a12 != a22);
+  CPPUNIT_ASSERT(!(a12 != b12));
+}
+auto tests::unit::pki::Material::test_to_string_none() -> void {
+  auto specimen = fillup();
+  auto subject = to_string(specimen, Encoding::NONE);
+  CPPUNIT_ASSERT(subject.size() == specimen.size());
+}
+auto tests::unit::pki::Material::test_to_string_passthru() -> void {
+  auto specimen = fillup();
+  auto subject = to_string(specimen, Encoding::PASSTHRU);
+  CPPUNIT_ASSERT(subject.size() == specimen.size());
+}
+#import tunitas.scarpet.exception.Invariant
+#import nonstd.exception.Unimplemented
+auto tests::unit::pki::Material::test_to_string_foreach() -> void {
+  for (auto i{-256}, e(256); e != i; ++i) {
+    auto encoding = Encoding(e);
+    try {
+      auto specimen = fillup();
+      auto subject = to_string(specimen, encoding);
+      CPPUNIT_ASSERT(subject.size() == specimen.size()); // if it doesn't throw then this must be true
+    } catch (::tunitas::scarpet::exception::Invariant const &) {
+      CPPUNIT_ASSERT(true);
+    } catch (nonstd::exception::Unimplemented const &) {
+      CPPUNIT_ASSERT(Encoding::PEM == encoding ||
+                     Encoding::BASE16 == encoding ||
+                     Encoding::BASE32 == encoding ||
+                     Encoding::BASE64 == encoding);
+    }
+  }
+}
+#import rigging.suite.io
+auto tests::unit::pki::Material::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"Material"};
+  {
+    Stream con{"constructor"};
+    con << call("default", &Material::test_constructor_default)
+      ;
+    {
+      Stream ans{"ancestor"};
+      ans << call("copy", &Material::test_constructor_ancestor_copy)
+          << call("move", &Material::test_constructor_ancestor_move)
+        ;
+      con << move(ans);
+    }
+    series << move(con);
+  } {
+    Stream ass{"assignment"};
+    ass << call("copy", &Material::test_assignment_ancestor_copy)
+        << call("move", &Material::test_assignment_ancestor_move)
+      ;
+    series << move(ass);
+  }
+  series << call("operator==", &Material::test_operator_eq)
+         << call("operator=", &Material::test_operator_ne)
+    ;
+  {
+    Stream tos{"to_string"};
+    tos << call("none", &Material::test_to_string_none)
+        << call("passthru", &Material::test_to_string_passthru)
+        << call("foreach", &Material::test_to_string_foreach)
+      ;
+    series << move(tos);
+  }
+  return finalize(series);
+}
+#endiv

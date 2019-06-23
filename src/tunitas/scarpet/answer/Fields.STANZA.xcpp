@@ -24,7 +24,7 @@ namespace tunitas::scarpet::answer::packaging {
   // Usage:
   //
   //   auto method = did::Method{...somehow...};          e.g. eample
-  //   auto identifier = did::Method{...somehow...};      e.g. 123456789abcdefghi
+  //   auto identifier = did::Identifier{...somehow...};  e.g. 123456789abcdefghi
   //   auto ddss = dns::Name{...somehow...};              e.g. storage.scarpet.tunitas.solutions.
   //
   //   Fields fields;
@@ -39,14 +39,14 @@ namespace tunitas::scarpet::answer::packaging {
   template<> class Fields<fields::STANZA> {
     using Id              = Query<Stanza<stanza::ID>>;
     using Contexts        = Query<Stanza<stanza::CONTEXTS>>;
-    using Keys            = Query<Stanza<stanza::KEYS>>;
+    using PublicKeys      = Query<Stanza<stanza::PUBLICKEYS>>;
     using Authentications = Query<Stanza<stanza::AUTHENTICATIONS>>;
     using Services        = Query<Stanza<stanza::SERVICES>>;
     using Proofs          = Query<Stanza<stanza::PROOFS>>;
   public:
     Id id;
     Contexts contexts;
-    Keys keys;
+    PublicKeys publickeys;
     Authentications authentications;
     Services services;
     Proofs proofs;

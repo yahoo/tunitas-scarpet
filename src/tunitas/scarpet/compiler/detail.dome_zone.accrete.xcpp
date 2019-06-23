@@ -1,0 +1,83 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.compiler.detail.dome_zone.Accreter
+#import tunitas.scarpet.did.Document.DOME
+#import tunitas.scarpet.dns.Label
+#import tunitas.scarpet.model.Keys
+#import tunitas.scarpet.model.Proofs
+#import tunitas.scarpet.model.Services
+namespace tunitas::scarpet::compiler::detail::dome_zone {
+  //
+  // These are implementation details of the compiler DOME -> ZONE
+  // Usage: see tunitas.scarpet.compiler.DOME.ZONE
+  //
+  inline auto accrete(Accreter &, did::Document<did::DOME> const &, dns::Label const &, model::Keys const &) -> void;
+  inline auto accrete(Accreter &, did::Document<did::DOME> const &, dns::Label const &, model::Services const &) -> void;
+  inline auto accrete(Accreter &, did::Document<did::DOME> const &, dns::Label const &, model::Proofs const &) -> void;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.compiler.detail.dome_zone.leftside
+#import tunitas.scarpet.compiler.detail.dome_zone.pointer
+#import tunitas.scarpet.compiler.detail.dome_zone.row
+#import tunitas.scarpet.dns.label.literals
+#import tunitas.scarpet.drrs.Record
+namespace tunitas::scarpet::compiler::detail {
+  namespace dome_zone { using namespace dns::label::literals; }
+  auto dome_zone::accrete(Accreter &accreter, did::Document<did::DOME> const &source, dns::Label const &label, model::Keys const &records) -> void {
+    auto ith = 0u;
+    for (auto const &record : records) {
+      accreter << row(leftside(label, source), drrs::Record<dns::PTR>{pointer(ith, label, source)})
+               << row(leftside("id"_label, ith, label, source), drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, to_string(record.id)})
+               << row(leftside("type"_label, ith, label, source), drrs::Record<dns::TXT>{to_string(record.algorithm)})
+               << row(leftside("controller"_label, ith, label, source), drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, to_string(record.controller)})
+        ;
+        // [[VARIANCE]] the standard here has different fields for different encodings among { publicKeyPem, publicKeyHex (but not "Base16"), etc... }
+      auto material = to_string(record.material, tunitas::scarpet::pki::Encoding::UNKNOWN); // [[FIXME]] handle the actual encoding  of record.encoding
+      accreter << row(leftside("key"_label, ith, label, source), drrs::Record<dns::TXT>{material})
+               << row(leftside(pki::to_communityCamelCase<dns::Label>(record.encoding, "publicKey"), ith, label, source), drrs::Record<dns::TXT>{material})
+        ;
+      ++ith;
+    }
+  }
+  auto dome_zone::accrete(Accreter &accreter, did::Document<did::DOME> const &source, dns::Label const &label, model::Services const &records) -> void {
+    auto ith = 0u;
+    for (auto const &record : records) {
+      accreter << row(leftside(label, source), drrs::Record<dns::PTR>{pointer(ith, label, source)})
+               << row(leftside("id"_label, ith, label, source), drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, to_string(record.id)})
+               << row(leftside("type"_label, ith, label, source), drrs::Record<dns::TXT>{to_string(record.definition)})
+               << row(leftside("endpoint"_label, ith, label, source), drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, to_string(record.endpoint)})
+        ;
+      if (record.description) {
+        accreter << row(leftside("description"_label, ith, label, source), drrs::Record<dns::TXT>{*record.description});
+      }
+      ++ith;
+    }
+  }
+}
+#import want.nonstd.strftime
+namespace tunitas::scarpet::compiler::detail {
+  auto dome_zone::accrete(Accreter &accreter, did::Document<did::DOME> const &source, dns::Label const &label, model::Proofs const &records) -> void {
+    auto ith = 0u;
+    for (auto const &record : records) {
+      accreter << row(leftside(label, source), 
+                      drrs::Record<dns::PTR>{pointer(ith, label, source)})
+               << row(leftside("transaction"_label, ith, label, source), drrs::Record<dns::TXT>{to_string(record.transaction)})
+               << row(leftside("created"_label, ith, label, source), drrs::Record<dns::TXT>{want::nonstd::strftime(record.created, "%FT%T")})
+               << row(leftside("creator"_label, ith, label, source), drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, to_string(record.creator)})
+        // [[VARIANCE]] the standard is vague and fluid across 2019-Q3 https://w3c-ccg.github.io/did-spec/#proof-optional
+               << row(leftside("signature"_label, ith, label, source), drrs::Record<dns::TXT>{to_string(record.signature, tunitas::scarpet::pki::Encoding::PASSTHRU)}) //[[FIXTHIS]] to use the record.encoding, which is nearby]]
+        ;
+      if (record.description) {
+        accreter << row(leftside("description"_label, ith, label, source), drrs::Record<dns::TXT>{*record.description});
+      }
+      if (record.reference) {
+        accreter << row(leftside("reference"_label, ith, label, source), drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, to_string(*record.reference)});
+      }
+      ++ith;
+    }
+  }
+}
+#endiv

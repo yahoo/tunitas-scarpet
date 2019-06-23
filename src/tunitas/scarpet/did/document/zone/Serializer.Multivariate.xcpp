@@ -1,0 +1,134 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+//
+// A functor to handle all the possible DNS Types that comprise a Document<ZONE>
+//
+// Usage: see Serializer::accept(Serializee
+//
+#import tunitas.scarpet.did.document.zone.Serializer
+#include <hpp/tunitas.scarpet.did.document.zone.Serializer>
+#endiv
+#divert <hpp>
+#forward tunitas.scarpet.drrs.aspect.Redirect
+#forward tunitas.scarpet.drrs.flat.Record
+#forward tunitas.scarpet.drrs.flat.record.Leftside
+#import tunitas.scarpet.drrs.Record.NAPTR // for Regex
+#import std.ostream
+class tunitas::scarpet::did::document::zone::Serializer::Multivariate {
+public:
+  inline explicit Multivariate(std::ostream &);
+  template<dns::Type TYPE> using Record = drrs::flat::Record<TYPE>; 
+  inline auto operator()(Record<dns::NAPTR> const &) const -> void;
+  inline auto operator()(Record<dns::DAPTR> const &) const -> void;
+  inline auto operator()(Record<dns::PTR> const &) const -> void;
+  inline auto operator()(Record<dns::TXT> const &) const -> void;
+  inline auto operator()(Record<dns::SRV> const &) const -> void;
+  inline auto operator()(Record<dns::URI> const &) const -> void;
+protected:
+  std::ostream &outbound;
+  using Leftside = drrs::flat::record::Leftside;
+  inline auto lhs(Leftside const &) const -> void;
+  using Redirect = drrs::aspect::Redirect;
+  using Regex = Record<dns::NAPTR>::Regex;
+  inline auto redirect1(Redirect const &) const -> void;
+  inline auto regex(Regex const &) const -> void;
+  inline auto redirect2(Redirect const &) const -> void;
+  inline auto endl() const -> void;
+  inline static constexpr auto QQ = '"';
+  inline static constexpr auto BANG = '!';
+};
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.drrs.aspect.Redirect
+#import tunitas.scarpet.drrs.flat.Record
+#import tunitas.scarpet.drrs.flat.record.Leftside
+#import std.chrono.duration_cast
+#import std.transform
+#import std.ostream_iterator
+namespace tunitas::scarpet::did::document::zone {
+  Serializer::Multivariate::Multivariate(std::ostream &outbound) : outbound{outbound} { }
+  auto Serializer::Multivariate::lhs(Leftside const &l) const -> void {
+    struct FIXTHIS { using Seconds = std::chrono::duration<std::int64_t, std::ratio<1>>; }; // FIXTHIS ... there is no std::seconds because the units are already in seconds.
+    auto seconds = std::chrono::duration_cast<FIXTHIS::Seconds>(l.ttl).count();
+    outbound << to_string(l.labels) << ' ' << seconds << ' ' << l.classs << ' ';
+  }
+  auto Serializer::Multivariate::endl() const -> void {
+    outbound << '\n';
+  }
+  auto Serializer::Multivariate::operator()(Record<dns::NAPTR> const &r) const -> void {
+    // 
+    //  Something Something (Storage Service) Lexicon 
+    //  DID Document Storage Service (DDSS) is a (F)QDN ----------------------------\ (here)
+    //                                                                              |      
+    //  Hipster (DID Method) Lexicon                                                |
+    //  DID Method ----------------------------\-------------------\---\            |
+    //                                         |                   |   |            |
+    //  (Tunitas) Scarpet Service Flags        |                   |   |            |
+    //       ... Service-Protocol Flags        |                   |   |            |
+    //  DID Document Storage Flags ------------|---------------\   |   |            |
+    //                                         |               |   |   |            |
+    //  DID Identifier ------\                 |               |   |   |            |
+    //                       |                 |               |   |   |            |
+    //                       |                 |               |   |   |            |
+    //<-------+----+----+----+-----------> <---+-->            v   v   v            v
+    //4c76ad9b-7d80-46c0-bc2a-76a84bf848ef.lo-fi    NAPTR 1 1 "R" "did+lo-fi"    "" gurdon.fd20-1e92-49c7.net.
+    //
+    lhs(r);
+    redirect1(r);
+    if (r.regex) {
+      regex(*r.regex);
+    } else {
+      outbound << R"missing( "")missing";
+    }
+    redirect2(r);
+    endl();
+  }
+  auto Serializer::Multivariate::redirect1(Redirect const &r) const -> void {
+    outbound << (unsigned)r.priority << ' ' << (unsigned)r.weight << ' ' << QQ;
+    std::transform(r.flags.begin(), r.flags.end(), std::ostream_iterator<char>{outbound}, [](auto b) { return char(b); });
+    outbound << QQ << ' '; // [[UNCHECKED]] that r.flags does not contain QQ
+  }
+  auto Serializer::Multivariate::regex(Regex const &r) const -> void {
+    if (r.pattern.empty() && r.replacement.empty()) {
+      outbound << QQ << QQ;
+    } else {
+      outbound << QQ << BANG << r.pattern << BANG << r.replacement << BANG << QQ;  // [[UNCHECKED]] that neither r.pattern nor replacement contains '"'
+    }
+    outbound << ' ';
+  }
+  auto Serializer::Multivariate::redirect2(Redirect const &r) const -> void {
+    outbound << to_string(r.endpoint);
+  }
+  auto Serializer::Multivariate::operator()(Record<dns::DAPTR> const &r) const -> void {
+    //
+    // Same thing, but there is no regex
+    //
+    lhs(r);
+    redirect1(r);
+    redirect2(r);
+    endl();
+  }
+  auto Serializer::Multivariate::operator()(Record<dns::PTR> const &r) const -> void {
+    lhs(r);
+    outbound << view(r.target);
+    endl();
+  }
+  auto Serializer::Multivariate::operator()(Record<dns::TXT> const &r) const -> void {
+    lhs(r);
+    outbound << QQ << r.text << QQ; // [[UNCHECKED]] that r.text does not contain '"'
+    endl();
+  }
+  auto Serializer::Multivariate::operator()(Record<dns::SRV> const &r) const -> void {
+    lhs(r);
+    outbound << (unsigned)r.priority << ' ' << (unsigned)r.weight << ' ' << view(r.endpoint);
+    endl();
+  }
+  auto Serializer::Multivariate::operator()(Record<dns::URI> const &r) const -> void {
+    lhs(r);
+    outbound << (unsigned)r.priority << ' ' << (unsigned)r.weight << ' ' << QQ << r.endpoint << QQ;
+    endl();
+  }
+}
+#endiv

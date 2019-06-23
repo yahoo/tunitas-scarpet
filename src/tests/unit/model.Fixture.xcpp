@@ -1,0 +1,113 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::model { class Fixture; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+class tests::unit::model::Fixture : public cppunit::test::Fixture {
+public:
+  auto test_basic_Model() -> void;
+  auto test_basic_Contexts() -> void;
+  auto test_basic_Keys() -> void;
+  auto test_basic_Services() -> void;
+  auto test_basic_Proofs() -> void;
+  auto test_service_Definition() -> void;
+  auto test_proof_Definition() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+#import std.empty
+#import std.size
+#import tunitas.scarpet.Model
+auto tests::unit::model::Fixture::test_basic_Model() -> void {
+  auto subject = ::tunitas::scarpet::Model{};
+  CPPUNIT_ASSERT(std::empty(subject.contexts));
+  CPPUNIT_ASSERT(std::empty(subject.publickeys));
+  CPPUNIT_ASSERT(std::empty(subject.authentications));
+  CPPUNIT_ASSERT(std::empty(subject.services));
+  CPPUNIT_ASSERT(std::empty(subject.proofs));
+}
+#import tunitas.scarpet.model.Contexts
+auto tests::unit::model::Fixture::test_basic_Contexts() -> void {
+  auto subject = ::tunitas::scarpet::model::Contexts{};
+  CPPUNIT_ASSERT(std::empty(subject));
+}
+#import tunitas.scarpet.model.Keys
+auto tests::unit::model::Fixture::test_basic_Keys() -> void {
+  auto subject = ::tunitas::scarpet::model::Keys{};
+  CPPUNIT_ASSERT(std::empty(subject));
+}
+#import tunitas.scarpet.model.Services
+auto tests::unit::model::Fixture::test_basic_Services() -> void {
+  CPPUNIT_ASSERT(true);
+  auto subject = ::tunitas::scarpet::model::Services{};
+  CPPUNIT_ASSERT(std::empty(subject));
+}
+#import tunitas.scarpet.model.Proofs
+auto tests::unit::model::Fixture::test_basic_Proofs() -> void {
+  auto subject = ::tunitas::scarpet::model::Proofs{};
+  CPPUNIT_ASSERT(std::empty(subject));
+}
+#import tunitas.scarpet.model.service.Definition
+auto tests::unit::model::Fixture::test_service_Definition() -> void {
+  using namespace ::tunitas::scarpet::model::service;
+  using Subject = Definition;
+  {
+    auto subject = Subject{Standard(80)};
+    auto sss = to_string(subject);
+    CPPUNIT_ASSERT(!std::empty(sss));
+  } {
+    auto subject = Subject{Well_Known::OIDC_1_0};
+    auto sss = to_string(subject);
+    CPPUNIT_ASSERT(!std::empty(sss));
+  } {
+    auto subject = Subject{"Fortnite_8.9.10"s};
+    auto sss = to_string(subject);
+    CPPUNIT_ASSERT(!std::empty(sss));
+  }
+}
+#import tunitas.scarpet.model.proof.Definition
+auto tests::unit::model::Fixture::test_proof_Definition() -> void {
+  using Subject = ::tunitas::scarpet::model::proof::Definition;
+  {
+    auto subject = Subject{};
+    CPPUNIT_ASSERT(sizeof (subject));
+  } {
+    for (auto i{-100}, e{100}; i != e; ++i) {
+      auto subject = Subject(i);
+      auto sss = to_string(subject);
+      CPPUNIT_ASSERT(!std::empty(sss));
+    }
+  }
+}
+#import rigging.suite.io
+auto tests::unit::model::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"model"};
+  {
+    Stream bas{"basic"};
+    bas << call("Model", &Fixture::test_basic_Model)
+        << call("Contexts", &Fixture::test_basic_Contexts)
+        << call("Keys", &Fixture::test_basic_Keys)
+        << call("Services", &Fixture::test_basic_Services)
+        << call("Proofs", &Fixture::test_basic_Proofs)
+      ;
+    series << move(bas);
+  } {
+    Stream ser{"service"};
+    ser << call("Definition", &Fixture::test_service_Definition)
+      ;
+    series << move(ser);
+  } {
+    Stream pro{"proof"};
+    pro << call("Definition", &Fixture::test_proof_Definition)
+      ;
+    series << move(pro);
+  }
+  return finalize(series);
+}
+#endiv

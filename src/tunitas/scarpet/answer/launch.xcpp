@@ -3,7 +3,7 @@
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <hpp>
 #import tunitas.scarpet.answer.launch.STANZA
-#import tunitas.scarpet.answer.launch.KEY
+#import tunitas.scarpet.answer.launch.PUBLICKEY
 #import tunitas.scarpet.answer.launch.AUTHENTICATION
 #import tunitas.scarpet.answer.launch.SERVICE
 #import tunitas.scarpet.answer.launch.PROOF

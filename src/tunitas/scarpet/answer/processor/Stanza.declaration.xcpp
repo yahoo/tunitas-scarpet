@@ -11,11 +11,12 @@ namespace tunitas::scarpet::answer::processor {
     enum Name {
       ID,
       CONTEXTS, // ............ label 'context' (singular) with zero or more PTR records
-      KEYS, // ................ ibidem.
-      AUTHENTICATIONS, // ..... 
-      SERVICES, // ............ 
+      PUBLICKEYS, // .......... ibidem; label 'publickey' (singular) with zero or more substanzas
+      AUTHENTICATIONS, // ..... ibidem.
+      SERVICES, // ............ ibidem.
       PROOFS, // .............. ibidem.
-      PUBLICKEYS [[deprecated("avoid, instead use KEYS (plural)")]]= KEYS,
+      KEYS     [[deprecated("avoid, instead use PUBLICKEYS (plural)")]]= PUBLICKEYS,
+      KEYCHAIN [[deprecated("avoid, instead use PUBLICKEYS (plural)")]]= PUBLICKEYS,
     };
   }
   //

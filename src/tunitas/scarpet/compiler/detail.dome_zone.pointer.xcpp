@@ -1,0 +1,47 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.dns.Label
+#import tunitas.scarpet.dns.Name
+#forward tunitas.scarpet.did.Document.DOME
+namespace tunitas::scarpet::compiler::detail::dome_zone {
+  //
+  // Create the PTR target for the right-hand side of a container PTR record
+  //
+  // The 'container' option is one of { "context", "publickey", "authentication", "services", "proof" }
+  // all of which are singular as used in the DID Document specification
+  //
+  // Example:
+  //
+  // qualifier ------------------------------------------------------------------------------------------\ (here)
+  // identifier ----------------------------------------------------------------------\                  |
+  // container --------------------------------------------------------\              |                  |
+  // ith ------------------------------------------------------------\ |              |                  |
+  //                                                                 | |              |                  |
+  //                                                                 | |              |                  |
+  //                                                                 v v              v                  v
+  //                     authentication.123456789abcdefghi.marfa PTR 2.authentication.123456789abcdefghi.marfa
+  //                id.1.authentication.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi#keys-2"
+  //              type.1.authentication.123456789abcdefghi.marfa TXT "Ed25519VerificationKey2018"
+  //        controller.1.authentication.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
+  //               key.1.authentication.123456789abcdefghi.marfa TXT "base58.H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV" [[VARIANCE]]
+  //   publicKeyBase58.1.authentication.123456789abcdefghi.marfa TXT "H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
+  //
+  // Usage: see detail.dome_zone.accrete.xcpp
+  //
+  inline auto pointer(unsigned ith, dns::Label const &container, did::Document<did::DOME> const &) -> dns::Name;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.Document.DOME
+#import tunitas.scarpet.compiler.detail.dome_zone.leftside
+namespace tunitas::scarpet::compiler::detail {
+  auto dome_zone::pointer(unsigned ith, dns::Label const &container, did::Document<did::DOME> const &source) -> dns::Name {
+    // the leftside(...) basically does what we want, but it returns a dns::Labels 
+    // [[FIXTHIS]] pesky extra copy here though
+    auto s = to_string(leftside(ith, container, source));
+    return dns::Name{s.data(), s.size()};
+  }
+}
+#endiv

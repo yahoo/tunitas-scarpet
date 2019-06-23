@@ -1,0 +1,32 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import re.string
+#import tunitas.time.Point
+namespace want::nonstd {
+  //
+  // Like strftime(3) but take a tunitas::time::Point
+  // [[FIXTHIS]] belongs either in module-nonstd >= 0.4.0 (forthcoming) or in tunitas-basics >= 1.9.0.
+  //
+  // The format is as per std::put_time(...)
+  // c.f. https://en.cppreference.com/w/cpp/io/manip/put_time
+  //
+  // [[FIXTHIS]] make it accept a std:::chrono::time_point in full generality on DURATION (but of course still require system_clock)
+  //             wherein the DURATION period can be at most seconds (anything larger doesn't allow for strftime type formatting)
+  inline auto strftime(tunitas::time::Point, re::string<c::const_stringz> format) -> std::string;
+}
+#endiv
+#divert <ipp>
+#import std.ostringstream
+#import tunitas.time.put // in lieu of sys::time::put but after module-sys >= 0.25.0 then prefer sys::time::put
+#import c.str
+namespace want {
+  auto nonstd::strftime(tunitas::time::Point point, re::string<c::const_stringz> format) -> std::string {
+    using tunitas::time::put; // ibidem (module-sys >= 0.25.0)
+    std::ostringstream buf;
+    buf << put(point, c::str(format));
+    return buf.str();
+  }
+}
+#endiv

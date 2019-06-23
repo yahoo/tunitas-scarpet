@@ -8,12 +8,20 @@ namespace tunitas::scarpet::did {
   // Each is tuned (optimized) towards some use case and away from some other.
   // Choose wisely; but convert among them as necessary.
   //
-  enum Model {
-    DOME, // a Document Object Model (DOM), Extensible
-    JSON, // just that.
-    ZONE, // simple, just the RR, as tuples; substantially uninterpreted.
-  };
-  template<Model> struct Document;
+  namespace document {
+    enum Model {
+      DOME, // a Document Object Model (DOM), Extensible
+      JSON, // just that.
+      ZONE, // simple, just the RR, as tuples; substantially uninterpreted.
+    };
+  }
+  // On enum document::Model vs enum Model; contra scarpet::Model vs scarpet::model::Model
+  // We don't care about the name of the enum, merely that its declaration can be matched with its one use site (herein).
+  // Thus, it breaks with naming convention a bit.  Is there any better name?  "Kind", "Type", "Data_Structure", any?
+  constexpr auto DOME = document::DOME;
+  constexpr auto JSON = document::JSON;
+  constexpr auto ZONE = document::ZONE;
+  template<document::Model> struct Document;
 }
 #endiv
 #divert <hpp>

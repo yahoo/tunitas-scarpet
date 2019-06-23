@@ -9,19 +9,70 @@ namespace tests::unit::want { class Fixture; }
 #import cppunit.test.Fixture
 class tests::unit::want::Fixture : public cppunit::test::Fixture {
 public:
-  auto test_something() -> void;
+  auto test_to_string_string() -> void;
+  auto test_to_string_others() -> void;
+  auto test_strftime() -> void;
   static auto suite() -> cppunit::Test *;
 };
 #endiv
 #divert <cpp>
-auto tests::unit::want::Fixture::test_something() -> void {
-  CPPUNIT_ASSERT(true);
+#import want.nonstd.to_string
+auto tests::unit::want::Fixture::test_to_string_string() -> void {
+  auto const specimen = "specimen"s;
+  { auto subject = ::want::nonstd::to_string(specimen);
+    CPPUNIT_ASSERT_EQUAL(specimen, std::string{subject}); }
+  { auto subject = ::want::nonstd::to_string(specimen);
+    CPPUNIT_ASSERT_EQUAL(specimen, subject); }
+}
+#import nonstd.span
+#import nonstd.basic_dope
+#import nonstd.const_dope
+#import c.const_stringz
+#import c.const_stringn
+#import c.const_buffer
+auto tests::unit::want::Fixture::test_to_string_others() -> void {
+  //                             01234567
+  auto const specimen_literal = "specimen";
+  auto const specimen_size = 8u;
+  auto const expected = std::string{specimen_literal, specimen_size};
+  { auto specimen = std::string_view{specimen_literal};
+    auto subject = ::want::nonstd::to_string(specimen);
+    CPPUNIT_ASSERT_EQUAL(expected, std::string{subject}); }
+  { auto specimen = ::nonstd::span<char const>{specimen_literal, specimen_size};
+    auto subject = ::want::nonstd::to_string(specimen);
+    CPPUNIT_ASSERT_EQUAL(expected, std::string{subject}); }
+  { auto specimen = ::nonstd::basic_dope<char const>{specimen_literal, specimen_size};
+    auto subject = ::want::nonstd::to_string(specimen);
+    CPPUNIT_ASSERT_EQUAL(expected, std::string{subject}); }
+  { auto specimen = ::c::const_stringz{specimen_literal};
+    auto subject = ::want::nonstd::to_string(specimen);
+    CPPUNIT_ASSERT_EQUAL(expected, std::string{subject}); }
+  { auto specimen = ::c::const_stringn{specimen_literal, specimen_size};
+    auto subject = ::want::nonstd::to_string(specimen);
+    CPPUNIT_ASSERT_EQUAL(expected, std::string{subject}); }
+  { auto specimen = ::c::const_buffer{specimen_size, specimen_literal};
+    auto subject = ::want::nonstd::to_string(specimen);
+    CPPUNIT_ASSERT_EQUAL(expected, std::string{subject}); }
+}
+#import want.nonstd.strftime
+#import std.chrono.system_clock
+auto tests::unit::want::Fixture::test_strftime() -> void {
+  auto now = ::want::nonstd::strftime(std::chrono::system_clock::now(), "%FT%T");
+  std::cerr << "now: " << now << '\n';
+  CPPUNIT_ASSERT(!now.empty());
 }
 #import rigging.suite.io
 auto tests::unit::want::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"want"};
-  series << call("something", &Fixture::test_something)
+  {
+    Stream tos{"to_string"};
+    tos << call("string", &Fixture::test_to_string_string)
+        << call("others", &Fixture::test_to_string_others)
+      ;
+    series << move(tos);
+  }
+  series << call("strftime", &Fixture::test_strftime)
     ;
   return finalize(series);
 }

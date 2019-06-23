@@ -69,8 +69,8 @@ template<> auto tests::unit::drrs::Allocator::test_make_record<tests::unit::drrs
   Subject subject{top};
   auto const w = dns::Weight{1};
   auto const p = dns::Priority{1};
-  auto &s1 = subject.make_record<dns::SRV>(w, p, dns::Name{"www1.example."});
-  auto &s2 = subject.make_record<dns::SRV>(w, p, dns::Name{"www2.example."});
+  auto &s1 = subject.make_record<dns::SRV>(p, w, dns::Name{"www1.example."});
+  auto &s2 = subject.make_record<dns::SRV>(p, w, dns::Name{"www2.example."});
   CPPUNIT_ASSERT(&s1 != &s2);
   CPPUNIT_ASSERT(2 == top.records().size());
 }
@@ -87,8 +87,8 @@ template<> auto tests::unit::drrs::Allocator::test_make_record<tests::unit::drrs
   Subject subject{top};
   auto const w = dns::Weight{1};
   auto const p = dns::Priority{1};
-  auto &u1 = subject.make_record<dns::URI>(w, p, std::string{"https://www1.example."});
-  auto &u2 = subject.make_record<dns::URI>(w, p, std::string{"https://www2.example."});
+  auto &u1 = subject.make_record<dns::URI>(p, w, std::string{"https://www1.example."});
+  auto &u2 = subject.make_record<dns::URI>(p, w, std::string{"https://www2.example."});
   CPPUNIT_ASSERT(&u1 != &u2);
   CPPUNIT_ASSERT(2 == top.records().size());
 }
@@ -122,7 +122,7 @@ auto tests::unit::drrs::Allocator::test_exercise_02() -> void {
   auto &pub = Subject{abc}.make_child("publickey", abc.ref());
   auto &zero = Subject{pub}.make_child("zero", pub.ref());
   auto &id = Subject{zero}.make_child("id", zero.ref());
-  Subject{id}.make_record<dns::URI>(1, 1, "did:example:123456789abcdefghi#keys-1"s);
+  Subject{id}.make_record<dns::URI>(dns::Priority{1}, dns::Weight{1}, "did:example:123456789abcdefghi#keys-1"s);
   //
   auto &created = Subject{id}.make_child("created", id.ref());
   Subject{created}.make_record<dns::TXT>("2019-06-14"s);
@@ -133,7 +133,7 @@ auto tests::unit::drrs::Allocator::test_exercise_02() -> void {
   Subject{type}.make_record<dns::TXT>("RsaVerificationKey2018"s);
   //
   auto &controller = Subject{zero}.make_child("controller", zero.ref());
-  Subject{controller}.make_record<dns::URI>(dns::Weight{1}, dns::Priority{1}, "did:example:123456789abcdefghi"s);
+  Subject{controller}.make_record<dns::URI>(dns::Priority{1}, dns::Weight{1}, "did:example:123456789abcdefghi"s);
   //
   auto &key = Subject{zero}.make_child("key", zero.ref());
   Subject{key}.make_record<dns::TXT>("pem.-----BEGIN PUBLIC KEY...something-something-dark_side...END PUBLIC KEY-----\r\n"s);

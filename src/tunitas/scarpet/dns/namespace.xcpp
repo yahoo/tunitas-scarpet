@@ -4,9 +4,13 @@
 #divert <fpp>
 #import ares.dns
 #import ares.managed
+#import std.is_enum
 namespace tunitas::scarpet::dns {
   using namespace ares::dns; // cascade this namespace, because otherwise it's confusing
   using Weight = ares::managed::Weight;
   using Priority = ares::managed::Priority;
+  // Earlier versions of module-ares circa v0.2.0-0.devel (early) did not have these as enumerations (flavored integers)
+  static_assert(std::is_enum<Weight>::value);
+  static_assert(std::is_enum<Priority>::value);
 }
 #endiv

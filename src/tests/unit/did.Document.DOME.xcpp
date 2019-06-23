@@ -23,17 +23,17 @@ namespace tests::unit::did {
 #endiv
 #divert <cpp>
 namespace tests::unit::did {
-  auto testing::Document<DOME>::test_case_01() -> void {
+  auto rigging::Document<DOME>::test_case_01() -> void {
 #warning WRITETHIS auto Document<DOME>::test_case_01() -> void
     CPPUNIT_ASSERT(true);
   }
-  auto testing::Document<DOME>::test_case_02() -> void {
+  auto rigging::Document<DOME>::test_case_02() -> void {
 #warning WRITETHIS auto Document<DOME>::test_case_02() -> void
     CPPUNIT_ASSERT(true);
   }
 }
 #import rigging.suite.io
-auto tests::unit::did::testing::Document<tests::unit::did::DOME>::suite() -> cppunit::Test * {
+auto tests::unit::did::rigging::Document<tests::unit::did::DOME>::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Document<DOME>"};
   {

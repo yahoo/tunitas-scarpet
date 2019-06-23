@@ -1,0 +1,29 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+lib_libtunitas_scarpet_dns_la = lib/libtunitas-scarpet-dns.la
+lib_libtunitas_scarpet_dns_la_LIBADD = 
+lib_libtunitas_scarpet_dns_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+lib_libtunitas_scarpet_dns_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_dns_la_SOURCES))
+lib_libtunitas_scarpet_dns_la_SOURCES = \
+  obj/src/tunitas/scarpet/dns/namespace.cpp \
+  obj/src/tunitas/scarpet/dns/Label.cpp \
+  obj/src/tunitas/scarpet/dns/label.literals.cpp \
+  obj/src/tunitas/scarpet/dns/Labels.cpp \
+  obj/src/tunitas/scarpet/dns/Name.cpp \
+  obj/src/tunitas/scarpet/dns/Type.cpp \
+  obj/src/tunitas/scarpet/dns/type.constants.cpp \
+  obj/src/tunitas/scarpet/dns/re_string.cpp \
+  obj/src/tunitas/scarpet/dns/unparse.cpp \
+  $(end)
+
+$(scold_cxxdir)/tunitas/scarpet/dns/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_dns_la_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_dns_la_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/tunitas/scarpet/dns/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/tunitas/scarpet/dns/dependencies.mk
+#end

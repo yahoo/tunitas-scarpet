@@ -1,0 +1,40 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::compiler::output::sink {
+  //
+  // The counters of the message types emitted by the compiler
+  //
+  // Usage:
+  //
+  //   left as an exercise for the reader
+  // 
+  class Counters;
+}
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::compiler::output::sink {
+  inline auto ok(Counters const &) -> bool;
+}
+class tunitas::scarpet::compiler::output::sink::Counters {
+public:
+  inline Counters();
+  using Count = unsigned;
+  Count errors, warnings, notices, verbosities, debugs;
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::compiler::output {
+  auto sink::ok(Counters const &counters) -> bool {
+    return 0 == counters.errors;
+  }
+  sink::Counters::Counters()
+    : errors{Count{}}
+    , warnings{Count{}}
+    , notices{Count{}}
+    , verbosities{Count{}}
+    , debugs{Count{}}
+  { }
+}
+#endiv

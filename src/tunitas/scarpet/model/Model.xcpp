@@ -1,0 +1,59 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::model {
+  //
+  // The (Document Object) Model (E-something)
+  //
+  // See https://w3c-ccg.github.io/did-spec
+  //   <quote>
+  //      Although syntactic mappings are provided for JSON and JSON-LD only,
+  //      applications and services can use any other data representation syntax,
+  //      such as
+  //          JXD (JSON XDI Data, a serialization format for the XDI graph model),
+  //          XML,
+  //          YAML,
+  //       or CBOR,
+  //       [or any other format]
+  //     that is capable of expressing the data model.
+  //   </quote>
+  //  
+  // Usage:
+  //
+  //   ...indeed...
+  //
+  //   Model model;
+  //   model.id
+  //   model.contexts
+  //   model.publickeys
+  //   model.authentications
+  //   model.services
+  //   model.proofs
+  //   model.dump(std::cerr);
+  //
+  class Model;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.model.Contexts
+#import tunitas.scarpet.model.Keys
+#import tunitas.scarpet.model.Services
+#import tunitas.scarpet.model.Proofs
+class tunitas::scarpet::model::Model {
+  using Identifier = did::Identifier;
+public:
+  Model() = default;
+  Model(Model const &) = delete;
+  auto operator=(Model const &) -> Model & = delete;
+  Model(Model &&) = default;
+  auto operator=(Model &&) -> Model & = default;
+  Identifier id;
+  Contexts contexts;
+  Keys publickeys;
+  Keys authentications;
+  Services services;
+  Proofs proofs;
+};
+#endiv

@@ -15,6 +15,7 @@ public:
   auto test_Type() -> void;
   auto test_type_constants() -> void;
   auto test_type_DAPTR() -> void;
+  auto test_usage_unparse() -> void;
   static auto suite() -> cppunit::Test *;
 };
 #endiv
@@ -76,6 +77,48 @@ auto tests::unit::dns::Fixture::test_type_DAPTR() -> void {
   auto np = NAPTR;
   CPPUNIT_ASSERT(dp != np);
 }
+#import tunitas.scarpet.dns.unparse
+auto tests::unit::dns::Fixture::test_usage_unparse() -> void {
+  namespace dns = ::tunitas::scarpet::dns;
+  auto l1 = dns::Label{"l1"};
+  auto l2 = dns::Label{"l2"};
+  auto l3 = dns::Label{"l3"};
+  auto ls = dns::Labels{"l6", "l5", "l4"}; // ...... WATCHOUT -- these are big endian
+  auto nn = dns::Name{"tunitas.solutions."}; // .... WATCHOUT -- these are little endian
+  // ADL will find these
+  {
+    unparse(l1);
+    unparse(l1, l2);
+    unparse(l1, l2, l3);
+    unparse(ls);
+    unparse(l1, ls);
+    unparse(l1, l2, ls);
+    unparse(l1, l2, l3, ls);
+    unparse(nn);
+    unparse(l1, nn);
+    unparse(l1, l2, nn);
+    unparse(l1, l2, l3, nn);
+  }
+  auto n1 = unparse(l1);
+  auto n2 = unparse(l1, l2, l3);
+  auto n3 = unparse(l1, l2, l3, ls);
+  auto n4 = unparse(l1, l2, l3, nn);
+  auto zlcopy = unparse(l1);
+  auto zlforw = unparse(dns::Label{l1});
+  auto zncopy = unparse(nn);
+  auto znforw = unparse(dns::Name{nn});
+  // Now use these variables somehow.
+  CPPUNIT_ASSERT(!std::empty(n1));
+  CPPUNIT_ASSERT(!std::empty(n2));
+  CPPUNIT_ASSERT(!std::empty(n3));
+  CPPUNIT_ASSERT(!std::empty(n4));
+  CPPUNIT_ASSERT(!std::empty(zlcopy));
+  CPPUNIT_ASSERT(!std::empty(zlforw));
+  CPPUNIT_ASSERT(!std::empty(zncopy));
+  CPPUNIT_ASSERT(!std::empty(znforw));
+}
+#import tests.unit.dns.unparse.Function
+#import tests.unit.dns.unparse.Template
 #import rigging.suite.io
 auto tests::unit::dns::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
@@ -89,6 +132,19 @@ auto tests::unit::dns::Fixture::suite() -> cppunit::Test * {
          << call("DAPTR", &Fixture::test_type_DAPTR)
       ;
     series << move(type);
+  }
+  {
+    Stream use{"usage"};
+    use << call("unparse", &Fixture::test_usage_unparse)
+      ;
+    series << move(use);
+  }
+  {
+    Stream unp{"unparse"};
+    unp << add<dns::uunpparrsee::Function>()
+        << add<dns::uunpparrsee::Template>()
+      ;
+    series << move(unp);
   }
   return finalize(series);
 }

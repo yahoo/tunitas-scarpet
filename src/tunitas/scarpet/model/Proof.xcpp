@@ -1,0 +1,68 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::model {
+  //
+  // A proof is some sort of tuple <transaction, signature>
+  // ... with metadata describig what was actually shown in the proof.
+  // ... this seems to be an active area of the specification.  It's not clear what it will turn out to be.
+  //
+  // See https://w3c-dvcg.github.io/ld-signatures/
+  //
+  // See the examples in https://w3c-ccg.github.io/did-spec/
+  // which seem to be being modified ...constantly...
+  //
+  // Example:
+  //
+  //             type.0.proof.123456789abcdefghi.marfa TXT "LinkedDataSignature2015"
+  //          created.0.proof.123456789abcdefghi.marfa TXT "2016-02-08T16:02:20Z"
+  //          creator.0.proof.123456789abcdefghi.marfa URI 1 1 "did:example:8uQhQMGzWxR8vw5P3UWH1ja#keys-1"
+  //        signature.0.proof.123456789abcdefghi.marfa TXT "QNB13Y7Q9...1tzjn4w==" [[VARIANCE]]
+  //   signatureValue.0.proof.123456789abcdefghi.marfa TXT "QNB13Y7Q9...1tzjn4w=="
+  //        reference.0.proof.123456789abcdefghi.marfa URI "did:example:a11abf6f-9076-4542-b4fc-014325590357#QED-1"
+  //
+  // Usage: see Proofs (plural), nearby
+  //
+  class Proof;
+}
+#endiv
+#divert <hpp>
+#import std.string
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.model.proof.Transaction
+#import tunitas.scarpet.model.proof.Definition
+#import tunitas.scarpet.model.proof.Material
+#import tunitas.time.Point
+#import std.optional
+class tunitas::scarpet::model::Proof {
+  using Transaction = proof::Transaction;
+  using Identifier = did::Identifier;
+  using Definition = proof::Definition;
+  using Material = proof::Material;
+  using Description = std::string;
+public:
+  inline Proof();
+  Proof(Proof const &) = delete;
+  auto operator=(Proof const &) -> Proof & = delete;
+  Proof(Proof &&) = default;
+  auto operator=(Proof &&) -> Proof & = default;
+  Transaction transaction;
+  Identifier creator;
+  time::Point created;
+  Definition definition; // a.k.a. "type"
+  Material signature;
+  std::optional<Description> description;
+  std::optional<Identifier> reference;
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::model {
+  Proof::Proof()
+    : transaction{Transaction{}}
+    , creator{Identifier{}}
+    , created{time::Point{}}
+    , definition{Definition{}}
+  { }
+}
+#endiv

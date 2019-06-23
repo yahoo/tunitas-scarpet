@@ -114,8 +114,8 @@ namespace tunitas::scarpet::drrs::tree {
   auto Tree::fully_qualified_name() const -> dns::Name {
     std::ostringstream buf;
     buf << view(label);
-    for (auto p=up; nullptr != p; p=p->up) {
-      buf << '.' << view(p->label);
+    for (auto there=up; nullptr != there; there= there->up) {
+      buf << '.' << view(there->label);
     }
     auto formatted = buf.str();
     return dns::Name{formatted.data(), formatted.size()};

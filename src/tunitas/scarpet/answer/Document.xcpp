@@ -19,8 +19,8 @@ namespace tunitas::scarpet::answer {
 class tunitas::scarpet::answer::Document {
   using Stanzas = Fields<fields::STANZA>; // yep, a singular-to-plural -mismatch
   // These are the indivisual substanzas.
-  using Key = Fields<fields::KEY>;
-  using Keys = std::deque<Key>;
+  using PublicKey = Fields<fields::PUBLICKEY>;
+  using PublicKeys = std::deque<PublicKey>;
   using Authentication = Fields<fields::AUTHENTICATION>;
   using Authentications = std::deque<Authentication>;
   using Service = Fields<fields::SERVICE>;
@@ -29,7 +29,7 @@ class tunitas::scarpet::answer::Document {
   using Proofs = std::deque<Proof>;
 public:
   Stanzas stanzas;
-  Keys keys;
+  PublicKeys publickeys;
   Authentications authentications;
   Services services;
   Proofs proofs;

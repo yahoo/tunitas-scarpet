@@ -1,0 +1,45 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.char_traits
+#import std.basic_string
+namespace tunitas::scarpet::model {
+  //
+  // An "endpoint" is a "network endpoint"
+  // But what they really mean is an a semantic endpoint up at layer 7 or 8.
+  // So it's really an URL, being a "locator"
+  // ... encapsulating the connection scheme (e.g. https)
+  // ... and any exotic addenda, e.g. port, username, password, etc.
+  // ... and some path-type information within that "page"
+  // ... and a query onto the page "the question-mark stuff"
+  // ... and a position on the page "the pound-hash-mark stuff"
+  //
+  // Usage:
+  //
+  //    oh come on, it's a string.
+  //
+  namespace endpoint {
+    class Traits : public std::char_traits<char> { };
+  }
+  using Endpoint = std::basic_string<char, endpoint::Traits>;
+}
+#endiv
+#divert <hpp>
+#import std.string_view
+#import std.string
+namespace tunitas::scarpet::model::endpoint {
+  inline auto view(Endpoint const &) -> std::string_view;
+  inline auto to_string(Endpoint const &) -> std::string;
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::model {
+  auto endpoint::view(Endpoint const &old) -> std::string_view {
+    return std::string_view{old.data(), old.size()};
+  }
+  auto endpoint::to_string(Endpoint const &old) -> std::string {
+    return std::string{old.data(), old.size()};
+  }
+}
+#endiv

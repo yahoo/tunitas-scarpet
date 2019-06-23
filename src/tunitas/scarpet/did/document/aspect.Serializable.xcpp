@@ -1,0 +1,45 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did::document::aspect {
+  //
+  // The aspect of serializability for a DID Document representation.
+  // Descendants only, of course.
+  //
+  // Not all DID Document representations are serializable.
+  // In particular Document<MODEL> is not serializable.
+  //
+  // Usage:
+  //
+  //    descendants in Document<JSON>, Document<ZONE>.
+  //
+  template<typename SERIALIZEE, Mutability> class Serializable;
+  template<typename SERIALIZEE> class Serializable<SERIALIZEE, CONSTIE>;
+  template<typename SERIALIZEE> class Serializable<SERIALIZEE, MUTABLE>;
+}
+#endiv
+#divert <hpp>
+#forward tunitas.scarpet.did.document.Serializer
+namespace tunitas::scarpet::did::document::aspect {
+  template<typename SERIALIZEE> class Serializable<SERIALIZEE, CONSTIE> {
+  protected:
+    virtual ~Serializable() = default;
+    Serializable() = default;
+  public:
+    using Serializer = document::Serializer<SERIALIZEE, CONSTIE>;
+    virtual auto serialize(Serializer &) const -> void = 0;
+  };
+  template<typename SERIALIZEE> class Serializable<SERIALIZEE, MUTABLE> {
+  protected:
+    virtual ~Serializable() = default;
+    Serializable() = default;
+  public:
+    using Serializer = document::Serializer<SERIALIZEE, MUTABLE>;
+    virtual auto serialize(Serializer &) -> void = 0;
+  };
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.document.Serializer
+#endiv

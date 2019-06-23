@@ -4,15 +4,15 @@
 #divert <fpp>
 #import tunitas.scarpet.answer.Query.ID
 #import tunitas.scarpet.answer.Query.CONTEXTS
-#import tunitas.scarpet.answer.Query.KEYS
+#import tunitas.scarpet.answer.Query.PUBLICKEYS
 #import tunitas.scarpet.answer.Query.AUTHENTICATIONS
 #import tunitas.scarpet.answer.Query.SERVICES
 #import tunitas.scarpet.answer.Query.PROOFS
 
-#import tunitas.scarpet.answer.Query.KEYS.ID
-#import tunitas.scarpet.answer.Query.KEYS.TYPE
-#import tunitas.scarpet.answer.Query.KEYS.CONTROLLER
-#import tunitas.scarpet.answer.Query.KEYS.KEY
+#import tunitas.scarpet.answer.Query.PUBLICKEYS.ID
+#import tunitas.scarpet.answer.Query.PUBLICKEYS.TYPE
+#import tunitas.scarpet.answer.Query.PUBLICKEYS.CONTROLLER
+#import tunitas.scarpet.answer.Query.PUBLICKEYS.KEY
 
 #import tunitas.scarpet.answer.Query.AUTHENTICATIONS.ID
 #import tunitas.scarpet.answer.Query.AUTHENTICATIONS.TYPE

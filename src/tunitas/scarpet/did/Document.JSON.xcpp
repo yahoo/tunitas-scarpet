@@ -5,23 +5,41 @@
 #import tunitas.scarpet.did.Document.declaration
 namespace tunitas::scarpet::did {
   //
-  // The DID document is a JSON Object.
+  // The DID Document is represented as a JSON Object.
   //
   // Usage:
   //
-  //   auto jdoc = Document<JSON>{};
-  //   ... operate on it like you would a json::Value of type OBJECT.
+  //   see tunitas.scarpet.compile.DOME.JSON
   //
   template<> class Document<JSON>;
 }
 #endiv
 #divert <hpp>
 #import json.Value
+#import std.ostream
+#import tunitas.scarpet.did.document.aspect.Visitable
 namespace tunitas::scarpet::did {
-  template<> class Document<JSON> : public document::Prototype {
-    using ancestor = document::Prototype;
+  template<> class Document<JSON> : public document::Prototype, public document::aspect::Visitable<json::Value, document::CONSTIE> {
+    struct ancestors {
+      using Prototype = document::Prototype;
+      using Visitable = document::aspect::Visitable<json::Value, document::CONSTIE>;
+    };
   public:
     Document() = default;
+    json::Value object;
+    inline auto dump(std::ostream &) const -> void final;
+    inline auto visit(Visitor &) const -> void override;
   };
 }
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.document.json.Pretty
+namespace tunitas::scarpet::did {
+  auto Document<JSON>::visit(Visitor &acceptor) const -> void { acceptor.accept(this->object); }
+  auto Document<JSON>::dump(std::ostream &outbound) const -> void {
+    auto state = document::json::Pretty{outbound};
+    this->visit(state);
+  }
+}
+
 #endiv

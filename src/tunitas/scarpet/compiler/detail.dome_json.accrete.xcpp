@@ -1,0 +1,86 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.compiler.detail.dome_json.Accreter
+#import tunitas.scarpet.did.Document.DOME
+#import tunitas.scarpet.dns.Label
+#import tunitas.scarpet.model.Contexts
+#import tunitas.scarpet.model.Proofs
+#import tunitas.scarpet.model.Keys
+#import tunitas.scarpet.model.Services
+namespace tunitas::scarpet::compiler::detail::dome_json {
+  //
+  // These are implementation details of the compiler DOME -> JSON
+  // Usage: see tunitas.scarpet.compiler.DOME.JSON
+  //
+  inline auto accrete(Accreter &, dns::Label const &, model::Contexts const &) -> void;
+  inline auto accrete(Accreter &, dns::Label const &, model::Keys const &) -> void;
+  inline auto accrete(Accreter &, dns::Label const &, model::Services const &) -> void;
+  inline auto accrete(Accreter &, dns::Label const &, model::Proofs const &) -> void;
+}
+#endiv
+#divert <ipp>
+#import json.Value
+#import json.value.constants
+#import std.move
+namespace tunitas::scarpet::compiler::detail {
+  auto dome_json::accrete(Accreter &accreter, dns::Label const &label, model::Contexts const &records) -> void {
+    auto &context = accreter.top[/*FIXTHIS gratuitous copy*/to_string(label)] = json::Value{json::value::ARRAY};
+    for (auto const &record : records) {
+      context.append(json::Value{to_string(record)});
+    }
+  }
+  auto dome_json::accrete(Accreter &accreter, dns::Label const &label, model::Keys const &records) -> void {
+    auto &keys = accreter.top[/*FIXTHIS gratuitous copy*/ to_string(label)] = json::Value{json::value::ARRAY};
+    for (auto const &record : records) {
+      auto item = json::Value{json::value::OBJECT};
+      item["id"] = json::Value{to_string(record.id)};
+      item["type"] = json::Value{to_string(record.algorithm)};
+      item["controller"] = json::Value{to_string(record.controller)};
+      // [[VARIANCE]]
+      auto material = to_string(record.material, tunitas::scarpet::pki::Encoding::PASSTHRU); // [[VARIANCE]] [[FIXTHIS]] take into account the actual record.encoding
+      item["key"] = json::Value{to_lowercase(record.encoding) + ':' + material};
+      // [[FIXTHIS]] they seem to favor the styling as publicKey{Pem,Base8,Base10,Base16,Base32,Base58,Base64,Base85}
+      // https://w3c-ccg.github.io/did-spec/#public-keys
+      // c.f. publicKeyPem, publicKeyJwk, publicKeyHex, publicKeyBase64, publicKeyBase58, publicKeyMultibase, ethereumAddress. 
+      item[to_communityCamelCase(record.encoding, to_string(label))] = json::Value{material};
+      keys.append(std::move(item));
+    }
+  }
+  auto dome_json::accrete(Accreter &accreter, dns::Label const &label, model::Services const &records) -> void {
+    auto &services = accreter.top[/*FIXTHIS gratuitous copy*/ to_string(label)] = json::Value{json::value::ARRAY};
+    for (auto const &record : records) {
+      auto item = json::Value{json::value::OBJECT};
+      item["id"] = json::Value{to_string(record.id)};
+      item["type"] = json::Value{to_string(record.definition)};
+      item["endpoint"] = json::Value{to_string(record.endpoint)};
+      if (record.description) {
+        item["description"] = json::Value{*record.description};
+      }
+      services.append(std::move(item));
+    }
+  }
+}
+#import want.nonstd.strftime
+namespace tunitas::scarpet::compiler::detail {
+  auto dome_json::accrete(Accreter &accreter, dns::Label const &label, model::Proofs const &records) -> void {
+    auto &proofs = accreter.top[/*FIXTHIS gratuitous copy*/ to_string(label)] = json::Value{json::value::ARRAY};
+    for (auto const &record : records) {
+      auto item = json::Value{json::value::OBJECT};
+      item["transaction"] = json::Value{to_string(record.transaction)};
+      item["created"] = json::Value{want::nonstd::strftime(record.created, "%FT%T")};
+      item["creator"] = json::Value{to_string(record.creator)};
+      // [[VARIANCE]] the standard is vague and fluid across 2019-Q3 https://w3c-ccg.github.io/did-spec/#proof-optional
+      item["signature"] = json::Value{to_string(record.signature, tunitas::scarpet::pki::Encoding::PASSTHRU)}; // [[FIXTHIS]] to use the record.encoding which is nearby
+      if (record.description) {
+        item["description"] = json::Value{*record.description};
+      }
+      if (record.reference) {
+        item["reference"] = json::Value{to_string(*record.reference)};
+      }
+      proofs.append(std::move(item));
+    }
+  }
+}
+#endiv

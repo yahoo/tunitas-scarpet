@@ -3,18 +3,18 @@
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
 #import tunitas.scarpet.answer.Query.declaration
-#import tunitas.scarpet.answer.processor.Stanza.KEYS
-#import tunitas.scarpet.answer.processor.PublicKey.CONTROLLER
+#import tunitas.scarpet.answer.processor.Stanza.PUBLICKEYS
+#import tunitas.scarpet.answer.processor.PublicKey.ID
 namespace tunitas::scarpet::answer::packaging {
-  template<> struct Query<processor::Stanza<stanza::KEYS>, processor::PublicKey<publickey::CONTROLLER>>;
+  template<> struct Query<processor::Stanza<stanza::PUBLICKEYS>, processor::PublicKey<publickey::ID>>;
 }
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.answer.query.Prototype
 #import tunitas.scarpet.drrs.Record.URI
 namespace tunitas::scarpet::answer::packaging {
-  template<> struct Query<processor::Stanza<stanza::KEYS>, processor::PublicKey<publickey::CONTROLLER>> : public query::Prototype<dns::URI, processor::PublicKey<publickey::CONTROLLER>, drrs::Record<dns::URI>> {
-    inline auto name() const -> dns::Label { return "controller"; }
+  template<> struct Query<processor::Stanza<stanza::PUBLICKEYS>, processor::PublicKey<publickey::ID>> : public query::Prototype<dns::URI, processor::PublicKey<publickey::ID>, drrs::Record<dns::URI>> {
+    inline auto name() const -> dns::Label { return "id"; }
   };
 }
 #endiv

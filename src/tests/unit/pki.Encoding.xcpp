@@ -1,0 +1,107 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::pki { class Encoding; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tunitas.scarpet.pki.Encoding
+class tests::unit::pki::Encoding : public cppunit::test::Fixture {
+public:
+  using Subject = ::tunitas::scarpet::pki::Encoding;
+  auto test_usage() -> void;
+  auto test_to_string() -> void;
+  auto test_to_lowercase() -> void;
+  auto test_to_UPPERCASE() -> void;
+  auto test_to_string_simple() -> void;
+  auto test_to_string_unprefixed() -> void;
+  auto test_to_string_prefixed() -> void;
+  auto test_to_communityCamelCase_unprefixed() -> void;
+  auto test_to_communityCamelCase_prefixed() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+auto tests::unit::pki::Encoding::test_usage() -> void {
+  auto subject = Subject{};
+  CPPUNIT_ASSERT(Subject::NONE == subject);
+}
+auto tests::unit::pki::Encoding::test_to_string() -> void {
+  for (auto i{-100}, e{100} ; e != i; ++i) {
+    auto subject = Subject(i);
+    auto sss = to_string(subject);
+    CPPUNIT_ASSERT(!sss.empty());
+  }
+}
+auto tests::unit::pki::Encoding::test_to_lowercase() -> void {
+  for (auto i{-100}, e{100} ; e != i; ++i) {
+    auto subject = Subject(i);
+    auto sss = to_lowercase(subject);
+    CPPUNIT_ASSERT(!sss.empty());
+  }
+}
+auto tests::unit::pki::Encoding::test_to_UPPERCASE() -> void {
+  for (auto i{-100}, e{100} ; e != i; ++i) {
+    auto subject = Subject(i);
+    auto sss = to_UPPERCASE(subject);
+    CPPUNIT_ASSERT(!sss.empty());
+  }
+}
+auto tests::unit::pki::Encoding::test_to_string_simple() -> void {
+  // anything else we should be testing here?
+  test_to_string();
+}
+auto tests::unit::pki::Encoding::test_to_string_unprefixed() -> void {
+  for (auto i{-100}, e{100} ; e != i; ++i) {
+    auto subject = Subject(i);
+    auto sss = to_string(subject, "");
+    CPPUNIT_ASSERT(!sss.empty());
+  }
+}
+auto tests::unit::pki::Encoding::test_to_string_prefixed() -> void {
+  for (auto i{-100}, e{100} ; e != i; ++i) {
+    auto subject = Subject(i);
+    auto sss = to_string(subject, "publicKey");
+    CPPUNIT_ASSERT(!sss.empty());
+  }
+}
+auto tests::unit::pki::Encoding::test_to_communityCamelCase_unprefixed() -> void {
+  for (auto i{-100}, e{100} ; e != i; ++i) {
+    auto subject = Subject(i);
+    auto sss = to_communityCamelCase(subject, "");
+    CPPUNIT_ASSERT(!sss.empty());
+  }
+}
+auto tests::unit::pki::Encoding::test_to_communityCamelCase_prefixed() -> void {
+  for (auto i{-100}, e{100} ; e != i; ++i) {
+    auto subject = Subject(i);
+    auto sss = to_communityCamelCase(subject, "publicKey");
+    CPPUNIT_ASSERT(!sss.empty());
+  }
+}
+#import rigging.suite.io
+auto tests::unit::pki::Encoding::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"Encoding"};
+  series << call("usage", &Encoding::test_usage)
+         << call("to_string", &Encoding::test_to_string)
+         << call("to_lowercase", &Encoding::test_to_lowercase)
+         << call("to_UPPERCASE", &Encoding::test_to_UPPERCASE)
+    ;
+  {
+    Stream tos{"to_string"};
+    tos << call("simple", &Encoding::test_to_string_simple)
+        << call("unprefixed", &Encoding::test_to_string_unprefixed)
+        << call("prefixed", &Encoding::test_to_string_prefixed)
+      ;
+  } {
+    Stream tos{"to_communityCamelCase"};
+    tos << call("unprefixed", &Encoding::test_to_communityCamelCase_unprefixed)
+        << call("prefixed", &Encoding::test_to_communityCamelCase_prefixed)
+      ;
+  }
+  return finalize(series);
+}
+#endiv

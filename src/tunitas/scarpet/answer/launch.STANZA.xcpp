@@ -61,7 +61,7 @@ namespace tunitas::scarpet::answer::packaging::launching_STANZA {
                   };
     invoke(record.id);
     invoke(record.contexts);
-    invoke(record.keys);
+    invoke(record.publickeys);
     invoke(record.authentications);
     invoke(record.services);
     invoke(record.proofs);

@@ -1,0 +1,62 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.dns.Label
+#import tunitas.scarpet.dns.Labels
+#forward tunitas.scarpet.did.Document.DOME
+namespace tunitas::scarpet::compiler::detail::dome_zone {
+  //
+  // Create the label series for the left-side of a row
+  //
+  // The 'container' option is one of { "context", "publickey", "authentication", "services", "proof" }
+  // all of which are singular as used in the DID Document specification
+  //
+  // Example:
+  //
+  // qualifier --------------------------------------------\ (here)
+  // identifier ------------------------\                  |
+  // container ----------\              |                  |
+  // ith --------------\ |              |                  |
+  // noob ----------\  | |              |                  |
+  //                |  | |              |                  |
+  //                |  | v              v                  v
+  //                v  v authentication.123456789abcdefghi.marfa PTR 2.authentication.123456789abcdefghi.marfa
+  //                id.1.authentication.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi#keys-2"
+  //              type.1.authentication.123456789abcdefghi.marfa TXT "Ed25519VerificationKey2018"
+  //        controller.1.authentication.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
+  //               key.1.authentication.123456789abcdefghi.marfa TXT "base58.H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV" [[VARIANCE]]
+  //   publicKeyBase58.1.authentication.123456789abcdefghi.marfa TXT "H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
+  //
+  // Usage: see detail.dome_zone.accrete.xcpp
+  //
+  inline auto leftside(dns::Label const &container, did::Document<did::DOME> const &) -> dns::Labels;
+  inline auto leftside(unsigned ith, dns::Label const &container, did::Document<did::DOME> const &) -> dns::Labels;
+  inline auto leftside(dns::Label const &noob, unsigned ith, dns::Label const &container, did::Document<did::DOME> const &) -> dns::Labels;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.Document.DOME
+#import std.to_string
+namespace tunitas::scarpet::compiler::detail {
+  auto dome_zone::leftside(dns::Label const &container, did::Document<did::DOME> const &source) -> dns::Labels {
+    auto identifier = dns::Label{source.identifier.data(), source.identifier.size()};
+    return dns::Labels{identifier, container};
+  }
+  namespace {
+    inline auto to_label(unsigned ith) -> dns::Label {
+      auto s = std::to_string(ith); // [[FIXTHIS]] pesky extra copy
+      return dns::Label{s.data(), s.size()};
+    }
+    inline auto to_label(did::Identifier const &i) -> dns::Label {
+      return dns::Label{i.data(), i.size()};
+    }
+  }
+  auto dome_zone::leftside(unsigned ith, dns::Label const &container, did::Document<did::DOME> const &source) -> dns::Labels {
+    return dns::Labels{to_label(source.identifier), container, to_label(ith)};
+  }
+  auto dome_zone::leftside(dns::Label const &noob, unsigned ith, dns::Label const &container, did::Document<did::DOME> const &source) -> dns::Labels {
+    return dns::Labels{to_label(source.identifier), container, to_label(ith), noob};
+  }
+}
+#endiv

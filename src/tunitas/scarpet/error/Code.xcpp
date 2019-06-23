@@ -15,8 +15,10 @@ namespace tunitas::scarpet::error {
   enum class Code {
     SUCCESS = (int) Condition::SUCCESS,
     FAILURE = (int) Condition::FAILURE,
-    OPTIONS, // ........................... there was a problem with the (command-line) options (parser)
-    ROUTER, // ............................ there was a problem with the (url) path router (e.g. bad path)
+    // ........................... there was a problem with ...
+    OPTIONS, // ........................... the (command-line) options (parser)
+    ROUTER, // ............................ the (url) path router (e.g. bad path)
+    COMPILER, // .......................... the (did document) compiler, and the compiler output sink explains why
     NOT_IMPLEMENTED, // ................... as such.
     INVALID_URN, // ....................... invalid URN shape at all; not even close to did:<method>:<identifier>
     INVALID_METHOD, // .................... invalid method within a valid syntax of did:<method>:<identifier>

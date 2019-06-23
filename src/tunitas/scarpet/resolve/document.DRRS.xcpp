@@ -40,13 +40,21 @@ namespace tunitas::scarpet::resolve {
   //
   template<> auto document<DRRS>(Service &, Method const &unused, Identifier const &, dns::Name const &) -> Outcome<did::Document<did::DOME>>;
 }
+#import tunitas.scarpet.answer.Document
+namespace tunitas::scarpet::resolve::document_DRRS::dump {
+  auto stanza_spine(answer::Document const &, Identifier const &, dns::Name const &) -> void;
+  auto field_bodies(answer::Document const &, Identifier const &, dns::Name const &) -> void;
+}
 #endiv
 #divert <cpp>
 #import ares.dns.class.constants
 #import ares.run
 #import nonstd.exception.Unimplemented
+#import tunitas.scarpet.tracing
 #import tunitas.scarpet.answer.Document
 #import tunitas.scarpet.answer.launch
+#import tunitas.scarpet.compile
+#import tunitas.scarpet.compiler.output.Null
 #import tunitas.scarpet.did.isa
 #import tunitas.scarpet.exception.Configuration
 #import tunitas.scarpet.exception.System
@@ -56,7 +64,6 @@ namespace tunitas::scarpet::resolve {
 #import std.string
 #import std.system_error
 #import sys.error.E
-#import std.cerr
 namespace tunitas::scarpet::resolve {
   template<> auto document<DRRS>(Service &service, Method const &unused_method, Identifier const &identifier, dns::Name const &ddss) -> Outcome<did::Document<did::DOME>> try {
     using Result = Outcome<did::Document<did::DOME>>;
@@ -74,26 +81,12 @@ namespace tunitas::scarpet::resolve {
     answer::Document document;
     launch(service, document.stanzas, identifier, ddss);
     run(*service.channel, 5_count, 300ms);
-    constexpr auto DEVELOPMENTAL_DEBUGGING_MODE = true;
-    if constexpr (DEVELOPMENTAL_DEBUGGING_MODE) {
-      std::cerr << "DEBUG response ID ok " << ok(document.stanzas.id.response) << '\n';
-      std::cerr << "DEBUG response ID value " << value(document.stanzas.id.response).endpoint << '\n';
-      std::cerr << "DEBUG response CONTEXTS ok " << ok(document.stanzas.contexts.response) << '\n';
-      std::cerr << "DEBUG response CONTEXTS value size " << size(value(document.stanzas.contexts.response)) << '\n';
-      std::cerr << "DEBUG response KEYS ok " << ok(document.stanzas.keys.response) << '\n';
-      std::cerr << "DEBUG response KEYS value size " << size(value(document.stanzas.keys.response)) << '\n';
-      std::cerr << "DEBUG response AUTHENTICATIONS ok " << ok(document.stanzas.authentications.response) << '\n';
-      std::cerr << "DEBUG response AUTHENTICATIONS value size " << size(value(document.stanzas.authentications.response)) << '\n';
-      std::cerr << "DEBUG response SERVICES ok " << ok(document.stanzas.services.response) << '\n';
-      std::cerr << "DEBUG response SERVICES value size " << size(value(document.stanzas.services.response)) << '\n';
-      std::cerr << "DEBUG response PROOFS ok " << ok(document.stanzas.proofs.response) << '\n';
-      std::cerr << "DEBUG response PROOFS value size " << size(value(document.stanzas.proofs.response)) << '\n';
-    }
+    document_DRRS::dump::stanza_spine(document, identifier, ddss);
     auto estimated_count_of_records_inbound_back_to_us = 0;
-    if (ok(document.stanzas.keys.response)) {
-      for (auto const &ptr : value(document.stanzas.keys.response)) {
-        document.keys.emplace_back();
-        launch(service, document.keys.back(), ptr.target);
+    if (ok(document.stanzas.publickeys.response)) {
+      for (auto const &ptr : value(document.stanzas.publickeys.response)) {
+        document.publickeys.emplace_back();
+        launch(service, document.publickeys.back(), ptr.target);
         ++estimated_count_of_records_inbound_back_to_us;
       }
     }
@@ -121,57 +114,159 @@ namespace tunitas::scarpet::resolve {
     // At least one count [[FIXTHIS]] ares should support scalar multiplication of ares::Count
     auto const iteration_count = ares::Count{ares::count::Underlying(5_count) * ++estimated_count_of_records_inbound_back_to_us};
     run(*service.channel, iteration_count, 300ms);
-    if constexpr (DEVELOPMENTAL_DEBUGGING_MODE) {
-        std::ostream &outbound{std::cerr};
-        {
-          auto ith = 0u;
-          for (auto const &record : document.keys) {
-            outbound << "DEBUG key " << ith << " ID ";
-            if (ok(record.id.response)) {
-              outbound << " found " << value(record.id.response).endpoint << '\n';
-            } else { outbound << " FAIL " << error_code(record.id.response).message() << '\n'; }
-            outbound << "DEBUG key " << ith << " TYPE ";
-            if (ok(record.type.response)) {
-              outbound << " found " << value(record.type.response).text << '\n';
-            } else { outbound << " FAIL " << error_code(record.type.response).message() << '\n'; }
-            outbound << "DEBUG key " << ith << " CONTROLLER ";
-            if (ok(record.controller.response)) {
-              outbound << " found " << value(record.controller.response).endpoint << '\n';
-            } else { outbound << " FAIL " << error_code(record.controller.response).message() << '\n'; }
-            outbound << "DEBUG key " << ith << " KEY ";
-            if (ok(record.key.response)) {
-              outbound << " found " << value(record.key.response).text << '\n';
-            } else { outbound << " FAIL " << error_code(record.key.response).message() << '\n'; }
-            ++ith;
-          }
-        } {
-          auto ith = 0u;
-          for (auto const &record : document.authentications) {
-            outbound << "DEBUG authentication " << ith << " ID ";
-            if (ok(record.id.response)) {
-              outbound << " found " << value(record.id.response).endpoint << '\n';
-            } else { outbound << " FAIL " << error_code(record.id.response).message() << '\n'; }
-            outbound << "DEBUG authentication " << ith << " TYPE ";
-            if (ok(record.type.response)) {
-              outbound << " found " << value(record.type.response).text << '\n';
-            } else { outbound << " FAIL " << error_code(record.type.response).message() << '\n'; }
-            outbound << "DEBUG authentication " << ith << " CONTROLLER ";
-            if (ok(record.controller.response)) {
-              outbound << " found " << value(record.controller.response).endpoint << '\n';
-            } else { outbound << " FAIL " << error_code(record.controller.response).message() << '\n'; }
-            outbound << "DEBUG authentication " << ith << " KEY ";
-            if (ok(record.key.response)) {
-              outbound << " found " << value(record.key.response).text << '\n';
-            } else { outbound << " FAIL " << error_code(record.key.response).message() << '\n'; }
-            ++ith;
-          }
-        }
-      }
+    document_DRRS::dump::field_bodies(document, identifier, ddss);
+    auto sink = compiler::output::Null{}; // [[FIXTHIS]] maybe there were some nice error messages here that we wanted to see?  What about a debug mode that could see them?
     auto dome = did::Document<did::DOME>{};
-    return Result{std::move(dome)};
+    if (compile(document, dome, sink)) {
+      return Result{std::move(dome)};
+    } else {
+      // Here we're not going to explain why.  We're throwing away the sink that contained the explanation of the failure.
+      // [[FIXTHIS]] is there a better way?  Probably not in a function call-and-outcome interface.
+      return Result{std::error_code{error::Code::COMPILER}};
+    }
   } catch (std::system_error const &e) {
     // This is a surprise and not a normal event.  This is exceptional.
     throw exception::System{e.code(), "document"};
+  }
+}
+#import std.cerr
+#import nonstd.Visitor
+#import tunitas.scarpet.exception.Logic
+namespace tunitas::scarpet::resolve::document_DRRS {
+  auto dump::stanza_spine(answer::Document const &document, Identifier const &identifier, dns::Name const &ddss) -> void {
+    if constexpr (tracing::DEVELOPMENTAL_DEBUGGING_MODE) {
+      auto &outbound{std::cerr};
+      outbound << "DEBUG " << view(identifier) << '.' << view(ddss);
+      auto tag = "\nDEBUG response ";
+      auto format = [&outbound, tag](char const *field_name, auto const &response) {
+                      auto const doky = ok(response);
+                      outbound << tag << field_name << " ok " << doky << '\n';
+                      if (doky) {
+                        outbound << tag << field_name << " value size " << size(value(response)) << '\n';
+                      }
+                    };
+      {
+        auto const doky = ok(document.stanzas.id.response);
+        outbound << tag << "ID ok " << doky << '\n';
+        if (doky) {
+          outbound << tag << "ID value " << value(document.stanzas.id.response).endpoint << '\n'; // .................. show the singleton endpoint
+        }
+      }
+      format("CONTEXTS", document.stanzas.contexts.response);
+      format("KEYS", document.stanzas.publickeys.response);
+      format("AUTHENTICATIONS", document.stanzas.authentications.response);
+      format("SERVICES", document.stanzas.services.response);
+      format("PROOFS", document.stanzas.proofs.response);
+      outbound << '\n';
+#if 0
+               << tag << "CONTEXTS ok " << ok(document.stanzas.contexts.response) << '\n'
+               << tag << "CONTEXTS value size " << size(value(document.stanzas.contexts.response)) << '\n'
+               << tag << "KEYS ok " << ok(document.stanzas.keys.response) << '\n'
+               << tag << "KEYS value size " << size(value(document.stanzas.keys.response)) << '\n'
+               << tag << "AUTHENTICATIONS ok " << ok(document.stanzas.authentications.response) << '\n'
+               << tag << "AUTHENTICATIONS value size " << size(value(document.stanzas.authentications.response)) << '\n'
+               << tag << "SERVICES ok " << ok(document.stanzas.services.response) << '\n'
+               << tag << "SERVICES value size " << size(value(document.stanzas.services.response)) << '\n'
+               << tag << "PROOFS ok " << ok(document.stanzas.proofs.response) << '\n'
+               << tag << "PROOFS value size " << size(value(document.stanzas.proofs.response)) << '\n'
+        ;
+#endif
+    }
+  }
+  auto dump::field_bodies(answer::Document const &document, Identifier const &identifier, dns::Name const &ddss) -> void {
+    if constexpr (tracing::DEVELOPMENTAL_DEBUGGING_MODE) {
+      auto &outbound{std::cerr};
+      outbound << "DEBUG " << view(identifier) << '.' << view(ddss) << '\n';
+      auto format = [&outbound](char const *stanza, unsigned ith, char const *field_name, auto const &response) {
+                      auto field = nonstd::Visitor{[](drrs::Record<dns::TXT> const &record) -> std::string const & { return record.text; },
+                                                   [](drrs::Record<dns::URI> const &record) -> std::string const & { return record.endpoint; },
+                                                   [](drrs::Record<dns::PTR> const &record) -> std::string_view { return view(record.target); },
+                                                   // SRV records are not used ... the Logic exception really is the programmer's error (yours).
+                                                   [](auto const &) { throw exception::Logic{"missing eventuality"}; }};
+                      outbound << "DEBUG " << stanza << ' ' << ith << ' ' << field_name;
+                      if (ok(response)) {
+                        outbound << " found " << field(value(response)) << '\n';
+                      } else {
+                        outbound << " FAIL " << error_code(response).message() << '\n';
+                      }
+                    };
+      {
+        auto ith = 0u;
+        for (auto const &record : document.publickeys) {
+          format("key", ith, "ID", record.id.response);
+          format("key", ith, "TYPE", record.type.response);
+          format("key", ith, "CONTROLLER", record.controller.response);
+          format("key", ith, "KEY", record.key.response);
+#if 0
+          outbound << "DEBUG publickey " << ith << " ID ";
+          if (ok(record.id.response)) {
+            outbound << " found " << value(record.id.response).endpoint << '\n';
+          } else { outbound << " FAIL " << error_code(record.id.response).message() << '\n'; }
+          outbound << "DEBUG publickey " << ith << " TYPE ";
+          if (ok(record.type.response)) {
+            outbound << " found " << value(record.type.response).text << '\n';
+          } else { outbound << " FAIL " << error_code(record.type.response).message() << '\n'; }
+          outbound << "DEBUG publickey " << ith << " CONTROLLER ";
+          if (ok(record.controller.response)) {
+            outbound << " found " << value(record.controller.response).endpoint << '\n';
+          } else { outbound << " FAIL " << error_code(record.controller.response).message() << '\n'; }
+          outbound << "DEBUG publickey " << ith << " KEY ";
+          if (ok(record.key.response)) {
+            outbound << " found " << value(record.key.response).text << '\n';
+          } else { outbound << " FAIL " << error_code(record.key.response).message() << '\n'; }
+#endif
+          ++ith;
+        }
+      } {
+        auto ith = 0u;
+        for (auto const &record : document.authentications) {
+          // recall: the authentication stanza has the same shape as the publickey stanza (but it has a different semantic)
+          format("authentication", ith, "ID", record.id.response);
+          format("authentication", ith, "TYPE", record.type.response);
+          format("authentication", ith, "CONTROLLER", record.controller.response);
+          format("authentication", ith, "KEY", record.key.response);
+#if 0
+          outbound << "DEBUG authentication " << ith << " ID ";
+          if (ok(record.id.response)) {
+            outbound << " found " << value(record.id.response).endpoint << '\n';
+          } else { outbound << " FAIL " << error_code(record.id.response).message() << '\n'; }
+          outbound << "DEBUG authentication " << ith << " TYPE ";
+          if (ok(record.type.response)) {
+            outbound << " found " << value(record.type.response).text << '\n';
+          } else { outbound << " FAIL " << error_code(record.type.response).message() << '\n'; }
+          outbound << "DEBUG authentication " << ith << " CONTROLLER ";
+          if (ok(record.controller.response)) {
+            outbound << " found " << value(record.controller.response).endpoint << '\n';
+          } else { outbound << " FAIL " << error_code(record.controller.response).message() << '\n'; }
+          outbound << "DEBUG authentication " << ith << " KEY ";
+          if (ok(record.key.response)) {
+            outbound << " found " << value(record.key.response).text << '\n';
+          } else { outbound << " FAIL " << error_code(record.key.response).message() << '\n'; }
+#endif
+          ++ith;
+        }
+      } {
+        auto ith = 0u;
+        for (auto const &record : document.services) {
+          format("service", ith, "ID", record.id.response);
+          format("service", ith, "TYPE", record.type.response);
+          format("service", ith, "ENDPOINT", record.endpoint.response);
+          format("service", ith, "DESCRIPTION", record.description.response);
+          ++ith;
+        }
+      } {
+        auto ith = 0u;
+        for (auto const &record : document.proofs) {
+          format("proof", ith, "TRANSACTION", record.transaction.response);
+          format("proof", ith, "CREATED", record.created.response);
+          format("proof", ith, "CREATOR", record.creator.response);
+          format("proof", ith, "DESCRIPTION", record.description.response);
+          format("proof", ith, "SIGNATURE", record.signature.response);
+          format("proof", ith, "REFERENCE", record.reference.response);
+          ++ith;
+        }
+      }
+    }
   }
 }
 #endiv

@@ -1,0 +1,46 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+lib_libtunitas_scarpet_did_la = lib/libtunitas-scarpet-did.la
+lib_libtunitas_scarpet_did_la_LIBADD = 
+lib_libtunitas_scarpet_did_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+lib_libtunitas_scarpet_did_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_did_la_SOURCES))
+lib_libtunitas_scarpet_did_la_SOURCES = \
+  obj/src/tunitas/scarpet/did/namespace.cpp \
+  obj/src/tunitas/scarpet/did/Parser.cpp \
+  obj/src/tunitas/scarpet/did/parser.Result.cpp \
+  obj/src/tunitas/scarpet/did/unparse.cpp \
+  obj/src/tunitas/scarpet/did/Name.cpp \
+  obj/src/tunitas/scarpet/did/Method.cpp \
+  obj/src/tunitas/scarpet/did/Identifier.cpp \
+  obj/src/tunitas/scarpet/did/document/namespace.cpp \
+  obj/src/tunitas/scarpet/did/document/Prototype.cpp \
+  obj/src/tunitas/scarpet/did/document/Visitor.cpp \
+  obj/src/tunitas/scarpet/did/document/aspect.Visitable.cpp \
+  obj/src/tunitas/scarpet/did/document/Serializer.cpp \
+  obj/src/tunitas/scarpet/did/document/aspect.Serializable.cpp \
+  obj/src/tunitas/scarpet/did/Document.declaration.cpp \
+  obj/src/tunitas/scarpet/did/Document.DOME.cpp \
+  obj/src/tunitas/scarpet/did/Document.JSON.cpp \
+  obj/src/tunitas/scarpet/did/document/json/namespace.cpp \
+  obj/src/tunitas/scarpet/did/document/json/Writer.cpp \
+  obj/src/tunitas/scarpet/did/document/json/Pretty.cpp \
+  obj/src/tunitas/scarpet/did/document/json/Compact.cpp \
+  obj/src/tunitas/scarpet/did/Document.ZONE.cpp \
+  obj/src/tunitas/scarpet/did/document/zone/namespace.cpp \
+  obj/src/tunitas/scarpet/did/document/zone/Serializer.cpp \
+  obj/src/tunitas/scarpet/did/document/zone/Serializer.Multivariate.cpp \
+  obj/src/tunitas/scarpet/did/Document.cpp \
+  obj/src/tunitas/scarpet/did/isa.cpp \
+  $(end)
+
+$(scold_cxxdir)/tunitas/scarpet/did/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_did_la_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_did_la_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/tunitas/scarpet/did/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/tunitas/scarpet/did/dependencies.mk
+#end

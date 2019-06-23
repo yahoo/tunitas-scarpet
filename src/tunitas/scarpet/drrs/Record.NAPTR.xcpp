@@ -7,6 +7,11 @@ namespace tunitas::scarpet::drrs {
   //
   // The Name Authority PointerPointer (NAPTR) Record
   //
+  // Per the RFC, there are two senses to the Name Authority Pointer
+  // 1. when the regular expression is in effect, a rewrite occurs; and the redirect must be moot, being '.'.
+  // 2. when the regular expression is empty, being "", then the redirect is in effect.
+  // Here we are only using the redirect sense (Sense #2).
+  //
   // DDSS - DID Document Storage Service
   // DDSZ - DID Document Storage Zone
   //

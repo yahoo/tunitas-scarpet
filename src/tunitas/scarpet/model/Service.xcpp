@@ -1,0 +1,54 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::model {
+  //
+  // A service is a <name, endpoint> with metadata about "type" and an optional evocative "description"
+  //
+  // The type is a well known name from an open-ended (but finite) dictionary.
+  //
+  // Example:
+  //
+  //                id.0.service.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi#openid"
+  //              type.0.service.123456789abcdefghi.marfa TXT "OpenIdConnectVersion1.0Service"
+  //          endpoint.0.service.123456789abcdefghi.marfa URI 1 1 "https://openid.example.com/" ; [[VARIANCE]]
+  //   serviceEndpoint.0.service.123456789abcdefghi.marfa URI 1 1 "https://openid.example.com/"
+  //       description.0.service.123456789abcdefghi.marfa URI 1 1 "Open 9AM-5PM, Closed on Bank Holidays" ; [[VARIANCE]]
+  //
+  // Usage: see Services (plural), nearby
+  //
+  class Service;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.model.service.Definition
+#import tunitas.scarpet.model.Endpoint
+#import std.optional
+#import std.string
+class tunitas::scarpet::model::Service {
+  using Identifier = did::Identifier;
+  using Definition = service::Definition;
+  using Endpoint = model::Endpoint;
+  using Description = std::string;
+public:
+  inline Service();
+  Service(Service const &) = delete;
+  auto operator=(Service const &) -> Service & = delete;
+  Service(Service &&) = default;
+  auto operator=(Service &&) -> Service & = default;
+  Identifier id;
+  Definition definition; // a.k.a. "type"
+  Endpoint endpoint;
+  std::optional<Description> description;
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::model {
+  Service::Service()
+    : id{Identifier{}}
+    , definition{Definition{}}
+  { }
+}
+#endiv

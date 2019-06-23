@@ -3,16 +3,16 @@
 // Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
 #import tunitas.scarpet.answer.Query.declaration
-#import tunitas.scarpet.answer.processor.Stanza.KEYS
+#import tunitas.scarpet.answer.processor.Stanza.PUBLICKEYS
 namespace tunitas::scarpet::answer::packaging {
-  template<> struct Query<processor::Stanza<stanza::KEYS>>;
+  template<> struct Query<processor::Stanza<stanza::PUBLICKEYS>>;
 }
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.answer.query.Prototype
 #import tunitas.scarpet.drrs.Record.PTR
 namespace tunitas::scarpet::answer::packaging {
-  template<> struct Query<processor::Stanza<stanza::KEYS>> : public query::Prototype<dns::PTR, processor::Stanza<stanza::KEYS>, drrs::Records<dns::PTR>> {
+  template<> struct Query<processor::Stanza<stanza::PUBLICKEYS>> : public query::Prototype<dns::PTR, processor::Stanza<stanza::PUBLICKEYS>, drrs::Records<dns::PTR>> {
     inline auto name() const -> dns::Label { return "publickey"; } // [[VARIANCE]] should be "keychain" or such; with some sort of version flag, The Standard is difficult in this area 
   };
 }

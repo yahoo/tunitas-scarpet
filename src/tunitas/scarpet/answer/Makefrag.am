@@ -47,7 +47,7 @@ lib_libtunitas_scarpet_answer_la_SOURCES = \
   obj/src/tunitas/scarpet/answer/processor/Stanza.declaration.cpp \
   obj/src/tunitas/scarpet/answer/processor/Stanza.ID.cpp \
   obj/src/tunitas/scarpet/answer/processor/Stanza.CONTEXTS.cpp \
-  obj/src/tunitas/scarpet/answer/processor/Stanza.KEYS.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.PUBLICKEYS.cpp \
   obj/src/tunitas/scarpet/answer/processor/Stanza.AUTHENTICATIONS.cpp \
   obj/src/tunitas/scarpet/answer/processor/Stanza.SERVICES.cpp \
   obj/src/tunitas/scarpet/answer/processor/Stanza.PROOFS.cpp \
@@ -56,7 +56,7 @@ lib_libtunitas_scarpet_answer_la_SOURCES = \
   obj/src/tunitas/scarpet/answer/Document.cpp \
   obj/src/tunitas/scarpet/answer/Fields.declaration.cpp \
   obj/src/tunitas/scarpet/answer/Fields.STANZA.cpp \
-  obj/src/tunitas/scarpet/answer/Fields.KEY.cpp \
+  obj/src/tunitas/scarpet/answer/Fields.PUBLICKEY.cpp \
   obj/src/tunitas/scarpet/answer/Fields.AUTHENTICATION.cpp \
   obj/src/tunitas/scarpet/answer/Fields.SERVICE.cpp \
   obj/src/tunitas/scarpet/answer/Fields.PROOF.cpp \
@@ -66,7 +66,7 @@ lib_libtunitas_scarpet_answer_la_SOURCES = \
   obj/src/tunitas/scarpet/answer/launch.cpp \
   obj/src/tunitas/scarpet/answer/launch.STANZA.cpp \
   obj/src/tunitas/scarpet/answer/launch.PublicKey.cpp \
-  obj/src/tunitas/scarpet/answer/launch.KEY.cpp \
+  obj/src/tunitas/scarpet/answer/launch.PUBLICKEY.cpp \
   obj/src/tunitas/scarpet/answer/launch.AUTHENTICATION.cpp \
   obj/src/tunitas/scarpet/answer/launch.SERVICE.cpp \
   obj/src/tunitas/scarpet/answer/launch.PROOF.cpp \
@@ -74,11 +74,11 @@ lib_libtunitas_scarpet_answer_la_SOURCES = \
   obj/src/tunitas/scarpet/answer/Query.declaration.cpp \
   obj/src/tunitas/scarpet/answer/Query.ID.cpp \
   obj/src/tunitas/scarpet/answer/Query.CONTEXTS.cpp \
-  obj/src/tunitas/scarpet/answer/Query.KEYS.cpp \
-  obj/src/tunitas/scarpet/answer/Query.KEYS.ID.cpp \
-  obj/src/tunitas/scarpet/answer/Query.KEYS.TYPE.cpp \
-  obj/src/tunitas/scarpet/answer/Query.KEYS.CONTROLLER.cpp \
-  obj/src/tunitas/scarpet/answer/Query.KEYS.KEY.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.ID.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.TYPE.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.CONTROLLER.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.KEY.cpp \
   obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.cpp \
   obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.ID.cpp \
   obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.TYPE.cpp \

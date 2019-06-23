@@ -13,13 +13,15 @@ namespace tunitas::scarpet::answer {
   namespace fields {
     enum Name {
       STANZA,
-      KEY, // ..................... a (public) key substanza (field) within the KEYS dictionary (array)
-      AUTHENTICATION, // .......... rhyming
-      SERVICE, // .................
+      PUBLICKEY, // ............... a (public) key substanza (field) within the Keys dictionary (array, chain)
+      AUTHENTICATION, // .......... rhyming (another Keys dictionary (a chain of keys, a keychain <snide>but not a blockchain</snide>)
+      SERVICE, // ................. a culture of:
       PROOF, // ................... ibidem.
       STANZAS   [[deprecated("avoid, instead use STANZA (singular)")]] = STANZA,
       TOP       [[deprecated("avoid, instead use STANZA (singular)")]] = STANZA,
-      PUBLICKEY [[deprecated("avoid, intsead use KEY")]] = KEY,
+      KEY       [[deprecated("avoid, intsead use PUBLICKEY")]] = PUBLICKEY,
+      KEYCHAIN  [[deprecated("avoid, intsead use PUBLICKEY")]] = PUBLICKEY,
+      KEYRING   [[deprecated("avoid, intsead use PUBLICKEY")]] = PUBLICKEY,
     };
   }
   namespace packaging {

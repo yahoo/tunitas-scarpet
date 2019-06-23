@@ -1,0 +1,53 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did::document::aspect {
+  //
+  // The aspect of visitability for a DID Document representation.
+  // Descendants only, of course.
+  // This is a mixin which defines an obligation to have a visit(Visitor&) in the finalized class.
+  //
+  // Not all DID Document representations are visitable.
+  // Some are just atomic lumpen which must be explored by more subtle means.
+  // In particular only Document<ZONE> is not visitable.
+  //
+  // NOT Visitable Document<DOME> the structure of the DOME is easy to access.
+  //                              it has its own internal structure as (hard-coded) fields.
+  // NOT Visitable Document<JSON> becasue json::Value is icky and opaqque.
+  //                              the json::Value has its own access vehicles, and you have to know the object structure as a DID Document.
+  // Visitable     Document<ZONE> because it is a container of flat::record::Variant
+  //
+  // Usage:
+  //
+  //    ancestry in (only) Document<ZONE>.
+  //
+  template<typename VISITEE, Mutability> class Visitable;
+  template<typename VISITEE> class Visitable<VISITEE, CONSTIE>;
+  template<typename VISITEE> class Visitable<VISITEE, MUTABLE>;
+}
+#endiv
+#divert <hpp>
+#forward tunitas.scarpet.did.document.Visitor
+namespace tunitas::scarpet::did::document::aspect {
+  template<typename VISITEE> class Visitable<VISITEE, CONSTIE> {
+  protected:
+    virtual ~Visitable() = default;
+    Visitable() = default;
+  public:
+    using Visitor = document::Visitor<VISITEE, CONSTIE>;
+    virtual auto visit(Visitor &) const -> void = 0;
+  };
+  template<typename VISITEE> class Visitable<VISITEE, MUTABLE> {
+  protected:
+    virtual ~Visitable() = default;
+    Visitable() = default;
+  public:
+    using Visitor = document::Visitor<VISITEE, MUTABLE>;
+    virtual auto visit(Visitor &) -> void = 0;
+  };
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.document.Visitor
+#endiv

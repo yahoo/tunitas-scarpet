@@ -1,0 +1,25 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did::document::json {
+  //
+  // The compact writer, (or "serializer")
+  //
+  // Usage: 
+  //
+  //   auto ddd = Document<JSON>{...somehow...};
+  //   auto compact = Compact{std::cout};
+  //   ddd.visit(compact);
+  //
+  class Compact;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.did.document.json.Writer
+class tunitas::scarpet::did::document::json::Compact : public Writer {
+  using ancestor = Writer;
+public:
+  inline explicit Compact(std::ostream &outbound) : ancestor{outbound, Mode::COMPACT} { }
+};
+#endiv

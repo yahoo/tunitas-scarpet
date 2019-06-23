@@ -1,0 +1,112 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::pki {
+  //
+  // Key (verification) and Proof (signature) material is just some bytes.
+  // The material is kept in raw byte form.
+  // An encoding is applied only when it must be transmitted (printed) with to_string.
+  // Or maybe not.
+  //
+  // Use a subclass not a type alias so that ADL will find the API around it.
+  // These are biggish and heavish, so no-copy, yes-move.
+  //
+  // Usage:
+  //
+  //   ...oh come on ... it's some bytes.
+  //
+  class Material;
+}
+#endiv
+#divert <hpp>
+#import std.string
+#import tunitas.scarpet.model.key.Encoding
+namespace tunitas::scarpet::pki {
+  // [[FIXTHIS]] performs an encoding of the byte material into the Encoded form (if possible); else a passthru
+  auto to_string(Material const &, Encoding) -> std::string;
+  inline auto operator==(Material const &, Material const &) -> bool;
+  inline auto operator!=(Material const &, Material const &) -> bool;
+}
+#import std.byte
+#import std.vector
+class tunitas::scarpet::pki::Material : public std::vector<std::byte> {
+  using ancestor = std::vector<std::byte>;
+public:
+  Material() = default;
+  using ancestor::vector;
+  using ancestor::operator=;
+  Material(Material const &) = delete;
+  auto operator=(Material const &) -> Material & = delete;
+  Material(Material &&) = default;
+  auto operator=(Material &&) -> Material & = default;
+  inline explicit Material(ancestor const &);
+  inline Material(ancestor &&);
+  inline auto operator=(ancestor const &) -> Material &;
+  inline auto operator=(ancestor &&) -> Material &;
+};
+#endiv
+#divert <ipp>
+#import std.equal
+#import std.mismatch
+namespace tunitas::scarpet {
+  auto pki::operator==(Material const &a, Material const &b) -> bool {
+    return std::equal(a.begin(), a.end(), b.begin(), b.end());
+  }
+  auto pki::operator!=(Material const &a, Material const &b) -> bool {
+    auto [a_mis, b_mis] = std::mismatch(a.begin(), a.end(), b.begin(), b.end());
+    return a_mis != a.end() || b_mis != b.end();
+  }
+}
+#import std.forward
+namespace tunitas::scarpet::pki {
+  Material::Material(ancestor const &that) : ancestor{that} { }
+  Material::Material(ancestor &&that) : ancestor{std::forward<ancestor>(that)} { }
+  auto Material::operator=(ancestor const &that) -> Material & { ancestor::operator=(that); return *this; }
+  auto Material::operator=(ancestor &&that) -> Material &      { ancestor::operator=(std::forward<ancestor>(that)); return *this; }
+}
+#endiv
+#divert <cpp>
+#import std.is_default_constructible
+#import std.is_copy_constructible
+#import std.is_move_constructible
+#import std.is_copy_assignable
+#import std.is_move_assignable
+namespace tunitas::scarpet::pki {
+  static_assert(std::is_default_constructible_v<Material>);
+  static_assert(!std::is_copy_constructible_v<Material>);
+  static_assert(std::is_move_constructible_v<Material>);
+  static_assert(!std::is_copy_assignable_v<Material>);
+  static_assert(std::is_move_assignable_v<Material>);
+}
+#import tunitas.scarpet.exception.Invariant
+#import nonstd.exception.Unimplemented
+#import std.transform
+#import std.move
+#import std.back_inserter
+namespace tunitas::scarpet {
+  auto pki::to_string(Material const &material, Encoding encoding) -> std::string {
+    auto stringify = [](Material const &material) -> std::string {
+                       std::string ret;
+                       std::transform(material.begin(), material.end(), std::back_inserter(ret), [](auto b) { return char(b); });
+                       return std::move(ret);
+                     };
+    switch (encoding) {
+    case Encoding::NONE:
+    case Encoding::UNKNOWN:
+    case Encoding::JWK:
+    case Encoding::ETHEREUM:
+    case Encoding::MULTIBASE:
+      return stringify(material);
+    case Encoding::PEM:
+    case Encoding::BASE16:
+    case Encoding::BASE32:
+    case Encoding::BASE64:
+      // [[FIXTHIS]] these are within our power to encode, decode, recode
+      throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+    default:
+      throw exception::Invariant{"unsupportable encoding"};
+    }
+  }
+}
+#endiv

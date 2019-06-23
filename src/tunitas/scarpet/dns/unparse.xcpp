@@ -1,0 +1,95 @@
+b// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import std.is_base_of
+#import std.is_same
+#import std.string
+#import tunitas.scarpet.dns.Label
+#import tunitas.scarpet.dns.Labels
+#import tunitas.scarpet.dns.Name
+namespace tunitas::scarpet::dns {
+  //
+  // Rebuild the DNS name from the label, labels and/or name
+   //
+  // Usage:
+  //
+  //   auto name = unparse(label1, label2, label3, ...)
+  //   auto name = unparse(label1, labels)
+  //   auto name = unparse(label1, name)
+  //
+  inline auto unparse(Label const &qdn) -> Name;
+  inline auto unparse(Labels const &qdn) -> Name;
+  inline auto unparse(Name const &qdn) -> Name;
+  inline auto unparse(Name &&qdn) -> Name;
+  //
+  // WATCHOUT - vararg templates (with parameter packs) do not deduce
+  // https://en.cppreference.com/w/cpp/language/template_argument_deduction
+  // <quote>If a template parameter is used only in non-deduced contexts and is not explicitly specified, template argument deduction fails.</quote>
+  // <quote>8) The template parameter list that appears within the parameter P, and which includes a pack expansion that is not at the very end of the template parameter list: <snip><example/></snip></quote>
+  //
+  // We want three variants of unparse with the final argument determining which variant.  but the deduction rule gets in the way, sortof.
+  //   unparse(Labels const &) -> Name
+  //   unparse(Labels const &, Labels const &) -> Name
+  //   unparse(Labels const &, Name const &) -> Name
+  //    
+  template<typename... LABELs> inline auto unparse(Label const &, LABELs const &...) -> Name requires (std::is_base_of<Label, LABELs>::value && ... && (0 != sizeof...(LABELs)));
+  template<typename... REST> inline auto unparse(Label const &, REST const &...) -> Name;
+}
+#import std.ostringstream
+namespace tunitas::scarpet::dns::detail {
+  template<typename... REST> inline auto unparse(std::ostringstream &, Label const &, REST const &...) -> std::string;
+  inline auto unparse(std::ostringstream &, Labels const &) -> std::string;
+  inline auto unparse(std::ostringstream &, Name const &) -> std::string;
+}
+// So ADL will find unparse based upon Label, Name; Labels needs no new machinery
+namespace tunitas::scarpet::dns {
+  namespace label { using dns::unparse; }
+  namespace name { using dns::unparse; }
+}
+#endiv
+#divert <ipp>
+#import std.ostringstream
+namespace tunitas::scarpet {
+  auto dns::unparse(Label const &qdn) -> Name { return Name{qdn.data(), qdn.size()}; }
+  auto dns::unparse(Labels const &qdn) -> Name {
+    auto const sss = to_string(qdn);
+    return Name{sss.data(), sss.size()};
+  }
+  auto dns::unparse(Name const &qdn) -> Name { return qdn; }
+  auto dns::unparse(Name &&qdn) -> Name { return std::forward<Name>(qdn); }
+  template<typename... LABELs> auto dns::unparse(Label const &first, LABELs const &...rest) -> Name requires (std::is_base_of<Label, LABELs>::value && ... && (0 != sizeof...(LABELs))) {
+    std::ostringstream buf;
+    buf << view(first);
+    for (auto const &label : {rest...}) {
+      buf << '.' << view(label);
+    }
+    auto sss = buf.str();
+    return Name{sss.data(), sss.size()};
+  }
+  template<typename... REST> auto dns::unparse(Label const &first, REST const &...rest) -> Name {
+    std::ostringstream buf;
+    auto sss = detail::unparse(buf, first, rest...);
+    return Name{sss.data(), sss.size()};
+  }
+}
+namespace tunitas::scarpet::dns {
+  template<typename... REST> auto detail::unparse(std::ostringstream &buf, Label const &first, REST const &...rest) -> std::string {
+    buf << view(first);
+    if constexpr (0 == sizeof...(REST)) {
+      return buf.str();
+    } else {
+      buf << '.';
+      return unparse(buf, rest...);
+    }
+  }
+  auto detail::unparse(std::ostringstream &buf, Labels const &last) -> std::string {
+    buf << to_string(last);
+    return buf.str();
+  }
+  auto detail::unparse(std::ostringstream &buf, Name const &last) -> std::string {
+    buf << view(last);
+    return buf.str();
+  }
+}
+#endiv

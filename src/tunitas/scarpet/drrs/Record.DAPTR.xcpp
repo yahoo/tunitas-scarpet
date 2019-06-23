@@ -6,6 +6,8 @@
 namespace tunitas::scarpet::drrs {
   //
   // The Distributed Identity Pointer (DAPTR) Record
+  // This is just like a NAPTR record except there is no regular expression.
+  // There is only one sense to the record, being the redirect.
   //
   // DDSS - DID Document Storage Service
   // DDSZ - DID Document Storage Zone

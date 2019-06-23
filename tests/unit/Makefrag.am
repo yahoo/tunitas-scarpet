@@ -1,17 +1,24 @@
+tests_unit_XFAIL_TESTS = \
+  tests/unit/compiler.test \
+  tests/unit/resolve.test \
+  tests/unit/all.test \
+  $(end)
 tests_unit_TESTS = \
   tests/unit/list.test \
   \
+  tests/unit/answer.test \
   tests/unit/did.test \
   tests/unit/dns.test \
   tests/unit/drrs.test \
   tests/unit/error.test \
   tests/unit/exception.test \
+  tests/unit/model.test \
+  tests/unit/names.test \
   tests/unit/options.test \
-  tests/unit/resolve.test \
+  tests/unit/output.test \
   tests/unit/router.test \
   tests/unit/scarpet.test \
   tests/unit/url.test \
   tests/unit/want.test \
-  \
-  tests/unit/all.test \
+  $(tests_unit_XFAIL_TESTS) \
   $(end)

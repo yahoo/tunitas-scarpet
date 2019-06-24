@@ -7,6 +7,7 @@ bin_did_publish = bin/did-publish
 bin_did_publish_LDADD = \
   $(lib_libapp_la) \
   $(lib_libtunitas_scarpet_la) \
+  -lslurp-module \
   $(end)
 bin_did_publish_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 bin_did_publish_MODULES = $(call TF_SOURCEStoMODULES, $(bin_did_publish_SOURCES))

@@ -4,16 +4,16 @@
 #divert <fpp>
 #import tunitas.scarpet.answer.Query.declaration
 #import tunitas.scarpet.answer.processor.Stanza.PUBLICKEYS
-#import tunitas.scarpet.answer.processor.PublicKey.KEY
+#import tunitas.scarpet.answer.processor.PublicKey.MATERIAL
 namespace tunitas::scarpet::answer::packaging {
-  template<> struct Query<processor::Stanza<stanza::PUBLICKEYS>, processor::PublicKey<publickey::KEY>>;
+  template<> struct Query<processor::Stanza<stanza::PUBLICKEYS>, processor::PublicKey<publickey::MATERIAL>>;
 }
 #endiv
 #divert <hpp>
 #import tunitas.scarpet.answer.query.Prototype
 #import tunitas.scarpet.drrs.Record.TXT
 namespace tunitas::scarpet::answer::packaging {
-  template<> struct Query<processor::Stanza<stanza::PUBLICKEYS>, processor::PublicKey<publickey::KEY>> : public query::Prototype<dns::TXT, processor::PublicKey<publickey::KEY>, drrs::Record<dns::TXT>> {
+  template<> struct Query<processor::Stanza<stanza::PUBLICKEYS>, processor::PublicKey<publickey::MATERIAL>> : public query::Prototype<dns::TXT, processor::PublicKey<publickey::MATERIAL>, drrs::Record<dns::TXT>> {
     inline auto name() const -> dns::Label { return "key"; } // [[VARIANCE]] ... this is at variance with The Standard circa v0.13 https://w3c-ccg.github.io/did-spec/
   };
 }

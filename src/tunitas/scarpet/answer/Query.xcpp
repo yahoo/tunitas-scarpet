@@ -12,12 +12,12 @@
 #import tunitas.scarpet.answer.Query.PUBLICKEYS.ID
 #import tunitas.scarpet.answer.Query.PUBLICKEYS.TYPE
 #import tunitas.scarpet.answer.Query.PUBLICKEYS.CONTROLLER
-#import tunitas.scarpet.answer.Query.PUBLICKEYS.KEY
+#import tunitas.scarpet.answer.Query.PUBLICKEYS.MATERIAL
 
 #import tunitas.scarpet.answer.Query.AUTHENTICATIONS.ID
 #import tunitas.scarpet.answer.Query.AUTHENTICATIONS.TYPE
 #import tunitas.scarpet.answer.Query.AUTHENTICATIONS.CONTROLLER
-#import tunitas.scarpet.answer.Query.AUTHENTICATIONS.KEY
+#import tunitas.scarpet.answer.Query.AUTHENTICATIONS.MATERIAL
 
 #import tunitas.scarpet.answer.Query.SERVICES.ID
 #import tunitas.scarpet.answer.Query.SERVICES.TYPE

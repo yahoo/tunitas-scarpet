@@ -28,7 +28,7 @@ lib_libtunitas_scarpet_answer_la_SOURCES = \
   obj/src/tunitas/scarpet/answer/processor/PublicKey.ID.cpp \
   obj/src/tunitas/scarpet/answer/processor/PublicKey.TYPE.cpp \
   obj/src/tunitas/scarpet/answer/processor/PublicKey.CONTROLLER.cpp \
-  obj/src/tunitas/scarpet/answer/processor/PublicKey.KEY.cpp \
+  obj/src/tunitas/scarpet/answer/processor/PublicKey.MATERIAL.cpp \
   obj/src/tunitas/scarpet/answer/processor/PublicKey.cpp \
   \
   obj/src/tunitas/scarpet/answer/processor/Service.declaration.cpp \
@@ -78,12 +78,12 @@ lib_libtunitas_scarpet_answer_la_SOURCES = \
   obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.ID.cpp \
   obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.TYPE.cpp \
   obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.CONTROLLER.cpp \
-  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.KEY.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.MATERIAL.cpp \
   obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.cpp \
   obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.ID.cpp \
   obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.TYPE.cpp \
   obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.CONTROLLER.cpp \
-  obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.KEY.cpp \
+  obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.MATERIAL.cpp \
   obj/src/tunitas/scarpet/answer/Query.SERVICES.cpp \
   obj/src/tunitas/scarpet/answer/Query.SERVICES.ID.cpp \
   obj/src/tunitas/scarpet/answer/Query.SERVICES.TYPE.cpp \

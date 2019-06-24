@@ -5,5 +5,5 @@
 #import tunitas.scarpet.answer.processor.PublicKey.ID
 #import tunitas.scarpet.answer.processor.PublicKey.TYPE
 #import tunitas.scarpet.answer.processor.PublicKey.CONTROLLER
-#import tunitas.scarpet.answer.processor.PublicKey.KEY
+#import tunitas.scarpet.answer.processor.PublicKey.MATERIAL
 #endiv

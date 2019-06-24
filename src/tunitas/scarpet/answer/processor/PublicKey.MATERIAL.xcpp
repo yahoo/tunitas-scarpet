@@ -29,12 +29,12 @@ namespace tunitas::scarpet::answer::processor {
   //      publicKeyHex.2.publickey.123456789abcdefghi.marfa TXT "02b97c30de767f084ce3080168ee293053ba33b235d7116a3263d29f1450936b71"
   //   
   //
-  template<> class PublicKey<publickey::KEY>;
+  template<> class PublicKey<publickey::MATERIAL>;
 }
 #endiv
 #divert <hpp>
 namespace tunitas::scarpet::answer::processor {
-  template<> class PublicKey<publickey::KEY> : public Single<dns::TXT> {
+  template<> class PublicKey<publickey::MATERIAL> : public Single<dns::TXT> {
     using ancestor = Single<dns::TXT>;
   public:
     using ancestor::Single;

@@ -17,7 +17,8 @@ namespace tunitas::scarpet::answer::processor {
       TYPE,
       CONTROLLER,
       // [[FIXTHIS]] ... the examples in the spec use publicKeyHex, publicKeyPem, publicKeyBase58 and other ad hoc name schemes.
-      KEY, // [[FIXTHIS]] ... this is at variance with the published (recommendation) standard
+      MATERIAL, // [[VARIANCE]] [[FIXTHIS]] ... this is at variance with the published (recommendation) standard because we don't want seven, ten, fifteen ... one hundred ... different fields here.
+      KEY [[deprecated("instead prefer MATERIAL")]] = MATERIAL,
     };
   }
   //

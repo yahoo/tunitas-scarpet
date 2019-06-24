@@ -44,7 +44,7 @@ namespace tunitas::scarpet::answer {
     using Id         = Query<Stanza<STANZA>, processor::PublicKey<processor::publickey::ID>>;
     using Type       = Query<Stanza<STANZA>, processor::PublicKey<processor::publickey::TYPE>>;
     using Controller = Query<Stanza<STANZA>, processor::PublicKey<processor::publickey::CONTROLLER>>;
-    using Key        = Query<Stanza<STANZA>, processor::PublicKey<processor::publickey::KEY>>;
+    using Key        = Query<Stanza<STANZA>, processor::PublicKey<processor::publickey::MATERIAL>>;
   protected:
     ~PublicKey() = default;
   public:

@@ -1,0 +1,90 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.dns
+namespace tests::unit::names {
+  namespace dns = ::tunitas::scarpet::dns;
+  class Fixture;
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+class tests::unit::names::Fixture : public cppunit::test::Fixture {
+public:
+  template<typename NAME> auto test_generally() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#import tunitas.scarpet.dns.Labels
+namespace tests::unit::names {
+  template<> auto Fixture::test_generally<dns::Labels>() -> void;
+}
+#endiv
+#divert <tpp>
+template<typename NAME> auto tests::unit::names::Fixture::test_generally() -> void {
+  auto const specimen = std::string_view{"example"};
+  NAME subject{specimen.data(), specimen.size()};
+  auto v = view(subject);
+  auto s = to_string(subject);
+  auto const expected = std::string{specimen.data(), specimen.size()};
+  CPPUNIT_ASSERT_EQUAL(expected, /*blik*/ (std::string{v.data(), v.size()}));  // [[FIXTHIS]] module-unit-rigging should allow comparisons between unequal types, especially operator==(string_view, string)
+  CPPUNIT_ASSERT_EQUAL(expected, s);
+}
+#endiv
+#divert <cpp>
+namespace tests::unit::names {
+  template<> auto Fixture::test_generally<dns::Labels>() -> void {
+    auto const specimen1 = dns::Label{"dev"};
+    auto const specimen2 = dns::Label{"box"};
+    auto const specimen3 = dns::Label{"example"};
+    auto const specimen4 = dns::Label{};
+    {
+      //                  <------reverse order---------->
+      dns::Labels subject{specimen3, specimen2, specimen1};
+      CPPUNIT_ASSERT(3 == subject.size());
+      auto actual = to_string(subject);
+      auto const expected = "dev.box.example"s; // NO trailing '.'
+      CPPUNIT_ASSERT_EQUAL(expected, actual);
+    } {
+      //                  <------reverse order---------->
+      dns::Labels subject{specimen4, specimen3, specimen2, specimen1};
+      CPPUNIT_ASSERT(4 == subject.size());
+      auto actual = to_string(subject);
+      auto const expected = "dev.box.example."s; // YES trailing '.'
+      CPPUNIT_ASSERT_EQUAL(expected, actual);
+    }
+  }
+}
+#import tunitas.scarpet.Club
+#import tunitas.scarpet.Protocol
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.dns.Labels
+#import tunitas.scarpet.dns.Label
+#import tunitas.scarpet.dns.Name
+#import rigging.suite.io
+auto tests::unit::names::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"names"};
+  namespace subjecting = ::tunitas::scarpet;
+  series << call("Club", &Fixture::test_generally<subjecting::Club>)
+         << call("Protocol", &Fixture::test_generally<subjecting::Protocol>)
+    ;
+  {
+    Stream did{"did"};
+    did << call("Method", &Fixture::test_generally<subjecting::did::Method>)
+        << call("Identifier", &Fixture::test_generally<subjecting::did::Identifier>)
+      ;
+    series << add(did.release());
+  } {
+    Stream dns{"dns"};
+    dns << call("Labels", &Fixture::test_generally<subjecting::dns::Labels>)
+        << call("Label", &Fixture::test_generally<subjecting::dns::Label>)
+        << call("Name", &Fixture::test_generally<subjecting::dns::Name>)
+      ;
+    series << add(dns.release());
+  }
+  return finalize(series);
+}
+#endiv

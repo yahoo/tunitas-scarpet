@@ -1,0 +1,17 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.Fields.declaration
+namespace tests::unit::answer {
+  namespace subject {
+    using ::tunitas::scarpet::answer::Fields;
+    namespace fields = ::tunitas::scarpet::answer::fields;
+  }
+  namespace fields = subject::fields;
+  //
+  // This will be Fixture of the specialized form
+  template<typename SUBJECT> class Fields;
+  template<fields::Name NAME> class Fields<subject::Fields<NAME>>;
+}
+#endiv

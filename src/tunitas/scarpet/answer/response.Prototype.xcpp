@@ -1,0 +1,40 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::answer::response {
+  //
+  // The commonalities among all of the responses.
+  // Descendants only
+  //
+  // Usage:
+  //
+  //   by inheritance in the instantiations of Response<PAYLOAD>
+  //
+  class Prototype;
+}
+#endiv
+#divert <hpp>
+#import std.error_code
+#import std.error_condition
+namespace tunitas::scarpet::answer::response {
+  inline auto ok(Prototype const &) -> bool;
+  inline auto error_code(Prototype const &) -> std::error_code;
+  inline auto error_condition(Prototype const &) -> std::error_condition;
+}
+#import tunitas.Success
+class tunitas::scarpet::answer::response::Prototype {
+protected:
+  ~Prototype() = default;
+  Prototype() = default;
+public:
+  Success success;
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::answer {
+  auto response::ok(Prototype const &p) -> bool { return ok(p.success); }
+  auto response::error_code(Prototype const &p) -> std::error_code { return error_code(p.success); }
+  auto response::error_condition(Prototype const &p) -> std::error_condition { return error_condition(p.success); }
+}
+#endiv

@@ -1,0 +1,45 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::compiler::output {
+  //
+  // The stream sink.
+  // Messages are re-routed to the captured stream origin.
+  // Thin streams only as that is where the error messages originated (narrow-char string messages).
+  //
+  // Usage:
+  //
+  //   auto sink = output::Stream{std::cerr};
+  //   error(sink) << "bad bad bad" << end(sink);
+  //   warning(sink) << "be careful now" << end(sink);
+  //   notice(sink) << "no trespassing" << end(sink);
+  //   verbose(sink) << "oh come on" << end(sink);
+  //   debug(sink) << "it never ends" << end(sink);
+  //
+  class Stream;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.compiler.output.Sink
+#import std.ostream
+class tunitas::scarpet::compiler::output::Stream : public Sink {
+  using ancestor = Sink;
+  auto record(std::string message) -> void override;
+  std::ostream &origin;
+public:
+  inline explicit Stream(std::ostream &origin);
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::compiler::output {
+  Stream::Stream(std::ostream &origin) : origin{origin} { }
+}
+#endiv
+#divert <cpp>
+namespace tunitas::scarpet::compiler::output {
+  auto Stream::record(std::string message) -> void {
+    origin << message;
+  }
+}
+#endiv

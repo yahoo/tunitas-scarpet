@@ -1,14 +1,69 @@
-// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright 2019-2019, Oath Inc.
-// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
 #import tunitas.scarpet.did.Document.declaration
 namespace tunitas::scarpet::did {
-  template<> struct Document<ZONE>;
+  //
+  // The DID Document is represented as a DNS Zone.
+  //
+  // And whereas a DNS Zone is a set of Resource Record (RR), managed as (typed) tuples of fields,
+  // for flat zones, dumping and serialization are the same thing because is no pretty-vs-compact dichotomy.
+  //
+  // Usage:
+  //
+  //   see tunitas.scarpet.compile.DOME.ZONE
+  //
+  template<> class Document<ZONE>;
 }
 #endiv
 #divert <hpp>
+#import std.ostream
+#import tunitas.scarpet.drrs.Flat
+#import tunitas.scarpet.did.document.aspect.Serializable // [[REMOVETHIS]] it is exactly same as Visitor
+#import tunitas.scarpet.did.document.aspect.Visitable
 namespace tunitas::scarpet::did {
-  template<> struct Document<ZONE> { };
+  template<> class Document<ZONE> : public document::Prototype,
+                                    public document::aspect::Serializable<drrs::flat::Variant, document::CONSTIE>, // [[REMOVETHIS]] it is exactly same as Visitor
+                                    public document::aspect::Visitable<drrs::flat::Variant, document::CONSTIE> {
+    struct ancestors {
+      using Prototype = document::Prototype;
+      using Serializable = document::aspect::Serializable<drrs::flat::Variant, document::CONSTIE>;
+      using Visitable = document::aspect::Visitable<drrs::flat::Variant, document::CONSTIE>;
+    };
+  public:
+    Document() = default;
+    drrs::Flat flat;
+    inline auto dump(std::ostream &) const -> void final;
+    auto serialize(Serializer &) const -> void override; // [[REMOVETHIS]] it is exactly same as Visitor
+    auto visit(Visitor &) const -> void override;
+  };
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.document.zone.Serializer
+namespace tunitas::scarpet::did {
+  auto Document<ZONE>::dump(std::ostream &outbound) const -> void {
+    auto state = document::zone::Serializer{outbound};
+    serialize(state);
+  }
+}
+#endiv
+#divert <cpp>
+#import nonstd.exception.Unimplemented
+#import tunitas.scarpet.did.document.zone.Serializer
+#import std.visit
+namespace tunitas::scarpet::did {
+  auto Document<ZONE>::serialize(Serializer &acceptor) const -> void {
+    // [[REMOVETHIS]] it is exactly same as Visitor
+    for (auto const &variant : flat) {
+      acceptor.accept(variant);
+    }
+  }
+  auto Document<ZONE>::visit(Visitor &acceptor) const -> void {
+    for (auto const &variant : flat) {
+      acceptor.accept(variant);
+    }
+  }
 }
 #endiv

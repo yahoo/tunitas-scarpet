@@ -1,0 +1,10 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.dns.Label
+#import std.size_t
+namespace tunitas::scarpet::dns::label::literals {
+  inline auto operator""_label(char const *syntax, std::size_t size) -> Label { return Label{syntax, size}; }
+}
+#endiv

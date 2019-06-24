@@ -1,0 +1,56 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tests.unit.compiler.Compile.declaration
+#forward tunitas.scarpet.answer.Document
+#forward tunitas.scarpet.did.Document.DOME
+namespace tests::unit::compiler {
+  namespace answer_dome {
+    using Source = ::tunitas::scarpet::answer::Document;
+    using Destination = ::tunitas::scarpet::did::Document<::tunitas::scarpet::did::DOME>;
+  }
+  template<> struct Compile<answer_dome::Source, answer_dome::Destination>;
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+namespace tests::unit::compiler {
+  template<> class Compile<answer_dome::Source, answer_dome::Destination> : public cppunit::test::Fixture {
+  public:
+    auto test_simple() -> void;
+    static auto suite() -> cppunit::Test *;
+  };
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.answer.Document
+#import tunitas.scarpet.did.Document.DOME
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.compiler.output.Null
+#import tunitas.scarpet.compiler.compile.ANSWER.DOME
+#import tunitas.scarpet.compiler.compile // ADL hack
+namespace tests::unit::compiler {
+  auto Compile<answer_dome::Source, answer_dome::Destination>::test_simple() -> void {
+    namespace output = ::tunitas::scarpet::compiler::output;
+    auto sink = output::Null{};
+    auto source = answer_dome::Source{};
+    auto destination = answer_dome::Destination{};
+    auto compiled = compile(source, destination, sink);
+    // An empty ANSWER cannot compile to a DOME.  At least the "self" identifier is missing.
+    CPPUNIT_ASSERT(!compiled);
+  }
+}
+#import rigging.suite.io
+namespace tests::unit::compiler {
+  auto Compile<answer_dome::Source, answer_dome::Destination>::suite() -> cppunit::Test * {
+    using namespace ::rigging::suite;
+    Stream series{"compile(ANSWER const &, DOME &, Sink &)"};
+    series << call("simple", &Compile::test_simple)
+      ;
+    return finalize(series);
+  }
+}
+#endiv

@@ -1,0 +1,24 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import ares.Channel
+namespace mod::scarpet::dns {
+  //
+  // A DNS channel (socket)
+  //
+  // [[FIXTHIS]] ... this is overkill ... do not need this [[REMOVE]]
+  //
+  // Preconditions
+  //   dns::library::initialize() has been called
+  //      ...which is to say ... ares::Library has already been called (at the process level).
+  //      ...and it was, see .../mod/scarpet/httpd/module.scpp register_server_config(...)
+  //
+  // Usage:
+  //
+  //   ares has lots of documentation
+  //   see module-ares
+  //
+  using Channel = ares::Channel;
+}
+#endiv

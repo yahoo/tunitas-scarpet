@@ -1,0 +1,76 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.char_traits
+namespace tunitas::scarpet::did {
+  //
+  // A DID Method (Name) is a short string.
+  //
+  // The characters of that string are from that certain and reasonable character set.
+  // See the specification docments that are recited nearby in namespace.xcpp and incorporated herein by reference.
+  //
+  // The Method needs to be a type, not a type alias so that ADL will find it.
+  //
+  // Usage:
+  //
+  //   oh come on
+  //
+  namespace method {
+    class Traits : public std::char_traits<char> { };
+  }
+  class Method;
+}
+#endiv
+#divert <hpp>
+#import std.string_view
+#import std.string
+namespace tunitas::scarpet::did {
+  inline auto view(Method const &) -> std::string_view;
+  inline auto to_string(Method const &) -> std::string;
+  //
+  // Just the bare minimum of checking.
+  // Not ensuring that it is a reasonable method name, just a legal one.
+  //
+  inline auto is_barely_valid(Method const &candidate) -> bool;
+  namespace detail {
+    // In the mumblecore name system, the DID method names are represented within DNS.
+    // The name entries of a DNS name are called "labels" because ... RFC 1034
+    inline auto is_single_domain_label(Method const &candidate) -> bool;
+  }
+}
+#import std.basic_string
+#import std.forward
+namespace tunitas::scarpet {
+  class did::Method : public std::basic_string<char, method::Traits> {
+    using ancestor = std::basic_string<char, method::Traits>;
+  public:
+    Method() = default;
+    using ancestor::basic_string;
+    inline explicit Method(ancestor const &a) : ancestor{a} { }
+    inline explicit Method(ancestor &&a) : ancestor{std::forward<ancestor>(a)} { }
+  };
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet {
+  auto did::view(Method const &old) -> std::string_view {
+    return std::string_view{old.data(), old.size()};
+  }
+  auto did::to_string(Method const &old) -> std::string {
+    return std::string{old.data(), old.size()};
+  }
+}
+#import std.empty
+#import std.all_of
+namespace tunitas::scarpet {
+  auto did::is_barely_valid(Method const &candidate) -> bool {
+    return detail::is_single_domain_label(candidate);
+  }
+  auto did::detail::is_single_domain_label(Method const &candidate) -> bool {
+    auto const is_name = [](char c) { return std::isalnum(c) || '_' == c || '-' == c; };
+    // NOT checking that '-' is front or back (that is up to you)
+    return !std::empty(candidate) && std::all_of(candidate.begin(), candidate.end(), is_name);
+  }
+}
+#endiv

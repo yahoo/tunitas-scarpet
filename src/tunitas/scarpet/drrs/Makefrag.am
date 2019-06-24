@@ -1,0 +1,56 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+lib_libtunitas_scarpet_drrs_la = lib/libtunitas-scarpet-drrs.la
+lib_libtunitas_scarpet_drrs_la_LIBADD = 
+lib_libtunitas_scarpet_drrs_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+lib_libtunitas_scarpet_drrs_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_drrs_la_SOURCES))
+lib_libtunitas_scarpet_drrs_la_SOURCES = \
+  obj/src/tunitas/scarpet/drrs/namespace.cpp \
+  \
+  obj/src/tunitas/scarpet/drrs/aspect.Endpoint.cpp \
+  obj/src/tunitas/scarpet/drrs/aspect.Redirect.cpp \
+  \
+  obj/src/tunitas/scarpet/drrs/record.Prototype.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.declaration.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.DAPTR.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.NAPTR.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.PTR.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.SRV.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.TXT.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.URI.cpp \
+  obj/src/tunitas/scarpet/drrs/Record.cpp \
+  \
+  obj/src/tunitas/scarpet/drrs/Records.cpp \
+  \
+  obj/src/tunitas/scarpet/drrs/Flat.cpp \
+  obj/src/tunitas/scarpet/drrs/flat/namespace.cpp \
+  obj/src/tunitas/scarpet/drrs/flat/Flat.cpp \
+  obj/src/tunitas/scarpet/drrs/flat/Record.cpp \
+  obj/src/tunitas/scarpet/drrs/flat/Variant.cpp \
+  obj/src/tunitas/scarpet/drrs/flat/record.Leftside.cpp \
+  \
+  obj/src/tunitas/scarpet/drrs/Tree.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/namespace.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Allocator.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Pointer.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Top.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Tree.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Reference.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Children.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/children.Iterator.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/children.Iterator.iterator_traits.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/Records.cpp \
+  obj/src/tunitas/scarpet/drrs/tree/records.Variant.cpp \
+  $(end)
+
+$(scold_cxxdir)/tunitas/scarpet/drrs/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_drrs_la_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_drrs_la_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/tunitas/scarpet/drrs/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/tunitas/scarpet/drrs/dependencies.mk
+#end

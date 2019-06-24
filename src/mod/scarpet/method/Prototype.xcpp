@@ -1,3 +1,4 @@
+url
 // This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
@@ -20,34 +21,114 @@ namespace mod::scarpet::method {
 }
 #endiv
 #divert <hpp>
+#import mod.scarpet.httpd.module
+namespace mod::scarpet::method {
+  //
+  // The HTTPd module index ... every descendant of Prototype will need to have this lexically visible
+  //
+  // Else ...
+  //
+  //   src/mod/scarpet/method/Getter.xcpp:56:19: error: ‘aplog_module_index’ was not declared in this scope
+  //   ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "returning did_status=%d", (int) did_status);
+  //
+  using httpd::aplog_module_index;
+}
 #import apache.httpd.io.Stream
 #import apache.httpd.status.Code
 #import apache.httpd.request_rec
-#import mod.scarpet.config.Specification
+#import mod.scarpet.server.State
 #import tunitas.scarpet.url.Parser
+#import tunitas.scarpet.did.Parser
+#forward tunitas.scarpet.did.Method
+#forward tunitas.scarpet.did.Identifier
+#import std.string
+#import std.tuple
 class mod::scarpet::method::Prototype {
 protected:
   ~Prototype() = default;
 public:
-  inline Prototype(apache::httpd::request_rec *, config::Specification const *);
+  // The url path prefix defaults ot the Specification's location; e.g. "/scarpet"
+  inline Prototype(apache::httpd::request_rec *, server::State *);
+  // The url path prefix is given below the Specification location for the sub-api; e.g. "/scarpet/daptr", "/scarpet/document", etc.
+  inline Prototype(apache::httpd::request_rec *, server::State *, std::string const &url_path_prefix);
   // The descendant must implement (the non-virtual)
   //   auto operator()() -> apache::httpd::status::Code;
 protected:
   // Of course, the containing apache request record must have a longer lifetime than the method
   apache::httpd::request_rec *req;
   // Of course, the Specification must have a longer lifetime than the method (descendant)
-  config::Specification const *spec;
-  // ... because parsing occurs.
-  tunitas::scarpet::url::Parser uri_parser;
+  // Even GET requires non-const state; e.g. to operate the channel
+  server::State *state;
+  // ... because parsing occurs.  WATCHOUT - "url" vs "uri" with apache::httpd::request_rec::uri being the only "uri" (with an 'I')
+  tunitas::scarpet::url::Parser url_parser;
+  inline auto get_did_urn(std::string const &uri) -> std::tuple<status::Code, std::string>;
+  // ... because more parsing occurs.
+  tunitas::scarpet::did::Parser did_parser;
+  struct did {
+    using Method = tunitas::scarpet::did::Method;
+    using Identifier = tunitas::scarpet::did::Identifier;
+  };
+  inline auto get_did_method_identifier(std::string const &did) -> std::tuple<status::Code, did::Method, did::Identifier>;
   // ... because every method handler will need to respond onto an html stream.
   apache::httpd::io::Stream rs;
+  // All failures are basically the bad DID URN
+  inline auto banner_failure(std::string const &failed_urn) -> void;
 };
 #endiv
 #divert <ipp>
-mod::scarpet::method::Prototype::Prototype(apache::httpd::request_rec *req, config::Specification const *spec)
+mod::scarpet::method::Prototype::Prototype(apache::httpd::request_rec *req, server::State *state)
+  : Prototype{req, state, state->specification.location_prefix.value}
+{ }
+mod::scarpet::method::Prototype::Prototype(apache::httpd::request_rec *req, server::State *state, std::string const &url_path_prefix)
   : req{req}
-  , spec{spec}
-  , uri_parser{spec->location_prefix.value}
+  , state{state}
+  , url_parser{url_path_prefix}
+  , did_parser{}
   , rs{req}
 { }
+#import c.str
+auto mod::scarpet::method::Prototype::get_did_urn(std::string const &uri) -> std::tuple<status::Code, std::string> {
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "uri %s", c::str(uri));
+  auto parsed = url_parser(uri);
+  if (!ok(parsed)) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "unparsable uri %s", c::str(uri));
+    return {HTTP::BAD_REQUEST, {}};
+  }
+  // NOT TRUE ---> prefix(parsed) == state->specification.location_prefix.value <--- NOT TRUE
+  // because this Getter (descendant) can be configured with a different prefix, a longer prefix than specifiation.location_prefix
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "good urn %s", c::str(urn(parsed)));
+  return {HANDLER::OK, urn(move(parsed))};
+}
+#import c.str
+auto mod::scarpet::method::Prototype::get_did_method_identifier(std::string const &urn) -> std::tuple<status::Code, did::Method, did::Identifier> {
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "did %s", c::str(urn));
+  auto parsed = did_parser(urn);
+  if (!ok(parsed)) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "unparsable did %s", c::str(urn));
+    return {HTTP::BAD_REQUEST, {}, {}};
+  }
+  using tunitas::scarpet::did::parser::method;
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "did: found=%s, configured=%s", c::str(method(parsed)), c::str(state->specification.did_method_name.value));
+  if (method(parsed) != state->specification.did_method_name.value) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "inappropriate did_method: found=%s, configured=%s", c::str(method(parsed)), c::str(state->specification.did_method_name.value));
+    // How then, did this get routed here?
+    return {HTTP::NOT_FOUND, {}, {}};
+  }
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "good did %s identifier %s", c::str(method(parsed)), c::str(identifier(parsed)));
+  return {HANDLER::OK, method(move(parsed)), identifier(move(parsed))};
+}
+#import apache.httpd.io.keywords
+#import autotools.autoconf.Config.mod.scarpet.CONFIG
+auto mod::scarpet::method::Prototype::banner_failure(std::string const &failed_urn) -> void {
+  using namespace io::keywords;
+  ap_set_content_type(this->req, "text/html"); // [[FIXTHIS]] as ap::set_content_type(...)
+  rs << html << br
+     << head << autotools::autoconf::Config<CONFIG>::package_name() << _head << br
+     << body << p << "unable to recover the DID URN "
+     << failed_urn
+     << " because "
+     << "of some really good reasons"
+     << _p << _body
+     << _html;
+}
 #endiv

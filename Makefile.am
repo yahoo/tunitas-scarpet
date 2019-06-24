@@ -17,9 +17,11 @@ include @temerarious_flagship_datadir@/am/build.am
 
 DEVELOPMENT_AREAS = \
   $(apache_httpd_api_prefix) \
+  $(module_ares_prefix) \
   $(module_boost_prefix) \
   $(module_c_prefix) \
   $(module_format_prefix) \
+  $(module_ip_prefix) \
   $(module_json_prefix) \
   $(module_nonstd_prefix) \
   $(module_openssl_prefix) \
@@ -51,6 +53,14 @@ module_SOURCE_SET = \
   $(lib_libautotools_autoconf_la_SOURCES) \
   $(lib_libmod_scarpet_la_SOURCES) \
   $(lib_libtunitas_scarpet_la_SOURCES) \
+  $(lib_libtunitas_scarpet_answer_la_SOURCES) \
+  $(lib_libtunitas_scarpet_compiler_la_SOURCES) \
+  $(lib_libtunitas_scarpet_did_la_SOURCES) \
+  $(lib_libtunitas_scarpet_dns_la_SOURCES) \
+  $(lib_libtunitas_scarpet_drrs_la_SOURCES) \
+  $(lib_libtunitas_scarpet_model_la_SOURCES) \
+  $(lib_libtunitas_scarpet_pki_la_SOURCES) \
+  $(lib_libtunitas_scarpet_resolve_la_SOURCES) \
   $(lib_libwant_la_SOURCES) \
   $(end)
 
@@ -65,8 +75,15 @@ include src/app/zonegen/Makefrag.am
 include src/autotools/autoconf/Makefrag.am
 include src/mod/scarpet/Makefrag.am
 include src/tests/unit/Makefrag.am
+include src/tunitas/scarpet/answer/Makefrag.am
+include src/tunitas/scarpet/compiler/Makefrag.am
+include src/tunitas/scarpet/did/Makefrag.am
+include src/tunitas/scarpet/dns/Makefrag.am
+include src/tunitas/scarpet/drrs/Makefrag.am
 include src/tunitas/scarpet/Makefrag.am
+include src/tunitas/scarpet/model/Makefrag.am
 include src/tunitas/scarpet/pki/Makefrag.am
+include src/tunitas/scarpet/resolve/Makefrag.am
 include src/want/Makefrag.am
 
 bin_PROGRAMS = \
@@ -81,7 +98,14 @@ bin_PROGRAMS = \
 noinst_LTLIBRARIES = \
   $(lib_libautotools_autoconf_la) \
   $(lib_libautotools_autoconf_a_b_la) \
+  $(lib_libtunitas_scarpet_answer_la) \
+  $(lib_libtunitas_scarpet_compiler_la) \
+  $(lib_libtunitas_scarpet_did_la) \
+  $(lib_libtunitas_scarpet_dns_la) \
+  $(lib_libtunitas_scarpet_drrs_la) \
+  $(lib_libtunitas_scarpet_model_la) \
   $(lib_libtunitas_scarpet_pki_la) \
+  $(lib_libtunitas_scarpet_resolve_la) \
   $(lib_libwant_la) \
   $(lib_libapp_la) \
   $(end)

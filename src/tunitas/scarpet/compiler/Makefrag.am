@@ -1,0 +1,46 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+lib_libtunitas_scarpet_compiler_la = lib/libtunitas-scarpet-compiler.la
+lib_libtunitas_scarpet_compiler_la_LIBADD = 
+lib_libtunitas_scarpet_compiler_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+lib_libtunitas_scarpet_compiler_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_compiler_la_SOURCES))
+lib_libtunitas_scarpet_compiler_la_SOURCES = \
+  obj/src/tunitas/scarpet/compile.cpp \
+  \
+  obj/src/tunitas/scarpet/compiler/namespace.cpp \
+  obj/src/tunitas/scarpet/compiler/compile.ANSWER.DOME.cpp \
+  obj/src/tunitas/scarpet/compiler/compile.DOME.JSON.cpp \
+  obj/src/tunitas/scarpet/compiler/compile.DOME.ZONE.cpp \
+  obj/src/tunitas/scarpet/compiler/compile.cpp \
+  \
+  obj/src/tunitas/scarpet/compiler/detail.dome_json.Accreter.cpp \
+  obj/src/tunitas/scarpet/compiler/detail.dome_json.accrete.cpp \
+  \
+  obj/src/tunitas/scarpet/compiler/detail.dome_zone.Accreter.cpp \
+  obj/src/tunitas/scarpet/compiler/detail.dome_zone.accrete.cpp \
+  obj/src/tunitas/scarpet/compiler/detail.dome_zone.Row.cpp \
+  obj/src/tunitas/scarpet/compiler/detail.dome_zone.row.cpp \
+  obj/src/tunitas/scarpet/compiler/detail.dome_zone.leftside.cpp \
+  obj/src/tunitas/scarpet/compiler/detail.dome_zone.pointer.cpp \
+  \
+  obj/src/tunitas/scarpet/compiler/output/namespace.cpp \
+  obj/src/tunitas/scarpet/compiler/output/Sink.cpp \
+  obj/src/tunitas/scarpet/compiler/output/Null.cpp \
+  obj/src/tunitas/scarpet/compiler/output/List.cpp \
+  obj/src/tunitas/scarpet/compiler/output/Stream.cpp \
+  obj/src/tunitas/scarpet/compiler/output/sink.Stream.cpp \
+  obj/src/tunitas/scarpet/compiler/output/sink.Counters.cpp \
+  obj/src/tunitas/scarpet/compiler/output/sink.End.cpp \
+  $(end)
+
+$(scold_cxxdir)/tunitas/scarpet/compiler/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_compiler_la_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_compiler_la_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/tunitas/scarpet/compiler/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/tunitas/scarpet/compiler/dependencies.mk
+#end

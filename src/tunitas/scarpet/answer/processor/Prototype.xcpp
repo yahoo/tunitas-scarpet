@@ -1,0 +1,73 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The prototype of a processor.
+  // Descendants only.
+  // Just enough to to be useful in a concept check for descendants (via std::is_base_of<...>)
+  //
+  // Every processor must
+  // inherit from Prototype.
+  // inherit from ares::function:Query<RESPONSE> for some RESPONSE.
+  // and as such will necessarily have to implement a receiver function
+  //   ares::function:Query<RESPONSE>::receive(Code<ARES>, count, Buffer)
+  //
+  // Usage:
+  //
+  //   Yes.  See the descendants.
+  //
+  class Prototype;
+}
+#endiv
+#divert <hpp>
+// Whereas every descendant will need these, they are made convenient within the prototype
+#import tunitas.scarpet.error.Code
+#import ares.error.Code
+#import ares.Count
+#import ares.Buffer
+#import std.byte
+class tunitas::scarpet::answer::processor::Prototype {
+protected:
+  ~Prototype() = default;
+public:
+  Prototype() = default;
+  // Whereas error::Code is ambiguous in this context
+  // Unambiguous:
+  //   error::Code<ARES>
+  //   error::Code<SCARPET>
+  struct error;
+  enum error_Key { ARES, SCARPET };
+  using Count = ares::Count;
+  using Buffer = ares::Buffer<std::byte const>;
+};
+namespace tunitas::scarpet::answer::processor {
+  // Wow, is this fun or what?
+  struct Prototype::error {
+    struct detail {
+      template<error_Key KEY> struct Recode; // specializations only
+    };
+    template<error_Key KEY> using Code = typename detail::Recode<KEY>::type;
+  };
+  template<> struct Prototype::error::detail:: Recode<Prototype::ARES> {
+    using type = ares::error::Code;
+  };
+  template<> struct Prototype::error::detail::Recode<Prototype::SCARPET> {
+    using type = scarpet::error::Code;
+  };
+}
+// Every descendant needs these
+#import ares.function.Query
+#import tunitas.scarpet.answer.Response
+#import tunitas.scarpet.drrs.Record
+#import tunitas.scarpet.drrs.Records
+#endiv
+#divert <ipp>
+// Every descendant of ares::function::Query<RESPONSE> implements a Query<RESPONSE>::receive(...) and will need tehse
+#import ares.error.Code
+#import ares.reply.Record
+#import ares.reply.parse
+#import tunitas.Success
+#import tunitas.scarpet.error.Code
+#endiv

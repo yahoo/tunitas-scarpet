@@ -1,0 +1,99 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace mod::scarpet::method::ptr {
+  //
+  // Get the DAPTR or NAPTR record; commonalities among them.
+  // Descendants only.
+  // See Getter<DAPTR>, Getter<NAPTR>
+  //
+  // Whereas the only difference between DAPTR and NAPTR is the regex rewrite field
+  // and whereas the lookup<DA>(...) and lookup(NA) are basically the same code path.
+  // Herein is the commonality.
+  //
+  // Recall that DA and NA are type-domain literals which index a function lookup<PTR>(...) at compile time.
+  //
+  class Getter;
+}
+#endiv
+#divert <hpp>
+#import apache.httpd.status.Code
+#import mod.scarpet.method.Prototype
+#import std.string
+#import std.tuple
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.dns.Name
+#import mod.scarpet.method.Prototype
+// These necessary at at least for the lambda into Getter::call(FUNCTION)
+#forward mod.scarpet.server.State
+#forward tunitas.scarpet.Protocol
+#forward tunitas.scarpet.Club
+#import tunitas.Outcome
+class mod::scarpet::method::ptr::Getter : public method::Prototype {
+  using ancestor = Prototype;
+protected:
+  ~Getter() = default;
+  using ancestor::Prototype;
+  //
+  // All the type aliases here make it easy to cut & past the idiom above into operator()() of the descendant
+  // The type alias set approximates 'using namespace tunitas::scarpet' here within this structure.
+  // [alternate approximate namespace scarpet = tunitas::scarpet]
+  using Result = tunitas::Outcome<tunitas::scarpet::dns::Name>;
+  struct server {
+    using State = mod::scarpet::server::State;
+  };
+  struct dns {
+    using Name = tunitas::scarpet::dns::Name;
+  };
+  using Protocol = tunitas::scarpet::Protocol;
+  using Club = tunitas::scarpet::Club;
+  //
+  // In which FUNCTION is a lambda consisting of delegated call to lookup<DA> or lookup<NA>
+  //
+  //   auto caller = [](server::State &s, did::Method const &m, did::Identifier const &i, Protocol const &p, Club const &c) -> Result { 
+  //      using namespace tunitas::scarpet::resolve;
+  //      return lookup<NA>(s, m, i, p, c);
+  //   };
+  //
+  template<typename FUNCTION> inline auto call(FUNCTION lookup, Protocol const &, Club const &) -> status::Code;
+private:
+  auto banner_success(dns::Name const &) -> void;
+};
+#endiv
+#divert <tpp>
+#import autotools.autoconf.Config.mod.scarpet.CONFIG
+#import c.str
+#import mod.scarpet.server.State
+#import mod.scarpet.httpd.module
+#import tunitas.scarpet.resolve.lookup
+template<typename FUNCTION> auto mod::scarpet::method::ptr::Getter::call(FUNCTION lookup, Protocol const &protocol, Club const &club) -> status::Code {
+  auto [url_status, url_did_urn] = get_did_urn(req->uri);
+  if (HANDLER::OK != url_status) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "returning url_status=%d", (int) url_status);
+    return url_status;
+  }
+  auto [did_status, did_method, did_identifier] = get_did_method_identifier(url_did_urn);
+  if (HANDLER::OK != did_status) {
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "returning did_status=%d", (int) did_status);
+    return did_status;
+  }
+  ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/0, req, "use this method=%s, did=%s", c::str(did_method), c::str(did_identifier));
+  using namespace tunitas::scarpet::resolve;
+  auto resolved = lookup(*state, did_method, did_identifier, protocol, club);
+  if (ok(resolved)) {
+    banner_success(value(resolved));
+    return HANDLER::OK; // not HTTP::OK
+  } else {
+    banner_failure(url_did_urn);
+    return HTTP::NOT_FOUND;
+  }
+}
+#endiv
+#divert <cpp>
+auto mod::scarpet::method::ptr::Getter::banner_success(dns::Name const &qdn) -> void {
+  ap_set_content_type(this->req, "text/text"); // [[FIXTHIS]] as ap::set_content_type(...)
+  rs << view(qdn);
+}
+#endiv

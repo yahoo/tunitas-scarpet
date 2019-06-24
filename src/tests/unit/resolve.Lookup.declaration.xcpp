@@ -1,0 +1,14 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.resolve.lookup.declaration
+namespace tests::unit::resolve {
+  // cascade the namespaces to get enum Pointer and all its constituents
+  using namespace ::tunitas::scarpet::resolve;
+  //
+  // This is to be a Fixture ... specializations only
+  //
+  template<Pointer> struct Lookup;
+}
+#endiv

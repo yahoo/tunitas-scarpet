@@ -1,0 +1,81 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import apache.runtime.pool_t
+#import apache.httpd.server_rec
+namespace mod::scarpet::httpd {
+  //
+  // The open_logs callback
+  //
+  // WATCHOUT - exceptions must not escape back out into the C runtime.
+  //
+  auto open_logs(apache::runtime::pool_t *config, apache::runtime::pool_t *logging, apache::runtime::pool_t *temporary, apache::httpd::server_rec *) noexcept -> int;
+}
+#endiv
+#divert <cpp>
+//
+// https://wiki.apache.org/httpd/ModuleLife (module life cycle)
+// Recall, apache loads the dsos *twice* and as such runs post_config *twice*
+//
+// HTTPd start-up phase:
+//
+//    First execution "configuration check"
+//        The module is dynamically loaded in the single-process single-thread server,
+//                 that is still running as root if it was started as root.
+//        The configuration is parsed, but just to check that it is valid (sanity check).
+//        The module post_init hook is called for the 1st time in the sanity check.
+//        Depending on platform, the module is then completely unloaded.
+//                 It means that global and static variables are reset.
+//                 This also means any cleanups left pointing into the module against the process pool will go boom on exit.
+//                           <editor>their words ... surely this is but a colorful metaphor; the sound card is not to be activated</editor>
+//    Second execution "live"
+//        The module is loaded again if necessary.
+//        The configuration is parsed again, for real this time.
+//        The module post_init hook is called for the 2nd time.
+//        Children processes are started.
+//                   They may be forked (Unix) or spawned (Windows).
+//        The pre_init/post_init hooks are never called in the forked (Unix) child process,
+//                   see the child_init hook instead.
+//        If the children are spawned (as on Windows),
+//                   they repeat the whole startup,
+//                   and the post_config hook is called exactly twice again in the children
+//                   (and never a third time on graceful restart). 
+//
+// HTTPd restart:
+//
+//    On graceful restart, the module is unloaded and reloaded/init, and the post_config hook is called (still in the parent process) once, not twice.
+//    On Windows, a new spawned child process is created by the parent upon a graceful restart.
+//    During a graceful restart, new children processes may be running on the new configuration while old children on the old configuration are still serving out their requests. 
+//
+#import apache.httpd.log // APLOG_MARK is from <httpd/http_log.h>
+#import apache.httpd.module_config.get
+#import autotools.autoconf.Config.mod.scarpet.CONFIG
+#import mod.scarpet.httpd.module
+#import mod.scarpet.server.State
+#import std.exception
+#import sys.posix.stat
+#import sys.posix.isdir
+#import mod.scarpet.httpd.module // presents ::scarpet_module
+auto mod::scarpet::httpd::open_logs(apache::runtime::pool_t *config, apache::runtime::pool_t *logging, apache::runtime::pool_t *temporary, apache::httpd::server_rec *server) noexcept -> int try {
+#if 0
+  auto const *state = apache::httpd::module_config::get<server::State>(server, scarpet_module);
+#endif
+  // If you don't protect in this manner then the second 'start' directive will fail
+  static bool is_started = false;
+  if ( ! is_started ) {
+    is_started = true;
+    // start something
+  }
+
+  //
+  // Do something
+  return httpd::OK;
+} catch (std::exception const &e) {
+  ap_log_error(APLOG_MARK, APLOG_CRIT, /*status*/0, server, "could not open the logs because %s", e.what());
+  return apache::httpd::status::HTTP::INTERNAL_SERVER_ERROR;
+} catch (...) {
+  // (C++) exceptions cannot escape back out into the C runtime.
+  // [[FIXTHIS]] shouldn't we log something into the C API?
+}
+#endiv

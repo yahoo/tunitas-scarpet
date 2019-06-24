@@ -1,0 +1,62 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.is_base_of
+#include <hpp/tunitas.scarpet.drrs.record.Prototype>
+namespace tunitas::scarpet::answer {
+  //
+  // The response comprises a sucess-fail(code) indicator and a payload value
+  // See Stanza.declaration.xcpp for an example usage
+  //
+  // A reference to the value is captured.
+  // The packet parser, e.g. Stanza<ID>, descends from ares::function::Query(...)
+  // and supplying the operator(...) which will do the parsing to side effect the response.
+  //
+  // Usage:
+  //
+  //   using PAYLOAD = ...somehow... but specifically a drrs::Record<TYPE> for some TYPE
+  //   Response<PAYLOAD> response{};
+  //   ares::query(channel, qdn, dns::IN, dns::URI, Stanza<PAYLOAD>{response}); <--------------- copy the functor into the query
+  //   ares::run(channel);
+  //   if (ok(response)) { ...goodness... }
+  //   else { ...badness... }
+  //
+  namespace required {
+    // Not a lot of declared constraints here ...  They must be drrs::Record<TYPE> descendants.
+    template<typename PAYLOAD> concept bool Payload = std::is_base_of<drrs::record::Prototype, PAYLOAD>::value;
+  }
+  template<required::Payload PAYLOAD> class Response;
+}
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::answer {
+  template<required::Payload PAYLOAD> inline auto value(Response<PAYLOAD> const &) -> PAYLOAD const &;
+  template<required::Payload PAYLOAD> inline auto value(Response<PAYLOAD> &) -> PAYLOAD &;
+  template<required::Payload PAYLOAD> inline auto value(Response<PAYLOAD> &&) -> PAYLOAD;
+}
+#import tunitas.scarpet.answer.response.Prototype
+namespace tunitas::scarpet {
+  template<answer::required::Payload PAYLOAD> class answer::Response : public response::Prototype {
+    using ancestor = response::Prototype;
+  public:
+    using Value = PAYLOAD;
+    inline explicit Response(Value &referenced) : referenced{referenced} { }
+#if 0 // REMOVETHIS ... it won't be used
+  protected:
+    // Making this protected is indeed overkill
+    friend auto answer::value<>(Response const &) -> PAYLOAD const &;
+    friend auto answer::value<>(Response &) -> PAYLOAD &;
+    friend auto answer::value<>(Response &&) -> PAYLOAD;
+#endif
+    Value &referenced;
+  };
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet {
+  template<answer::required::Payload PAYLOAD> auto answer::value(Response<PAYLOAD> const &r) -> PAYLOAD const & { return r.referenced; }
+  template<answer::required::Payload PAYLOAD> auto answer::value(Response<PAYLOAD> &r) -> PAYLOAD & { return r.referenced; }
+  template<answer::required::Payload PAYLOAD> auto answer::value(Response<PAYLOAD> &&r) -> PAYLOAD { return PAYLOAD{std::move(r.referenced)}; }
+}
+#endiv

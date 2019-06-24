@@ -2,16 +2,12 @@
 // Copyright 2019-2019, Oath Inc.
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-namespace tunitas::scarpet {
+namespace tunitas::scarpet::url {
   //
-  // preferred  namespace uri (i as in iPad)
-  // deprecated namespace url (l as in llama)
+  // The URL (Universal Resource Location) ... location location location
+  // But we are here now at the host, so only the path matters.
   //
-  namespace [[deprecated("instead use tunitas::scarpet::uri ... with an 'i' as in iPad, not 'l' as in llama")]] url { }
-}
-namespace tunitas::scarpet::uri {
-  //
-  // The URI parser
+  // The path contains some routing and the identifier
   //
   //   /prefix/{ID}  ->  ( /prefix, ID )
   //

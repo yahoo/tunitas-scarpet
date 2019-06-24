@@ -1,0 +1,19 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.model.Key
+#import std.list
+namespace tunitas::scarpet::model {
+  //
+  // The ordered list of (public) keys.
+  // These are used for both the 'publickey' and the 'authentication' stanza.
+  //
+  // JSON folk will have an ordered array.
+  // DNS folk will have ordering enforced through a brace of PTR records (suboptimal though that is).
+  //
+  // Usage: see Model, nearby
+  //
+  using Keys = std::list<Key>;
+}
+#endiv

@@ -10,10 +10,13 @@ lib_libwant_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libwant_la_SOURCES))
 lib_libwant_la_SOURCES = \
   obj/src/want/namespace.cpp \
   \
-  obj/src/want/stream.duo.Files.cpp \
-  obj/src/want/stream.duo.gang.cpp \
+  obj/src/want/nonstd.to_string.cpp \
+  obj/src/want/nonstd.strftime.cpp \
   \
   obj/src/want/openssl.memory.Buffer.cpp \
+  \
+  obj/src/want/stream.duo.Files.cpp \
+  obj/src/want/stream.duo.gang.cpp \
   $(end)
 
 $(scold_cxxdir)/want/dependencies.mk: Makefile

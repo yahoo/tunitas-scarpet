@@ -1,0 +1,103 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::output { class Fixture; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+class tests::unit::output::Fixture : public cppunit::test::Fixture {
+public:
+  auto test_Null() -> void;
+  auto test_List() -> void;
+  auto test_Stream() -> void;
+  auto test_error() -> void;
+  auto test_warning() -> void;
+  auto test_notice() -> void;
+  auto test_verbose() -> void;
+  auto test_debug() -> void;
+  auto test_Counters() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.compiler.output.Null
+auto tests::unit::output::Fixture::test_Null() -> void {
+  auto subject = ::tunitas::scarpet::compiler::output::Null{};
+  error(subject) << "wow" << flush(subject);
+  CPPUNIT_ASSERT(!ok(subject));
+}
+#import tunitas.scarpet.compiler.output.List
+auto tests::unit::output::Fixture::test_List() -> void {
+  auto subject = ::tunitas::scarpet::compiler::output::List{};
+  error(subject) << "wow" << flush(subject);
+  CPPUNIT_ASSERT(!ok(subject));
+}
+#import tunitas.scarpet.compiler.output.Stream
+auto tests::unit::output::Fixture::test_Stream() -> void {
+  auto subject = ::tunitas::scarpet::compiler::output::Stream{std::cerr};
+  error(subject) << "wow" << flush(subject);
+  CPPUNIT_ASSERT(!ok(subject));
+}
+auto tests::unit::output::Fixture::test_error() -> void {
+  auto subject = ::tunitas::scarpet::compiler::output::Stream{std::cerr};
+  error(subject) << "that was bad" << flush(subject);
+  CPPUNIT_ASSERT(!ok(subject));
+}
+auto tests::unit::output::Fixture::test_warning() -> void {
+  auto subject = ::tunitas::scarpet::compiler::output::Stream{std::cerr};
+  warning(subject) << "don't do that" << flush(subject);
+  CPPUNIT_ASSERT(ok(subject));
+}
+auto tests::unit::output::Fixture::test_notice() -> void {
+  auto subject = ::tunitas::scarpet::compiler::output::Stream{std::cerr};
+  notice(subject) << "aligators in pond" << flush(subject);
+  CPPUNIT_ASSERT(ok(subject));
+}
+auto tests::unit::output::Fixture::test_verbose() -> void {
+  auto subject = ::tunitas::scarpet::compiler::output::Stream{std::cerr};
+  verbose(subject) << "what does it take to break a filibuster?" << flush(subject);
+  CPPUNIT_ASSERT(ok(subject));
+}
+auto tests::unit::output::Fixture::test_debug() -> void {
+  auto subject = ::tunitas::scarpet::compiler::output::Stream{std::cerr};
+  debug(subject) << "poison is what removes bugs (de-bug-ging, get it?)" << flush(subject);
+  CPPUNIT_ASSERT(ok(subject));
+}
+#import tunitas.scarpet.compiler.output.sink.Counters
+auto tests::unit::output::Fixture::test_Counters() -> void {
+  using Subject = ::tunitas::scarpet::compiler::output::sink::Counters;
+  Subject subject;
+  CPPUNIT_ASSERT(0 == subject.errors);
+  CPPUNIT_ASSERT(0 == subject.warnings);
+  CPPUNIT_ASSERT(0 == subject.notices);
+  CPPUNIT_ASSERT(0 == subject.verbosities);
+  CPPUNIT_ASSERT(0 == subject.debugs);
+  CPPUNIT_ASSERT(ok(subject));
+  ++subject.warnings;
+  ++subject.notices;
+  ++subject.verbosities;
+  ++subject.debugs;
+  CPPUNIT_ASSERT(ok(subject));
+  ++subject.errors;
+  CPPUNIT_ASSERT(!ok(subject));
+}
+#import rigging.suite.io
+auto tests::unit::output::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"output"};
+  series << call("Null", &Fixture::test_Null)
+         << call("List", &Fixture::test_List)
+         << call("Stream", &Fixture::test_Stream)
+    ;
+  series << call("error", &Fixture::test_error)
+         << call("warning", &Fixture::test_warning)
+         << call("notice", &Fixture::test_notice)
+         << call("verbose", &Fixture::test_verbose)
+         << call("debug", &Fixture::test_debug)
+         << call("Counters", &Fixture::test_Counters)
+    ;
+  return finalize(series);
+}
+#endiv

@@ -1,0 +1,78 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.is_same
+#import std.string
+#import tunitas.scarpet.dns.Labels
+#import tunitas.scarpet.dns.Name
+namespace tunitas::scarpet::drrs::aspect {
+  //
+  // The commonalities of the Endpoint sense among at least SRV, URI but also WRK (unused, is deprecated)
+  // Descendants only.
+  //
+  // Examples:
+  //
+  //   something.something.dark_side. SRV 1 1 mumblecore.empire.
+  //   else.something.dark_side.      URI 1 1 "https://mumblecore.empire/robots.txt"
+  //   working.something.dark_side.   WRK 1 1 ...does anyone use WRK any more ... supplanted by SRV,  yes?
+  //
+  // References (see https://wiki.tunitas.tech/.../Endpoint)
+  //
+  //   yes there were RFCs; there are always RFCs
+  //
+  // Usage:
+  //
+  //   ancestry for Record<SRV>, Record<URI>
+  //
+  namespace required {
+    template<typename FIELD> concept bool Field = (std::is_same<std::string, FIELD>::value ||
+                                                   std::is_same<dns::Labels, FIELD>::value ||
+                                                   std::is_same<dns::Name, FIELD>::value);
+  }
+  template<required::Field FIELD> class Endpoint;
+}
+#endiv
+#divert <hpp>
+#import ares.managed // Priority & Weight
+#import std.is_enum
+namespace tunitas::scarpet::drrs {
+  template<aspect::required::Field FIELD> class aspect::Endpoint {
+  public:
+    using Priority = ares::managed::Priority;
+    using Weight = ares::managed::Weight;
+    static_assert(std::is_enum<Priority>::value);
+    static_assert(std::is_enum<Weight>::value);
+  protected:
+    virtual ~Endpoint() = default;
+    inline Endpoint();
+    using Field = FIELD; // Not ready to announce 'using Endpoint = FIELD' to the descendants.
+    inline Endpoint(Priority, Weight, Field const &);
+    inline Endpoint(Priority, Weight, Field &&);
+  public:
+    Priority priority;
+    Weight weight;
+    Field endpoint; //   e.g. something.example.com, or "https://something.example.com/myhouse"
+  };
+}
+#endiv
+#divert <ipp>
+#import std.forward
+namespace tunitas::scarpet::drrs::aspect {
+  template<aspect::required::Field _> Endpoint<_>::Endpoint()
+    : priority{Priority{}}
+    , weight{Weight{}}
+    , endpoint{}
+  { }
+  template<aspect::required::Field _> Endpoint<_>::Endpoint(Priority priority, Weight weight, Field const &field)
+    : priority{priority}
+    , weight{weight}
+    , endpoint{field}
+  { }
+  template<aspect::required::Field _> Endpoint<_>::Endpoint(Priority priority, Weight weight, Field &&field)
+    : priority{priority}
+    , weight{weight}
+    , endpoint{std::forward<Field>(field)}
+  { }
+}
+#endiv

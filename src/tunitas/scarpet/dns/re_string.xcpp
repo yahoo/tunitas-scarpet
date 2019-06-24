@@ -1,0 +1,47 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import std.is_base_of
+#import std.is_same
+#import std.string
+#import tunitas.scarpet.dns.Label
+#import tunitas.scarpet.dns.Labels
+#import tunitas.scarpet.dns.Name
+namespace tunitas::scarpet::dns {
+  //
+  // Rebuild the DNS name from the label, labels and/or name
+  // return a string.
+  //
+  // WATCHOUT - see the commentariat, nearby, in tunitas.scarpet.dns.unparse which describees how the parameter pack must be
+  // last in the function arguments in order to get type deduction; Failing type deduction fail the function overload candidacy
+  // There are examples and a reference into https://en.cppreference.com/w/cpp/language/template_argument_deduction
+  //
+  // Usage:
+  //
+  //   auto name = re_string(label1, label2, label3, ...)
+  //   auto name = re_string(label1, labels)
+  //   auto name = re_string(label1, name)
+  //
+  template<typename... LABELs> inline auto re_string(LABELs const &...) -> std::string requires (std::is_base_of<Label, LABELs>::value && ... && true);
+  template<typename... REST> inline auto re_string(Label const &, REST const &...) -> std::string;
+  inline auto re_string(Name const &) -> std::string;
+  inline auto re_string(Labels const &) -> std::string;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.dns.unparse
+namespace tunitas::scarpet {
+  template<typename... LABELs> auto dns::re_string(LABELs const &...labels) -> std::string requires (std::is_base_of<Label, LABELs>::value && ... && true) { return unparse(labels...); }
+  template<typename ...REST> auto dns::re_string(Label const &first, REST const &...rest) -> std::string {
+    auto tos = to_string(first);
+    if constexpr(0 == sizeof...(REST)) {
+        return std::move(tos);
+    } else {
+      return tos + '.' + re_string(rest...);
+    }
+  }
+  inline auto dns::re_string(Name const &name) -> std::string { return to_string(name); }
+  inline auto dns::re_string(Labels const &labels) -> std::string { return to_string(labels); }
+}
+#endiv

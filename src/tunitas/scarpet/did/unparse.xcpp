@@ -1,0 +1,36 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import std.string
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.did.Name
+#import std.string
+namespace tunitas::scarpet::did {
+  //
+  // Rebuild the did syntax.
+   //
+  // Usage:
+  //
+  //   auto syntax = unparse(method, identifier)
+  //
+  inline auto unparse(Method const &, Identifier const &) -> Name;
+  template<typename RESULT> inline auto unparse(Method const &, Identifier const &) -> RESULT = delete;
+  template<> inline auto unparse<std::string>(Method const &, Identifier const &) -> std::string;
+}
+#endiv
+#divert <ipp>
+#import std.ostringstream
+namespace tunitas::scarpet {
+  auto did::unparse(Method const &m, Identifier const &i) -> Name {
+    auto raw = unparse<std::string>(m, i);
+    return Name{raw.data(), raw.size()};
+  }
+  template<> auto did::unparse<std::string>(Method const &m, Identifier const &i) -> std::string {
+    std::ostringstream buf;
+    buf << keyword::DID << ':' << view(m) << ':' << view(i);
+    return buf.str();
+  }
+}
+#endiv

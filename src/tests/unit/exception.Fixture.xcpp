@@ -11,9 +11,15 @@ class tests::unit::exception::Fixture : public cppunit::test::Fixture {
 public:
   template<typename EXCEPTION> auto test_Aspect() -> void;
   auto test_Coding() -> void;
+  auto test_Configuration() -> void;
   auto test_Crypto() -> void;
+  auto test_Invariant() -> void;
+  auto test_Logic() -> void;
   auto test_Options() -> void;
   auto test_Quitting() -> void;
+  auto test_router_Path() -> void;
+  auto test_Runtime() -> void;
+  auto test_System() -> void;
   auto test_Version() -> void;
   static auto suite() -> cppunit::Test *;
 protected:
@@ -40,9 +46,24 @@ auto tests::unit::exception::Fixture::test_Coding() -> void {
   tunitas::scarpet::exception::Coding subject{"base19"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
+#import tunitas.scarpet.exception.Configuration
+auto tests::unit::exception::Fixture::test_Configuration() -> void {
+  tunitas::scarpet::exception::Configuration subject{"infinite-memory"};
+  CPPUNIT_ASSERT(nullptr != subject.what());
+}
 #import tunitas.scarpet.exception.Crypto
 auto tests::unit::exception::Fixture::test_Crypto() -> void {
   tunitas::scarpet::exception::Crypto subject{"rot13"};
+  CPPUNIT_ASSERT(nullptr != subject.what());
+}
+#import tunitas.scarpet.exception.Invariant
+auto tests::unit::exception::Fixture::test_Invariant() -> void {
+  tunitas::scarpet::exception::Invariant subject{"cannot have a '/' here"};
+  CPPUNIT_ASSERT(nullptr != subject.what());
+}
+#import tunitas.scarpet.exception.Logic
+auto tests::unit::exception::Fixture::test_Logic() -> void {
+  tunitas::scarpet::exception::Logic subject{"cannot get here (yet you did)"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
 #import tunitas.scarpet.exception.Options
@@ -55,6 +76,35 @@ auto tests::unit::exception::Fixture::test_Quitting() -> void {
   tunitas::scarpet::exception::Quitting subject{"a.out"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
+#import mod.scarpet.exception.router.Path
+auto tests::unit::exception::Fixture::test_router_Path() -> void {
+  using Subject = mod::scarpet::exception::router::Path;
+  Subject subject{"bad", "/dev/null"};
+  CPPUNIT_ASSERT(nullptr != subject.what());
+  CPPUNIT_ASSERT_EQUAL("/dev/null"s, subject.path());
+  Subject resubject{subject};
+  CPPUNIT_ASSERT(nullptr != resubject.what());
+  CPPUNIT_ASSERT_EQUAL("/dev/null"s, resubject.path());
+}
+#import tunitas.scarpet.exception.Runtime
+auto tests::unit::exception::Fixture::test_Runtime() -> void {
+  tunitas::scarpet::exception::Runtime subject0{};
+  CPPUNIT_ASSERT(nullptr != subject0.what());
+  tunitas::scarpet::exception::Runtime subject1{"bad bad"};
+  CPPUNIT_ASSERT(nullptr != subject1.what());
+}
+#import tunitas.scarpet.exception.System
+#import std.system_category
+#import std.errc
+#import std.error_code
+auto tests::unit::exception::Fixture::test_System() -> void {
+  tunitas::scarpet::exception::System subjectA{13, std::system_category(), "bad bad"};
+  CPPUNIT_ASSERT(nullptr != subjectA.what());
+  tunitas::scarpet::exception::System subjectB{std::errc::no_such_file_or_directory, "missing file"};
+  CPPUNIT_ASSERT(nullptr != subjectB.what());
+  tunitas::scarpet::exception::System subjectC{std::error_code{13, std::system_category()}, "missing thing"};
+  CPPUNIT_ASSERT(nullptr != subjectC.what());
+}
 #import tunitas.scarpet.exception.Version
 auto tests::unit::exception::Fixture::test_Version() -> void {
   tunitas::scarpet::exception::Version subject{"a.out"};
@@ -63,23 +113,39 @@ auto tests::unit::exception::Fixture::test_Version() -> void {
 #import rigging.suite.io
 auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
-  Stream series("exception");
-  series  << call("Coding", &Fixture::test_Coding)
-          << call("Crypto", &Fixture::test_Crypto)
-          << call("Options", &Fixture::test_Options)
-          << call("Quitting", &Fixture::test_Quitting)
-          << call("Version", &Fixture::test_Version)
+  Stream series{"exception"};
+  series << call("Coding", &Fixture::test_Coding)
+         << call("Configuration", &Fixture::test_Configuration)
+         << call("Crypto", &Fixture::test_Crypto)
+         << call("Invariant", &Fixture::test_Invariant)
+         << call("Logic", &Fixture::test_Logic)
+         << call("Options", &Fixture::test_Options)
+         << call("Quitting", &Fixture::test_Quitting)
+         << call("Runtime", &Fixture::test_Runtime)
+         << call("Version", &Fixture::test_Version)
     ;
   {
-    Stream asp("Aspect");
+    Stream rou{"router"};
+    rou << call("Path", &Fixture::test_router_Path)
+      ;
+    series << add(rou.release());
+  } {
+    Stream asp{"Aspect"};
     namespace subjecting = ::tunitas::scarpet::exception;
+    namespace modding = ::mod::scarpet::exception;
     asp << call("Coding", &Fixture::test_Aspect<subjecting::Coding>)
         << call("Crypto", &Fixture::test_Aspect<subjecting::Crypto>)
         << call("Options", &Fixture::test_Aspect<subjecting::Options>)
+        << call("Configuration", &Fixture::test_Aspect<subjecting::Configuration>)
+        << call("Invariant", &Fixture::test_Aspect<subjecting::Invariant>)
+        << call("Logic", &Fixture::test_Aspect<subjecting::Logic>)
         << call("Quitting", &Fixture::test_Aspect<subjecting::Quitting>)
+        << call("router:Path", &Fixture::test_Aspect<modding::router::Path>)
+        << call("Runtime", &Fixture::test_Aspect<subjecting::Runtime>)
+        << call("System", &Fixture::test_Aspect<subjecting::System>)
         << call("Version", &Fixture::test_Aspect<subjecting::Version>)
       ;
-    series << move(asp);
+    series << add(asp.release());
   }
   return finalize(series);
 }

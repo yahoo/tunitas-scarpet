@@ -1,0 +1,28 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.dns.Type
+#import tunitas.scarpet.drrs.Record
+#import tunitas.scarpet.dns.Labels
+#forward tunitas.scarpet.compiler.detail.dome_zone.Row
+namespace tunitas::scarpet::compiler::detail::dome_zone {
+  //
+  // The row(...) overloads produce a Row<TYPE> in convenient form.
+  //
+  // Usage:
+  //
+  //   See the documentariat in detail.dome_zone.Row
+  //
+  template<dns::Type TYPE> inline auto row(dns::Labels, drrs::Record<TYPE>) -> Row<TYPE>;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.compiler.detail.dome_zone.Row
+#import std.move
+namespace tunitas::scarpet::compiler::detail {
+  template<dns::Type TYPE> auto dome_zone::row(dns::Labels labels, drrs::Record<TYPE> record) -> Row<TYPE> {
+    return Row<TYPE>{std::move(labels), std::move(record)};
+  }
+}
+#endiv

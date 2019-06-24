@@ -1,0 +1,59 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace mod::scarpet::exception::router {
+  //
+  // There was a problem with a path (an URL path) in the router
+  // Something about the syntax or conformance with some external standard
+  // e.g. too few slashes, too many slashes, too deep, too shallow, etc.
+  //
+  // The offending path is carried in the exception.
+  // It is copied upon construction.
+  //
+  // Usage:
+  //
+  //   throw router::Path{"too many levels", bad_path};
+  //
+  class Path;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.exception.Aspect
+#import mod.scarpet.exception.aspect.Router
+#import mod.scarpet.exception.router.aspect.Path
+#import std.invalid_argument
+class mod::scarpet::exception::router::Path :
+  public tunitas::scarpet::exception::Aspect,
+  public mod::scarpet::exception::aspect::Router,
+  public aspect::Path,
+  public std::invalid_argument {
+  struct ancestors {
+    // recall: there is an 'exception' in the ancestry that occludes the nearby namespace
+    struct aspects {
+      using Aspect = tunitas::scarpet::exception::Aspect;
+      using Router = mod::scarpet::exception::aspect::Router;
+    };
+    using Path = router::aspect::Path;
+    using Exception = std::invalid_argument;
+  };
+public:
+  inline Path(std::string const &reason, std::string const &path);
+  auto what() const noexcept -> char const *;
+};
+#endiv
+#divert <ipp>
+namespace mod::scarpet::exception::router {
+  Path::Path(std::string const &reason, std::string const &path)
+    : ancestors::Path{path}
+    , ancestors::Exception{reason}
+  { }
+}
+#endiv
+#divert <cpp>
+namespace mod::scarpet::exception::router {
+  auto Path::what() const noexcept -> char const * {
+    return ancestors::Exception::what();
+  }
+}
+#endiv

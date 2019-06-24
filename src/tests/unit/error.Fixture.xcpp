@@ -52,7 +52,7 @@ auto tests::unit::error::Fixture::test_Category() -> void {
 #import rigging.suite.io
 auto tests::unit::error::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
-  Stream series("error");
+  Stream series{"error"};
   series << call("Condition", &Fixture::test_Condition)
          << call("Code", &Fixture::test_Code)
          << call("category", &Fixture::test_category)

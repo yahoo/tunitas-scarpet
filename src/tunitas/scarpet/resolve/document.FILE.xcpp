@@ -1,0 +1,91 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.resolve.document.declaration
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::resolve {
+  //
+  // Whereas some DID documents are to be found in zone files that are stored in the local filesystem.
+  // This document lookup method acquires the zone file by slurping it up off the disk from the special areas.
+  //
+  // These use a "F" flag to indicate the use of a host-local copy of the DID document.
+  //
+  // There are NO contents for the REGEX and NO contents for the redirect
+  //
+  // DID Document Storage Service Zone (DSSZ), a (F)QDN ---------------------------\ (empty)
+  //                                                                               |      
+  // The regex pattern & replacement is always completely empty -----------------\ |
+  //                                                                             | |
+  // DID Resolver Service+Protocol -----------------------------\---\            | |
+  //                                                            |   |            | |
+  // DID Document Storage Flags ----------------------------\   |   |            | |
+  //                                                        |   |   |            | |
+  // /-----------reversed DID-----------------\             |   |   |            | |
+  // |           |        |                   |             |   |   |            | |
+  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv             v   v   v            v v
+  // ... 9b-7d80-46c0-bc2a-76a84bf848ef.freegan  NAPTR 1 1 "F" "did+freegan+v1" "" .
+  // ... 0e-233a-496c-aebd-79ca7c6efe9a.hammock  NAPTR 1 1 "F" "did+hammock"    "" .
+  //
+  // Scheme & Policy:
+  //
+  // 4c76ad9b-7d80-46c0-bc2a-76a84bf848ef.freegan ------> indicates the zone file at ----> $DIRECTORY/freegan/4c76ad9b-7d80-46c0-bc2a-76a84bf848ef.zone
+  // 635b700e-233a-496c-aebd-79ca7c6efe9a.hammock ---> indicates the zone file at -------> $DIRECTORY/hammock/635b700e-233a-496c-aebd-79ca7c6efe9a.zone
+
+  //
+  template<> auto document<FiLE>(Service &, Method const &, Identifier const &, dns::Name const &) -> Outcome<did::Document<did::DOME>>;
+}
+#endiv
+#divert <cpp>
+#import nonstd.exception.Unimplemented
+#import tunitas.scarpet.did.isa
+#import tunitas.scarpet.exception.Configuration
+#import tunitas.scarpet.exception.Invariant
+#import tunitas.scarpet.exception.System
+#import tunitas.scarpet.error.Code
+#import std.error_code
+#import std.string
+#import std.system_error
+#import slurp.file.read
+#import sys.error.E
+#import std.cerr
+namespace tunitas::scarpet::resolve {
+  template<> auto document<FiLE>(Service &service, Method const &method, Identifier const &identifier, dns::Name const &qdn) -> Outcome<did::Document<did::DOME>> {
+    using Result = Outcome<did::Document<did::DOME>>;
+    if (!service.directory) {
+      // This function can't do its job.
+      throw exception::Configuration{"no storage directory"};
+    }
+    if (!did::is_a_simple_word(method) || !did::is_a_simple_word(identifier)) {
+      // The luser gave us bad data.
+      return Result{std::error_code{error::Code::INVALID_IDENTIFIER}};
+    }
+    try {
+      // [[FIXTHIS]] Pesky ... ugly ... fix this with some judiciously-placed did::operator/(filepath, method), operator/(filepath, identifier), operator+(filepath, string)
+      auto filepath = *service.directory / view(method) / (std::string{view(identifier)} + ".zone"s);
+      // [[FIXTHIS]] be cautious, at the cost of some performance, stat(2) the file to see if it exists
+      // [[FIXTHIS]] be cautious, at the cost of some performance, state(2) the file to see if it is appropriately sized; i.e. not empty, and not too big.
+      std::cerr << "opening " << filepath << '\n';
+      auto slurped = slurp::file::read<std::string>(filepath);
+      auto dome = did::Document<did::DOME>{};
+      return Result{std::move(dome)};
+    } catch (std::system_error const &e) {
+      auto ec = e.code();
+#if 0
+      std::cerr << "failing " << e.what() << '\n';
+      std::cerr << "category " << ec.category().name() << '\n';
+      std::cerr << "code " << ec.value() << '\n';
+      std::cerr << "message " << ec.message() << '\n';
+      std::cerr << "std::errc " << (std::errc::no_such_file_or_directory == ec) << '\n';
+      std::cerr << "E::NOENT " << (sys::error::E::NOENT == ec) << '\n';
+#endif
+      // WATCHOUT - we have to check both generic_category and system_category because you never know whcih you'll given.
+      if (std::errc::no_such_file_or_directory == ec || sys::error::E::NOENT == ec) {
+        return Result{std::error_code{error::Code::NOT_FOUND}};
+      }
+      throw exception::System{ec, "document"};
+    }
+  }
+}
+#endiv

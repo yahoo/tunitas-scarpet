@@ -1,0 +1,31 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.drrs.Record.declaration
+namespace tunitas::scarpet::drrs {
+  //
+  // The Records are lists of RR (Resource Records).
+  //
+  // Whereas the DNS system does not constraint how many RR or of what type shall be laid against a lhs label
+  // the DRSS (Disaggregated Resource Records, Splattered (across a Document Storage Service Zone)) scheme
+  // uses this capability to form multi-valued possibilities, specially against PTR but also URI.
+  //
+  // Here we use std::list for simplicity
+  //
+  template<dns::Type TYPE> struct Records;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.drrs.Record
+#import tunitas.scarpet.drrs.record.Prototype
+#import std.list
+namespace tunitas::scarpet {
+  template<dns::Type TYPE> struct drrs::Records : public record::Prototype, public std::list<Record<TYPE>> {
+    using ancestor = std::list<Record<TYPE>>;
+  public:
+    Records() = default;
+    using ancestor::list;
+  };
+};
+#endiv

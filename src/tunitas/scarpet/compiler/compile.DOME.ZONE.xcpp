@@ -1,0 +1,62 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#forward tunitas.scarpet.did.Document.DOME
+#forward tunitas.scarpet.did.Document.ZONE
+#forward tunitas.scarpet.compiler.output.Sink
+namespace tunitas::scarpet::compiler {
+  //
+  // Compile from a Document<DOME> to a Document<ZONE>, which is easily updated into DNS
+  // c.f. namespace tunitas::scarpet::update, nearby.
+  //
+  // Usage:
+  //
+  //   auto dome = ...somehow... did::Document<DOME>{};
+  //   auto zone = did::Document<ZONE>{};
+  //   auto sink = compiler::output::Stream{}; ... or a compatible sibling...
+  //
+  //   if (compile(dome, zone, sink)) {
+  //     ...yay... there is happiness, the zone is good (print it)
+  //     ...use the dome...
+  //   } else {
+  //      ...nay... the dome is bad,
+  //            and the zone is in an inconsistent state,
+  //            and the sink contains the explanation.
+  //   }
+  //
+  inline auto compile([[in]] did::Document<did::DOME> const &, [[out]] did::Document<did::ZONE> &, [[out]] output::Sink &) -> bool;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.compiler.detail.dome_zone.accrete
+#import tunitas.scarpet.compiler.detail.dome_zone.leftside
+#import tunitas.scarpet.compiler.detail.dome_zone.row
+#import tunitas.scarpet.compiler.output.Sink
+#import tunitas.scarpet.did.Document.DOME
+#import tunitas.scarpet.did.Document.ZONE
+#import tunitas.scarpet.did.unparse
+#import tunitas.scarpet.dns.label.literals
+#import tunitas.scarpet.dns.unparse
+#import tunitas.scarpet.drrs.Record
+#import tunitas.scarpet.exception.Aspect
+auto tunitas::scarpet::compiler::compile(did::Document<did::DOME> const &source, did::Document<did::ZONE> &result, output::Sink &explanation) -> bool try {
+  using namespace dns::label::literals;
+  using namespace detail::dome_zone;
+  auto accreter = Accreter{result};
+  accreter << row(leftside("id"_label, source), drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, to_string(unparse(source.method, source.identifier))});
+  for (auto const &record : source.model.contexts) {
+    // WATCHOUT - the standard says "@context" with an '@' because ... reasons.
+    accreter << row(leftside("context"_label, source), drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, to_string(record)});
+  }
+  accrete(accreter, source, "publickey"_label, source.model.publickeys);
+  accrete(accreter, source, "authorization"_label, source.model.authentications);
+  accrete(accreter, source, "service"_label, source.model.services);
+  accrete(accreter, source, "proof"_label, source.model.proofs);
+  return ok(explanation);
+} catch (exception::Aspect const &e) {
+  // These are expected to be exceptional because the DOME is "precompiled" and "ready to go"
+  ee(explanation) << "cannot compile because " << e.what() << flush(explanation);
+  return true;
+}
+#endiv

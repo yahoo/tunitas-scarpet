@@ -1,0 +1,56 @@
+g// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::answer::processor::single {
+  //
+  // The commonalities among the Single<TYPE>
+  // Descendants only
+  // The single::Prototype enhances the processor::Prototype
+  //
+  // Usage:
+  //
+  //   Yes.
+  //   By inheritance, as a replacement for processor::Protoype.
+  //   See any of the Single<TYPE> specializations
+  //
+  class Prototype;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.processor.Prototype
+#import tunitas.scarpet.answer.Response
+#import tunitas.scarpet.drrs.Record
+#import tunitas.scarpet.dns.Type
+class tunitas::scarpet::answer::processor::single::Prototype : public processor::Prototype {
+  using ancestor = processor::Prototype;
+protected:
+  ~Prototype() = default;
+  Prototype() = default;
+  //
+  // [[FIXTHIS]] [[SLOPPY]] ...  ASSIGNMENT is a lambda of dubious type signature which is passed in from the descendant.  
+  template<ares::Resource_Record RECORD, dns::Type TYPE, typename ASSIGNMENT> static auto reception(Response<drrs::Record<TYPE>> &state, error::Code<ARES>, Count timeouts, Buffer, ASSIGNMENT) -> void;
+};
+#endiv
+#divert <tpp>
+namespace tunitas::scarpet::answer::processor::single {
+  template<ares::Resource_Record RECORD, dns::Type TYPE, typename ASSIGNMENT> auto Prototype::reception(Response<drrs::Record<TYPE>> &state, error::Code<ARES> code, Count timeouts, Buffer buffer, ASSIGNMENT assignment) -> void {
+    // [[FIXTHIS]] this is cut & paste with every other single-member URI entry
+    using namespace ares;
+    if (error::Code<ARES>::SUCCESS != code) {
+      state.success = std::error_code{code};
+    } else {
+      reply::Record<RECORD> records;
+      auto parsed = reply::parse<RECORD>(std::nothrow, buffer, records);
+      if (!ok(parsed)) {
+        state.success = error_code(parsed);
+      } else if (1 != records.size()) { // [[FIXTHIS]] this is common enough that ares::List should special-case unit length lists
+        state.success = std::error_code{error::Code<SCARPET>::FOUND_MULTIPLE_RECORDS};
+      } else {
+        assignment(state.referenced, *records.begin());
+        state.success = Success{SUCCESS};
+      }
+    }
+  }
+}
+#endiv

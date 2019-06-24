@@ -1,0 +1,44 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.char_traits
+#import std.basic_string
+namespace tunitas::scarpet::dns {
+  //
+  // A Domain Label Service (DNS) Qualified Domain Label (QDN).
+  //
+  // A Label MUST NOT not have dots in it; e.g. mydomain
+  // A Name MAY have dots in it; e.g. exp.devbox.mydomain.example.
+  //
+  // These are unchecked, unenforcable conditions, but the type system helps you keep it straight.
+  // [[FIXTHIS]] define is_valid(Label) and is_plausible(Label) or such
+  //
+  // Usage:
+  //
+  //   oh come on (it's a string)
+  //
+  namespace label {
+    class Traits : public std::char_traits<char> { };
+  }
+  using Label = std::basic_string<char, label::Traits>;
+}
+#endiv
+#divert <hpp>
+#import std.string_view
+#import std.string
+namespace tunitas::scarpet::dns::label {
+  inline auto view(Label const &) -> std::string_view;
+  inline auto to_string(Label const &) -> std::string;
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::dns {
+  auto label::view(Label const &old) -> std::string_view {
+    return std::string_view{old.data(), old.size()};
+  }
+  auto label::to_string(Label const &old) -> std::string {
+    return std::string{old.data(), old.size()};
+  }
+}
+#endiv

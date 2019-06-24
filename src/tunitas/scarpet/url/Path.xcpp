@@ -1,0 +1,71 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::url {
+  //
+  // The Path is analysis of the path component
+  //
+  //   /prefix/{URN}  ->  ( /prefix, URN )
+  //
+  // We refer to this Path component as a "Locator", an "URL" ('ell as in Llama)
+  // Even though Apache refers to at as an "Indicator", a "URI" (an 'I' as in "There is no I in TEAM",
+  // also there is no 'U' therein, but that's a different level of sour snideness which detracts from the point here)
+  //
+  // Exmaples:
+  //
+  //   <-- prefix --> <---------- urn ------------->
+  //   /scarpet/daptr/did:example:123456789abcdefghi
+  //
+  // Usage:
+  //
+  //   req = apache::httpd::request_rec *{...somehow...};
+  //   std::string url_path{req->uri};
+  //   auto parsed = url_parser(url_path);
+  //   if (!ok(parsed)) {
+  //     return HTTP::BAD_REQUEST;
+  //   } else if (prefix(parsed) != spec->location_prefix.value) {
+  //     return HTTP::NOT_FOUND;
+  //   } else {
+  //     auto id = urn(std::move(parsed));
+  //     ...use it...
+  //   }
+  //
+  class Path;
+}
+#endiv
+#divert <hpp>
+#import std.string
+namespace tunitas::scarpet::url {
+  inline auto ok(Path const &) -> bool;
+  //
+  inline auto prefix(Path const &) -> std::string const &;
+  inline auto prefix(Path &) -> std::string &;
+  inline auto prefix(Path &&) -> std::string;
+  //
+  inline auto urn(Path const &) -> std::string const &;
+  inline auto urn(Path &) -> std::string &;
+  inline auto urn(Path &&) -> std::string;
+}
+#import std.tuple
+class tunitas::scarpet::url::Path : public std::tuple<bool, std::string, std::string> {
+  using ancestor = std::tuple<bool, std::string, std::string>;
+public:
+  using Tuple = ancestor;
+  Path() = default;
+  using ancestor::tuple;
+};
+#endiv
+#divert <ipp>
+#import std.get
+#import std.forward
+namespace tunitas::scarpet {
+  auto url::ok(Path const &u) -> bool { return std::get<0>(static_cast<Path::Tuple const &>(u)); }
+  auto url::prefix(Path const &u) -> std::string const & { return std::get<1>(static_cast<Path::Tuple const &>(u)); }
+  auto url::prefix(Path &u) -> std::string &             { return std::get<1>(static_cast<Path::Tuple &>(u)); }
+  auto url::prefix(Path &&anon) -> std::string           { return std::get<1>(std::forward<Path::Tuple>(anon)); }
+  auto url::urn(Path const &u) -> std::string const & { return std::get<2>(static_cast<Path::Tuple const &>(u)); }
+  auto url::urn(Path &u) -> std::string &             { return std::get<2>(static_cast<Path::Tuple &>(u)); }
+  auto url::urn(Path &&u) -> std::string              { return std::get<2>(std::forward<Path::Tuple>(u)); }
+}
+#endiv

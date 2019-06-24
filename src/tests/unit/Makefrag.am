@@ -15,24 +15,97 @@ check_bin_unit_MODULES = $(call TF_SOURCEStoMODULES, $(check_bin_unit_SOURCES))
 check_bin_unit_SOURCES = \
   obj/src/tests/unit/namespace.cpp \
   obj/src/tests/unit/main.cpp \
+  \
+  obj/src/tests/unit/answer.Fixture.cpp \
+  obj/src/tests/unit/answer.Document.cpp \
+  obj/src/tests/unit/answer.Fields.declaration.cpp \
+  obj/src/tests/unit/answer.Fields.STANZA.cpp \
+  obj/src/tests/unit/answer.Fields.PUBLICKEY.cpp \
+  obj/src/tests/unit/answer.Fields.AUTHENTICATION.cpp \
+  obj/src/tests/unit/answer.Fields.SERVICE.cpp \
+  obj/src/tests/unit/answer.Fields.PROOF.cpp \
+  obj/src/tests/unit/answer.Fields.cpp \
+  \
+  obj/src/tests/unit/compiler.Fixture.cpp \
+  obj/src/tests/unit/compiler.Compile.declaration.cpp \
+  obj/src/tests/unit/compiler.Compile.ANSWER.DOME.cpp \
+  obj/src/tests/unit/compiler.Compile.DOME.JSON.cpp \
+  obj/src/tests/unit/compiler.Compile.DOME.ZONE.cpp \
+  obj/src/tests/unit/compiler.Compile.cpp \
+  \
+  obj/src/tests/unit/did.Fixture.cpp \
+  obj/src/tests/unit/did.Parser.cpp \
+  obj/src/tests/unit/did.Document.declaration.cpp \
+  obj/src/tests/unit/did.Document.DOME.cpp \
+  obj/src/tests/unit/did.Document.JSON.cpp \
+  obj/src/tests/unit/did.Document.ZONE.cpp \
+  \
+  obj/src/tests/unit/dns.Fixture.cpp \
+  obj/src/tests/unit/dns.unparse.Function.cpp \
+  obj/src/tests/unit/dns.unparse.Template.cpp \
+  \
+  obj/src/tests/unit/drrs.Fixture.cpp \
+  obj/src/tests/unit/drrs.Allocator.cpp \
+  obj/src/tests/unit/drrs.Flat.cpp \
+  obj/src/tests/unit/drrs.Flat.Populator.cpp \
+  obj/src/tests/unit/drrs.Record.declaration.cpp \
+  obj/src/tests/unit/drrs.Record.DAPTR.cpp \
+  obj/src/tests/unit/drrs.Record.NAPTR.cpp \
+  obj/src/tests/unit/drrs.Record.PTR.cpp \
+  obj/src/tests/unit/drrs.Record.SRV.cpp \
+  obj/src/tests/unit/drrs.Record.TXT.cpp \
+  obj/src/tests/unit/drrs.Record.URI.cpp \
+  obj/src/tests/unit/drrs.Record.cpp \
+  obj/src/tests/unit/drrs.Tree.cpp \
+  obj/src/tests/unit/drrs.Tree.Populator.cpp \
+  \
+  obj/src/tests/unit/error.Fixture.cpp \
+  obj/src/tests/unit/error.Category.cpp \
+  \
+  obj/src/tests/unit/exception.Fixture.cpp \
+  obj/src/tests/unit/exception.Fixture.Thrower.cpp \
+  \
+  obj/src/tests/unit/model.Fixture.cpp \
+  obj/src/tests/unit/names.Fixture.cpp \
+  \
+  obj/src/tests/unit/options.Fixture.cpp \
+  obj/src/tests/unit/options.Fixture.Parser.cpp \
+  obj/src/tests/unit/options.Fixture.Specification.cpp \
+  obj/src/tests/unit/options.Encoding.cpp \
+  \
+  obj/src/tests/unit/output.Fixture.cpp \
   obj/src/tests/unit/pki.Fixture.cpp \
+  obj/src/tests/unit/pki.Algorithm.cpp \
+  obj/src/tests/unit/pki.Encoding.cpp \
+  obj/src/tests/unit/pki.Material.cpp \
   obj/src/tests/unit/pki.key.Fixture.cpp \
   obj/src/tests/unit/pki.key.Activated.cpp \
   obj/src/tests/unit/pki.key.Pair.cpp \
   obj/src/tests/unit/pki.key.Privat.cpp \
   obj/src/tests/unit/pki.key.Publik.cpp \
-  obj/src/tests/unit/error.Fixture.cpp \
-  obj/src/tests/unit/error.Category.cpp \
-  obj/src/tests/unit/exception.Fixture.cpp \
-  obj/src/tests/unit/exception.Fixture.Thrower.cpp \
-  obj/src/tests/unit/options.Encoding.cpp \
-  obj/src/tests/unit/options.Fixture.cpp \
-  obj/src/tests/unit/options.Fixture.Parser.cpp \
-  obj/src/tests/unit/options.Fixture.Specification.cpp \
+  \
+  obj/src/tests/unit/resolve.aspect.Configuration.cpp \
+  obj/src/tests/unit/resolve.aspect.Service.cpp \
+  obj/src/tests/unit/resolve.Fixture.cpp \
+  obj/src/tests/unit/resolve.Service.cpp \
+  obj/src/tests/unit/resolve.Document.declaration.cpp \
+  obj/src/tests/unit/resolve.Document.DRRS.cpp \
+  obj/src/tests/unit/resolve.Document.FILE.cpp \
+  obj/src/tests/unit/resolve.Document.REST.cpp \
+  obj/src/tests/unit/resolve.Document.ZONE.cpp \
+  obj/src/tests/unit/resolve.Lookup.declaration.cpp \
+  obj/src/tests/unit/resolve.Lookup.DA.cpp \
+  obj/src/tests/unit/resolve.Lookup.NA.cpp \
+  \
+  obj/src/tests/unit/router.Fixture.cpp \
+  obj/src/tests/unit/router.url.parser.Tail.cpp \
+  \
   obj/src/tests/unit/scarpet.Fixture.cpp \
   obj/src/tests/unit/scarpet.Fixture.Configuration.cpp \
+  \
   obj/src/tests/unit/url.Fixture.cpp \
   obj/src/tests/unit/url.Parser.cpp \
+  \
   obj/src/tests/unit/want.Fixture.cpp \
   $(end)
 

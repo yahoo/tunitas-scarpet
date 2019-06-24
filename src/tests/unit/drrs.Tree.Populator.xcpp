@@ -1,0 +1,42 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#include <hpp/tests.unit.drrs.Tree>
+#endiv
+#divert <hpp>
+#import std.string
+#import std.uintmax_t
+#import tunitas.scarpet.drrs.Tree
+class tests::unit::drrs::Tree::Populator {
+public:
+  Populator();
+  Populator(Populator const &) = delete;
+  auto operator=(Populator const &) -> Populator & = delete;
+  using Tree = tunitas::scarpet::drrs::Tree;
+  auto populate(Tree &) -> void;
+protected:
+  auto gensym() -> std::string;
+  std::uintmax_t serial;
+};
+#endiv
+#divert <cpp>
+#import std.move
+#import tunitas.scarpet.dns.type.constants
+#import tunitas.scarpet.drrs.tree.Allocator
+namespace tests::unit::drrs {
+  auto Tree::Populator::gensym() -> std::string {
+    return "symbol-"s + std::to_string(++serial);
+  }
+  Tree::Populator::Populator()
+    : serial{0u}
+  { }
+  auto Tree::Populator::populate(Tree &subject) -> void {
+    Allocator{subject}.make_record<tunitas::scarpet::dns::TXT>(gensym());
+    for (auto &child : subject.children()) {
+      populate(child);
+    }
+  }
+}
+#endiv
+

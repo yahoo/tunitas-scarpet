@@ -16,13 +16,20 @@ function show_last_few() {
 
 echo
 echo "--- GET -------------------------------------------"
+# expect adonishment of failure
 do_curl http://localhost:8888/scarpet
+# expect adonishment of failure
 do_curl http://localhost:8888/scarpet/
-do_curl http://localhost:8888/scarpet/123
+# ping pong
+do_curl http://localhost:8888/scarpet/ping
+# This could work if there was a DID (document) available there c.f. https://w3c-ccg.github.io/did-spec/
+do_curl http://localhost:8888/scarpet/document/did:example:123456789abcdefghi
+do_curl http://localhost:8888/scarpet/daptr/did:example:123456789abcdefghi
+do_curl http://localhost:8888/scarpet/naptr/did:example:123456789abcdefghi
 echo "--- POST -------------------------------------------"
-do_curl -d post-that http://localhost:8888/scarpet
+do_curl -d example.1.zone-that http://localhost:8888/scarpet
 echo "--- PUT -------------------------------------------"
-do_curl -X PUT -d put-that http://localhost:8888/scarpet
+do_curl -X PUT -d example.2.zone http://localhost:8888/scarpet/did:example:123456789abcdefghi
 echo
 
 # var probably contains data files (the scarpet local storage)

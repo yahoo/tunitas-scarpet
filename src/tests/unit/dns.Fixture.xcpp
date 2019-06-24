@@ -1,0 +1,151 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::dns { class Fixture; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+class tests::unit::dns::Fixture : public cppunit::test::Fixture {
+public:
+  auto test_Name() -> void;
+  auto test_Label() -> void;
+  auto test_Labels() -> void;
+  auto test_Type() -> void;
+  auto test_type_constants() -> void;
+  auto test_type_DAPTR() -> void;
+  auto test_usage_unparse() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+#import std.empty
+#import std.size
+#import tunitas.scarpet.dns.Label
+auto tests::unit::dns::Fixture::test_Label() -> void {
+  auto subject0 = ::tunitas::scarpet::dns::Label{};
+  CPPUNIT_ASSERT(std::empty(subject0));
+  auto subject1 = ::tunitas::scarpet::dns::Label{"myserver"};
+  CPPUNIT_ASSERT(!std::empty(subject1));
+  CPPUNIT_ASSERT("myserver"sv == view(subject1));
+}
+#import tunitas.scarpet.dns.Labels
+auto tests::unit::dns::Fixture::test_Labels() -> void {
+  auto subject0 = ::tunitas::scarpet::dns::Labels{};
+  CPPUNIT_ASSERT(std::empty(subject0));
+  auto subject1 = ::tunitas::scarpet::dns::Labels{"example", "myserver", "devbox"};
+  CPPUNIT_ASSERT(!std::empty(subject1));
+  CPPUNIT_ASSERT(3u == std::size(subject1));
+  CPPUNIT_ASSERT("devbox.myserver.example"s == to_string(subject1));
+  auto subject2 = ::tunitas::scarpet::dns::Labels{"", "example", "myserver", "devbox"};
+  CPPUNIT_ASSERT(4u == std::size(subject2));
+  // and we know that to_string(...) tests to_stream(...)
+  CPPUNIT_ASSERT("devbox.myserver.example."s == to_string(subject2));
+}
+#import tunitas.scarpet.dns.Name
+auto tests::unit::dns::Fixture::test_Name() -> void {
+  auto subject0 = ::tunitas::scarpet::dns::Name{};
+  CPPUNIT_ASSERT(std::empty(subject0));
+  auto subject1 = ::tunitas::scarpet::dns::Name{"exp.devbox.myserver.example."};
+  CPPUNIT_ASSERT(!std::empty(subject1));
+  CPPUNIT_ASSERT("exp.devbox.myserver.example."sv == view(subject1));
+}
+#import tunitas.scarpet.dns.Type
+#import tunitas.scarpet.dns.type.constants
+#import std.is_same
+auto tests::unit::dns::Fixture::test_Type() -> void {
+  using ::tunitas::scarpet::dns::Type;
+  auto const t99 = Type(99);
+  auto const are_the_same_type = std::is_same<std::remove_const<decltype(t99)>::type, std::remove_const<decltype(::tunitas::scarpet::dns::A)>::type>::value;
+  static_assert(are_the_same_type);
+}
+auto tests::unit::dns::Fixture::test_type_constants() -> void {
+  using namespace ::tunitas::scarpet::dns;
+  auto a = A;
+  auto aaaa = AAAA;
+  auto naptr = NAPTR;
+  auto ns = NS;
+  auto srv  = SRV;
+  auto txt = TXT;
+  auto uri = URI;
+  CPPUNIT_ASSERT(0 < sizeof (a) + sizeof (aaaa) + sizeof (naptr) + sizeof (ns) + sizeof (srv) + sizeof (txt) + sizeof (uri));
+}
+auto tests::unit::dns::Fixture::test_type_DAPTR() -> void {
+  using namespace ::tunitas::scarpet::dns;
+  auto dp = DAPTR;
+  auto np = NAPTR;
+  CPPUNIT_ASSERT(dp != np);
+}
+#import tunitas.scarpet.dns.unparse
+auto tests::unit::dns::Fixture::test_usage_unparse() -> void {
+  namespace dns = ::tunitas::scarpet::dns;
+  auto l1 = dns::Label{"l1"};
+  auto l2 = dns::Label{"l2"};
+  auto l3 = dns::Label{"l3"};
+  auto ls = dns::Labels{"l6", "l5", "l4"}; // ...... WATCHOUT -- these are big endian
+  auto nn = dns::Name{"tunitas.solutions."}; // .... WATCHOUT -- these are little endian
+  // ADL will find these
+  {
+    unparse(l1);
+    unparse(l1, l2);
+    unparse(l1, l2, l3);
+    unparse(ls);
+    unparse(l1, ls);
+    unparse(l1, l2, ls);
+    unparse(l1, l2, l3, ls);
+    unparse(nn);
+    unparse(l1, nn);
+    unparse(l1, l2, nn);
+    unparse(l1, l2, l3, nn);
+  }
+  auto n1 = unparse(l1);
+  auto n2 = unparse(l1, l2, l3);
+  auto n3 = unparse(l1, l2, l3, ls);
+  auto n4 = unparse(l1, l2, l3, nn);
+  auto zlcopy = unparse(l1);
+  auto zlforw = unparse(dns::Label{l1});
+  auto zncopy = unparse(nn);
+  auto znforw = unparse(dns::Name{nn});
+  // Now use these variables somehow.
+  CPPUNIT_ASSERT(!std::empty(n1));
+  CPPUNIT_ASSERT(!std::empty(n2));
+  CPPUNIT_ASSERT(!std::empty(n3));
+  CPPUNIT_ASSERT(!std::empty(n4));
+  CPPUNIT_ASSERT(!std::empty(zlcopy));
+  CPPUNIT_ASSERT(!std::empty(zlforw));
+  CPPUNIT_ASSERT(!std::empty(zncopy));
+  CPPUNIT_ASSERT(!std::empty(znforw));
+}
+#import tests.unit.dns.unparse.Function
+#import tests.unit.dns.unparse.Template
+#import rigging.suite.io
+auto tests::unit::dns::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"dns"};
+  series << call("Name", &Fixture::test_Name)
+         << call("Type", &Fixture::test_Type)
+    ;
+  {
+    Stream type{"type"};
+    type << call("constants", &Fixture::test_type_constants)
+         << call("DAPTR", &Fixture::test_type_DAPTR)
+      ;
+    series << move(type);
+  }
+  {
+    Stream use{"usage"};
+    use << call("unparse", &Fixture::test_usage_unparse)
+      ;
+    series << move(use);
+  }
+  {
+    Stream unp{"unparse"};
+    unp << add<dns::uunpparrsee::Function>()
+        << add<dns::uunpparrsee::Template>()
+      ;
+    series << move(unp);
+  }
+  return finalize(series);
+}
+#endiv

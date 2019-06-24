@@ -1,0 +1,74 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.dns.Type
+#include <hpp/tunitas.scarpet.answer.processor.Prototype>
+#import std.is_base_of
+namespace tunitas::scarpet::answer::query {
+  //
+  // Whereas every query is basically the same, herein find the prototype of every query.
+  // Descendants only.
+  // Descendants shall provide
+  //
+  //   auto name() const -> dns::Label { return "NAME"; }
+  //
+  // For the (top-level) Stanzas (context, publickey, authentication, service, proof)
+  // most of them them sport multiple DNS records against the indicated label (e.g. 'context' or 'publickey')
+  // - the PROCESSOR must handle plural records
+  // - the indexing into drrs::Records<TYPE> means that drrs::Records<TYPE> can handle plurals
+  //
+  // For the lower-level subfields PublicKey, Authentication, Service, Proof
+  // - the PROCESSOR must look for precisely one record and fail if zero or multiple are found.
+  // - the indexing into drrs::Records<TYPE> means that drrs::Records<TYPE> must handle plurals but the correct usage is for singletons
+  //
+  // The RECORDATION is nominally plural, and that is appropriate for CONTEXTS, PUBLICKEYS, AUTHORIZATIONS,, SERVICES, PROOFS.
+  // But for stanza::ID, a singleton is used to enforce the condition that there can only be one (top-level) id per DID Document.
+  //
+  // Everything else is singular: for the substanzas, e.g. publickey, authentication, service, proof, all(?) of the fields are singletons.
+  // So a singleton is used to enforce the condition that there can only be one (top-level) id per DID Document.
+  //
+  // Usage:
+  //
+  //   see the specializations Query<TYPE>
+  //
+  namespace required {
+    template<typename PROCESSOR> concept bool Processor = std::is_base_of<processor::Prototype, PROCESSOR>::value;
+  }
+  // RECORDATION = drrs::Records<DNS> for Stanzas<NAME>
+  // RECORDATION = drrs::Record<DNS>  for PublicKey<NAME> Authentication<NAME>, Service<NAME>, Proof<NAME>
+  template<dns::Type DNS, required::Processor PROCESSOR, typename RECORDATION> class Prototype;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.Response
+#import tunitas.scarpet.drrs.Records
+namespace tunitas::scarpet::answer {
+  template<dns::Type DNS, query::required::Processor PROCESSOR, typename RECORDATION> struct query::Prototype {
+    using Records = RECORDATION;
+    using Response = answer::Response<Records>;
+    using Processor = PROCESSOR;
+    Records records;
+    Response response;
+    Processor processor; // e.g. processor::Stanza<ID>
+    inline auto type() const { return DNS; }
+#if __GNUC__ < 9 // gcc-c++-8.2.1-5.fc29.x86_64
+  public:
+    // Why is this not a compiler bug?
+    // If this constructor is not public then descendants' default constructor is created as protected unless made manifest (user declared)
+    //
+    // Witness
+    // src/tests/unit/answer.Fields.STANZA.xcpp:39:14: error: ‘tunitas::scarpet::answer::query::Prototype<DNS, PROCESSOR, RECORDATION>::Prototype() [with __ns_type DNS = (__ns_type)256; PROCESSOR = tunitas::scarpet::answer::processor::Stanza<(tunitas::scarpet::answer::processor::stanza::Name)1>; RECORDATION = tunitas::scarpet::drrs::Records<(__ns_type)256>]’ is protected within this context
+    // Contexts{};
+    // ^
+    // src/tunitas/scarpet/answer/query.Prototype.xcpp:57:12: note: declared protected here
+    // inline Prototype() : records{}, response{records}, processor{response} { }
+    //
+#else
+  protected:
+#endif
+    inline Prototype() : records{}, response{records}, processor{response} { }
+    ~Prototype() = default;
+  };
+}
+#endiv

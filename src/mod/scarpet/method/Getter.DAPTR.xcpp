@@ -1,0 +1,49 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import mod.scarpet.method.Getter.declaration
+namespace mod::scarpet::method {
+  //
+  // Expected:
+  //
+  //   GET /daptr HTTP/X.Y
+  //   <body is ignored>
+  //
+  //   GET /daptr/{DID} HTTP/X.Y
+  //   <body is ignored>
+  //
+  // Expectations of URL routing consistency are enforced in ptr::Getter
+  //
+  // Usage:
+  //
+  //   Getter<DAPTR> getter{req, spec};
+  //   return getter();
+  //
+  template<> class Getter<getter::DAPTR>;
+}
+#endiv
+#divert <hpp>
+#import mod.scarpet.method.ptr.Getter
+namespace mod::scarpet::method {
+  template<> class Getter<getter::DAPTR> : public ptr::Getter {
+    using ancestor = ptr::Getter;
+  public:
+    using ancestor::Getter;
+    inline auto operator()() -> status::Code;
+  };
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.resolve.lookup
+namespace mod::scarpet::method {
+  auto Getter<getter::DAPTR>::operator()() -> status::Code {
+    auto caller = [](server::State &s, did::Method const &m, did::Identifier const &i, Protocol const &p, Club const &c) -> Result {
+                    using namespace tunitas::scarpet::resolve;
+                    return lookup<DA>(s, m, i, p, c);
+                  };
+    auto const &specification{this->state->specification};
+    return call(caller, specification.resolver_protocol_name.value, specification.did_club_name.value);
+  }
+}
+#endiv

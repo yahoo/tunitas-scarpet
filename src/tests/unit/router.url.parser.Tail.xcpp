@@ -1,0 +1,103 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::router::url::parser { class Tail; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import mod.scarpet.router.url.parser.Tail
+class tests::unit::router::url::parser::Tail : public cppunit::test::Fixture {
+public:
+  using Subject = ::mod::scarpet::router::url::parser::Tail;
+  auto test_operator_call_throwing_good() -> void;
+  auto test_operator_call_throwing_fail() -> void;
+  auto test_operator_call_throwing() -> void;
+  auto test_operator_call_returning() -> void;
+  static auto suite() -> cppunit::Test *;
+protected:
+  struct Table {
+    bool good;
+    std::string path;
+    struct Expected {
+      std::string head;
+      std::string tail;
+    };
+    Expected expected;
+  };
+  static Table const SPECIMENS[];
+};
+#endiv
+#divert <cpp>
+namespace tests::unit::router::url::parser {
+  Tail::Table const Tail::SPECIMENS[]{{true, "/a/b", {"/a", "b"}},
+                                      {false, "", {}},
+                                      {false, "/", {}},
+                                      {false, "//", {}},
+                                      {false, "/a", {}},
+                                      {false, "/apple", {}},
+                                      {false, "/apple/", {}},
+                                      {true, "/apple/b", {"/apple", "b"}},
+                                      {false, "//b", {}},
+                                      {false, "//banana", {}},
+                                      {true, "/apple/banana", {"/apple", "banana"}},
+                                      {false, "/apple/banana/", {}},
+                                      {true, "/apple//banana", {"/apple", "banana"}},
+                                      {true, "//apple//banana", {"//apple", "banana"}}};
+}
+#import std.nothrow
+auto tests::unit::router::url::parser::Tail::test_operator_call_returning() -> void {
+  for (auto const &specimen : SPECIMENS) {
+    std::cerr << "path=" << specimen.path;
+    Subject subject;
+    auto routed = subject(std::nothrow, specimen.path);
+    CPPUNIT_ASSERT(specimen.good == ok(routed));
+    if (!ok(routed)) {
+      std::cerr << " parsing failed (which was expected)\n";
+    } else {
+      auto const &result = value(routed);
+      std::cerr << " head " << specimen.expected.head << "==" << std::get<0>(result)
+                << " tail " << specimen.expected.tail << "==" << std::get<1>(result)
+                << '\n';
+      CPPUNIT_ASSERT(specimen.expected.head == std::get<0>(result));
+      CPPUNIT_ASSERT(specimen.expected.tail == std::get<1>(result));
+    }
+  }
+}
+auto tests::unit::router::url::parser::Tail::test_operator_call_throwing_good() -> void {
+  CPPUNIT_ASSERT(true);
+}
+auto tests::unit::router::url::parser::Tail::test_operator_call_throwing_fail() -> void {
+  CPPUNIT_ASSERT(true);
+}
+auto tests::unit::router::url::parser::Tail::test_operator_call_throwing() -> void {
+  for (auto const specimen : SPECIMENS) try {
+    Subject subject;
+    auto routed = subject(specimen.path);
+    CPPUNIT_ASSERT(specimen.good); // if it's good then it not throw
+  } catch (...) {
+    CPPUNIT_ASSERT(!specimen.good); // if it failed then it threw
+  }
+}
+#import rigging.suite.io
+auto tests::unit::router::url::parser::Tail::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"Tail"};
+  {
+    Stream cal{"operator()"};
+    cal << call("returning", &Tail::test_operator_call_returning)
+      ;
+    {
+      Stream thr{"throwing()"};
+      thr << call("series", &Tail::test_operator_call_throwing)
+          << call("good", &Tail::test_operator_call_throwing_good)
+          << call("fail", &Tail::test_operator_call_throwing_fail)
+        ;
+      cal << add(thr.release());
+    }
+    series << add(cal.release());
+  }
+  return finalize(series);
+}
+#endiv

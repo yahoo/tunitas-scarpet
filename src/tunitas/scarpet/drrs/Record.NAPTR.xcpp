@@ -1,0 +1,47 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.drrs.Record.declaration
+namespace tunitas::scarpet::drrs {
+  //
+  // The Name Authority PointerPointer (NAPTR) Record
+  //
+  // Per the RFC, there are two senses to the Name Authority Pointer
+  // 1. when the regular expression is in effect, a rewrite occurs; and the redirect must be moot, being '.'.
+  // 2. when the regular expression is empty, being "", then the redirect is in effect.
+  // Here we are only using the redirect sense (Sense #2).
+  //
+  // DDSS - DID Document Storage Service
+  // DDSZ - DID Document Storage Zone
+  //
+  // See the examples in https://w3c-ccg.github.io/did-spec/
+  // <---------------------------- examples -------------------------------> <----- Mumblecore-Lexicon DDSS --------->
+  // id.123456789abcdefghi.example NAPTR 1 1 "R" "did+w3id+v1"            "" marfa.fd20-1e92-49c7.net.
+  // id.123456789abcdefghi.example NAPTR 1 1 "R" "did+example.org"        "" fata-morgana.fd20-1e92-49c7.net.
+  // id.123456789abcdefghi.example NAPTR 1 1 "R" "did+example.org+inline" "" inline.fata-morgana.fd20-1e92-49c7.net.
+  // id.987654321.contexts.example NAPTR 1 1 "R" "did+context"            "" paulding.fd20-1e92-49c7.net.
+  //
+  // id.4c76ad9b-7d80-46c0-bc2a-76a84bf848ef.lo-fi    NAPTR 1 1 "Z" "did+lo-fi"    "" gurdon.fd20-1e92-49c7.net.
+  // id.635b700e-233a-496c-aebd-79ca7c6efe9a.affogato NAPTR 1 1 "Z" "did+affogato" "" will-o-the-wisp.fd20-1e92-49c7.net.
+  //
+  template<> struct Record<dns::NAPTR>;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.drrs.aspect.Redirect
+#import std.optional
+#import std.string
+namespace tunitas::scarpet::drrs {
+  template<> struct Record<dns::NAPTR> : public record::Prototype, public aspect::Redirect {
+    struct ancestors {
+      using Prototype = record::Prototype;
+      using Redirect = aspect::Redirect;
+    };
+  public:
+    Record() = default;
+    struct Regex { std::string pattern, replacement; };
+    std::optional<Regex> regex;
+  };
+}
+#endiv

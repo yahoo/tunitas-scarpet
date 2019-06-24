@@ -1,0 +1,43 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import mod.scarpet.method.Getter.declaration
+namespace mod::scarpet::method {
+  //
+  // The PONG "servlet"  (ping ping ... Get it? That was a funny one)
+  //
+  //   GET /ping HTTP/X.Y
+  //   <body is ignored>
+  //
+  // Expectations of URL routing consistency are NOT enforced.
+  // You'd use this for debugging or for testing or for heartbeats in the production monitoring system.
+  //
+  // Usage:
+  //
+  //   Getter<PING> getter{req, spec};
+  //   return getter();
+  //
+  template<> class Getter<getter::PING>;
+}
+#endiv
+#divert <hpp>
+#import mod.scarpet.method.Prototype
+namespace mod::scarpet::method {
+  template<> class Getter<getter::PING> : public Prototype {
+    using ancestor = Prototype;
+  public:
+    using ancestor::Prototype;
+    auto operator()() -> status::Code;
+  };
+}
+#endiv
+#divert <cpp>
+namespace mod::scarpet::method {
+  auto Getter<getter::PING>::operator()() -> status::Code {
+    ap_set_content_type(this->req, "text/text"); // [[FIXTHIS]] as apache::httpd::set_content_type(...)
+    this->rs << "pong";
+    return HANDLER::OK; // not HTTP::OK
+  }
+}
+#endiv

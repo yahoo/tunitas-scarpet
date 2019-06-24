@@ -1,0 +1,27 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.Fields.declaration
+namespace tunitas::scarpet::answer::packaging {
+  //
+  // All the fields that comprise a single publickey substanza of a DID Document
+  // The cut & paste is obvious and so factored into PublicKey
+  //
+  // Usage:
+  //
+  //   See Fields<STANZAS> and launch(...)
+  //
+  template<> class Fields<fields::PUBLICKEY>;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.PublicKey
+namespace tunitas::scarpet::answer::packaging {
+  template<> class Fields<fields::PUBLICKEY> : public PublicKey<stanza::PUBLICKEYS> {
+    using ancestor = PublicKey<stanza::PUBLICKEYS>;
+  public:
+    Fields() = default;
+  };
+}
+#endiv

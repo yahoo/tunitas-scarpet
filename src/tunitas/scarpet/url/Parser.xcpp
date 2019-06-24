@@ -4,27 +4,54 @@
 #divert <fpp>
 namespace tunitas::scarpet::url {
   //
-  // The URI parser
+  // The URL Path parser
+  //
+  // Operation
   //
   //   /prefix/{ID}  ->  ( /prefix, ID )
   //   /{ID}         ->  ( /, ID )
+  //
+  // Validation: ID is any character that is not a '/'
+  // Real validation must be done elsewhere, once the ID payload has been recovered.
+  //
+  // Examples:
+  //
+  //   /scarpet/did:example:a0096d98-2919-4a48-9b69-b8e7a8891d40
+  //   /scarpet/did:artisanal:d41d8cd98f00b204e9800998ecf8427e  -
+  //   /scarpet/did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  -
+  //   /scarpet/did:flannel:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e 
+  //
+  // Usage:
+  //
+  //   req = apache::httpd::request_rec const *{...somehow...};
+  //   std::string uri{req->uri};
+  //   auto parsed = uri_parser(uri);
+  //   if (!ok(parsed)) {
+  //     return HTTP::BAD_REQUEST;
+  //   } else if (prefix(parsed) != spec->location_prefix.value) {
+  //     return HTTP::INTERNAL_SERVER_SERROR;
+  //   } else {
+  //      auto id = urn(std::move(parsed));
+  //      ...validate the urn in detail...
+  //      ...use the validated urn...
+  //   }
   //
   class Parser;
 }
 #endiv
 #divert <hpp>
 #import std.string
-#import tunitas.scarpet.url.URI
+#import tunitas.scarpet.url.Path
 class tunitas::scarpet::url::Parser {
 public:
   inline explicit Parser(std::string const &bare_prefix);
-  inline auto operator()(std::string const &syntax) -> URI;
+  inline auto operator()(std::string const &syntax) -> Path;
 protected:
   // A slash is appended from the constructor's argument
   std::string prefix_slash;
-  inline auto isidentifier_thereon(std::string const &syntax, std::string::size_type start_at) -> bool;
+  inline auto isurn_thereon(std::string const &syntax, std::string::size_type start_at) -> bool;
   // The set of "safe" characters that you can find in a DNS-type name.
-  inline static auto isidentifier(char) -> bool;
+  inline static auto isurn(char) -> bool;
 };
 #endiv
 #divert <ipp>
@@ -32,7 +59,7 @@ protected:
 #import std.all_of
 #import std.max
 #import std.move
-#import std.invalid_argument
+#import tunitas.scarpet.exception.Invariant
 namespace tunitas::scarpet {
   url::Parser::Parser(std::string const &prefix)
     : prefix_slash{prefix} {
@@ -40,15 +67,19 @@ namespace tunitas::scarpet {
       prefix_slash += '/';
     }
   }
-  auto url::Parser::isidentifier(char specimen) -> bool {
-    return std::isalnum(specimen) || '-' == specimen || '_' == specimen || '.' == specimen;
+  auto url::Parser::isurn(char specimen) -> bool {
+    if constexpr (false) {
+      return std::isalnum(specimen) || '-' == specimen || '_' == specimen || '.' == specimen || ':' == specimen;
+    } else {
+      return '/' != specimen;
+    }
   }
-  auto url::Parser::isidentifier_thereon(std::string const &syntax, std::string::size_type start_at) -> bool {
+  auto url::Parser::isurn_thereon(std::string const &syntax, std::string::size_type start_at) -> bool {
     auto start = syntax.begin() + start_at;
     auto finish = syntax.end();
-    return std::all_of(start, finish, isidentifier);
+    return std::all_of(start, finish, isurn);
   }
-  auto url::Parser::operator()(std::string const &syntax) -> URI {
+  auto url::Parser::operator()(std::string const &syntax) -> Path {
     //
     // With a trivial prefix of '/'
     //
@@ -72,14 +103,14 @@ namespace tunitas::scarpet {
     // but slashes further down in the string are separators.
     //
     if ('/' != prefix_slash.back()) {
-      throw std::invalid_argument{"no trailing slash"};
+      throw exception::Invariant{"no trailing slash"}; // the constructor should have helped here
     }
     std::string::size_type rest_index = prefix_slash.size();
-    if (0 != syntax.find(prefix_slash) || syntax.size() < rest_index+1 || !isidentifier_thereon(syntax, rest_index)) {
-      return URI{false, std::string(), std::string()};
+    if (0 != syntax.find(prefix_slash) || syntax.size() < rest_index+1 || !isurn_thereon(syntax, rest_index)) {
+      return Path{false, std::string(), std::string()};
     } else {
        auto prefix_length = std::max<decltype(rest_index)>(1, rest_index-1);
-      return URI{true, prefix_slash.substr(0, prefix_length), syntax.substr(rest_index)};
+      return Path{true, prefix_slash.substr(0, prefix_length), syntax.substr(rest_index)};
     }
   }
 }

@@ -1,0 +1,87 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tests.unit.resolve.Document.declaration
+#import std.is_enum
+namespace tests::unit::resolve {
+  template<> class Document<FiLE>;
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tests.unit.resolve.aspect.Configuration
+#import tests.unit.resolve.aspect.Service
+namespace tests::unit::resolve {
+  template<> class Document<FiLE> : public cppunit::test::Fixture, aspect::Configuration, aspect::Service {
+  public:
+    auto setUp() -> void override { Service::setUp(); }
+    auto tearDown() -> void override { Service::tearDown(); }
+    auto test_case_01() -> void;
+    auto test_case_02() -> void;
+    static auto suite() -> cppunit::Test *;
+  };
+}
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.resolve.document.FILE
+#import std.filesystem.exists
+#import tunitas.scarpet.error.Code
+namespace tests::unit::resolve {
+  auto Document<FiLE>::test_case_01() -> void {
+    //
+    // Succeeds because the file is found
+    //
+    using namespace ::tunitas::scarpet;
+    namespace resolve = ::tunitas::scarpet::resolve;
+    {
+      auto const dotfrag = std::filesystem::path{"."};
+      auto const dirfrag = std::filesystem::path{"tests/unit"};
+      auto const testfrag = std::filesystem::path{"example/123456789abcdefghi.zone"};
+      CPPUNIT_ASSERT(std::filesystem::exists(dotfrag / testfrag) || std::filesystem::exists(dirfrag / testfrag));
+    }
+    auto method = Method{"example"};
+    auto identifier = Identifier{"123456789abcdefghi"};
+    auto qdn = dns::Name{"."};
+    auto looked = resolve::document<resolve::FiLE>(*this->service, method, identifier, qdn);
+    CPPUNIT_ASSERT(ok(looked));
+    auto dome = value(std::move(looked));
+    CPPUNIT_ASSERT(sizeof (dome));
+    dome.dump(std::cerr);
+  }
+  auto Document<FiLE>::test_case_02() -> void {
+    //
+    // Succeeds because the file is missing (the identifier is missing)
+    //
+    namespace resolve = ::tunitas::scarpet::resolve;
+    using namespace ::tunitas::scarpet;
+    {
+      auto const dotfrag = std::filesystem::path{"."};
+      auto const dirfrag = std::filesystem::path{"tests/unit"};
+      auto const testfrag = std::filesystem::path{"example/999999999abcdefghi.zone"};
+      CPPUNIT_ASSERT(!std::filesystem::exists(dotfrag / testfrag) && !std::filesystem::exists(dirfrag / testfrag));
+    }
+    auto method = Method{"example"};
+    auto identifier = Identifier{"999999999abcdefghi"};
+    auto qdn = dns::Name{"."};
+    auto looked = document<FiLE>(*this->service, method, identifier, qdn);
+    CPPUNIT_ASSERT(!ok(looked));
+    auto ec = error_code(looked);
+    CPPUNIT_ASSERT(::tunitas::scarpet::error::Code::NOT_FOUND == ec);
+  }
+}
+#import rigging.suite.io
+auto tests::unit::resolve::Document<tests::unit::resolve::FiLE>::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"document<FILE>"};
+  {
+    Stream cas{"case"};
+    cas << call("01", &Document::test_case_01)
+        << call("02", &Document::test_case_02)
+      ;
+    series << move(cas);
+  }
+  return finalize(series);
+}
+#endiv

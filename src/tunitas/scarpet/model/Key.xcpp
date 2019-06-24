@@ -1,0 +1,53 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::model {
+  //
+  // A Key binds <id, material>
+  // with the ancillary metadata of algorithm & encoding
+  //
+  //             id.2.publickey.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi#keys-3"
+  //           type.2.publickey.123456789abcdefghi.marfa TXT "Secp256k1VerificationKey2018"
+  //     controller.2.publickey.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
+  //            key.2.publickey.123456789abcdefghi.marfa TXT "hex.02b97c30de767f084ce3080168ee293053ba33b235d7116a3263d29f1450936b71" ; [[VARIANCE]]
+  //   publicKeyHex.2.publickey.123456789abcdefghi.marfa TXT "02b97c30de767f084ce3080168ee293053ba33b235d7116a3263d29f1450936b71"
+  //
+  // Usage: see Keys (plural), nearby
+  //
+  class Key;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.model.key.Algorithm
+#import tunitas.scarpet.model.key.Encoding
+#import tunitas.scarpet.model.key.Material
+class tunitas::scarpet::model::Key {
+  using Identifier = did::Identifier;
+  using Algorithm = key::Algorithm;
+  using Encoding = key::Encoding;
+  using Material = key::Material;
+public:
+  inline Key();
+  Key(Key const &) = delete;
+  auto operator=(Key const &) -> Key & = delete;
+  Key(Key &&) = default;
+  auto operator=(Key &&) -> Key & = default;
+  Identifier id;
+  Algorithm algorithm; // a.k.a. "type"
+  Identifier controller;
+  Encoding encoding; // in lieu of having different fields (we all use the same bytes)
+  Material material;
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::model {
+  Key::Key()
+    : id{Identifier{}}
+    , algorithm{Algorithm{}}
+    , controller{Identifier{}}
+    , encoding{Encoding{}}
+  { }
+}
+#endiv

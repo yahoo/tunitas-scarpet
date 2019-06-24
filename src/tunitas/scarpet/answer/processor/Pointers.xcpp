@@ -1,0 +1,72 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.processor.Stanza.declaration
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The pointer sets (sets of PTR)
+  // Descendants only.
+  // Descendants are KEYS, AUTHENTICATIONS, SERVICES, PROOFS.
+  //
+  // The stanzas are actually collections of subdocuments.
+  // This is easy to do in a document-object-model (JSON, XML, YAML, etc)
+  // or when the full zone is materialized in an AXFR
+  // However, when the zone is disaggregated records, then a pointer scheme must be applied
+  //
+  // The requirement is that the base be consistent (no sideways or "out of tree" pointers)
+  // The indices commence at zero.
+  //
+  //                                        index
+  //                                          |
+  //                                          |
+  //   <--------- base ---------->            v  <--------- base ---------->
+  //   publickey.123456789abcdefghi.marfa PTR 0.publickey.123456789abcdefghi.marfa
+  //
+  // Example: (see Stanza.declaration.hpp, and 'marfa' being an illustrative DID Method)
+  //
+  //   publickey.123456789abcdefghi.marfa PTR 0.publickey.123456789abcdefghi.marfa
+  //   publickey.123456789abcdefghi.marfa PTR 1.publickey.123456789abcdefghi.marfa
+  //   publickey.123456789abcdefghi.marfa PTR 2.publickey.123456789abcdefghi.marfa
+  //
+  class Pointers;
+}
+#endiv
+#divert <hpp>
+class tunitas::scarpet::answer::processor::Pointers : public Prototype, public ares::function::Query<Response<drrs::Records<dns::PTR>>> {
+    using ancestor = ares::function::Query<Response<drrs::Records<dns::PTR>>>;
+protected:
+  ~Pointers() = default;
+public:
+  inline explicit Pointers(State &);
+  auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void final;
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::answer::processor {
+  Pointers::Pointers(State &state) : ancestor{state} { }
+}
+#endiv
+#divert <cpp>
+namespace tunitas::scarpet::answer::processor {
+  auto Pointers::receive(error::Code<ARES> code, Count timeouts, Buffer buffer) -> void {
+    using namespace ares;
+    if (error::Code<ARES>::SUCCESS != code) {
+      this->state.success = std::error_code{code};
+    } else {
+      reply::Record<PTR> records;
+      auto parsed = reply::parse<PTR>(std::nothrow, buffer, records);
+      if (!ok(parsed)) {
+        this->state.success = error_code(parsed);
+      } else if (records.empty()) {
+        this->state.success = std::error_code{scarpet::error::Code::FOUND_ZERO_RECORDS};
+      } else {
+        for (auto const &name : records) {
+          this->state.referenced.emplace_back(dns::Name{name.begin(), name.end()});
+        }
+        this->state.success = Success{SUCCESS};
+      }
+    }
+  }
+}
+#endiv

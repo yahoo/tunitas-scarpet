@@ -1,0 +1,34 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+lib_libtunitas_scarpet_resolve_la = lib/libtunitas-scarpet-resolve.la
+lib_libtunitas_scarpet_resolve_la_LIBADD = 
+lib_libtunitas_scarpet_resolve_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+lib_libtunitas_scarpet_resolve_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_resolve_la_SOURCES))
+lib_libtunitas_scarpet_resolve_la_SOURCES = \
+  obj/src/tunitas/scarpet/resolve/namespace.cpp \
+  obj/src/tunitas/scarpet/resolve/Service.cpp \
+  \
+  obj/src/tunitas/scarpet/resolve/document.declaration.cpp \
+  obj/src/tunitas/scarpet/resolve/document.DRRS.cpp \
+  obj/src/tunitas/scarpet/resolve/document.FILE.cpp \
+  obj/src/tunitas/scarpet/resolve/document.REST.cpp \
+  obj/src/tunitas/scarpet/resolve/document.ZONE.cpp \
+  obj/src/tunitas/scarpet/resolve/document.cpp \
+  \
+  obj/src/tunitas/scarpet/resolve/lookup.declaration.cpp \
+  obj/src/tunitas/scarpet/resolve/lookup.NA.cpp \
+  obj/src/tunitas/scarpet/resolve/lookup.DA.cpp \
+  obj/src/tunitas/scarpet/resolve/lookup.cpp \
+  $(end)
+
+$(scold_cxxdir)/tunitas/scarpet/resolve/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_resolve_la_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_resolve_la_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/tunitas/scarpet/resolve/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/tunitas/scarpet/resolve/dependencies.mk
+#end

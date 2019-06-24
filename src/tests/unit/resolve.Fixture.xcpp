@@ -1,0 +1,108 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::resolve { class Fixture; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tests.unit.resolve.aspect.Service
+#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
+#import tunitas.scarpet.Club
+#import tunitas.scarpet.Protocol
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.did.Identifier
+class tests::unit::resolve::Fixture : public cppunit::test::Fixture, aspect::Service {
+public:
+  auto setUp() -> void override { Service::setUp(); }
+  auto tearDown() -> void override { Service::tearDown(); }
+  auto test_Service() -> void;
+  auto test_lookup_something() -> void;
+  auto test_document_something() -> void;
+  static auto suite() -> cppunit::Test *;
+protected:
+  using Method = ::tunitas::scarpet::did::Method;
+  using Identifier = ::tunitas::scarpet::did::Identifier;
+  using Protocol = ::tunitas::scarpet::Protocol;
+  using Club = ::tunitas::scarpet::Club;
+  struct dns { using Name = ::tunitas::scarpet::dns::Name; };
+  using ac = autotools::autoconf::Config<::tunitas::scarpet::CONFIG>;
+};
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.resolve.Service
+auto tests::unit::resolve::Fixture::test_Service() -> void {
+  // The dedicated tester will test the other constructors (and more!)
+  auto subject = ::tunitas::scarpet::resolve::Service{};
+  CPPUNIT_ASSERT(!subject.channel);
+  CPPUNIT_ASSERT(!subject.directory);
+}
+#import tunitas.scarpet.resolve.lookup
+auto tests::unit::resolve::Fixture::test_lookup_something() -> void {
+  using namespace ::tunitas::scarpet::resolve;
+  auto method = Method{"example"};
+  auto identifier = Identifier{"123456789abcdefghi"};
+  auto protocol = Protocol{"did+w3id+v1"};
+  auto club = ::tunitas::scarpet::Club{ac::did_club_name()};
+  auto looked = lookup<NA>(*this->service, method, identifier, protocol, club);
+  //
+  // Of course this lookup will fail if you operate the unit tests in a realm where
+  // (a) there is no DNS service at all; e.g. in a buildfarm jail
+  // (b) where there is no definition of id.123456789abcdefghi.example.$CLUB for $CLUB; e.g. scarpet.club.
+  //
+  CPPUNIT_ASSERT(ok(looked) || !ok(looked));
+  if (ok(looked)) {
+    auto name = value(std::move(looked));
+    CPPUNIT_ASSERT(!name.empty());
+  }
+}
+#import tunitas.scarpet.resolve.document
+auto tests::unit::resolve::Fixture::test_document_something() -> void {
+  using namespace ::tunitas::scarpet::resolve;
+  auto method = Method{"example"};
+  auto identifier = Identifier{"123456789abcdefghi"};
+  auto qdn = dns::Name{"."};
+  auto looked = document<FiLE>(*this->service, method, identifier, qdn);
+  //
+  // Of course this lookup will fail if you operate the unit tests in a realm where
+  // (a) there is no DNS service at all; e.g. in a buildfarm jail
+  // (b) where there is no definition of id.123456789abcdefghi.example.$CLUB for $CLUB; e.g. scarpet.club.
+  //
+  // The success case and the failing case is tested in the dedicated tester, nearby at tests::unit::Document<FILE>
+  //
+  CPPUNIT_ASSERT(ok(looked) || !ok(looked));
+  if (ok(looked)) {
+    auto dome = value(std::move(looked));
+    CPPUNIT_ASSERT(sizeof (dome));
+  }
+}
+#import tests.unit.resolve.Lookup.DA
+#import tests.unit.resolve.Lookup.NA
+#import tests.unit.resolve.Document.DRRS
+#import tests.unit.resolve.Document.FILE
+#import tests.unit.resolve.Document.REST
+#import tests.unit.resolve.Document.ZONE
+#import rigging.suite.io
+auto tests::unit::resolve::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"resolve"};
+  {
+    Stream some{"something"};
+    some << call("lookup", &Fixture::test_lookup_something)
+         << call("document", &Fixture::test_document_something)
+    ;
+    series << move(some);
+  }
+  namespace testing = ::tests::unit::resolve;
+  namespace subjecting = ::tunitas::scarpet::resolve;
+  series << add(testing::Lookup<subjecting::NA>::suite())
+         << add(testing::Lookup<subjecting::DA>::suite())
+         << add(testing::Document<subjecting::DRRS>::suite())
+         << add(testing::Document<subjecting::FILE>::suite())
+         << add(testing::Document<subjecting::REST>::suite())
+         << add(testing::Document<subjecting::ZONE>::suite())
+    ;
+  return finalize(series);
+}
+#endiv

@@ -1,0 +1,103 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.dns
+#import tunitas.scarpet.drrs
+namespace tests::unit::drrs {
+  namespace dns = ::tunitas::scarpet::dns;
+  using namespace ::tunitas::scarpet::drrs; // cascade these in
+  class Flat;
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tunitas.scarpet.drrs.Flat
+class tests::unit::drrs::Flat : public cppunit::test::Fixture {
+public:
+  using Subject = ::tunitas::scarpet::drrs::Flat;
+  auto test_constructor_default() -> void;
+  auto test_constructor_move() -> void;
+  auto test_assignment_move() -> void;
+  auto test_push_back() -> void;
+  auto test_emplace_back() -> void;
+  auto test_example_01() -> void;
+  auto test_example_02() -> void;
+  static auto suite() -> cppunit::Test *;
+protected:
+  struct Populator;
+};
+#endiv
+#divert <cpp>
+#import tests.unit.drrs.Flat.Populator
+auto tests::unit::drrs::Flat::test_constructor_default() -> void {
+  auto subject = Subject{};
+  CPPUNIT_ASSERT(sizeof (subject));
+}
+auto tests::unit::drrs::Flat::test_constructor_move() -> void {
+  auto specimen = Subject{};
+  Subject subject{std::move(specimen)};
+  CPPUNIT_ASSERT(0 == subject.size());
+}
+auto tests::unit::drrs::Flat::test_assignment_move() -> void {
+  auto specimen = Subject{};
+  Subject subject;
+  subject = std::move(specimen);
+  CPPUNIT_ASSERT(0 == subject.size());
+}
+#import tunitas.scarpet.dns.Labels
+#import tunitas.scarpet.drrs.Record
+auto tests::unit::drrs::Flat::test_push_back() -> void {
+  Subject subject;
+  auto left = dns::Labels{"", "solutions", "tunitas", "scarpet"};
+  auto right = drrs::Record<dns::TXT>{"pretend this is a long poem"};
+  auto const variant = Subject::Value{drrs::flat::Record<dns::TXT>{std::move(left), std::move(right)}};
+  subject.push_back(variant);
+}
+auto tests::unit::drrs::Flat::test_emplace_back() -> void {
+  Subject subject;
+  auto left = dns::Labels{"", "solutions", "tunitas", "scarpet"};
+  auto right = drrs::Record<dns::TXT>{"pretend this is a long poem"};
+  auto middle = drrs::flat::Record<dns::TXT>{std::move(left), std::move(right)};
+  subject.emplace_back(Subject::Value{std::move(middle)});
+}
+auto tests::unit::drrs::Flat::test_example_01() -> void {
+  // https://w3c-ccg.github.io/did-spec/
+  Subject subject;
+  Populator populator;
+  populator.example1(subject);
+  CPPUNIT_ASSERT(10u == subject.size());
+}
+auto tests::unit::drrs::Flat::test_example_02() -> void {
+#warning WRITETHIS auto tests::unit::drrs::Flat::test_example_02() -> void
+}
+#import rigging.suite.io
+auto tests::unit::drrs::Flat::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"Flat"};
+  {
+    Stream con{"constructor"};
+    con << call("default", &Flat::test_constructor_default)
+        << call("move", &Flat::test_constructor_move)
+      ;
+    series << add(con.release());
+  } {
+    Stream ass{"assignment"};
+    ass << call("move", &Flat::test_assignment_move)
+      ;
+    series << add(ass.release());
+  }
+  series << call("push_back", &Flat::test_push_back)
+         << call("emplace_back", &Flat::test_emplace_back)
+    ;
+  {
+    Stream exa{"example"};
+    exa << call("01", &Flat::test_example_01)
+        << call("02", &Flat::test_example_02)
+      ;
+    series << add(exa.release());
+  }
+  return finalize(series);
+}
+#endiv

@@ -1,0 +1,43 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#forward tunitas.scarpet.resolve.Service
+namespace tunitas::scarpet::resolve {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  //
+  // The various types of lookups according to their Pointer Resource Record
+  //
+  enum Storage {
+    DRRS, // disaggregated resource records splattered (DRRS) ... splattered around the Storage Service Zone (SSZ)
+    FILE [[deprecated("WATCHOUT - FILE is a #define in stdio, which will make you barf up a little in your mouth")]],
+    FiLE = FILE, // the (DID) document from a file in the filesystem
+    REST, // the (DID) document from some other REST server; "reget"
+    ZONE, // the (DID) document is a zone, in toto; the NS records tell you where that is
+  };
+#pragma GCC diagnostic pop
+}
+#endiv
+#divert <hpp>
+#import tunitas.Outcome
+#import tunitas.scarpet.dns.Name
+#import tunitas.scarpet.did.Document
+namespace tunitas::scarpet::resolve {
+  //
+  // The various types of document lookups according to their Pointer Resource Record
+  // The DID Method may be unused; it may be used to contextualize a subquery (c.f. FILE, REST, but not DRRS or ZONE)
+  //
+  // Usage:
+  //
+  //                              identifier     did document storage service
+  //                          <----------------> <--------------------->
+  //    quto qdn = dns::Name{"123456789abcdefghi.example.storage.service."};
+  //    auto looked = document<DRRS>(service, identifier, qdn);
+  //
+  template<Storage> auto document(Service &, Method const &, Identifier const &, dns::Name const &) -> Outcome<did::Document<did::DOME>> = delete;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.resolve.Service
+#endiv

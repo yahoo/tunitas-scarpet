@@ -15,10 +15,22 @@ namespace tunitas::scarpet::error {
   enum class Code {
     SUCCESS = (int) Condition::SUCCESS,
     FAILURE = (int) Condition::FAILURE,
-    OPTIONS, // ........................ there was a problem with the options (parser)
-    BAD_UPDATE_TSIG_PRIVATE, //......... the name server update tsig secret was bad
-    BAD_JSON, // in a file
-    BAD_ZONE, // in a file
+    // ........................... there was a problem with ...
+    OPTIONS, // ........................... the (command-line) options (parser)
+    ROUTER, // ............................ the (url) path router (e.g. bad path)
+    COMPILER, // .......................... the (did document) compiler, and the compiler output sink explains why
+    NOT_IMPLEMENTED, // ................... as such.
+    INVALID_URN, // ....................... invalid URN shape at all; not even close to did:<method>:<identifier>
+    INVALID_METHOD, // .................... invalid method within a valid syntax of did:<method>:<identifier>
+    INVALID_IDENTIFIER, // ................ invalid identifier within a valid syntax of did:<method>:<identifier>
+    UNKNOWN_METHOD, // .................... unknown DID method, though valid syntactically
+    NOT_FOUND, // ......................... lookup of the DID or something else was "not found"
+    UNKNOWN_IDENTIFIER = NOT_FOUND, // .... same thing
+    FOUND_MULTIPLE_RECORDS, // ............ found multiple records but only one is allowed
+    FOUND_ZERO_RECORDS, // ................ found zero records where at least one was expected (otherwise "found" and "successful" though)
+    BAD_UPDATE_TSIG_PRIVATE, //............ the name server update tsig secret was bad
+    BAD_JSON, // .......................... some JSON (from a file or over the wire)
+    BAD_ZONE, // .......................... a DNS ZONE (from a file or over the wire)
   };
 }
 #import std.is_error_code_enum

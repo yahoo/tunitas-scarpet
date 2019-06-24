@@ -1,0 +1,36 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::drrs::flat { 
+  //
+  // A flat container of DRRS (Disaggregated Resource Records, Splattered)
+  //
+  // Usage:
+  //
+  //   Oh come on, it's a reduced interface of std::{array,deque,list,std::vector}
+  //
+  class Flat;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.drrs.flat.Variant
+#import std.list
+class tunitas::scarpet::drrs::flat::Flat : public std::list<Variant> {
+  using ancestor = std::list<Variant>;
+public:
+  Flat() = default;
+  Flat(Flat const &) = delete;
+  auto operator=(Flat const &) -> Flat & = delete;
+  Flat(Flat &&) = default;
+  auto operator=(Flat &&) -> Flat & = default;
+  using Value = ancestor::value_type; // New School
+  using ancestor::list;
+  using ancestor::const_iterator;
+  using ancestor::iterator;
+  using ancestor::begin;
+  using ancestor::end;
+  using ancestor::push_back;
+  using ancestor::emplace_back;
+};
+#endiv

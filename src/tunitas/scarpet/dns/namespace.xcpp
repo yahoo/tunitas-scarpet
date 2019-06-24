@@ -1,7 +1,16 @@
-// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright 2019-2019, Oath Inc.
-// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-#import tunitas.scarpet
-namespace tunitas::scarpet::dns { }
+#import ares.dns
+#import ares.managed
+#import std.is_enum
+namespace tunitas::scarpet::dns {
+  using namespace ares::dns; // cascade this namespace, because otherwise it's confusing
+  using Weight = ares::managed::Weight;
+  using Priority = ares::managed::Priority;
+  // Earlier versions of module-ares circa v0.2.0-0.devel (early) did not have these as enumerations (flavored integers)
+  static_assert(std::is_enum<Weight>::value);
+  static_assert(std::is_enum<Priority>::value);
+}
 #endiv

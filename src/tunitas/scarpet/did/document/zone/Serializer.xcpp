@@ -1,0 +1,48 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did::document::zone {
+  //
+  // The serializer for a Flat (Zone) record
+  // It's a visitor.
+  // But it's complicated enough that it isn't inlined in Document<ZONE>::serialize(...)
+  //
+  // Usage:
+  //
+  //   see Document<ZONE>::serialize(...)
+  //
+  class Serializer;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.did.document.Serializer
+#import tunitas.scarpet.drrs.flat.Variant
+#import std.is_same
+#import std.ostream
+class tunitas::scarpet::did::document::zone::Serializer : public document::Serializer<drrs::flat::Variant, CONSTIE> {
+  using ancestor = document::Serializer<drrs::flat::Variant, CONSTIE>;
+public:
+  inline explicit Serializer(std::ostream &);
+  auto accept(Serializee &) -> void override;
+  static_assert(std::is_same<Serializee, drrs::flat::Variant const>::value, "Can you remind me again what a Serializee is?");
+protected:
+  std::ostream &outbound;
+  struct Multivariate;
+  static constexpr auto TTL = 1800s; 
+};
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::did::document::zone {
+  Serializer::Serializer(std::ostream &outbound) : outbound{outbound} { }
+}
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.did.document.zone.Serializer.Multivariate
+#import std.visit
+namespace tunitas::scarpet::did::document::zone {
+  auto Serializer::accept(Serializee &variant) -> void {
+    std::visit(Multivariate{outbound}, variant);
+  }
+}
+#endiv

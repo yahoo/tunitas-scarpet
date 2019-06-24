@@ -1,0 +1,85 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::answer { class Fixture; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+class tests::unit::answer::Fixture : public cppunit::test::Fixture {
+public:
+  auto test_trivial_Document() -> void;
+  auto test_trivial_Fields() -> void;
+  auto test_trivial_launch() -> void;
+  auto test_trivial_Query() -> void;
+  auto test_trivial_Response() -> void;
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.answer.Document
+auto tests::unit::answer::Fixture::test_trivial_Document() -> void {
+  auto subject = ::tunitas::scarpet::answer::Document{};
+  CPPUNIT_ASSERT(sizeof (subject));
+#warning WRITETHIS auto tests::unit::answer::Fixture::test_trivial_Document() -> void
+}
+#import tunitas.scarpet.answer.Fields
+auto tests::unit::answer::Fixture::test_trivial_Fields() -> void {
+  namespace fields = ::tunitas::scarpet::answer::fields;
+  { auto subject = ::tunitas::scarpet::answer::Fields<fields::STANZA>{};
+    CPPUNIT_ASSERT(sizeof (subject)); }
+  { auto subject = ::tunitas::scarpet::answer::Fields<fields::PUBLICKEY>{};
+    CPPUNIT_ASSERT(sizeof (subject)); }
+  { auto subject = ::tunitas::scarpet::answer::Fields<fields::AUTHENTICATION>{};
+    CPPUNIT_ASSERT(sizeof (subject)); }
+  { auto subject = ::tunitas::scarpet::answer::Fields<fields::SERVICE>{};
+    CPPUNIT_ASSERT(sizeof (subject)); }
+  { auto subject = ::tunitas::scarpet::answer::Fields<fields::PROOF>{};
+    CPPUNIT_ASSERT(sizeof (subject)); }
+#warning WRITETHIS auto tests::unit::answer::Fixture::test_trivial_Fields() -> void
+  CPPUNIT_ASSERT(true);
+}
+#import tunitas.scarpet.answer.launch
+auto tests::unit::answer::Fixture::test_trivial_launch() -> void {
+#warning WRITETHIS auto tests::unit::answer::Fixture::test_trivial_launch() -> void
+  CPPUNIT_ASSERT(true);
+}
+#import tunitas.scarpet.answer.Query
+auto tests::unit::answer::Fixture::test_trivial_Query() -> void {
+#warning WRITETHIS auto tests::unit::answer::Fixture::test_trivial_Query() -> void
+  CPPUNIT_ASSERT(true);
+}
+#import tunitas.scarpet.answer.Response
+auto tests::unit::answer::Fixture::test_trivial_Response() -> void {
+#warning WRITETHIS auto tests::unit::answer::Fixture::test_trivial_Response() -> void
+  CPPUNIT_ASSERT(true);
+}
+#import tests.unit.answer.Document
+#import tests.unit.answer.Fields
+#import rigging.suite.io
+auto tests::unit::answer::Fixture::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"answer"};
+  {
+    Stream tri{"trivial"};
+    tri << call("Document", &Fixture::test_trivial_Document)
+        << call("Fields", &Fixture::test_trivial_Fields)
+        << call("launch", &Fixture::test_trivial_launch)
+        << call("Query", &Fixture::test_trivial_Query)
+        << call("Response", &Fixture::test_trivial_Response)
+      ;
+    series << move(tri);
+  }
+  namespace subject = ::tunitas::scarpet::answer;
+  namespace fields = subject::fields;
+  series << add<answer::Document>()
+         << add<answer::Fields<subject::Fields<fields::STANZA>>>()
+         << add<answer::Fields<subject::Fields<fields::PUBLICKEY>>>()
+         << add<answer::Fields<subject::Fields<fields::AUTHENTICATION>>>()
+         << add<answer::Fields<subject::Fields<fields::SERVICE>>>()
+         << add<answer::Fields<subject::Fields<fields::PROOF>>>()
+    ;
+  return finalize(series);
+}
+#endiv

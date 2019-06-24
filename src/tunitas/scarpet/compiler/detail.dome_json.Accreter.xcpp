@@ -1,0 +1,47 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::compiler::detail::dome_json {
+  //
+  // The Accreter (pronounced "A Cretin" or "A Creature")
+  // - behaves however it chooses to behave (which is to say that for JSON, it doesn't obey any particular model)
+  // - stores a reference to the top-level object of the (JSON) DID Document
+  //
+  // Upon construction of the Accreter, a new top-level (JSON) DID container object is created
+  //
+  // The examples, when given, as always, are from The Specification (https://w3c-ccg.github.io/did-spec/)
+  //
+  // Usage:
+  //
+  //   auto json = ...somehow... did::Document<JSON>{};
+  //   auto accreter = Accreter{json};
+  //   accrete(accreter, source, "@contexts", ...blah blah blah...);
+  //   accrete(accreter, source, "publickey", ...blah blah blah...);
+  //   accrete(accreter, source, "authentication", ...blah blah blah...);
+  //   accrete(accreter, source, "service", ...blah blah blah...);
+  //   accrete(accreter, source, "proof", ...blah blah blah...);
+  //
+  class Accreter;
+}
+#endiv
+#divert <hpp>
+#forward tunitas.scarpet.did.Document.JSON
+#import json.Value
+class tunitas::scarpet::compiler::detail::dome_json::Accreter {
+  using Target = did::Document<did::JSON>;
+public:
+  inline explicit Accreter(Target &);
+  json::Value &top; // is a reference into target, a.k.a. target.object
+};
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.Document.JSON
+#import json.Value
+#import json.value.constants
+namespace tunitas::scarpet::compiler::detail::dome_json {
+  Accreter::Accreter(Target &target) : top{target.object} {
+    top = json::Value{json::value::OBJECT};
+  }
+}
+#endiv

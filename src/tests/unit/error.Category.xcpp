@@ -45,7 +45,7 @@ auto tests::unit::error::Category::test_message() -> void {
 #import rigging.suite.io
 auto tests::unit::error::Category::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
-  Stream series("error");
+  Stream series{"error"};
   series << call("name", &Category::test_name)
          << call("default_error_condition", &Category::test_default_error_condition)
          << call("message", &Category::test_message)

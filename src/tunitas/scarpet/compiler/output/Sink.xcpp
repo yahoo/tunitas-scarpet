@@ -1,0 +1,83 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::compiler::output {
+  //
+  // The base rudimentary error reporting system.
+  // Errors to null
+  //        with output::Null
+  // Errors to cerr
+  //        with output::Stream
+  // Errors to a data structure; e.g. a document to be returned form a (web) server.
+  //        with output::List
+  //
+  // Usage:
+  //
+  //   auto sink = output::Null{};
+  //   auto sink = output::Stream{std:cerr};
+  //   auto sink = output::List{};
+  //   error(sink) << "bad bad bad" << end(sink);
+  //   warning(sink) << "be careful now" << end(sink);
+  //   notice(sink) << "no trespassing" << end(sink);
+  //   verbose(sink) << "oh come on" << end(sink);
+  //   debug(sink) << "it never ends" << end(sink);
+  //
+  class Sink;
+}
+#endiv
+#divert <hpp>
+#forward tunitas.scarpet.compiler.output.sink.Stream
+#forward tunitas.scarpet.compiler.output.sink.End
+namespace tunitas::scarpet::compiler::output {
+  inline auto ok(Sink const &) -> bool;
+  inline auto end(Sink &) -> sink::End  = delete; // this can be ambiguous with std::end(...), so disallow it
+  inline auto flush(Sink &) -> sink::End;
+  //
+  inline auto error(Sink &) -> sink::Stream;
+  inline auto warning(Sink &) -> sink::Stream;
+  inline auto notice(Sink &) -> sink::Stream;
+  inline auto verbose(Sink &) -> sink::Stream;
+  inline auto debug(Sink &) -> sink::Stream;
+  // And because these are frequently occluded (specially by nearby namespace error) ... the alternates
+  inline auto ee(Sink &) -> sink::Stream;
+  inline auto ww(Sink &) -> sink::Stream;
+  inline auto nn(Sink &) -> sink::Stream;
+  inline auto vv(Sink &) -> sink::Stream;
+  inline auto dd(Sink &) -> sink::Stream;
+}
+#import std.string
+#import tunitas.scarpet.compiler.output.sink.Counters
+class tunitas::scarpet::compiler::output::Sink {
+protected:
+  virtual ~Sink() = default;
+  friend class sink::Stream;
+  // Pass by value because *someone* has to make a copy;
+  // the string is likely arriving from a call to std::ostringstream::str() anyway.
+  virtual auto record(std::string message) -> void = 0;
+public:
+  Sink() = default;
+  Sink(Sink const &) = delete;
+  auto operator=(Sink const &) -> Sink & = delete;
+  sink::Counters counters;
+};
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.compiler.output.sink.Stream
+#import tunitas.scarpet.compiler.output.sink.End
+namespace tunitas::scarpet::compiler {
+  auto output::ok(Sink const &s) -> bool { return ok(s.counters); }
+  auto output::flush(Sink &s) -> sink::End { return sink::End{}; }
+  //
+  auto output::error(Sink &s) -> sink::Stream   { return sink::header(s, &sink::Counters::errors) << "error: "; }
+  auto output::warning(Sink &s) -> sink::Stream { return sink::header(s, &sink::Counters::warnings) << "warning: "; }
+  auto output::notice(Sink &s) -> sink::Stream  { return sink::header(s, &sink::Counters::notices) << "notice: "; }
+  auto output::verbose(Sink &s) -> sink::Stream { return sink::header(s, &sink::Counters::verbosities) << "verbose: "; }
+  auto output::debug(Sink &s) -> sink::Stream   { return sink::header(s, &sink::Counters::debugs) << "debug: "; }
+  auto output::ee(Sink &s) -> sink::Stream { return error(s); }
+  auto output::ww(Sink &s) -> sink::Stream { return warning(s); }
+  auto output::nn(Sink &s) -> sink::Stream { return notice(s); }
+  auto output::vv(Sink &s) -> sink::Stream { return verbose(s); }
+  auto output::dd(Sink &s) -> sink::Stream { return debug(s); }
+}
+#endiv

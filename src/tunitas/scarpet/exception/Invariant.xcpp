@@ -4,7 +4,13 @@
 #divert <fpp>
 namespace tunitas::scarpet::exception {
   //
-  // Hack it.  Before the Real One is merged.
+  // A (data) invariant has been violated.
+  // For example, a '/' in a data structure that is stipulated to never contain such.
+  //
+  // Usage:
+  //
+  //   throw exception::Invariant{};
+  //   throw exception::Invariant{"inappropriate character"};
   //
   class Invariant;
 }
@@ -12,18 +18,23 @@ namespace tunitas::scarpet::exception {
 #divert <hpp>
 #import tunitas.scarpet.exception.Aspect
 #import std.invalid_argument
+#import std.string
 class tunitas::scarpet::exception::Invariant : public Aspect, public std::invalid_argument {
   struct ancestors {
     using Aspect = scarpet::exception::Aspect;
     using Exception = std::invalid_argument;
   };
 public:
+  inline Invariant();
   inline explicit Invariant(std::string const &reason);
-  auto what() const noexcept -> char const * final;
+  auto what() const noexcept -> char const * override;
 };
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::exception {
+  Invariant::Invariant()
+    : Invariant{"data invariant"}
+  { }
   Invariant::Invariant(std::string const &reason)
     : ancestors::Exception{reason}
   { }

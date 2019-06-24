@@ -1,7 +1,84 @@
-// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright 2019-2019, Oath Inc.
-// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-#import tunitas.scarpet
-namespace tunitas::scarpet::did { }
+namespace tunitas::scarpet::did {
+  //
+  // The DID (Decentralized Identifier [ID]) ... is just the identity indicator
+  // This *thing* seems to be called an "authority" part in RFC 3986.  We use that terminology here.
+  //
+  // This DID (authority) is the primary key that is used to look up the DID Document (thingy)
+  // A DID is a URI; a DID forms the authority part of a URL.
+  //
+  // The DID syntax (URI, the authority part) follows the specified form
+  //
+  //   did : method : identifier [ path query ]
+  //   \-/   \-----------------/ \------------/
+  //    |           |                  |
+  //  scheme     authority         not shown
+  //
+  // Terms:
+  //
+  //    DID = ...you know... what's at issue here...
+  //    URN, URI, URL ... with the confluent semantics from RFC 3986 et al.
+  //    Scheme
+  //    Authority
+  //    Identifier    that certain part of the Authority, the namespace-specific-identifier (NSI)
+  //    Method        that certain part of the Authority
+  //    NSI           namespace-specific-identifier
+  //
+  // Examples:
+  //
+  //   did:example:123456789abcdefghi
+  //   did:mid-fi:a0096d98-2919-4a48-9b69-b8e7a8891d40
+  //   did:flannel:d41d8cd98f00b204e9800998ecf8427e
+  //   did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  //   did:artisanal:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e
+  //
+}
 #endiv
+#divert <hpp>
+#import std.string_literals
+#import std.string_view_literals
+namespace tunitas::scarpet::did {
+  namespace keyword {
+    using namespace std::literals;
+    inline auto const DID = "did"s;
+  }
+}
+#endiv
+// [[FIXTHIS]] move this material off to wiki.tunitas.technologies (wiki.tunitas.dev, or wherever that winds up landing)
+//
+// References [[FIXTHIS]] too much erudition for a commentariat; put this in a wiki
+// 
+//   DID Theory
+//     https://w3c-ccg.github.io/did-spec/ - Decentalized Identifiers (DIDs), v0.13, updated constantly
+//     https://w3c-ccg.github.io/did-method-registry/ - DID Method Registry (a central registry of decentralized identifier schemes)
+//
+//   DID Specifications
+//     https://dhh1128.github.io/peer-did-method-spec/index.html Peer DID Method Specification
+//     https://github.com/dhuseby/did-git-spec/blob/master/did-git-spec.md Git DID Method 1.0
+//
+//   General
+//     RFC 1736 - Functional Recommendations for Internet Resource Locators, 1995-02
+//     RFC 1738 - Functional Requirements for Uniform Resource Names, 1994-12
+//     RFC 173?   Uniform Resource Locators (URL), 1994-12.
+//     RFC ???? - Namespace Identifier Requirements for URN
+//     RFC 2141 - URN Syntax, 1997-05; https://www.ietf.org/rfc/rfc2141.txt
+//     RFC 2168 - obsoleted by RFC 3401
+//     RFC 2276 - Architectural Principles of Uniform Resource Name Resolution, 1998-01; see RFC 3401.
+//     RFC 2915 - The Naming Authority Pointer (NAPTR) DNS Resource Record, 2000; obsoleted by RFC 3401.
+//     RFC 3401 - Dynamic Delegation Discovery System (DDDS) Part One: The Comprehensive DDDS, 2002-10.
+//     RFC 3402 - Dynamic Delegation Discovery System (DDDS) Part Two: The Algorithm, 2002-10.
+//     RFC 3403 - Dynamic Delegation Discovery System (DDDS) Part Three: The Domain Name System (DNS) Database, 2002-10.
+//     RFC 3404 - Dynamic Delegation Discovery System (DDDS) Part Four: The Uniform Resource Identifiers (URI) Resolution, 2002-10.
+//     RFC 3405 - Dynamic Delegation Discovery System (DDDS) Part Five: URI.ARPA Assignment Procedures, 2002-10.
+//     RFC 3986 - Uniform Resource Identifier (URI), 2005-01, https://tools.ietf.org/html/rfc3986.
+//     RFC 4122 - A Universally Unique IDentifier (UUID) URN Namespace, 2005-07, https://tools.ietf.org/html/rfc4122.
+//
+//     https://www.iana.org/assignments/uri-schemes/uri-schemes.xhtml
+//     Edward C. Slottow, Engineering a Global Resoluttion Service, M.S. Thesis, MIT-LCS-TR712, MIT, 1997-06, 100 pages.
+//        https://dspace.mit.edu/bitstream/handle/1721.1/43506/38164306-MIT.pdf
+//
+// A DID's payload syntax can be made up of any of those certain and reasonable characters
+//

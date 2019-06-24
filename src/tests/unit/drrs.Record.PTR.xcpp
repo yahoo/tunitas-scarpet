@@ -1,0 +1,35 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tests.unit.drrs.Record.declaration
+namespace tests::unit::drrs { template<> class Record<dns::PTR>; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tunitas.scarpet.drrs.Record.PTR
+namespace tests::unit::drrs {
+  template<> struct Record<dns::PTR> : public cppunit::test::Fixture {
+    using Subject = ::tunitas::scarpet::drrs::Record<dns::PTR>;
+    auto test_constructor_default() -> void;
+    static auto suite() -> cppunit::Test *;
+  };
+}
+#endiv
+#divert <cpp>
+namespace tests::unit::drrs {
+  auto Record<dns::PTR>::test_constructor_default() -> void {
+    Subject subject;
+    CPPUNIT_ASSERT(sizeof (subject));
+  }
+}
+#import rigging.suite.io
+auto tests::unit::drrs::Record<tests::unit::drrs::dns::PTR>::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"Record<PTR>"};
+  series << call("constructor_default", &Record::test_constructor_default)
+    ;
+  return finalize(series);
+}
+#endiv

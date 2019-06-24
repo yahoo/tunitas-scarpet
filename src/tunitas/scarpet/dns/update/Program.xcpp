@@ -50,7 +50,7 @@ public:
 namespace tunitas::scarpet::dns::update {
   auto Program::server(dns::Name const &name) -> void {
     if (name.empty()) { throw exception::Invariant{"empty"}; }
-    stream() << "server " << /*view*/name << '\n';
+    stream() << "server " << view(name) << '\n';
   }
   auto Program::key(std::string const &name, std::string const &value) -> void {
     // Not checking that the name and value are easonably shaped, just that they aren't empty

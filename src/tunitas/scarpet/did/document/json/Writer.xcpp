@@ -1,0 +1,65 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did::document::json {
+  //
+  // The abstraction of a JSON writer, pretty or compact
+  // Descendants only.
+  // [[FUTURE]] support the various the idiosyncratic binary encodings for JSON...
+  //
+  // This is an ancestor, but most of the function lives here.
+  //
+  // Usage: 
+  //
+  class Writer;
+}
+#endiv
+#divert <hpp>
+#import json.Value
+#import json.writer.stream.Builder
+#import json.writer.Stream
+#import tunitas.scarpet.did.document.Visitor
+#import std.is_same
+#import std.ostream
+#import std.unique_ptr
+class tunitas::scarpet::did::document::json::Writer : public document::Visitor<json::Value, CONSTIE> {
+  using ancestor = document::Visitor<json::Value, CONSTIE>;
+protected:
+  virtual ~Writer() = default;
+  enum Mode { COMPACT, PRETTY };
+  inline explicit Writer(std::ostream &, Mode);
+  using Builder = json::writer::stream::Builder; // [[FIXTHIS]] maybe we need a different, fancier builder (descendant) here?
+  using Stream = json::writer::Stream;
+  std::unique_ptr<Stream> writer;
+  Mode mode;
+  std::ostream &outbound;
+public:
+  // Also https://gcc.gnu.org/onlinedocs/gcc/Vague-Linkage.html ... inline virtuals don't become "a key method" and don't cause emission of the ftable
+  // Separately, recall that Visitee will already be consty
+  inline auto accept(Visitee &) -> void override;
+  static_assert(std::is_same<Visitee, json::Value const>::value, "Can you remind me again what a Serializee is?");
+};
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.did.Document.JSON
+#import std.endl
+namespace tunitas::scarpet::did::document::json {
+  Writer::Writer(std::ostream &outbound, Mode mode)
+    : writer{}
+    , mode{mode}
+    , outbound{outbound} {
+      Builder builder;
+      if (Mode::PRETTY == mode) {
+        builder["indentation"] = "    ";
+      }
+      writer.reset(builder.newStreamWriter());
+    }
+  auto Writer::accept(Visitee &object) -> void {
+    writer->write(object, &outbound);
+    if (Mode::PRETTY == mode) {
+      outbound << std::endl;  // add lf and flush
+    }
+  }
+}
+#endiv

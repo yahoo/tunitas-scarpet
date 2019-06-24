@@ -1,0 +1,78 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import ares.dns
+namespace tunitas::scarpet::dns {
+  //
+  // A Domain Name consists of zero or more "labels"
+  //
+  // The labels are the words between the dots which draw from that certain character set.
+  // The empty label is reserved for the root.
+  // The printed representation inserts dots *between* the elements.
+  //
+  // The order of the data structure is little endian, thus index 0 is the root.
+  // the root may or may not be empty, but no other element can be.
+  // This is ubnchecked in the data structure.
+  //
+  // This is all laid out in a ton of RFC, which are not cited directly herein.
+  // See https://wiki.tunitas.tech
+  //
+  // Examples
+  //
+  //    devbox.server.example      Labels{ "example", "server", "devbox" };
+  //    devbox.server.example.     Labels{ "", "example", "server", "devbox" };
+  //                         ^
+  //                         |
+  // see the dot (.) --------/ (here)
+  //
+  // Usage:
+  //
+  //   just like std::deque<Label>
+  //
+  //   auto labels = Labels{...somehow...};
+  //   auto ss = to_string(labels);
+  //   cout << labels;
+  //
+  struct Labels;
+}
+#endiv
+#divert <hpp>
+#import std.basic_ostream
+#import nonstd.required.Character
+#import nonstd.required.Character_Traits
+namespace tunitas::scarpet::dns {
+  //
+  // Whereas the other "name" data types have view(...), that is not possible here.
+  // A string is always generated afresh.
+  //
+  inline auto to_string(Labels const &) -> std::string;
+  template<nonstd::required::Character CHAR, nonstd::required::Character_Traits TRAITS> inline auto to_stream(std::basic_ostream<CHAR, TRAITS> &, Labels const &) -> std::basic_ostream<CHAR, TRAITS> &;
+}
+#import tunitas.scarpet.dns.Label
+#import std.deque
+namespace tunitas::scarpet {
+  class dns::Labels : public std::deque<Label> {
+    using ancestor = std::deque<Label>;
+  public:
+    Labels() = default;
+    using ancestor::deque;
+  };
+}
+#endiv
+#divert <ipp>
+#import std.ostringstream
+#import std.make_ostream_joiner
+#import std.transform
+namespace tunitas::scarpet {
+  auto dns::to_string(Labels const &ls) -> std::string {
+    std::ostringstream buf;
+    to_stream(buf, ls);
+    return buf.str();
+  }
+  template<nonstd::required::Character CHAR, nonstd::required::Character_Traits TRAITS> auto dns::to_stream(std::basic_ostream<CHAR, TRAITS> &os, Labels const &ls) -> std::basic_ostream<CHAR, TRAITS> & {
+    std::transform(std::rbegin(ls), std::rend(ls), std::make_ostream_joiner(os, '.'), [](auto const &name) { return view(name); } );
+    return os;
+  }
+}
+#endiv

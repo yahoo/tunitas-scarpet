@@ -1,0 +1,48 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.did.Identifier
+#import std.string_view
+namespace tunitas::scarpet::did {
+  //
+  // The reasonable names
+  //
+  // Enforcements:
+  // 1. restricts to that certain "safe" character set which can be
+  // - Stored in DNS
+  // - Put in a fileystem
+  // - Put in a single file name.
+  // 2. Not empty.
+  // 3. um that's it.  A maximum length is not enforced.
+  //
+  // The standard name is XXX
+  //
+  // Usage:
+  //
+  //   oh come on
+  //
+  inline auto is_a_simple_word(Method const &) -> bool;
+  inline auto is_a_simple_word(Identifier const &) -> bool;
+  namespace detail {
+    inline auto is_a_simple_word(std::string_view const &) -> bool;
+  }
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet {
+  auto did::is_a_simple_word(Method const &candidate) -> bool { return detail::is_a_simple_word(view(candidate)); }
+  auto did::is_a_simple_word(Identifier const &candidate) -> bool { return detail::is_a_simple_word(view(candidate)); }
+  auto did::detail::is_a_simple_word(std::string_view const &candidate) -> bool {
+    auto const is_good = [](char c) {
+                           auto const is_numeric = [](char c) { return '0' <= c && c <= '9'; };
+                           auto const is_ALPHA = [](char c) { return 'A' <= c && c <= 'Z'; };
+                           auto const is_alpha = [](char c) { return 'a' <= c && c <= 'z'; };
+                           return is_numeric(c) || is_ALPHA(c) || is_alpha(c) || '_' == c || '-' == c || '+' == c || '.' == c;
+                         };
+    static_assert(false == is_good('/'));
+    return !candidate.empty() && std::all_of(candidate.begin(), candidate.end(), is_good);
+  }
+}
+#endiv

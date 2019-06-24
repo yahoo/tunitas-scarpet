@@ -1,0 +1,41 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.Fields.declaration
+namespace tunitas::scarpet::answer::packaging {
+  //
+  // All the fields that comprise a single service 
+  //
+  // Example:
+  //
+  //                    id.6.service.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi#inbox"
+  //                  type.6.service.123456789abcdefghi.marfa TXT "SocialWebInboxService"
+  //              endpoint.6.service.123456789abcdefghi.marfa URI 1 1 "https://social.example.com/83hfh37dj"
+  //           description.6.service.123456789abcdefghi.marfa TXT "My public social inbox"
+  //       amount.spamCost.6.service.123456789abcdefghi.marfa TXT "0.50"
+  //     currency.spamCost.6.service.123456789abcdefghi.marfa TXT "USD"
+  //
+  // Usage:
+  //
+  //   See Fields<STANZAS> and launch(...)
+  //
+  template<> class Fields<fields::SERVICE>;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.Query
+namespace tunitas::scarpet::answer::packaging {
+  template<> class Fields<fields::SERVICE> {
+    using Id          = Query<Stanza<stanza::SERVICES>, Service<service::ID>>;
+    using Type        = Query<Stanza<stanza::SERVICES>, Service<service::TYPE>>;
+    using Endpoint    = Query<Stanza<stanza::SERVICES>, Service<service::ENDPOINT>>;
+    using Description = Query<Stanza<stanza::SERVICES>, Service<service::DESCRIPTION>>;
+  public:
+    Id id;
+    Type type;
+    Endpoint endpoint;
+    Description description;
+  };
+}
+#endiv

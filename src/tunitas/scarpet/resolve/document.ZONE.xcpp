@@ -1,0 +1,45 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.resolve.document.declaration
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::resolve {
+  //
+  // Whereas we find that a (DID) Document Is A Zone (DIAZ) as announced by such SOA RR.
+  // Acquire that zone from within the DSSZ and AXFR it.
+  // That record set, in toto, is the DID Document that you seek.
+  //
+  // These use a "Z" flag to indicate the use of a complete zone.
+  //
+  // DID Document Storage Service Zone (DSSZ), a (F)QDN ---------------------------\ (here)
+  //                                                                               |
+  // The regex pattern & replacement is always completely empty -----------------\ |
+  //                                                                             | |    
+  //            DID Resolver Service+Protocol ------------------\---\            | |
+  //                                                            |   |            | |
+  // Mumblecore DID Document Storage Flags -----------------\   |   |            | |
+  //                                                        |   |   |            | |
+  // /-----------reversed DID-----------------\             |   |   |            | |
+  // |           |        |                   |             |   |   |            | |
+  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv             v   v   v            v v
+  // ... 9b-7d80-46c0-bc2a-76a84bf848ef.freegan  NAPTR 1 1 "Z" "did+freegan+v1" "" paulding.fd20-1e92-49c7.net.
+  // ... 0e-233a-496c-aebd-79ca7c6efe9a.hammock  NAPTR 1 1 "Z" "did+hammock"    "" fata-morgana.fd20-1e92-49c7.net.
+  //
+  // Scheme & Policy:
+  //
+  // 4c76ad9b-7d80-46c0-bc2a-76a84bf848ef.freegan ------> indicates the zone at ---> 4c76ad9b-7d80-46c0-bc2a-76a84bf848ef.freegan.paulding.fd20-1e92-49c7.net.
+  // 635b700e-233a-496c-aebd-79ca7c6efe9a.hammock ---> indicates the zone at ------> 635b700e-233a-496c-aebd-79ca7c6efe9a.hammock.fata-morgana.fd20-1e92-49c7.net.
+  //
+  template<> auto document<ZONE>(Service &, Method const &, Identifier const &, dns::Name const &) -> Outcome<did::Document<did::DOME>>;
+}
+#endiv
+#divert <cpp>
+#import nonstd.exception.Unimplemented
+namespace tunitas::scarpet::resolve {
+  template<> auto document<ZONE>(Service &, Method const &, Identifier const &, dns::Name const &) -> Outcome<did::Document<did::DOME>> {
+    throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+  }
+}
+#endiv

@@ -3,57 +3,132 @@
 // Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
 namespace mod::scarpet::config {
-  enum STORAGE_DIRECTORY { };
-  enum LOCATION_PREFIX { };
+  //
+  // The configuration specification, as recovered out of the configuration file(s)
+  //
+  // Defaults as configured on configure.ac
+  // but
+  //
+  //   Club scarpet.club      (but you should use your own)
+  //   Method mumblecore       (but you should use your own lexicon)
+  //   LocationPrefix /           (this default is fine)
+  //
+  // Example:
+  //
+  //     <Scarpet>
+  //        Club scarpet.club
+  //        Method mumblecore
+  //        Protocol did+lo-fi
+  //     </Scarpet>
+  //     <Location /scarpet> <---------------------------- choose wisely  /scarpet/mumblecore/87c047b82efa46b287d580dc51e7d97e
+  //         SetHandler mod_scarpet
+  //     </Location>
+  //
+  // Usage: (in some handler, to acquire the Specification and thus server-specific configuration-state variables)
+  //
+  //   auto handler(...arguments...) noexcept -> Status try {
+  //     auto const *spec = apache::httpd::module_config::get<config::Specification>(server, scarpet_module);
+  //     ...do...
+  //     ...something...
+  //     ...wonderful...
+  //     return status::OK;
+  //   } catch (...) {
+  //     ...never let (C++ exceptions escape back into the C runtime)...
+  //     return status::ERROR;
+  //   }
+  // 
+  enum CLUB { };
+  enum METHOD { };
+  enum SERVICE { };
+  enum LOCATION { };
   class Specification;
 }
 #endiv
 #divert <hpp>
 #import apache.httpd.config.Value
+#import tunitas.scarpet.Club
+#import tunitas.scarpet.Protocol
+#import tunitas.scarpet.did.Method
 #import std.string
 class mod::scarpet::config::Specification {
 public:
   Specification();
-  //
-  // Defaults to /var/mod_scarpet
-  // Relative paths are imputed to the ServerRoot
-  //
-  apache::httpd::config::Value<STORAGE_DIRECTORY> storage_directory;
-  //
-  // Defaults to "/"
-  // Should be the same as the <Location...> in which the handler is configured
-  // e.g.
-  //     <Scarpet>
-  //        StorageDirectory /var/mod_scarpet
-  //        LocationPrefix /var/scarpet <----------------- choose wisely
-  //     </Scarpet>
-  //     <Location /scarpet> <---------------------------- choose wisely
-  //         SetHandler mod_scarpet
-  //     </Location>
-  //
-  apache::httpd::config::Value<LOCATION_PREFIX> location_prefix;
+  using Club = apache::httpd::config::Value<CLUB, tunitas::scarpet::Club>;
+  Club did_club_name;
+  using Method = apache::httpd::config::Value<METHOD, tunitas::scarpet::did::Method>;
+  Method did_method_name;
+  using Protocol = apache::httpd::config::Value<SERVICE, tunitas::scarpet::Protocol>;
+  Protocol resolver_protocol_name;
+  using Location = apache::httpd::config::Value<LOCATION>;
+  Location location_prefix;
 };
 namespace apache::httpd::config {
-  template<> char const Value<mod::scarpet::config::STORAGE_DIRECTORY>::NAME[];
-  template<> char const Value<mod::scarpet::config::STORAGE_DIRECTORY>::DESCRIPTION[];
-
-  template<> char const Value<mod::scarpet::config::LOCATION_PREFIX>::NAME[];
-  template<> char const Value<mod::scarpet::config::LOCATION_PREFIX>::DESCRIPTION[];
+  // The DID Club (a DNS FQDN, but a Service, a business, a Consortium) being used at this REST endpoint.
+  template<> char const Value<mod::scarpet::config::CLUB, tunitas::scarpet::Club>::NAME[];
+  template<> char const Value<mod::scarpet::config::CLUB, tunitas::scarpet::Club>::DESCRIPTION[];
+  // The DID Method Name which is serviced at this REST endpoint.
+  template<> char const Value<mod::scarpet::config::METHOD, tunitas::scarpet::did::Method>::NAME[];
+  template<> char const Value<mod::scarpet::config::METHOD, tunitas::scarpet::did::Method>::DESCRIPTION[];
+  // The DID Resolver Service expected at this REST endpoint (not passed ot the endpoint)
+  // This is the required value of the NAPTR service field.
+  template<> char const Value<mod::scarpet::config::SERVICE, tunitas::scarpet::Protocol>::NAME[];
+  template<> char const Value<mod::scarpet::config::SERVICE, tunitas::scarpet::Protocol>::DESCRIPTION[];
+  // The location prefix in the REST sense
+  template<> char const Value<mod::scarpet::config::LOCATION>::NAME[];
+  template<> char const Value<mod::scarpet::config::LOCATION>::DESCRIPTION[];
+}
+namespace apache::httpd::config::detail {
+  template<> inline auto coerce<tunitas::scarpet::Club>(std::string const &) -> tunitas::scarpet::Club;
+  template<> inline auto coerce<tunitas::scarpet::Protocol>(std::string const &) -> tunitas::scarpet::Protocol;
+  template<> inline auto coerce<tunitas::scarpet::did::Method>(std::string const &) -> tunitas::scarpet::did::Method;
+}
+#endiv
+#divert <ipp>
+namespace apache::httpd::config::detail {
+  template<> auto coerce<tunitas::scarpet::Club>(std::string const &syntax) -> tunitas::scarpet::Club {
+    return tunitas::scarpet::Club{syntax.begin(), syntax.end()};
+  }
+  template<> auto coerce<tunitas::scarpet::Protocol>(std::string const &syntax) -> tunitas::scarpet::Protocol {
+    return tunitas::scarpet::Protocol{syntax.begin(), syntax.end()};
+  }
+  template<> auto coerce<tunitas::scarpet::did::Method>(std::string const &syntax) -> tunitas::scarpet::did::Method {
+    return tunitas::scarpet::did::Method{syntax.begin(), syntax.end()};
+  }
 }
 #endiv
 #divert <cpp>
 #import autotools.autoconf.Config.mod.scarpet.CONFIG
 mod::scarpet::config::Specification::Specification()
-  : storage_directory(autotools::autoconf::Config<CONFIG>::storage_directory())
+  : did_method_name(autotools::autoconf::Config<CONFIG>::did_method_name())
   , location_prefix("/") {
   ;
 }
 
-template<> char const apache::httpd::config::Value<mod::scarpet::config::STORAGE_DIRECTORY>::NAME[] = "StorageDirectory";
-template<> char const apache::httpd::config::Value<mod::scarpet::config::STORAGE_DIRECTORY>::DESCRIPTION[] =
-R"DESCRIPTION(Storage directory for uploaded blobs; e.g. /var/mod_scarpet)DESCRIPTION";
+#include "config.h" // which has the #defines that paste in string literals
+template<> char const apache::httpd::config::Value<mod::scarpet::config::CLUB, tunitas::scarpet::Club>::NAME[] = "Club";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::CLUB, tunitas::scarpet::Club>::DESCRIPTION[] =
+R"DESCRIPTION(DID Club Name; defaults to ")DESCRIPTION" DID_CLUB_NAME "\"";
+//                                                    ^ ^
+//                                                    | |
+// C++ macro and string literal concatenation --------/-/ (here)
+// [[FIXTHIS]] acquire the #define (ahem) string literals from config.h
 
-template<> char const apache::httpd::config::Value<mod::scarpet::config::LOCATION_PREFIX>::NAME[] = "LocationPrefix";
-template<> char const apache::httpd::config::Value<mod::scarpet::config::LOCATION_PREFIX>::DESCRIPTION[] =
-R"DESCRIPTION(The <Location ...> prefix of the handler, defaults to "/")DESCRIPTION";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::METHOD, tunitas::scarpet::did::Method>::NAME[] = "Method";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::METHOD, tunitas::scarpet::did::Method>::DESCRIPTION[] =
+R"DESCRIPTION(The DID Method Name defaults to ")DESCRIPTION" DID_METHOD_NAME "\"";
+//                                                         ^ ^
+//                                                         | |
+// C++ macro and string literal concatenation -------------/-/ (here)
+// [[FIXTHIS]] acquire the #define (ahem) string literals from config.h
+template<> char const apache::httpd::config::Value<mod::scarpet::config::SERVICE, tunitas::scarpet::Protocol>::NAME[] = "Protocol";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::SERVICE, tunitas::scarpet::Protocol>::DESCRIPTION[] =
+R"DESCRIPTION(The DID Resolver Service+Protocol Name; defaults to ")DESCRIPTION" DID_PROTOCOL_NAME "\"";
+//                                                                    ^ ^
+//                                                                    | |
+// C++ macro and string literal concatenation ------------------------/-/ (here)
+// [[FIXTHIS]] acquire the #define (ahem) string literals from config.h
+
+template<> char const apache::httpd::config::Value<mod::scarpet::config::LOCATION>::NAME[] = "Location";
+template<> char const apache::httpd::config::Value<mod::scarpet::config::LOCATION>::DESCRIPTION[] =
+R"DESCRIPTION(The Location prefix of the handler, defaults to "/")DESCRIPTION";
 #endiv

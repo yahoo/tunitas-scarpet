@@ -1,0 +1,72 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The processors of the queries for the fields in one 'service' DID stanza
+  // Specializations only.
+  //
+  // Usage:
+  //
+  //   See Queries which stacks up a whole bunch of these.
+  //
+  namespace service {
+    enum Name {
+      ID,
+      TYPE,
+      ENDPOINT,
+      DESCRIPTION,
+    };
+  }
+  //
+  // The Service<NAME> implements an ares query as a functor for use in an ares::query(...)
+  //
+  // Example: (following  https://w3c-ccg.github.io/did-spec/)
+  //
+  //            id.5.service.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi#messages"
+  //          type.5.service.123456789abcdefghi.marfa TXT "MessagingService"
+  //      endpoint.5.service.123456789abcdefghi.marfa URI 1 1 "https://example.com/messages/8377464"
+  //
+  //            id.6.service.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi#inbox"
+  //          type.6.service.123456789abcdefghi.marfa TXT "SocialWebInboxService"
+  //      endpoint.6.service.123456789abcdefghi.marfa URI 1 1 "https://social.example.com/83hfh37dj"
+  //   description.6.service.123456789abcdefghi.marfa TXT "My public social inbox"
+  //
+  // Not handled herein:
+  //
+  //     amount.spamCost.6.service.123456789abcdefghi.marfa TXT "0.50"
+  //   currency.spamCost.6.service.123456789abcdefghi.marfa TXT "USD"
+  //
+  // Whereas the word "service" appears twice in "serviceEndpoint"
+  // Let it be trimmed to "endpoint" herein.
+  //
+  //   Variance: just use 'endpoint'
+  //
+  //   endpoint.0.service.123456789abcdefghi.marfa URI 1 1 "https://openid.example.com/"
+  //   endpoint.1.service.123456789abcdefghi.marfa URI 1 1 "https://repository.example.com/service/8377464"
+  //   endpoint.2.service.123456789abcdefghi.marfa URI 1 1 "https://xdi.example.com/8377464"
+  //   endpoint.2.service.123456789abcdefghi.marfa URI 1 1 "https://agent.example.com/8377464"
+  //   endpoint.4.service.123456789abcdefghi.marfa URI 1 1 "https://hub.example.com/.identity/did:example:0123456789abcdef/"
+  //   endpoint.5.service.123456789abcdefghi.marfa URI 1 1 "https://example.com/messages/8377464"
+  //   endpoint.6.service.123456789abcdefghi.marfa URI 1 1 "https://social.example.com/83hfh37dj"
+  //   endpoint.7.service.123456789abcdefghi.marfa URI 1 1 "http://auth.example.com/did:example:123456789abcdefg"
+  //
+  // Avoid: the use of "serviceEndpoint"  (what other kind of endpoint could it possibly be?)
+  //
+  //   serviceEndpoint.0.service.123456789abcdefghi.marfa URI 1 1 "https://openid.example.com/"
+  //   serviceEndpoint.1.service.123456789abcdefghi.marfa URI 1 1 "https://repository.example.com/service/8377464"
+  //   serviceEndpoint.2.service.123456789abcdefghi.marfa URI 1 1 "https://xdi.example.com/8377464"
+  //   serviceEndpoint.2.service.123456789abcdefghi.marfa URI 1 1 "https://agent.example.com/8377464"
+  //   serviceEndpoint.4.service.123456789abcdefghi.marfa URI 1 1 "https://hub.example.com/.identity/did:example:0123456789abcdef/"
+  //   serviceEndpoint.5.service.123456789abcdefghi.marfa URI 1 1 "https://example.com/messages/8377464"
+  //   serviceEndpoint.6.service.123456789abcdefghi.marfa URI 1 1 "https://social.example.com/83hfh37dj"
+  //   serviceEndpoint.7.service.123456789abcdefghi.marfa URI 1 1 "http://auth.example.com/did:example:123456789abcdefg"
+  //
+  template<service::Name> struct Service;
+}
+#endiv
+#divert <hpp>
+// All specializations will need these
+#import tunitas.scarpet.answer.processor.Single
+#endiv

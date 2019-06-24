@@ -9,7 +9,12 @@ lib_libtunitas_scarpet_pki_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
 lib_libtunitas_scarpet_pki_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_pki_la_SOURCES))
 lib_libtunitas_scarpet_pki_la_SOURCES = \
   obj/src/tunitas/scarpet/pki/namespace.cpp \
+  obj/src/tunitas/scarpet/pki/Algorithm.cpp \
+  obj/src/tunitas/scarpet/pki/Encoding.cpp \
+  obj/src/tunitas/scarpet/pki/Material.cpp \
+  \
   obj/src/tunitas/scarpet/pki/cn.generate.cpp \
+  \
   obj/src/tunitas/scarpet/pki/key/namespace.cpp \
   obj/src/tunitas/scarpet/pki/key/Privat.cpp \
   obj/src/tunitas/scarpet/pki/key/Publik.cpp \

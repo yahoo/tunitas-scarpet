@@ -1,0 +1,139 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.char_traits
+#import std.basic_string
+namespace tunitas::scarpet::did {
+  //
+  // The DID Name is the Scheme plus the Authority
+  // The DID Authority is the Method plus the Identifier
+  //
+  // name       ::= scheme ':' authority
+  // scheme     ::= "did"
+  // authority  ::= method ':' identifier
+  // method     ::= a simple word ... from that certain allowable reasonble character set (that can't contain ':')
+  // identifier ::= from that certain allowable reasonble character set (that can't contain ':')
+  //
+  // Examples:
+  //
+  //   did:example:123456789abcdefghi
+  //   did:mid-fi:a0096d98-2919-4a48-9b69-b8e7a8891d40
+  //   did:flannel:d41d8cd98f00b204e9800998ecf8427e
+  //   did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  //   did:artisanal:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e
+  //
+  // Usage:
+  //
+  //   oh come on (it's basically a string)
+  //
+  namespace name {
+    class Traits : public std::char_traits<char> { };
+  }
+  using Name = std::basic_string<char, name::Traits>;
+}
+#endiv
+#divert <hpp>
+#import std.string_view
+#import std.string
+namespace tunitas::scarpet::did::name {
+  inline auto view(Name const &) -> std::string_view;
+  inline auto to_string(Name const &) -> std::string;
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::did {
+  auto name::view(Name const &old) -> std::string_view {
+    return std::string_view{old.data(), old.size()};
+  }
+  auto name::to_string(Name const &old) -> std::string {
+    return std::string{old.data(), old.size()};
+  }
+}
+#endiv
+// [[FIXTHIS]] move this material off to wiki.tunitas.technologies (wiki.tunitas.dev, or wherever that winds up landing)
+//
+// ... because the DID Specification didn't provide a definition for this did::Name concept
+// herewith find some erudition and derivation ... which should be on a wiki somewhere, not here.
+//
+// Parsing the specification on ths point is ... difficult.  specification is vague
+// The DID (Decentralized {ID}entifier) ... is just the identity indicator
+// This *thing* seems to be called an "authority" part in RFC 3986.  We use that terminology here.
+// But that does not encompass the "scheme" part.
+// So we make up a word ... Name
+//
+// This is the primary key that is used to look up the DID Document (thingy)
+// The DID syntax follows the specified form
+//
+//   did : method : namespace-specific-identifier
+//
+// This DID (authority) is the primary key that is used to look up the DID Document (thingy)
+// A DID is a URI; a DID forms the authority part of a URL.
+//
+// The DID syntax (URI, the authority part) follows the specified form
+//
+//                  method-
+//                  specific-
+//   did : method : identifier [ path query ]
+//   \-/   \-----------------/ \------------/
+//    |           |                  |
+//  scheme    authority          not shown
+//
+// Terms
+//
+//    DID = ...you know... what's at issue here...
+//    URN, URI, URL ... with the confluent semantics from RFC 3986 et al.
+//    Scheme
+//    Authority
+//    Identifier    that certain part of the Authority, the namespace-specific-identifier (NSI)
+//    Method        that certain part of the Authority
+//    NSI           namespace-specific-identifier
+//
+// References
+//   [DID-SPEC]   Decentralized Identifiers (DIDs) v0.13, Data Model and Syntaxes,
+//                Draft Community Group Report 2019-06-19, and udpated constantly.
+//                https://w3c-ccg.github.io/did-spec
+//   [RFC3986]    Uniform Resource Identifier (URI): Generic Syntax.
+//                T. Berners-Lee; R. Fielding; L. Masinter. IETF. 2005-01. Internet Standard.
+//                https://tools.ietf.org/html/rfc3986
+//
+// See the etymology of "authority" in the U* pantheon { URN, URI, URL }
+//
+// <quote ref="RFC3986">
+//
+// 3.  Syntax Components
+// 
+//    The generic URI syntax consists of a hierarchical sequence of
+//    components referred to as the scheme, authority, path, query, and
+//    fragment.
+// 
+//       URI         = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
+// 
+//       hier-part   = "//" authority path-abempty
+//                   / path-absolute
+//                   / path-rootless
+//                   / path-empty
+// 
+//    The scheme and path components are required, though the path may be
+//    empty (no characters).  When authority is present, the path must
+//    either be empty or begin with a slash ("/") character.  When
+//    authority is not present, the path cannot begin with two slash
+//    characters ("//").  These restrictions result in five different ABNF
+//    rules for a path (Section 3.3), only one of which will match any
+//    given URI reference.
+// 
+// 
+// 
+// 
+//    The following are two example URIs and their component parts:
+// 
+//          foo://example.com:8042/over/there?name=ferret#nose
+//          \_/   \______________/\_________/ \_________/ \__/
+//           |           |            |            |        |
+//        scheme     authority       path        query   fragment
+//           |   _____________________|__
+//          / \ /                        \
+//          urn:example:animal:ferret:nose
+// 
+// </quote>
+//

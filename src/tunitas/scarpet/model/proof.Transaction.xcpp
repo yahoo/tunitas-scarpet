@@ -1,0 +1,47 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::model::proof {
+  //
+  // Need a unique transaction id
+  // Let's pretend this is a 128-bit UUID.  Good enough.
+  //
+  // Usage:
+  //
+  //   oh come on.
+  //
+  class Transaction;
+}
+#endiv
+#divert <hpp>
+#import std.string
+namespace tunitas::scarpet::model::proof {
+  inline auto to_string(Transaction const &) -> std::string;
+}
+#import uuid.Container
+class tunitas::scarpet::model::proof::Transaction : private uuid::Container {
+  // [[FIXTHIS]] maybe we should just go ahead and use nonstd::uint128_t directly.  Thus leave inheritance as 'private'
+  using ancestor = uuid::Container;
+  inline explicit Transaction(ancestor const &);
+  friend auto proof::to_string(Transaction const &) -> std::string;
+public:
+  Transaction() = default;
+  inline static auto generate() -> Transaction;
+};
+#endiv
+#divert <ipp>
+#import std.ostringstream
+namespace tunitas::scarpet::model {
+  auto proof::to_string(Transaction const &tx) -> std::string {
+    std::ostringstream buf;
+    buf << static_cast<Transaction::ancestor const &>(tx);
+    return buf.str();
+  }
+}
+#import uuid.generate.random
+namespace tunitas::scarpet::model::proof {
+  Transaction::Transaction(ancestor const &aaa) : ancestor{aaa} { }
+  auto Transaction::generate() -> Transaction { return Transaction{uuid::generate::random()}; }
+}
+#endiv

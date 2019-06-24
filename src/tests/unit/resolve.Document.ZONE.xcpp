@@ -1,0 +1,76 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tests.unit.resolve.Document.declaration
+namespace tests::unit::resolve {
+  template<> class Document<ZONE>;
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tests.unit.resolve.aspect.Configuration
+#import tests.unit.resolve.aspect.Service
+namespace tests::unit::resolve {
+  template<> class Document<ZONE> : public cppunit::test::Fixture, aspect::Configuration, aspect::Service {
+  public:
+    auto setUp() -> void override { Service::setUp(); }
+    auto tearDown() -> void override { Service::tearDown(); }
+    auto test_case_01() -> void;
+    auto test_case_02() -> void;
+    static auto suite() -> cppunit::Test *;
+  };
+}
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.resolve.document.ZONE
+#import nonstd.exception.Unimplemented
+namespace tests::unit::resolve {
+  auto Document<ZONE>::test_case_01() -> void try {
+    //
+    // Test succeeds because there exists an appropriate SOA RR and also, that zone is amenable to AXFR.
+    //
+    //   123456789abcdefghi.example. @TEST_DID_DOCUMENT_STORAGE_SERVICE_NAME@
+    //
+    // e.g. (recall that 'marfa' is a DID Method from the Mumblecore Lexicon; it is illustrative)
+    //
+    //  123456789abcdefghi.example.marfa.scarpet.solutions.
+    //  123456789abcdefghi.example.marfa.fd20-1e92-49c7.net.
+    //
+    using namespace ::tunitas::scarpet;
+    namespace resolve = ::tunitas::scarpet::resolve;
+    auto method = Method{"example"};
+    auto identifier = Identifier{"123456789abcdefghi"};
+    auto qdn = dns::Name{ac::test_did_document_storage_service_name()};
+    auto looked = resolve::document<resolve::ZONE>(*this->service, method, identifier, qdn);
+    CPPUNIT_ASSERT(ok(looked));
+    auto dome = value(std::move(looked));
+    CPPUNIT_ASSERT(sizeof (dome));
+    dome.dump(std::cerr);
+  } catch (nonstd::exception::Unimplemented const &) {
+    // But then one day it will be implemented and it won't throw this
+    CPPUNIT_ASSERT(true);
+  }
+  auto Document<ZONE>::test_case_02() -> void try {
+#warning WRITETHIS auto Document<ZONE>::test_case_02() -> void
+    CPPUNIT_ASSERT(true);
+  } catch (nonstd::exception::Unimplemented const &) {
+    // But then one day it will be implemented and it won't throw this
+    CPPUNIT_ASSERT(true);
+  }
+}
+#import rigging.suite.io
+auto tests::unit::resolve::Document<tests::unit::resolve::ZONE>::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"document<ZONE>"};
+  {
+    Stream cas{"case"};
+    cas << call("01", &Document::test_case_01)
+        << call("02", &Document::test_case_02)
+      ;
+    series << move(cas);
+  }
+  return finalize(series);
+}
+#endiv

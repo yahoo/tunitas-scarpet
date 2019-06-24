@@ -1,0 +1,230 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.dns
+namespace tests::unit::dns {
+  // because ADL won't find function templates, so we have to make it be nearby
+  using namespace ::tunitas::scarpet::dns;
+  namespace uunpparrsee {
+    class Template;
+  }
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+class tests::unit::dns::uunpparrsee::Template : public cppunit::test::Fixture {
+public:
+  auto test_labels_copy() -> void;
+  auto test_labels_forward() -> void;
+  auto test_name_copy() -> void;
+  auto test_name_forward() -> void;
+  //
+  auto test_label_one() -> void;
+  auto test_label_two() -> void;
+  auto test_label_three() -> void;
+  auto test_label_four() -> void;
+  //
+  auto test_label_one_labels() -> void;
+  auto test_label_two_labels() -> void;
+  auto test_label_three_labels() -> void;
+  auto test_label_four_labels() -> void;
+  //
+  auto test_label_one_name() -> void;
+  auto test_label_two_name() -> void;
+  auto test_label_three_name() -> void;
+  auto test_label_four_name() -> void;
+  //
+  // ... and then redo for the fake partial function specializations
+  //
+  static auto suite() -> cppunit::Test *;
+};
+#endiv
+#divert <cpp>
+#import std.string
+#import tunitas.scarpet.dns.re_string
+auto tests::unit::dns::uunpparrsee::Template::test_labels_copy() -> void {
+  auto const specimen = Labels{"", "solutions", "tunitas", "scarpet", "storage"};
+  auto subject = re_string(specimen);
+  auto const expected = "storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+#import std.move
+auto tests::unit::dns::uunpparrsee::Template::test_labels_forward() -> void {
+  auto specimen = Labels{"", "solutions", "tunitas", "scarpet", "storage"};
+  auto subject = re_string(std::move(specimen));
+  auto const expected = "storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_name_copy() -> void {
+  auto const specimen = Name{"storage.scarpet.tunitas.solutions."};
+  auto subject = re_string(specimen);
+  auto const expected = "storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_name_forward() -> void {
+  auto specimen = Name{"storage.scarpet.tunitas.solutions."};
+  auto subject = re_string(std::move(specimen));
+  auto const expected = "storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_one() -> void {
+  auto const specimen1 = Label{"solutions"};
+  auto subject = re_string(specimen1);
+  auto const expected = "solutions"s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_two() -> void {
+  auto const specimen1 = Label{"solutions"};
+  auto const specimen2 = Label{"tunitas"};
+  auto subject = re_string(specimen2, specimen1);
+  auto const expected = "tunitas.solutions"s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_three() -> void {
+  auto const specimen1 = Label{"solutions"};
+  auto const specimen2 = Label{"tunitas"};
+  auto const specimen3 = Label{"scarpet"};
+  auto subject = re_string(specimen3, specimen2, specimen1);
+  auto const expected = "scarpet.tunitas.solutions"s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_four() -> void {
+  auto const specimen1 = Label{"solutions"};
+  auto const specimen2 = Label{"tunitas"};
+  auto const specimen3 = Label{"scarpet"};
+  auto const specimen4 = Label{"storage"};
+  auto subject = re_string(specimen4, specimen3, specimen2, specimen1);
+  auto const expected = "storage.scarpet.tunitas.solutions"s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_one_labels() -> void {
+  auto const specimen1 = Label{"devbox"};
+  auto const ending = Labels{"", "solutions", "tunitas", "scarpet", "storage"};
+  re_string(specimen1, ending);
+  auto subject = re_string(specimen1, ending);
+  auto const expected = "devbox.storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_two_labels() -> void {
+  auto const specimen2 = Label{"my"};
+  auto const specimen1 = Label{"devbox"};
+  auto const ending = Labels{"", "solutions", "tunitas", "scarpet", "storage"};
+  auto subject = re_string(specimen2, specimen1, ending);
+  auto const expected = "my.devbox.storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_three_labels() -> void {
+  auto const specimen3 = Label{"exp"};
+  auto const specimen2 = Label{"my"};
+  auto const specimen1 = Label{"devbox"};
+  auto const ending = Labels{"", "solutions", "tunitas", "scarpet", "storage"};
+  auto subject = re_string(specimen3, specimen2, specimen1, ending);
+  auto const expected = "exp.my.devbox.storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_four_labels() -> void {
+  auto const specimen4 = Label{"oops"};
+  auto const specimen3 = Label{"exp"};
+  auto const specimen2 = Label{"my"};
+  auto const specimen1 = Label{"devbox"};
+  auto const ending = Labels{"", "solutions", "tunitas", "scarpet", "storage"};
+  auto subject = re_string(specimen4, specimen3, specimen2, specimen1, ending);
+  auto const expected = "oops.exp.my.devbox.storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_one_name() -> void {
+  auto const specimen1 = Label{"devbox"};
+  auto const ending = Name{"storage.scarpet.tunitas.solutions."};
+  auto subject = re_string(specimen1, ending);
+  auto const expected = "devbox.storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_two_name() -> void {
+  auto const specimen2 = Label{"my"};
+  auto const specimen1 = Label{"devbox"};
+  auto const ending = Name{"storage.scarpet.tunitas.solutions."};
+  auto subject = re_string(specimen2, specimen1, ending);
+  auto const expected = "my.devbox.storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_three_name() -> void {
+  auto const specimen3 = Label{"exp"};
+  auto const specimen2 = Label{"my"};
+  auto const specimen1 = Label{"devbox"};
+  auto const ending = Name{"storage.scarpet.tunitas.solutions."};
+  auto subject = re_string(specimen3, specimen2, specimen1, ending);
+  auto const expected = "exp.my.devbox.storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+auto tests::unit::dns::uunpparrsee::Template::test_label_four_name() -> void {
+  auto const specimen4 = Label{"oops"};
+  auto const specimen3 = Label{"exp"};
+  auto const specimen2 = Label{"my"};
+  auto const specimen1 = Label{"devbox"};
+  auto const ending = Name{"storage.scarpet.tunitas.solutions."};
+  auto subject = re_string(specimen4, specimen3, specimen2, specimen1, ending);
+  auto const expected = "oops.exp.my.devbox.storage.scarpet.tunitas.solutions."s;
+  auto actual = subject;
+  CPPUNIT_ASSERT_EQUAL(expected, actual);
+}
+#import rigging.suite.io
+auto tests::unit::dns::uunpparrsee::Template::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"unparse"};
+  {
+    Stream lab{"labels"};
+    lab << call("copy", &Template::test_labels_copy)
+        << call("forward", &Template::test_labels_forward)
+      ;
+    series << move(lab);
+  } {
+    Stream nam{"name"};
+    nam << call("copy", &Template::test_name_copy)
+        << call("forward", &Template::test_name_forward)
+      ;
+    series << move(nam);
+  } {
+    Stream lab{"label..."};
+    lab << call("one", &Template::test_label_one)
+        << call("two", &Template::test_label_two)
+        << call("three", &Template::test_label_three)
+        << call("four", &Template::test_label_four)
+      ;
+    series << move(lab);
+  } {
+    Stream lab{"label...labels"};
+    lab << call("one", &Template::test_label_one_labels)
+        << call("two", &Template::test_label_two_labels)
+        << call("three", &Template::test_label_three_labels)
+        << call("four", &Template::test_label_four_labels)
+      ;
+    series << move(lab);
+  } {
+    Stream lab{"label...name"};
+    lab << call("one", &Template::test_label_one_name)
+        << call("two", &Template::test_label_two_name)
+        << call("three", &Template::test_label_three_name)
+        << call("four", &Template::test_label_four_name)
+      ;
+    series << move(lab);
+  }
+  return finalize(series);
+}
+#endiv

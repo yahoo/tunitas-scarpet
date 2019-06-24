@@ -7,7 +7,7 @@ namespace mod::scarpet::config {
   //
   // Syntax
   //    <Scarpet>
-  //       StorageLocation <directory>
+  //       MethodName <name>
   //       LocationPrefix <prefix>
   //    </Scarpet>
   //
@@ -26,25 +26,32 @@ namespace mod::scarpet::config {
 char const mod::scarpet::config::NAME[] = "<Scarpet"; // missing the '>'
 char const mod::scarpet::config::ENDNAME[] = "</Scarpet>";
 char const mod::scarpet::config::DESCRIPTION[] = "The mod_scarpet Configuration Container";
-#import std.cerr
-#import std.dec
-#import apache.httpd.module_config.get
 #import apache.httpd.config.Parser
+#import apache.httpd.module_config.get
 #import apache.httpd.server.root
 #import boost.lexical_cast
+#import mod.scarpet.server.State
+#import mod.scarpet.httpd.module
 #import path.filename.workbench
-#import mod.scarpet.config.Specification
-#import mod.scarpet.module
+#import std.all_of
+#import std.cerr
+#import std.dec
+#import std.empty
+#import std.isalnum
+#import std.string
 auto mod::scarpet::config::parse(httpd::cmd_parms *cmd, void */*???*/, char const *start_token_just_recognized) -> char const * {
   // reminder  void *cmd_params::info contains the 2nd arg to AP_INIT_NOARGS in module.cpp
 
   //
   // <Scarpet>
-  //     StorageDirectory /var/scarpet
+  //     MethodName mumblecore
   // </Scarpet>
   //
   apache::httpd::config::Parser parser(cmd, NAME, ENDNAME);
-  Specification *specification = apache::httpd::module_config::get<Specification>(cmd, scarpet_module);
+  Specification *specification = [&cmd]() {
+                                   auto *state = apache::httpd::module_config::get<server::State>(cmd, scarpet_module);
+                                   return nullptr == state ? nullptr : &state->specification;
+                                 }();
   if (nullptr == specification) {
     return parser.pstrcat(" (internal error?) no specification object for ", &NAME[0], ">");
   }
@@ -55,21 +62,23 @@ auto mod::scarpet::config::parse(httpd::cmd_parms *cmd, void */*???*/, char cons
   }
 
   while (parser.get_line() && ! parser.at_end()) {
-    std::cerr << "line: q(" << parser.buffer.data() << ")\n";
+    std::cerr << "DEBUG line: q(" << parser.buffer.data() << ")\n";
     if (parser.ignorable()) {
       continue;
     }
 
     auto tokens = parser.split_line();
     if (2 != tokens.size()) {
-      return parser.pstrcat("bad directive [", parser.buffer.data(), "], expected two space separated tokens, but found ", boost::lexical_cast<std::string>(tokens.size()));
+      return parser.pstrcat("bad directive [", parser.buffer.data(), "], expected two space-separated tokens, but found ", boost::lexical_cast<std::string>(tokens.size()));
     }
         
     auto const &name(tokens[0]);
     auto const &value(tokens[1]);
 
     bool matched = false;
-    matched |= specification->storage_directory.set_if(name, value);
+    matched |= specification->did_club_name.set_if(name, value);
+    matched |= specification->did_method_name.set_if(name, value);
+    matched |= specification->resolver_protocol_name.set_if(name, value);
     matched |= specification->location_prefix.set_if(name, value);
     if ( ! matched ) {
       return parser.pstrcat("bad directive [", name, "], unsupported directive name");
@@ -79,13 +88,8 @@ auto mod::scarpet::config::parse(httpd::cmd_parms *cmd, void */*???*/, char cons
     return parser.pstrcat("missing end token [", ENDNAME, "]");
   }
 
-  if ('/' != specification->storage_directory.value.front()) {
-    //
-    // CANNOT use ap::server_root_relative because it only works for files
-    // i.e. it can return nullptr; and does return nullptr if the computed relative name is a directory name 
-    // DO NOT ap::server_root_relative(cmd->pool, specification->storage_directory.value.data());
-    //
-    specification->storage_directory.value = finalize(path::filename::workbench() * apache::httpd::server::root() / specification->storage_directory.value);
+  if ( !is_barely_valid(specification->did_method_name.value)) {
+      return parser.pstrcat("bad DID method value [", specification->did_method_name.value, "], the DID method must be a single DNS name (no dots)");
   }
   // All is good.
   return nullptr;

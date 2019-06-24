@@ -1,0 +1,35 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.dns.Type
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The commonalities of a single-record processor
+  // Descendants only.
+  // There are only TXT and URI records which are singles like this.
+  // They appear in the stanzas: publickey, authorization, service proof.
+  //
+  /// Usage:
+  //
+  //   by inheritance, see e.g. PublicKey<CONTROLLER> or siblings
+  //
+  //   class my::Single<SOMETHING> : public Single<dns::TXT> {
+  //     using ancestor = Single<dns::TXT>;
+  //   public:
+  //      using ancestor::Single;
+  //   };
+  //
+  template<dns::Type> class Single;
+}
+// Every specialization will need these
+#import tunitas.scarpet.dns.type.constants
+#include <hpp/tunitas.scarpet.dns.type.constants> // we need the constants at <fpp> for the template specializations
+#endiv
+#divert <hpp>
+// Ibidem.
+#import ares.function.Query
+#import tunitas.scarpet.answer.Response
+#import tunitas.scarpet.answer.processor.single.Prototype
+#import tunitas.scarpet.drrs.Record
+#endiv

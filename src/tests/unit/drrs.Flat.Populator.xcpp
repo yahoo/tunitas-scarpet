@@ -1,0 +1,36 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#include <hpp/tests.unit.drrs.Flat>
+#endiv
+#divert <hpp>
+struct tests::unit::drrs::Flat::Populator {
+  auto example1(Subject &) -> void;
+  auto example2(Subject &) -> void;
+};
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.dns.Labels
+#import tunitas.scarpet.drrs.Record
+#import tunitas.scarpet.drrs.flat.Record
+#import tunitas.scarpet.dns.label.literals
+auto tests::unit::drrs::Flat::Populator::example1(Subject &subject) -> void {
+  using namespace tunitas::scarpet::dns::label::literals;
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::URI>{dns::Labels{""_label, "solutions"_label, "tunitas"_label, "scarpet"_label, "id"_label}, drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, "did:example:123456789abcdefghi"}}});
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::PTR>{dns::Labels{"", "solutions", "tunitas", "scarpet", "publickey"}, drrs::Record<dns::PTR>{"0.publickey.123456789abcdefghi.marfa"}}});
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::PTR>{dns::Labels{"", "solutions", "tunitas", "scarpet", "publickey"}, drrs::Record<dns::PTR>{"1.publickey.123456789abcdefghi.marfa"}}});
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::PTR>{dns::Labels{"", "solutions", "tunitas", "scarpet", "publickey"}, drrs::Record<dns::PTR>{"2.publickey.123456789abcdefghi.marfa"}}});
+  //
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::PTR>{dns::Labels{"", "solutions", "tunitas", "scarpet", "publickey", "0", "id"}, drrs::Record<dns::PTR>{"2.publickey.123456789abcdefghi.marfa"}}});
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::URI>{dns::Labels{"marfa", "123456789abcdefghi", "publickey", "0", "id"}, drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, "did:example:123456789abcdefghi#keys-1"}}});
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::TXT>{dns::Labels{"marfa", "123456789abcdefghi", "publickey", "0", "id", "created"}, drrs::Record<dns::TXT>{"2016-10-17T02:41:00Z"}}});
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::TXT>{dns::Labels{"marfa", "123456789abcdefghi", "publickey", "0", "type"}, drrs::Record<dns::TXT>{"did:example:123456789abcdefghi"}}});
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::TXT>{dns::Labels{"marfa", "123456789abcdefghi", "publickey", "0", "key"}, drrs::Record<dns::TXT>{"-----BEGIN PUBLIC KEY...something-something-dark_side..."}}});
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::TXT>{dns::Labels{"marfa", "123456789abcdefghi", "publickey", "0", "publicKeyPem"}, drrs::Record<dns::TXT>{"...something-something-dark_side...END PUBLIC KEY-----"}}});
+}
+auto tests::unit::drrs::Flat::Populator::example2(Subject &subject) -> void {
+  subject.emplace_back(Subject::Value{drrs::flat::Record<dns::URI>{dns::Labels{"", "solutions", "tunitas", "scarpet", "id"}, drrs::Record<dns::URI>{dns::Priority{1}, dns::Weight{1}, "did:example:123456789abcdefghi"}}});
+#warning do something more interesting here ... like maybe the whole did document ... all of it.
+}
+#endiv

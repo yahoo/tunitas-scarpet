@@ -1,0 +1,52 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import std.char_traits
+#import std.basic_string
+namespace tunitas::scarpet {
+  //
+  // A (DID Resolver) Service+Protocol (Name).
+  // These are the sorts of service names that you might find in a NAPTR.
+  //
+  // The RFC 2915 refers to this as the "Service" or the "Service+Protocol"
+  // Since "Service" is an overused noun herein, we elect to use "Protocol" as the preferred name
+  //
+  // See https://www.ietf.org/rfc/rfc2915.txt, Section 2
+  // The service is named by its protocols with variants separated by '+'
+  //
+  // Examples:
+  //
+  //  (from the mumblecore lexicon)
+  //      did+affogato    did+biodiesel      did+chia                   did+lo-fo      ...etc...
+  //  (from the w3c did-spec)
+  //      did+w3id+v1     did+example.org    did+example.org+inline     did+context    ...etc...
+  //
+  // Usage:
+  //
+  //   oh come on (it's a string)
+  //
+  namespace protocol {
+    class Traits : public std::char_traits<char> { };
+  }
+  using Protocol = std::basic_string<char, protocol::Traits>;
+}
+#endiv
+#divert <hpp>
+#import std.string_view
+#import std.string
+namespace tunitas::scarpet::protocol {
+  inline auto view(Protocol const &) -> std::string_view;
+  inline auto to_string(Protocol const &) -> std::string;
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet {
+  auto protocol::view(Protocol const &old) -> std::string_view {
+    return std::string_view{old.data(), old.size()};
+  }
+  auto protocol::to_string(Protocol const &old) -> std::string {
+    return std::string{old.data(), old.size()};
+  }
+}
+#endiv

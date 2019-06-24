@@ -1,0 +1,15 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::compiler {
+  //
+  // The SOURCE and DESTINATION are used only as type names; for uniqueness in the specializations
+  //
+  // We are testing the function named 'compile' so the test class name is 'Compile' (the imperative verb form, not the noun form)
+  //
+  //   tunitas::scarpet::compile(SOURCE const &, DESTINATION &, Sink &)
+  //
+  template<typename SOURCE, typename DESTINATION> struct Compile;
+}
+#endiv

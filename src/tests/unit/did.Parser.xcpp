@@ -1,0 +1,219 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tests::unit::did { class Parser; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tunitas.scarpet.did.Parser
+class tests::unit::did::Parser : public cppunit::test::Fixture {
+public:
+  using Method = ::tunitas::scarpet::did::Method;
+  using Identifier = ::tunitas::scarpet::did::Identifier;
+  using Subject = ::tunitas::scarpet::did::Parser;
+  auto test_empty() -> void;
+  auto test_slash() -> void;
+  auto test_did() -> void;
+  auto test_did_colon() -> void;
+  auto test_did_colon_colon() -> void;
+  auto test_did_colon_identifier_empty() -> void;
+  auto test_did_colon_method_empty() -> void;
+  //
+  auto test_good_01() -> void;
+  auto test_good_02() -> void;
+  auto test_good_03() -> void;
+  auto test_good_04() -> void;
+  //
+  auto test_fail_01() -> void;
+  auto test_fail_02() -> void;
+  auto test_fail_03() -> void;
+  auto test_fail_04() -> void;
+  auto test_fail_05() -> void;
+  //
+  auto test_case_01() -> void;
+  auto test_case_02() -> void;
+  auto test_case_03() -> void;
+  auto test_case_04() -> void;
+  auto test_case_05() -> void;
+  auto test_case_06() -> void;
+  static auto suite() -> cppunit::Test *;
+protected:
+  static auto s_str(Method const &) -> std::string;
+  static auto s_str(Identifier const &) -> std::string;
+};
+#endiv
+#divert <cpp>
+namespace tests::unit::did {
+  auto Parser::s_str(Method const &m) -> std::string { return std::string{m.begin(), m.end()}; }
+  auto Parser::s_str(Identifier const &i) -> std::string { return std::string{i.begin(), i.end()}; }
+}
+auto tests::unit::did::Parser::test_empty() -> void {
+  Subject parser;
+  auto parsed = parser("");
+  CPPUNIT_ASSERT(!ok(parsed));
+}
+auto tests::unit::did::Parser::test_slash() -> void {
+  Subject parser;
+  auto parsed = parser("/");
+  CPPUNIT_ASSERT(!ok(parsed));
+}
+auto tests::unit::did::Parser::test_did() -> void {
+  Subject parser;
+  auto parsed = parser("did");
+  CPPUNIT_ASSERT(!ok(parsed));
+}
+auto tests::unit::did::Parser::test_did_colon() -> void {
+  Subject parser;
+  auto parsed = parser("did:");
+  CPPUNIT_ASSERT(!ok(parsed));
+}
+auto tests::unit::did::Parser::test_did_colon_colon() -> void {
+  Subject parser;
+  auto parsed = parser("did::");
+  CPPUNIT_ASSERT(!ok(parsed));
+}
+auto tests::unit::did::Parser::test_did_colon_identifier_empty() -> void {
+  Subject parser;
+  auto parsed = parser("did:2:");
+  CPPUNIT_ASSERT(!ok(parsed));
+ }
+auto tests::unit::did::Parser::test_did_colon_method_empty() -> void {
+  Subject parser;
+  auto parsed = parser("did::102546");
+  CPPUNIT_ASSERT(!ok(parsed));
+}
+#import tunitas.scarpet.did.Parser
+auto tests::unit::did::Parser::test_good_01() -> void {
+  Subject parser;
+  auto u = parser("did:m:i");
+  CPPUNIT_ASSERT(ok(u));
+}
+auto tests::unit::did::Parser::test_good_02() -> void {
+  Subject parser;
+  auto u = parser("did:tape:123456789");
+  CPPUNIT_ASSERT(ok(u));
+}
+auto tests::unit::did::Parser::test_good_03() -> void {
+  Subject parser;
+  auto u = parser("did:baling:987654312");
+  CPPUNIT_ASSERT(ok(u));
+}
+auto tests::unit::did::Parser::test_good_04() -> void {
+  Subject parser;
+  auto u = parser("did:wire:987654312");
+  CPPUNIT_ASSERT(ok(u));
+}
+auto tests::unit::did::Parser::test_fail_01() -> void {
+  Subject parser;
+  auto u = parser("");
+  CPPUNIT_ASSERT(!ok(u));
+}
+auto tests::unit::did::Parser::test_fail_02() -> void {
+  Subject parser;
+  auto u = parser("did:");
+  CPPUNIT_ASSERT(!ok(u));
+}
+auto tests::unit::did::Parser::test_fail_03() -> void {
+  Subject parser;
+  auto u = parser("did::");
+  CPPUNIT_ASSERT(!ok(u));
+}
+auto tests::unit::did::Parser::test_fail_04() -> void {
+  Subject parser;
+  auto u = parser("did::1");
+  CPPUNIT_ASSERT(!ok(u));
+}
+auto tests::unit::did::Parser::test_fail_05() -> void {
+  Subject parser;
+  auto u = parser("did:m:");
+  CPPUNIT_ASSERT(!ok(u));
+}
+auto tests::unit::did::Parser::test_case_01() -> void {
+  Subject parser;
+  auto parsed = parser("did:example:123456789abcdefghi");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("example"s, s_str(method(parsed)));
+  CPPUNIT_ASSERT_EQUAL("123456789abcdefghi"s, s_str(identifier(parsed)));
+}
+auto tests::unit::did::Parser::test_case_02() -> void {
+  Subject parser;
+  auto parsed = parser("did:example:123456789abcdefghi");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("example"s, s_str(method(parsed)));
+  CPPUNIT_ASSERT_EQUAL("123456789abcdefghi"s, s_str(identifier(parsed)));
+}
+auto tests::unit::did::Parser::test_case_03() -> void {
+  Subject parser;
+  auto parsed = parser("did:example:a0096d98-2919-4a48-9b69-b8e7a8891d40");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("example"s, s_str(method(parsed)));
+  CPPUNIT_ASSERT_EQUAL("a0096d98-2919-4a48-9b69-b8e7a8891d40"s, s_str(identifier(parsed)));
+}
+auto tests::unit::did::Parser::test_case_04() -> void {
+  Subject parser;
+  auto parsed = parser("did:artisanal:d41d8cd98f00b204e9800998ecf8427e");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("artisanal"s, s_str(method(parsed)));
+  CPPUNIT_ASSERT_EQUAL("d41d8cd98f00b204e9800998ecf8427e"s, s_str(identifier(parsed)));
+}
+auto tests::unit::did::Parser::test_case_05() -> void {
+  Subject parser;
+  auto parsed = parser("did:listicle:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("listicle"s, s_str(method(parsed)));
+  CPPUNIT_ASSERT_EQUAL("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"s, s_str(identifier(parsed)));
+}
+auto tests::unit::did::Parser::test_case_06() -> void {
+  Subject parser;
+  auto parsed = parser("did:flannel:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
+  CPPUNIT_ASSERT(ok(parsed));
+  CPPUNIT_ASSERT_EQUAL("flannel"s, s_str(method(parsed)));
+  CPPUNIT_ASSERT_EQUAL("cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"s, s_str(identifier(parsed)));
+}
+#import unit.rigging.suite.Stream
+#import unit.rigging.suite.add
+#import unit.rigging.suite.call
+auto tests::unit::did::Parser::suite() -> cppunit::Test * {
+  using namespace ::unit::rigging::suite;
+  Stream series{"Parser"};
+  series << call("empty", &Parser::test_empty)
+         << call("slash", &Parser::test_slash)
+         << call("did", &Parser::test_did)
+         << call("did:", &Parser::test_did_colon)
+         << call("did::", &Parser::test_did_colon_colon)
+         << call("did:m:", &Parser::test_did_colon_identifier_empty)
+         << call("did::i", &Parser::test_did_colon_method_empty)
+    ;
+  {
+    Stream good("good");
+    good << call("01", &Parser::test_good_01)
+         << call("02", &Parser::test_good_02)
+         << call("03", &Parser::test_good_03)
+         << call("04", &Parser::test_good_04)
+      ;
+    series << move(good);
+  } {
+    Stream fail("fail");
+    fail << call("01", &Parser::test_fail_01)
+         << call("02", &Parser::test_fail_02)
+         << call("03", &Parser::test_fail_03)
+         << call("04", &Parser::test_fail_04)
+         << call("05", &Parser::test_fail_05)
+      ;
+    series << move(fail);
+  } {
+    Stream cas("case");
+    cas << call("01", &Parser::test_case_01)
+        << call("02", &Parser::test_case_02)
+        << call("03", &Parser::test_case_03)
+        << call("04", &Parser::test_case_04)
+        << call("05", &Parser::test_case_05)
+        << call("06", &Parser::test_case_06)
+      ;
+    series << move(cas);
+  }
+  return series.release();
+}
+#endiv

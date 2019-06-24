@@ -1,0 +1,68 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::resolve {
+  //
+  // A Service for the DID resolver is (at least) a dual-mode context to resolve names.
+  // The channel owns these resources and destroys them upon destruction.
+  // No copy, yes move semantics.
+  //
+  // The Scarpet DID Resolver comprises
+  // Either a channel (a channel up to a DNS server)
+  // or a directory (a file filepath to a place where zone files are kept)
+  // or neither none, in which case nothing is resolvable.
+  //
+  // Usage:
+  //
+  //   auto channel = ares::Channel{...somehow...};
+  //   ...configure the channel some more...
+  //   auto service = Service{std::move(channel)};
+  //
+  //   auto directory = std::filesystem::path{.../var/scarpet...};
+  //   auto service = Service{std::move(directory)};
+  // 
+  //   auto service = Service{std::move(channel), std::move(directory)};
+  //
+  //   auto resolved = document<DRRS>(service, ...arguments...);
+  //   auto resolved = document<FILE>(service, ...arguments...);
+  //    ... and so on...
+  //   
+  class Service;
+}
+#endiv
+#divert <hpp>
+#import ares.Channel
+#import std.filesystem.path
+#import std.optional
+class tunitas::scarpet::resolve::Service {
+public:
+  Service() = default;
+  using Channel = ares::Channel;
+  using Directory = std::filesystem::path;
+  inline explicit Service(Channel &&);
+  inline explicit Service(Directory &&);
+  inline Service(Channel &&, Directory &&);
+  Service(Service const &) = delete;
+  auto operator=(Service const &) -> Service & = delete;
+  Service(Service &&) = default;
+  auto operator=(Service &&) -> Service & = default;
+  std::optional<Channel> channel;
+  std::optional<Directory> directory;
+};
+#endiv
+#divert <ipp>
+#import std.forward
+namespace tunitas::scarpet::resolve {
+  Service::Service(Channel &&channel)
+    : channel{std::forward<Channel>(channel)}
+  { }
+  Service::Service(Directory &&directory)
+    : directory{std::forward<Directory>(directory)}
+  { }
+  Service::Service(Channel &&channel, Directory &&directory)
+    : channel{std::forward<Channel>(channel)}
+    , directory{std::forward<Directory>(directory)}
+  { }
+}
+#endiv

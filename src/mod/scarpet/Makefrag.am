@@ -9,6 +9,7 @@ lib_libmod_scarpet_la_LIBADD = \
   $(lib_libautotools_autoconf_la) \
   $(lib_libwant_la) \
   -lapache-httpd-module \
+  -lares-module \
   -lsys-posix-module \
   $(end)
 lib_libmod_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
@@ -16,20 +17,44 @@ $(lib_libmod_scarpet_la_OBJECTS) : CXXFLAGS+=-Wno-invalid-offsetof
 lib_libmod_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libmod_scarpet_la_SOURCES))
 lib_libmod_scarpet_la_SOURCES = \
   obj/src/mod/scarpet/namespace.cpp \
-  obj/src/mod/scarpet/handler.cpp \
-  obj/src/mod/scarpet/module.cpp \
-  obj/src/mod/scarpet/httpd.cpp \
-  obj/src/mod/scarpet/open_logs.cpp \
+  \
+  obj/src/mod/scarpet/httpd/namespace.cpp \
+  obj/src/mod/scarpet/httpd/handler.cpp \
+  obj/src/mod/scarpet/httpd/module.cpp \
+  obj/src/mod/scarpet/httpd/open_logs.cpp \
+  obj/src/mod/scarpet/httpd/child_init.cpp \
   \
   obj/src/mod/scarpet/config/namespace.cpp \
   obj/src/mod/scarpet/config/parse.cpp \
   obj/src/mod/scarpet/config/Specification.cpp \
   \
+  obj/src/mod/scarpet/dns/namespace.cpp \
+  obj/src/mod/scarpet/dns/Channel.cpp \
+  obj/src/mod/scarpet/dns/library.cpp \
+  \
+  \
+  obj/src/mod/scarpet/exception/namespace.cpp \
+  obj/src/mod/scarpet/exception/aspect.Router.cpp \
+  obj/src/mod/scarpet/exception/router.Path.cpp \
+  obj/src/mod/scarpet/exception/router.aspect.Path.cpp \
+  \
   obj/src/mod/scarpet/method/namespace.cpp \
   obj/src/mod/scarpet/method/Prototype.cpp \
+  obj/src/mod/scarpet/method/Getter.declaration.cpp \
+  obj/src/mod/scarpet/method/Getter.PING.cpp \
+  obj/src/mod/scarpet/method/Getter.DAPTR.cpp \
+  obj/src/mod/scarpet/method/Getter.NAPTR.cpp \
+  obj/src/mod/scarpet/method/Getter.DOCUMENT.cpp \
+  obj/src/mod/scarpet/method/ptr.Getter.cpp \
   obj/src/mod/scarpet/method/Getter.cpp \
   obj/src/mod/scarpet/method/Poster.cpp \
   obj/src/mod/scarpet/method/Putter.cpp \
+  \
+  obj/src/mod/scarpet/router/namespace.cpp \
+  obj/src/mod/scarpet/router/url.parser.Tail.cpp \
+  \
+  obj/src/mod/scarpet/server/namespace.cpp \
+  obj/src/mod/scarpet/server/State.cpp \
   $(end)
 
 $(scold_cxxdir)/mod/scarpet/dependencies.mk: Makefile

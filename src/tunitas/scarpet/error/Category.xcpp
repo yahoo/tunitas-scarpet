@@ -45,6 +45,26 @@ namespace tunitas::scarpet::error {
       return "failure";
     case Code::OPTIONS:
       return "options";
+    case Code::ROUTER:
+      return "router";
+    case Code::COMPILER:
+      return "compiler";
+    case Code::NOT_IMPLEMENTED:
+      return "not implemented";
+    case Code::INVALID_URN:
+      return "invalid URN syntax"; // i.e. not shaped like m/^did:\S+:\S+/ for reasonable characters in \S, espcially no colons
+    case Code::INVALID_METHOD:
+      return "invalid_DID method syntax";
+    case Code::INVALID_IDENTIFIER:
+      return "invalid DID identifier syntax";
+    case Code::UNKNOWN_METHOD:
+      return "unknown_DID method";
+    case Code::NOT_FOUND:
+      return "no record was found"; // e.g. the did identifier not found in the zone
+    case Code::FOUND_MULTIPLE_RECORDS:
+      return "found multiple records";
+    case Code::FOUND_ZERO_RECORDS:
+      return "found zero records";
     case Code::BAD_UPDATE_TSIG_PRIVATE:
       return "bad name server update secret";
     case Code::BAD_JSON:

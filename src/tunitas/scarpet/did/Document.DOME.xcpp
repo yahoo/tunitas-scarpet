@@ -1,0 +1,72 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.did.Document.declaration
+namespace tunitas::scarpet::did {
+  //
+  // DOME = Document Object Model E<something> (think of something appropriate that begins with 'E')
+  //
+  // The DID document is a merry mixture model ... with operable operations for operating.
+  // Whereas operating on JSON is ... fraught ... goodness, this is what we've come to?  The JSON?
+  // and operating on DRRS RR elements is too arduous, and ahem, loosey-goosey type unsound,
+  // and operating on ZONE RR tuples is too flat and, ahem, non-abstract.
+  //
+  // These examples are from https://w3c-ccg.github.io/did-spec/ as has been  used throughout this implementation
+  //
+  //         id.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
+  //    context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/did/v1"
+  //    context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/security/v1"
+  //    ...etc...
+  //
+  // Pattern:
+  //
+  //   ddss does NOT contain the identifier but may or may not contain the method as part of the qualified domain name
+  //      to_string(ddss) == "marfa" or "marfa.scarpet.tunitas.solutions." or such
+  //
+  //   identifier is that did identifier (without its method)
+  //      to_String(identifier) == "123456789abcdefghi" 
+  //
+  //   model contains the stanzas a type-rigorous classes
+  //
+  // Usage:
+  //
+  //   auto doc = ...somehow... answer::Document{}
+  //   auto dome = Document<DOME>{};
+  //   auto output = compiler::Output{}; ... or a descendant...
+  //   if (compile(doc, dome, output)) {
+  //      ...yay... it compiled...
+  //      ...use the dome...
+  //   } else {
+  //      ...sadness... it failed to compile, the output contains the explanation (such as it is)
+  //   }
+  //
+  template<> class Document<DOME>;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.did.Identifier
+#import tunitas.scarpet.did.Method
+#import tunitas.scarpet.Model
+#import tunitas.scarpet.dns.Name
+namespace tunitas::scarpet::did {
+  template<> class Document<DOME> : public document::Prototype {
+    using ancestor = document::Prototype;
+  public:
+    Document() = default;
+    auto dump(std::ostream &) const -> void final;
+    Method method; // presumably we know our own method name, but ensure that it isn't const-coded
+    Identifier identifier;
+    dns::Name ddss;
+    Model model; // a.k.a. the "document object model <strike>[exuberance]</strike>" (DOME)
+  };
+}
+#endiv
+#divert <cpp>
+namespace tunitas::scarpet::did {
+  auto Document<DOME>::dump(std::ostream &outbound) const -> void {
+#warning WRITETHIS auto Document<DOME>::dump(std::ostream &) const -> void
+    outbound << "there is nothing to dump in " << __FUNCTION__ << " at " << __FILE__ << ':' << __LINE__ << '\n';
+  }
+}
+#endiv

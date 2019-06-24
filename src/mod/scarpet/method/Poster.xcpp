@@ -10,7 +10,8 @@ namespace mod::scarpet::method {
   // Expectations of URL routing consistency are enforced
   // (this is trivial and obvious for POST but not for PUT, DELETE, etc.}
   // when the path name is the same as the configured location prefix value
-  //     /     uri
+  //
+  //     /     req->uri
   //     /     location_prefix.value
   //
   // The only thing you can do is POST into '/' (or whatever the location prefix is)
@@ -42,11 +43,12 @@ protected:
 #import nonstd.exception.Unimplemented
 #import std.string
 auto mod::scarpet::method::Poster::operator()() -> apache::httpd::status::Code {
-  if (std::string{this->req->uri} != spec->location_prefix.value) {
+  if (std::string{this->req->uri} != state->specification.location_prefix.value) {
     // How then, did this get routed here?
     return HTTP::NOT_FOUND;
   }
   throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
+#warning #if 0 in auto mod::scarpet::method::Poster::operator()() -> apache::httpd::status::Code
 #if 0
   // This will throw std:ios::failure if the tmpfile cannot be opened.
   file::File posted(spec->storage_directory.value);

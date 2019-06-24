@@ -1,0 +1,30 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.processor.Stanza.declaration
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The top-level 'authentication' fields are but indexed pointers to other "subdocuments"
+  // There ought to be at least one of these, else what is the point?  How would you know who this is?
+  // Therefore, there can be zero or more of these.
+  //
+  // Example: (see Stanza.declaration.hpp, and 'marfa' being an illustrative DID Method)
+  //
+  //   authentication.123456789abcdefghi.marfa PTR 0.authentication.123456789abcdefghi.marfa
+  //   authentication.123456789abcdefghi.marfa PTR 1.authentication.123456789abcdefghi.marfa
+  //   authentication.123456789abcdefghi.marfa PTR 2.authentication.123456789abcdefghi.marfa
+  //
+  template<> class Stanza<stanza::AUTHENTICATIONS>;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.processor.Pointers
+namespace tunitas::scarpet::answer::processor {
+  template<> class Stanza<stanza::AUTHENTICATIONS> : public Pointers {
+    using ancestor = Pointers;
+  public:
+    using ancestor::Pointers;
+  };
+}
+#endiv

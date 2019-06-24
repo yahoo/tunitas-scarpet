@@ -1,0 +1,111 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019-2019, Oath Inc.
+# Licensed under the terms of the Apache-2.0 license.
+# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+
+lib_libtunitas_scarpet_answer_la = lib/libtunitas-scarpet-answer.la
+lib_libtunitas_scarpet_answer_la_LIBADD = -lares-module
+lib_libtunitas_scarpet_answer_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+lib_libtunitas_scarpet_answer_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_answer_la_SOURCES))
+lib_libtunitas_scarpet_answer_la_SOURCES = \
+  obj/src/tunitas/scarpet/answer/namespace.cpp \
+  obj/src/tunitas/scarpet/answer/processor/namespace.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Prototype.cpp \
+  \
+  obj/src/tunitas/scarpet/answer/processor/Pointers.cpp \
+  \
+  obj/src/tunitas/scarpet/answer/processor/Proof.declaration.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Proof.TRANSACTION.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Proof.TYPE.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Proof.CREATED.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Proof.CREATOR.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Proof.DESCRIPTION.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Proof.SIGNATURE.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Proof.REFERENCE.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Proof.cpp \
+  \
+  obj/src/tunitas/scarpet/answer/processor/PublicKey.declaration.cpp \
+  obj/src/tunitas/scarpet/answer/processor/PublicKey.ID.cpp \
+  obj/src/tunitas/scarpet/answer/processor/PublicKey.TYPE.cpp \
+  obj/src/tunitas/scarpet/answer/processor/PublicKey.CONTROLLER.cpp \
+  obj/src/tunitas/scarpet/answer/processor/PublicKey.KEY.cpp \
+  obj/src/tunitas/scarpet/answer/processor/PublicKey.cpp \
+  \
+  obj/src/tunitas/scarpet/answer/processor/Service.declaration.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Service.ID.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Service.TYPE.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Service.ENDPOINT.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Service.DESCRIPTION.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Service.cpp \
+  \
+  obj/src/tunitas/scarpet/answer/processor/single.Prototype.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Single.declaration.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Single.TXT.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Single.URI.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Single.cpp \
+  \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.declaration.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.ID.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.CONTEXTS.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.PUBLICKEYS.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.AUTHENTICATIONS.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.SERVICES.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.PROOFS.cpp \
+  obj/src/tunitas/scarpet/answer/processor/Stanza.cpp \
+  \
+  obj/src/tunitas/scarpet/answer/Document.cpp \
+  obj/src/tunitas/scarpet/answer/Fields.declaration.cpp \
+  obj/src/tunitas/scarpet/answer/Fields.STANZA.cpp \
+  obj/src/tunitas/scarpet/answer/Fields.PUBLICKEY.cpp \
+  obj/src/tunitas/scarpet/answer/Fields.AUTHENTICATION.cpp \
+  obj/src/tunitas/scarpet/answer/Fields.SERVICE.cpp \
+  obj/src/tunitas/scarpet/answer/Fields.PROOF.cpp \
+  obj/src/tunitas/scarpet/answer/Fields.cpp \
+  obj/src/tunitas/scarpet/answer/PublicKey.cpp \
+  obj/src/tunitas/scarpet/answer/launching.reqdn.cpp \
+  obj/src/tunitas/scarpet/answer/launch.cpp \
+  obj/src/tunitas/scarpet/answer/launch.STANZA.cpp \
+  obj/src/tunitas/scarpet/answer/launch.PublicKey.cpp \
+  obj/src/tunitas/scarpet/answer/launch.PUBLICKEY.cpp \
+  obj/src/tunitas/scarpet/answer/launch.AUTHENTICATION.cpp \
+  obj/src/tunitas/scarpet/answer/launch.SERVICE.cpp \
+  obj/src/tunitas/scarpet/answer/launch.PROOF.cpp \
+  obj/src/tunitas/scarpet/answer/query.Prototype.cpp \
+  obj/src/tunitas/scarpet/answer/Query.declaration.cpp \
+  obj/src/tunitas/scarpet/answer/Query.ID.cpp \
+  obj/src/tunitas/scarpet/answer/Query.CONTEXTS.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.ID.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.TYPE.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.CONTROLLER.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PUBLICKEYS.KEY.cpp \
+  obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.cpp \
+  obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.ID.cpp \
+  obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.TYPE.cpp \
+  obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.CONTROLLER.cpp \
+  obj/src/tunitas/scarpet/answer/Query.AUTHENTICATIONS.KEY.cpp \
+  obj/src/tunitas/scarpet/answer/Query.SERVICES.cpp \
+  obj/src/tunitas/scarpet/answer/Query.SERVICES.ID.cpp \
+  obj/src/tunitas/scarpet/answer/Query.SERVICES.TYPE.cpp \
+  obj/src/tunitas/scarpet/answer/Query.SERVICES.ENDPOINT.cpp \
+  obj/src/tunitas/scarpet/answer/Query.SERVICES.DESCRIPTION.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PROOFS.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PROOFS.TRANSACTION.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PROOFS.CREATED.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PROOFS.CREATOR.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PROOFS.DESCRIPTION.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PROOFS.SIGNATURE.cpp \
+  obj/src/tunitas/scarpet/answer/Query.PROOFS.REFERENCE.cpp \
+  obj/src/tunitas/scarpet/answer/Query.cpp \
+  obj/src/tunitas/scarpet/answer/response.Prototype.cpp \
+  obj/src/tunitas/scarpet/answer/Response.cpp \
+  $(end)
+
+$(scold_cxxdir)/tunitas/scarpet/answer/dependencies.mk: Makefile
+	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_answer_la_SOURCES))
+	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_answer_la_SOURCES))
+	@test -e $@
+include $(scold_cxxdir)/tunitas/scarpet/answer/dependencies.mk
+clean-local::
+	rm -f $(scold_cxxdir)/tunitas/scarpet/answer/dependencies.mk
+#end

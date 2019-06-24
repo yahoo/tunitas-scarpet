@@ -1,0 +1,122 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import tunitas.scarpet.resolve.lookup.declaration
+namespace tunitas::scarpet::resolve {
+  //
+  // Look up the location of the DID document via the NAPTR 
+  //
+  // Authentic Mumblecore
+  // Flags
+  // "" NAPTR cascade (look again)
+  // I = URI RR  terminal
+  // S = SRV RR  terminal
+  // U = URN str terminal
+  // Z = RR, with separate SOA (a separate zone, needed if signed domains are used)
+  // R = RR (being served now)
+  //
+  //
+  //            DID Document Storage Service (F)QDN -------------------------------\ (here)
+  //                                                                               |      
+  //            DID Method ---------------------------------------\---\            |
+  //                                                              |   |            |
+  // Mumblecore DID Document Storage Flags -------------------\   |   |            |
+  //                                                          |   |   |            |
+  // /---------- Reversed DID ----------\--------\            |   |   |            |
+  // |           |        |             |        |            |   |   |            |
+  // |           |        |             |        |            |   |   |            |
+  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv            v   v   v            v
+  // 4c76ad9b-7d80-46c0-bc2a-76a84bf848ef.lo-fi    NAPTR 1 1 "R" "did+lo-fi"    "" gurdon.fd20-1e92-49c7.net.
+  // 635b700e-233a-496c-aebd-79ca7c6efe9a.affogato NAPTR 1 1 "R" "did+affogato" "" will-o-the-wisp.fd20-1e92-49c7.net.
+  // 
+  // ; See the examples in https://w3c-ccg.github.io/did-spec/
+  // id.123456789abcdefghi.example NAPTR 1 1 "R" "did+w3id+v1"            "" marfa.fd20-1e92-49c7.net.
+  // id.123456789abcdefghi.example NAPTR 1 1 "R" "did+example.org"        "" fata-morgana.fd20-1e92-49c7.net.
+  // id.123456789abcdefghi.example NAPTR 1 1 "R" "did+example.org+inline" "" inline.fata-morgana.fd20-1e92-49c7.net.
+  // id.987654321.contexts.example NAPTR 1 1 "R" "did+context"            "" paulding.fd20-1e92-49c7.net.
+  //
+  template<> auto lookup<NA>(Service &, Method const &, Identifier const &, Protocol const &, Club const &) -> Outcome<dns::Name>;
+}
+#endiv
+#divert <cpp>
+#import ares.dns.class.constants
+#import ares.dns.type.constants
+#import ares.error.Code
+#if 1
+#import ares.run
+#else
+#import ares.count
+#import ares.select
+#import ares.process
+#import ares.timeout
+#endif
+#import ares.query
+#import ares.reply.Record
+#import ares.reply.parse
+#import format.q
+#import std.error_code
+#import std.optional
+#import std.string_view
+#import std.string
+#import std.ostringstream
+#import tunitas.scarpet.error.Code
+namespace tunitas::scarpet::resolve {
+  template<> auto lookup<NA>(Service &service, Method const &method, Identifier const &identifier, Protocol const &configured_protocol, Club const &configured_club) -> Outcome<dns::Name> {
+    auto qdn = [method, identifier, configured_club] {
+                 // [[DELETETHIS]] auto review = [](auto const &str) { return std::string_view{str.data(), str.size()}; };
+                 std::ostringstream buf;
+                 buf << "id" << '.' << view(identifier) << '.' << view(method) << '.' << view(configured_club);
+                 return buf.str();
+               }();
+    auto const dnsclass = dns::IN;
+    auto const dnstype = dns::NAPTR;
+    std::optional<dns::Name> success;
+    std::optional<std::error_code> failure;
+    auto const receive = [configured_protocol, &success, &failure](ares::error::Code code, ares::Count timeouts, ares::Buffer<std::byte const> buffer) -> void {
+                           using namespace ares;
+                           if (ares::error::Code::SUCCESS != code) {
+                             failure = std::error_code{code};
+                             return;
+                           }
+                           reply::Record<NAPTR> records;
+                           auto parsed = reply::parse<NAPTR>(std::nothrow, buffer, records);
+                           if (!ok(parsed)) {
+                             failure = error_code(parsed);
+                             return;
+                           }
+                           using Awkward = nonstd::span<char const>;
+                           for (auto const &record : records) {
+                             auto const found_protocol = [record]() {
+                                                          auto spun = record.service<Awkward>();
+                                                          return Protocol{spun.data(), spun.data()+spun.size()};
+                                                        }();
+                             if (found_protocol == configured_protocol) {
+                               success = [record]() {
+                                           auto spun = record.replacement<Awkward>();
+                                           return dns::Name{spun.data(), spun.data()+spun.size()};
+                                         }();
+                               return;
+                             }
+                           }
+                           // and maybe we finish up setting either failure or success (that will be recorded as a failure)
+                         };
+    qq(*service.channel, qdn, dnsclass, dnstype, receive);
+    run(*service.channel, 5_count, 500ms);
+#if 0
+    ares::fd::Sets readies;
+    for (auto ccc=ares::fd::count(*service.channel, readies); !zero(ccc); ccc=count(service, readies)) {
+      select(ccc, readies, timeout(*service.channel, 3s));
+      process(*service.channel, readies);
+    }
+#endif
+    if (failure) {
+      return Outcome<dns::Name>{*failure};
+    } else if (success) {
+      return Outcome<dns::Name>{*success};
+    } else {
+      return Outcome<dns::Name>{std::error_code{error::Code::NOT_FOUND}};
+    }
+  }
+}
+#endiv

@@ -1,0 +1,72 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tests.unit.resolve.Document.declaration
+namespace tests::unit::resolve {
+  template<> class Document<REST>;
+}
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tests.unit.resolve.aspect.Configuration
+#import tests.unit.resolve.aspect.Service
+namespace tests::unit::resolve {
+  template<> class Document<REST> : public cppunit::test::Fixture, aspect::Configuration, aspect::Service {
+  public:
+    auto setUp() -> void override { Service::setUp(); }
+    auto tearDown() -> void override { Service::tearDown(); }
+    auto test_case_01() -> void;
+    auto test_case_02() -> void;
+    static auto suite() -> cppunit::Test *;
+  };
+}
+#endiv
+#divert <cpp>
+#import tunitas.scarpet.resolve.document.REST
+namespace tests::unit::resolve {
+  auto Document<REST>::test_case_01() -> void {
+    //
+    // Test succeeds because there exists an appropriate RR at
+    //
+    //   id.123456789abcdefghi.example. @TEST_DID_DOCUMENT_STORAGE_SERVICE_NAME@
+    //
+    // e.g.
+    //
+    //  id.123456789abcdefghi.example.marfa.scarpet.solutions.
+    //  id.123456789abcdefghi.example.marfa.fd20-1e92-49c7.net.
+    //
+    using namespace ::tunitas::scarpet;
+    namespace resolve = ::tunitas::scarpet::resolve;
+    auto method = Method{"example"};
+    auto identifier = Identifier{"123456789abcdefghi"};
+    auto qdn = dns::Name{ac::test_did_document_storage_service_name()};
+#warning WRITETHIS auto Document<REST>::test_case_01() -> void
+#if 0
+    auto looked = resolve::document<resolve::REST>(*this->service, method, identifier, qdn);
+    CPPUNIT_ASSERT(ok(looked));
+    auto dome = value(std::move(looked));
+    CPPUNIT_ASSERT(sizeof (dome));
+    dome.dump(std::cerr);
+#endif
+  }
+  auto Document<REST>::test_case_02() -> void {
+#warning WRITETHIS auto Document<REST>::test_case_02() -> void
+    CPPUNIT_ASSERT(true);
+  }
+}
+#import rigging.suite.io
+auto tests::unit::resolve::Document<tests::unit::resolve::REST>::suite() -> cppunit::Test * {
+  using namespace ::rigging::suite;
+  Stream series{"document<REST>"};
+  {
+    Stream cas{"case"};
+    cas << call("01", &Document::test_case_01)
+        << call("02", &Document::test_case_02)
+      ;
+    series << move(cas);
+  }
+  return finalize(series);
+}
+#endiv

@@ -19,6 +19,9 @@ auto tests::unit::pki::Fixture::test_cn_generate() -> void {
   auto name = ::tunitas::scarpet::pki::cn::generate();
   CPPUNIT_ASSERT(64 == name.size());
 }
+#import tests.unit.pki.Algorithm
+#import tests.unit.pki.Encoding
+#import tests.unit.pki.Material
 #import tests.unit.pki.key.Fixture
 #import rigging.suite.io
 auto tests::unit::pki::Fixture::suite() -> cppunit::Test * {
@@ -28,9 +31,12 @@ auto tests::unit::pki::Fixture::suite() -> cppunit::Test * {
     Stream cnn("cn");
     cnn << call("generate", &Fixture::test_cn_generate)
       ;
-    series << add(cnn.release());
+    series << move(cnn);
   }
   series << add<key::Fixture>()
+         << add<Algorithm>()
+         << add<Encoding>()
+         << add<Material>()
     ;
   return finalize(series);
 }

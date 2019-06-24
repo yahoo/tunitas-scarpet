@@ -1,0 +1,55 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.Fields.declaration
+namespace tunitas::scarpet::answer::packaging {
+  //
+  // All the fields that comprise the top level of a DID Document
+  //
+  // Example:
+  //
+  //    $ORIGIN scarpet.tunitas.club.
+  //    id.123456789abcdefghi.example NAPTR 1 1 "R" "did+w3id+v1" "" storage.scarpet.tunitas.solutions.
+  //
+  //    $ORIGIN storage.scarpet.tunitas.solutions.
+  //                id.123456789abcdefghi.marfa URI 1 1 "did:example:123456789abcdefghi"
+  //           context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/did/v1"
+  //           context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/security/v1"
+  //         publickey.123456789abcdefghi.example ... blah blah blah ...
+  //    authentication.123456789abcdefghi.example ... blah blah blah ...
+  //           service.123456789abcdefghi.example ... blah blah blah ...
+  //             proof.123456789abcdefghi.example ... you get the idea...
+  //
+  // Usage:
+  //
+  //   auto method = did::Method{...somehow...};          e.g. eample
+  //   auto identifier = did::Identifier{...somehow...};  e.g. 123456789abcdefghi
+  //   auto ddss = dns::Name{...somehow...};              e.g. storage.scarpet.tunitas.solutions.
+  //
+  //   Fields fields;
+  //   launch(*service.channel, fields, method, identifier, ddss);
+  //
+  template<> class Fields<fields::STANZA>;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.Query
+namespace tunitas::scarpet::answer::packaging {
+  template<> class Fields<fields::STANZA> {
+    using Id              = Query<Stanza<stanza::ID>>;
+    using Contexts        = Query<Stanza<stanza::CONTEXTS>>;
+    using PublicKeys      = Query<Stanza<stanza::PUBLICKEYS>>;
+    using Authentications = Query<Stanza<stanza::AUTHENTICATIONS>>;
+    using Services        = Query<Stanza<stanza::SERVICES>>;
+    using Proofs          = Query<Stanza<stanza::PROOFS>>;
+  public:
+    Id id;
+    Contexts contexts;
+    PublicKeys publickeys;
+    Authentications authentications;
+    Services services;
+    Proofs proofs;
+  };
+}
+#endiv

@@ -21,9 +21,11 @@ TF_WITH_SUBSYSTEM([tunitas-basics], [], [The Tunitas Basics])
 
 TF_MSG_VERBOSE([development subsystems (alphabetical)])
 TF_WITH_SUBSYSTEM([apache-httpd-api], [apache_httpd_api], [Apache HTTPd API])
+TF_WITH_MODULE([ares])
 TF_WITH_MODULE([boost])
 TF_WITH_MODULE([c])
 TF_WITH_MODULE([format])
+TF_WITH_MODULE([ip])
 TF_WITH_MODULE([json])
 TF_WITH_MODULE([nonstd])
 TF_WITH_MODULE([openssl])
@@ -49,9 +51,6 @@ TF_WITH_NONSTD([gcc], [gcc], [a non-standard gcc, e.g. modernized gcc for C++11,
 TF_MSG_VERBOSE([system-side subsystems (alphabetical)])
 TF_WITH_HYPOGEAL_TWILIGHT
 dnl NOT YET -----> TF_WITH_INCENDIARY_SOPHIST
-
-m4_include([ac/test-server.m4])
-SCARPET_ENABLE_TEST_SET([server])
 
 AC_CONFIG_SRCDIR([src/tunitas/scarpet/namespace.xcpp])
 AC_CONFIG_MACRO_DIR([m4])
@@ -87,32 +86,22 @@ TF_CHECK_STD_FILESYSTEM
 
 TF_PACKAGE_VARIABLES
 
-#
-# Apache HTTPd Configuration file availability
-#
-#    <Location /scarpet>
-#         SetHandler mod_scarpet <-------- MODULE_NAME in Apache HTTPd culture traditionally begins with "mod_"
-#    </Location>
-#
-# S.C.O.L.D C++ availability in autotools::autoconf::Config<CONFIG>
-#
-#    char const *const HANDLER_NAME = autotools::autoconf::Config<CONFIG>::module_name();
-#
-AC_DEFINE_UNQUOTED([MODULE_NAME], "mod_${PACKAGE_NAME}", [The Apache HTTPd module name as seen from the handler])
+m4_include([ac/define-module.m4])
+SCARPET_DEFINE_MODULE_NAME
 
-AC_ARG_ENABLE([storage-directory],
-              AS_HELP_STRING([--enable-storage-directory=DIRECTORY],
-                             [Choose the storage directory for mod_resting]),
-              [if test xno = x$enable_storage_directory; then
-                  AC_MSG_ERROR([--disable-storage-directory is not meaningful, for mod_resting])
-               fi],
-              [
-               enable_storage_directory="${t_prefix}/var"])
-eval storagedir="${enable_storage_directory}"
-eval storagedir="${storagedir}"
-eval storagedir="${storagedir}"
-eval storagedir="${storagedir}"
-TF_MSG_VERBOSE([STORAGE_DIRECTORY=$storagedir])
-AC_DEFINE_UNQUOTED([STORAGE_DIRECTORY], "$storagedir", [Default storage directory for the host-local database])
+m4_include([ac/enable-club.m4])
+SCARPET_ENABLE_DID_CLUB_NAME
+
+m4_include([ac/enable-test-sets.m4])
+SCARPET_ENABLE_TEST_SET([server])
+m4_include([ac/enable-test-services.m4])
+SCARPET_ENABLE_TEST_DID_CLUB_NAME
+SCARPET_ENABLE_TEST_DID_DOCUMENT_STORAGE_SERVICE_NAME
+
+m4_include([ac/enable-method.m4])
+SCARPET_ENABLE_DID_METHOD_NAME
+
+m4_include([ac/enable-protocol.m4])
+SCARPET_ENABLE_DID_PROTOCOL_NAME
 
 TF_FINALIZE

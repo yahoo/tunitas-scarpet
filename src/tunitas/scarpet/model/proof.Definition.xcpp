@@ -1,0 +1,39 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::model::proof {
+  //
+  // The kind (type, flavor) of proof
+  // This is probably su pposed to come from https://w3c-dvcg.github.io/ld-signatures/
+  // but it is unclear what the universe of possible revisions is.
+  // Let's pretend there are two, because that's what is in the examples.
+  //
+  enum class Definition {
+    LinkedDataSignature_2015 = 2018'00'00, // when?
+    LinkedDataSignature_2018 = 2018'02'27, // 2018-02-27
+    LinkedDataSignature_2019_provisional = 2019'06'20,
+    LinkedDataSignature_2020_expected = 2020'00'00,
+  };
+}
+#endiv
+#divert <hpp>
+#import std.to_string
+namespace tunitas::scarpet::model::proof {
+  inline auto to_string(Definition) -> std::string;
+}
+#endiv
+#divert <ipp>
+#import std.ostringstream
+#import std.setw
+#import std.setfill
+#import std.underlying_type
+namespace tunitas::scarpet::model {
+  inline auto proof::to_string(Definition definition) -> std::string {
+    std::ostringstream buf;
+    // Everything "webby" has to be a BigLongCamelCaseString otherwise we wouldn't know it was webby now would we?
+    buf << "LinkedDataSignature" << std::setw(8) << std::setfill('0') << (std::underlying_type<Definition>::type) definition;
+    return buf.str();
+  }
+}
+#endiv

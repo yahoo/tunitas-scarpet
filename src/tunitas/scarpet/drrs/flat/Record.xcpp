@@ -1,0 +1,49 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.dns.Labels
+#import tunitas.scarpet.dns.type.constants
+#include <hpp/tunitas.scarpet.dns.type.constants> // need those dns constants to name the Record<...> specializations
+namespace tunitas::scarpet::drrs::flat {
+  //
+  // A flat record includes the labels on the lhs
+  //
+  // Usage:
+  //
+  //   As a member of a container, see Flat, nearby.
+  //
+  //   auto labels = dns::Labels{"", "solutions", "tunitas", "scarpet", "storage"};
+  //   auto body = drrs::Record<URI>{...somehow...}
+  //
+  //   auto row = drrs::flat::Record<URI>{std::move(labels), std::move(body)};
+  // 
+  template<dns::Type TYPE> struct Record;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.drrs.flat.record.Leftside
+#import tunitas.scarpet.drrs.Record
+namespace tunitas::scarpet::drrs {
+  template<dns::Type TYPE> struct flat::Record : public record::Leftside, public drrs::Record<TYPE>  {
+    struct ancestors {
+      using Leftside = record::Leftside;
+      using Rightside = drrs::Record<TYPE>;
+    };
+  public:
+    Record() = default;
+    // pesky! CANNOT using ancestor::Record; because of the MI
+    inline Record(dns::Labels, typename ancestors::Rightside);
+  };
+}
+#endiv
+#divert <ipp>
+#import std.move
+namespace tunitas::scarpet::drrs::flat {
+  template<dns::Type _> Record<_>::Record(dns::Labels labels, typename ancestors::Rightside record)
+    : ancestors::Leftside{std::move(labels)}
+    , ancestors::Rightside{std::move(record)}
+  { }
+}
+#endiv
+

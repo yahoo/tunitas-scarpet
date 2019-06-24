@@ -1,0 +1,17 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.pki.Algorithm
+namespace tunitas::scarpet::model::key {
+  //
+  // The Crypto Algorithm
+  // see https://w3c-ccg.github.io/ld-cryptosuite-registry/
+  //
+  // Usage:
+  //
+  //    oh come on, it's still an enum!
+  // 
+  using Algorithm = pki::Purpose<pki::VERIFICATION>::Algorithm;
+}
+#endiv

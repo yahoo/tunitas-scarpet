@@ -19,11 +19,12 @@ namespace app::diggity {
 #import app.Configuration
 #import std.optional
 #import std.string
+#import tunitas.scarpet.dns.Name
 class app::diggity::Configuration : public app::Configuration {
   using ancestor = app::Configuration;
 public:
   inline explicit Configuration(Program const &);
-  std::optional<std::string> name_server; // a specified name server, else the servers in /etc/resolv.conf
+  std::optional<tunitas::scarpet::dns::Name> name_server; // a specified name server, else the servers in /etc/resolv.conf
 };
 #endiv
 #divert <ipp>

@@ -1,0 +1,37 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+namespace mod::scarpet::dns::library {
+  //
+  // Whereas the ares module just be initialized, process-wide, before it is used.
+  // Herein is a threadsafe initializer.
+  // There is no de-initialization.  We're inside Apache HTTPd, the next step is process termination.
+  //
+  // Usage:
+  //
+  //   initialize();
+  //   ...do dns stuff...
+  //   ...exit...
+  //
+  auto initialize() -> void;
+}
+#endiv
+#divert <cpp>
+#import ares.Library
+#import std.mutex
+#import std.lock_guard
+#import std.unique_ptr
+namespace mod::scarpet::dns {
+  auto library::initialize() -> void {
+    static std::mutex exclusive;
+    // Once constructed, there is nothing which will "deconstruct" the library.
+    static std::unique_ptr<ares::Library> context;
+    std::lock_guard<std::mutex> guard{exclusive};
+    if (nullptr == context.get()) {
+      context = std::make_unique<ares::Library>();
+    }
+  }
+}
+#endiv
+

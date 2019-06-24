@@ -1,0 +1,28 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace mod::scarpet::method {
+  //
+  // The getters, with computed names as template specializations
+  // Specializations only
+  //
+  // Usage: (see handler.xcpp)
+  //
+  //   request = apache::httpd::request_rec *{...somehow...};
+  //   state = mod::scarpet::server::State{...somehow...};
+  //
+  //   Getter<SOME_NAME> getter{request, state}
+  //   return getter();
+  //
+  namespace getter {
+    enum Name {
+      PING,
+      NAPTR,
+      DAPTR,
+      DOCUMENT,
+    };
+  }
+  template<getter::Name> struct Getter;
+}
+#endiv

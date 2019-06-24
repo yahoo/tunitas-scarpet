@@ -1,0 +1,56 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.processor.Stanza.declaration
+namespace tunitas::scarpet::answer::processor {
+  //
+  // The top-level 'context' fields of the zone.
+  // There must be at least one of these, there is no way to comprehend what is in the document (in the zone)
+  //
+  // Example: (see Stanza.declaration.hpp, and 'marfa' being an illustrative DID Method)
+  //
+  //   context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/did/v1"
+  //   context.123456789abcdefghi.marfa URI 1 1 "https://w3id.org/security/v1"
+  //
+  template<> class Stanza<stanza::CONTEXTS>;
+}
+#endiv
+#divert <hpp>
+namespace tunitas::scarpet::answer::processor {
+  template<> class Stanza<stanza::CONTEXTS> : public Prototype, public ares::function::Query<Response<drrs::Records<dns::URI>>> {
+    using ancestor = ares::function::Query<Response<drrs::Records<dns::URI>>>;
+  public:
+    inline explicit Stanza(State &);
+    auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void final;
+  };
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::answer::processor {
+  Stanza<stanza::CONTEXTS>::Stanza(State &state) : ancestor{state} { }
+}
+#endiv
+#divert <cpp>
+namespace tunitas::scarpet::answer::processor {
+  auto Stanza<stanza::CONTEXTS>::receive(error::Code<ARES> code, Count timeouts, Buffer buffer) -> void {
+    using namespace ares;
+    if (error::Code<ARES>::SUCCESS != code) {
+      this->state.success = std::error_code{code};
+    } else {
+      reply::Record<URI> records;
+      auto parsed = reply::parse<URI>(std::nothrow, buffer, records);
+      if (!ok(parsed)) {
+        this->state.success = error_code(parsed);
+      } else if (records.empty()) {
+        this->state.success = std::error_code{scarpet::error::Code::FOUND_ZERO_RECORDS};
+      } else {
+        for (auto const &record : records) {
+          this->state.referenced.emplace_back(record.priority(), record.weight(), record.uri());
+        }
+        this->state.success = Success{SUCCESS};
+      }
+    }
+  }
+}
+#endiv

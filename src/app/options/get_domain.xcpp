@@ -5,6 +5,7 @@
 #forward app.Configuration
 #import options.longish.Step
 #import tunitas.scarpet.exception
+#import tunitas.scarpet.dns.Name
 #import tunitas.required.exception.app.Quitting
 #import std.string
 namespace app::options {
@@ -41,7 +42,8 @@ namespace app::options {
   namespace packaging::get_domain::function {
     namespace exception = tunitas::scarpet::exception;
     using Step = ::options::longish::Step;
-    template<tunitas::required::exception::app::Quitting QUITTING> inline auto get_domain(Configuration const &, Step const &) -> std::string;
+    using Result = tunitas::scarpet::dns::Name;
+    template<tunitas::required::exception::app::Quitting QUITTING> inline auto get_domain(Configuration const &, Step const &) -> Result;
   }
   using packaging::get_domain::function::get_domain;
 }
@@ -56,9 +58,11 @@ namespace app::options {
 #import std.move
 #import sys.exits.constants
 namespace app::options::packaging::get_domain {
-  template<tunitas::required::exception::app::Quitting QUITTING> auto function::get_domain(Configuration const &cfg, Step const &step) -> std::string try {
+  template<tunitas::required::exception::app::Quitting QUITTING> auto function::get_domain(Configuration const &cfg, Step const &step) -> Result try {
     //
-    // Get the word.  See if it is appropriately (enough) shaped.
+    // Get the word by the usual means.
+    // See if it is appropriately (enough) shaped.
+    // If it is good (ehough) then it becomes a dns::Name
     //
     auto word = get_word<QUITTING>(cfg, step, "domain");
     auto const good_enough_for_a_domain = [](char c) { return '.' == c || '_' == c || '-' == c || isalnum(c); };
@@ -67,7 +71,7 @@ namespace app::options::packaging::get_domain {
       error(cfg) << "in inappropriate characters in the domain name\n";
       throw QUITTING{cfg.NAME, sys::exits::CONFIG};
     }
-    return std::move(word);
+    return Result{word.data(), word.size()};
   } catch (...) {
     error(cfg) << "cannot recover an domain out of " << /*FIXTHIS format::q*/ required(step) << '\n';
     try {

@@ -1,0 +1,33 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace mod::scarpet::server {
+  //
+  // State of the server
+  //
+  // The specification
+  // The DNS Resolver Channel (socket, directory)
+  //
+  class State;
+}
+#endiv
+#divert <hpp>
+#import mod.scarpet.config.Specification
+#import tunitas.scarpet.resolve.Service
+struct mod::scarpet::server::State : public tunitas::scarpet::resolve::Service {
+  inline State();
+  State(State const &) = delete;
+  auto operator=(State const &) -> State & = delete;
+  State(State &&) = delete;
+  auto operator=(State &&) -> State & = delete;
+  config::Specification specification;
+};
+#endiv
+#divert <ipp>
+namespace mod::scarpet::server {
+  State::State()
+    : specification{}
+  { }
+}
+#endiv

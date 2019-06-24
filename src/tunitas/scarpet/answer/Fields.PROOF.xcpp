@@ -1,0 +1,43 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+#import tunitas.scarpet.answer.Fields.declaration
+namespace tunitas::scarpet::answer::packaging {
+  //
+  // All the fields that comprise a single proof 
+  //
+  // Example: (from https://w3c-ccg.github.io/did-spec/, but it is incomplete)
+  //
+  //               type.0.proof.123456789abcdefghi.marfa TXT "LinkedDataSignature2015"
+  //            created.0.proof.123456789abcdefghi.marfa TXT "2016-02-08T16:02:20Z"
+  //            creator.0.proof.123456789abcdefghi.marfa URI 1 1 "did:example:8uQhQMGzWxR8vw5P3UWH1ja#keys-1"
+  //     signatureValue.0.proof.123456789abcdefghi.marfa TXT "QNB13Y7Q9...1tzjn4w=="
+  //
+  // Usage:
+  //
+  //   See Fields<STANZAS> and launch(...)
+  //
+  template<> class Fields<fields::PROOF>;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.answer.Query
+namespace tunitas::scarpet::answer::packaging {
+  template<> class Fields<fields::PROOF> {
+    using Transaction = Query<Stanza<stanza::PROOFS>, Proof<proof::TRANSACTION>>;
+    using Created     = Query<Stanza<stanza::PROOFS>, Proof<proof::CREATED>>;
+    using Creator     = Query<Stanza<stanza::PROOFS>, Proof<proof::CREATOR>>;
+    using Description = Query<Stanza<stanza::PROOFS>, Proof<proof::DESCRIPTION>>;
+    using Signature   = Query<Stanza<stanza::PROOFS>, Proof<proof::SIGNATURE>>;
+    using Reference   = Query<Stanza<stanza::PROOFS>, Proof<proof::REFERENCE>>;
+  public:
+    Transaction transaction;
+    Created created;
+    Creator creator;
+    Description description;
+    Signature signature;
+    Reference reference;
+  };
+}
+#endiv

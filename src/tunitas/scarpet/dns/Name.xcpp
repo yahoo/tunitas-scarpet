@@ -1,10 +1,49 @@
-// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright 2019-2019, Oath Inc.
-// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 #divert <fpp>
-#import std.string
+#import std.char_traits
+#import std.basic_string
 namespace tunitas::scarpet::dns {
-#warning FIXTHIS during the merge to get the real definition of tunitas::scarpet::dns::Name
-  using Name = std::string;
+  //
+  // A Domain Name Service (DNS) Qualified Domain Name (QDN).
+  // A Domain Name consists of zero or more "labels"
+  //
+  // The Name is "just a string" ... with or without dots.
+  // See the commentariat in Labels.xcpp
+  //
+  // A Label MUST NOT not have dots in it; e.g. mydomain
+  // A Name MAY have dots in it; e.g. exp.devbox.mydomain.example.
+  // A Labels is (big endian) ordered string of labels. i.e. com.example.devbox.exp which prints as exp.devbox.example.com
+  //
+  // These are unchecked, unenforcable conditions, but the type system helps you keep it straight.
+  // [[FIXTHIS]] define is_valid(Name) and is_plausible(Name) or such
+  //
+  // Usage:
+  //
+  //   oh come on (it's a string)
+  //
+  namespace name {
+    class Traits : public std::char_traits<char> { };
+  }
+  using Name = std::basic_string<char, name::Traits>;
+}
+#endiv
+#divert <hpp>
+#import std.string_view
+#import std.string
+namespace tunitas::scarpet::dns::name {
+  inline auto view(Name const &) -> std::string_view;
+  inline auto to_string(Name const &) -> std::string;
+}
+#endiv
+#divert <ipp>
+namespace tunitas::scarpet::dns {
+  auto name::view(Name const &old) -> std::string_view {
+    return std::string_view{old.data(), old.size()};
+  }
+  auto name::to_string(Name const &old) -> std::string {
+    return std::string{old.data(), old.size()};
+  }
 }
 #endiv

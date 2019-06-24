@@ -1,0 +1,39 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace tunitas::scarpet::did::document {
+  //
+  // The ancestral visitor.
+  // Matched with the the aspect::Visitable::visit(...)
+  //
+  // Usage:
+  //
+  //    constexpr auto MODEL = ... one among ... { ZONE } ... at present and the forseeable future, only Document<ZONE> is visitable
+  //    auto ddd = Document<MODEL>{...somehow...};
+  //    auto visitor = Visitor<CONSTIE>{...somehow...}; ... or a descendant of such
+  //    ddd.visit(visitor);
+  //    ...visitor was side-effected, but ddd was not...
+  //
+  //    auto visitor = Visitor<MUTABLE>{...somehow...}; ... or a descendant of such
+  //    ddd.visit(visitor);
+  //    ...visitor was side-effected, and ddd might have been also...
+  //
+  template<typename VISITEE, Mutability> class Visitor;
+}
+#endiv
+#divert <hpp>
+#import tunitas.scarpet.did.document.Visitor
+#import std.conditional
+namespace tunitas::scarpet::did {
+  template<typename VISITEE, document::Mutability THE_MUTABILITY> class document::Visitor {
+  protected:
+    virtual ~Visitor() = default;
+    Visitor() = default;
+  public:
+    inline static constexpr auto MUTABILITY = THE_MUTABILITY;
+    using Visitee = typename std::conditional<CONSTIE == MUTABILITY, VISITEE const, VISITEE>::type;
+    virtual auto accept(Visitee &) -> void = 0;
+  };
+}
+#endiv

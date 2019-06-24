@@ -1,0 +1,56 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#forward tunitas.scarpet.did.Document.DOME
+#forward tunitas.scarpet.did.Document.JSON
+#forward tunitas.scarpet.compiler.output.Sink
+namespace tunitas::scarpet::compiler {
+  //
+  // Compile from a Document<DOME> to a Document<JSON>, which is what the W3C DID system expects to process.
+  // c.f. https://w3c-ccg.github.io/did-spec/
+  //
+  // Usage:
+  //
+  //   auto dome = ...somehow... did::Document<DOME>{};
+  //   auto json = did::Document<JSON>{};
+  //   auto sink = compiler::output::Stream{}; ... or a compatible sibling...
+  //
+  //   if (compile(dome, json, sink)) {
+  //     ...yay... there is happiness, the json is good (print it)
+  //     ...use the dome...
+  //   } else {
+  //      ...nay... the dome is bad,
+  //            and the json is in an inconsistent state,
+  //            and the sink contains the explanation.
+  //   }
+  //
+  inline auto compile([[in]] did::Document<did::DOME> const &, [[out]] did::Document<did::JSON> &, [[out]] output::Sink &) -> bool;
+}
+#endiv
+#divert <ipp>
+#import json.Value
+#import json.value.constants
+#import tunitas.scarpet.did.Document.DOME
+#import tunitas.scarpet.did.Document.JSON
+#import tunitas.scarpet.did.unparse
+#import tunitas.scarpet.compiler.output.Sink
+#import tunitas.scarpet.exception.Aspect
+#import tunitas.scarpet.compiler.detail.dome_json.accrete
+auto tunitas::scarpet::compiler::compile(did::Document<did::DOME> const &source, did::Document<did::JSON> &result, output::Sink &explanation) -> bool try {
+  using namespace detail::dome_json;
+  auto accreter = Accreter{result};
+  accreter.top["id"] = json::Value{to_string(unparse(source.method, source.identifier))};
+  // WATCHOUT - the standard says "@context" with an '@' because ... reasons.  Normally we do not use (can not use) '@' in DNS work.
+  accrete(accreter, "@context", source.model.contexts);
+  accrete(accreter, "publickey", source.model.publickeys);
+  accrete(accreter, "authorization", source.model.authentications);
+  accrete(accreter, "service", source.model.services);
+  accrete(accreter, "proof", source.model.proofs);
+  return ok(explanation);
+} catch (exception::Aspect const &e) {
+  // These are expected to be exceptional because the DOME is "precompiled" and "ready to go"
+  ee(explanation) << "cannot compile because " << e.what() << flush(explanation);
+  return true;
+}
+#endiv

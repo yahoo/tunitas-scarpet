@@ -1,0 +1,53 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <hpp>
+#import apache.runtime.pool_t
+#import apache.httpd.server_rec
+namespace mod::scarpet::httpd {
+  //
+  // See the pointed function in module.xcpp
+  //
+  auto child_init(apache::runtime::pool_t *, apache::httpd::server_rec *) noexcept -> void;
+}
+#endiv
+#divert <cpp>
+#import apache.httpd.module_config.get
+#import ares.Channel
+#import format.q
+#import mod.scarpet.httpd.module
+#import mod.scarpet.server.State
+#import std.empty
+#import std.exception
+#import tunitas.scarpet.exception.Runtime
+auto mod::scarpet::httpd::child_init(apache::runtime::pool_t *, apache::httpd::server_rec *server) noexcept -> void try {
+  //
+  // A new child ... initialize it from the specification (already recovered)
+  //
+  // 1. set up the DID Directory Location (if available)
+  // 2. set up the DID Resolver Service (always)
+  //
+  log::Stream<apache::httpd::server_rec> record(server);
+  auto *state = apache::httpd::module_config::get<server::State>(server, scarpet_module);
+  if (nullptr == state) { throw tunitas::scarpet::exception::Runtime{"bad server state"}; }
+  if (state->directory) {
+    record(APLOG_MARK, log::WARNING, HANDLER::OK) << "the scarpet service directory is already set to " << format::q(*state->directory) << log::END;
+  } else {
+    if (!std::empty(state->specification.location_prefix.value)) {
+      // [[FIXTHIS]] probe to see if this exists and is is a directory.
+      state->directory = state->specification.location_prefix.value;
+    }
+  }
+  if (state->channel) {
+    record(APLOG_MARK, log::WARNING, HANDLER::OK) << "the scarpet service channel is already established (not reestablishing it)" << log::END;
+  } else {
+    state->channel = ares::Channel{};
+  }
+  // We're in the (new) child.
+} catch (std::exception const &e) {
+  ap_log_error(APLOG_MARK, APLOG_CRIT, /*status*/0, server, "could not start the child because %s", e.what());
+} catch (...) {
+  // (C++) exceptions cannot escape back out into the C runtime.
+  // [[FIXTHIS]] shouldn't we log something into the C API?
+}    
+#endiv

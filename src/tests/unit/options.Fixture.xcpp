@@ -57,7 +57,7 @@ auto tests::unit::options::Fixture::test_Specification() -> void {
 #import rigging.suite.io
 auto tests::unit::options::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
-  Stream series("options");
+  Stream series{"options"};
   {
     Stream use("usage");
     use << call("Encoding", &Fixture::test_usage_Encoding)

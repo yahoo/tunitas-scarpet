@@ -1,0 +1,54 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019-2019, Oath Inc.
+// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+#divert <fpp>
+namespace mod::scarpet::exception::router::aspect {
+  //
+  // The offending path aspect of a router exception.
+  // Descendants only, as a mixin.
+  //
+  // If you want to identify a "router subsystem" exception in the exception recovery chain
+  // then use, nearby, exception::aspect::Router. 
+  //
+  // The offending path is copied to ensure that the class copy constructor is noexcept.
+  //
+  // Usage:
+  //
+  //   class my::Problem : public router::Aspect, public router::aspect::Path, public std::runtime_error {
+  //     struct ancestors {
+  //       using Aspect = scarpet::router::Aspect;
+  //       using Path = scarpet::router::aspect::Path;
+  //       using Exception = std::runtime_error;
+  //   . };
+  //   public:
+  //     inline Problem(std::string const &reason, std::string const &path);
+  //     auto what() const noexcept -> char const * { return ancestors::Exception::what(); };
+  //   };
+  // 
+  class Path;
+}
+#endiv
+#divert <hpp>
+#import std.string
+#import std.shared_ptr
+class mod::scarpet::exception::router::aspect::Path {
+protected:
+  virtual ~Path() = default;
+public:
+  inline explicit Path(std::string const &path);
+  inline auto path() const noexcept -> std::string const &;
+private:
+  std::shared_ptr<std::string> offending_path;
+};
+#endiv
+#divert <ipp>
+#import std.make_shared
+namespace mod::scarpet::exception::router::aspect {
+  Path::Path(std::string const &path)
+    : offending_path{std::make_shared<std::string>(path)}
+  { }
+  auto Path::path() const noexcept -> std::string const & {
+    return *offending_path;
+  }
+}
+#endiv

@@ -32,11 +32,6 @@ DIDs are universal identifiers which are publicly announced and are prepared wit
 
 Some notable services which use the DIDs produced in this project are listed below.  These are projects among Tunitas family of technologies
 
-### [DataX](http://developer.yahoo.com/datax) (Audience Data Exchange)
-
-* [Tunitas Lobitos](https://github.com/yahoo/tunitas-lobitos), a <em>macro-</em>-service approach to DataX API serving.
-* [Tunitas Grabtown](https://github.com/yahoo/tunitas-grabtown), extensions to DataX to more exotic data types.
-
 ### [PrivacyChain](https://github.com/InteractiveAdvertisingBureau/PrivacyChain)
 
 * [Tunitas Montara](https://github.com/yahoo/tunitas-montara), a <em>micro</em>-service approach ot the "North-facing" API

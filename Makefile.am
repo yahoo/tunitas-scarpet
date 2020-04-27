@@ -49,7 +49,15 @@ INSTALLATION_AREAS = \
   $(std_scold_prefix) \
   $(end)
 
-module_SOURCE_SET = \
+#
+# The following three definitions must be consistent
+#
+# Makefile.am module_SOURCE_SET    (future)         the modules (cut & paste header files)
+# Makefile.am module_BB_SOURCE_SET (deprecating)    them.
+# Makefile.am lib_LTLIBRARIES      (current)        the DSO & static libraries
+# tunitas-scarpet.spec the '%files devel' stanza must list the 
+#
+lib_libtunitas_scarpet_la_MODULE_SOURCES_SET = \
   $(lib_libautotools_autoconf_la_SOURCES) \
   $(lib_libmod_scarpet_la_SOURCES) \
   $(lib_libtunitas_scarpet_la_SOURCES) \
@@ -62,6 +70,11 @@ module_SOURCE_SET = \
   $(lib_libtunitas_scarpet_pki_la_SOURCES) \
   $(lib_libtunitas_scarpet_resolve_la_SOURCES) \
   $(lib_libwant_la_SOURCES) \
+  $(end)
+module_SOURCE_SET = # NO NOT READY YET ---> $(lib_libtunitas_scarpet_la_MODULE_SOURCES_SET)
+module_BB_SOURCE_SET = \
+  $(warning module_BB_SOURCE_SET should be deprecating real soon now, move to use module_SOURCE_SET, whenever it is ready) \
+  $(lib_libtunitas_scarpet_la_MODULE_SOURCES_SET) \
   $(end)
 
 include src/app/Makefrag.am
@@ -109,9 +122,11 @@ noinst_LTLIBRARIES = \
   $(lib_libwant_la) \
   $(lib_libapp_la) \
   $(end)
+# WATCHOUT - these MUST be listed in this order so that the sequential install rule will allow the linker to process.
+#            libtool linking of libmod_apanolio.la MUST see the installed libtunitas-apanolio.la in order to be "finished"
 lib_LTLIBRARIES = \
-  $(lib_libmod_scarpet_la) \
   $(lib_libtunitas_scarpet_la) \
+  $(lib_libmod_scarpet_la) \
   $(end)
 check_PROGRAMS = \
   $(check_bin_unit) \

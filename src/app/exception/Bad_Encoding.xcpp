@@ -32,16 +32,16 @@ namespace app::exception {
 }
 #endiv
 #divert <hpp>
-#import tunitas.scarpet.exception.Quitting
+#import app.exception.Quitting
 #import sys.exits.Code
-class app::exception::Bad_Encoding : public tunitas::scarpet::exception::Quitting {
-  using ancestor = tunitas::scarpet::exception::Quitting;
+class app::exception::Bad_Encoding : public app::exception::Quitting {
+  using Ancestor = app::exception::Quitting;
 public:
   inline explicit Bad_Encoding(std::string const &NAME, sys::exits::Code);
 };
 #endiv
 #divert <ipp>
 app::exception::Bad_Encoding::Bad_Encoding(std::string const &NAME, sys::exits::Code code)
-  : ancestor{NAME, code}
+  : Ancestor{NAME, code}
 { }
 #endiv

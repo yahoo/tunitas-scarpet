@@ -78,7 +78,7 @@ namespace tunitas::scarpet::pki::key {
     if (nullptr == key) {
       throw exception::Crypto{"d2i_PrivateKey"};
     }
-    return std::move(key);
+    return key;
   }
   template<> auto detail::from_string<Publik>(std::string syntax) -> Activated {
     auto decoded = decode(std::move(syntax));
@@ -86,7 +86,7 @@ namespace tunitas::scarpet::pki::key {
     if (nullptr == key) {
       throw exception::Crypto{"d2i_PublicKey"};
     }
-    return std::move(key);
+    return key;
   }
   auto detail::decode(std::string source) -> std::vector<unsigned char> {
     // This inverts what was done in detail::encode(...)
@@ -112,7 +112,7 @@ namespace tunitas::scarpet::pki::key {
       throw exception::Coding{"EVP_DecodeBlock"};
     }
     buffer.resize(actual_size);
-    return std::move(buffer);
+    return buffer;
   }
 }
 #endiv

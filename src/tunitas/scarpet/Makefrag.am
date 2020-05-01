@@ -47,10 +47,10 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/exception/Invariant.cpp \
   obj/src/tunitas/scarpet/exception/Logic.cpp \
   obj/src/tunitas/scarpet/exception/Options.cpp \
-  obj/src/tunitas/scarpet/exception/Quitting.cpp \
   obj/src/tunitas/scarpet/exception/Runtime.cpp \
   obj/src/tunitas/scarpet/exception/System.cpp \
   obj/src/tunitas/scarpet/exception/Version.cpp \
+  obj/src/tunitas/scarpet/exception/Quitting.cpp \
   \
   obj/src/tunitas/scarpet/options/namespace.cpp \
   obj/src/tunitas/scarpet/options/indicator.cpp \
@@ -65,10 +65,13 @@ lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/url/Parser.cpp \
   obj/src/tunitas/scarpet/url/Path.cpp \
   $(end)
+
+$(lib_libtunitas_scarpet_la_SOURCES) : obj/src/%.cpp : src/%.xcpp
+	$(TF_V_DIS) $(call TF_DISAGGREGATE_COMPILE, $@)
+	$(TF_V_DUN) test -e $@
 $(scold_cxxdir)/tunitas/scarpet/dependencies.mk:
-	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_la_SOURCES))
-	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_la_SOURCES))
-	@test -e $@
+	$(TF_V_COM) $(call TF_COMPILE, $(lib_libtunitas_scarpet_la_SOURCES))
+	$(TF_V_DUN) test -e $@
 include $(scold_cxxdir)/tunitas/scarpet/dependencies.mk
 clean-dependencies::
 	rm -f $(scold_cxxdir)/tunitas/scarpet/dependencies.mk

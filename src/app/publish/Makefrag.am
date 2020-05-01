@@ -33,10 +33,12 @@ bin_did_publish_SOURCES = \
   obj/src/app/publish/options/Specification.cpp \
   $(end)
 
-$(scold_cxxdir)/app/publish/dependencies.mk: Makefile
-	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(bin_did_publish_SOURCES))
-	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(bin_did_publish_SOURCES))
-	@test -e $@
+$(bin_did_publish_SOURCES) : obj/src/%.cpp : src/%.xcpp
+	$(TF_V_DIS) $(call TF_DISAGGREGATE_COMPILE, $@)
+	$(TF_V_DUN) test -e $@
+$(scold_cxxdir)/app/publish/dependencies.mk:
+	$(TF_V_COM) $(call TF_COMPILE, $(bin_did_publish_SOURCES))
+	$(TF_V_DUN) test -e $@
 include $(scold_cxxdir)/app/publish/dependencies.mk
 clean-local::
 	rm -f $(scold_cxxdir)/app/publish/dependencies.mk

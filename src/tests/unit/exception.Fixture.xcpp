@@ -71,9 +71,9 @@ auto tests::unit::exception::Fixture::test_Options() -> void {
   tunitas::scarpet::exception::Options subject{"Encoding"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
-#import tunitas.scarpet.exception.Quitting
+#import app.exception.Quitting
 auto tests::unit::exception::Fixture::test_Quitting() -> void {
-  tunitas::scarpet::exception::Quitting subject{"a.out"};
+  app::exception::Quitting subject{"a.out"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
 #import mod.scarpet.exception.router.Path
@@ -105,9 +105,9 @@ auto tests::unit::exception::Fixture::test_System() -> void {
   tunitas::scarpet::exception::System subjectC{std::error_code{13, std::system_category()}, "missing thing"};
   CPPUNIT_ASSERT(nullptr != subjectC.what());
 }
-#import tunitas.scarpet.exception.Version
+#import app.exception.Version
 auto tests::unit::exception::Fixture::test_Version() -> void {
-  tunitas::scarpet::exception::Version subject{"a.out"};
+  app::exception::Version subject{"a.out"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
 #import rigging.suite.io
@@ -131,6 +131,7 @@ auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
     series << add(rou.release());
   } {
     Stream asp{"Aspect"};
+    namespace ap = ::app::exception;
     namespace subjecting = ::tunitas::scarpet::exception;
     namespace modding = ::mod::scarpet::exception;
     asp << call("Coding", &Fixture::test_Aspect<subjecting::Coding>)
@@ -139,11 +140,11 @@ auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
         << call("Configuration", &Fixture::test_Aspect<subjecting::Configuration>)
         << call("Invariant", &Fixture::test_Aspect<subjecting::Invariant>)
         << call("Logic", &Fixture::test_Aspect<subjecting::Logic>)
-        << call("Quitting", &Fixture::test_Aspect<subjecting::Quitting>)
+        << call("Quitting", &Fixture::test_Aspect<ap::Quitting>)
         << call("router:Path", &Fixture::test_Aspect<modding::router::Path>)
         << call("Runtime", &Fixture::test_Aspect<subjecting::Runtime>)
         << call("System", &Fixture::test_Aspect<subjecting::System>)
-        << call("Version", &Fixture::test_Aspect<subjecting::Version>)
+        << call("Version", &Fixture::test_Aspect<ap::Version>)
       ;
     series << add(asp.release());
   }

@@ -1,80 +1,30 @@
 // This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
-// Copyright 2019-2019, Oath Inc.
-// Licensed under the terms of the Apache-2.0 license. See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// Copyright Verizon Media.
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+https://git.tunitas.technology/all/components/basics/tree/LICENSE
 #divert <fpp>
+#warning tunitas.scarpet.exception.Version is deprecated, instead #import app.exception.Version
+namespace app::exception { struct Version; }
 namespace tunitas::scarpet::exception {
   //
-  // The package version, as an application exception.
+  // There is no such class in the public interface any more.
+  // It has been moved to the application side as app::exception::Version
+  // DO NOT USE
   //
-  // Usage:
-  //
-  //   throw Version{"program"};
-  //
-  // Usage:
-  //
-  //   try {
-  //     ...
-  //     throw Version{"program"};
-  //     ...
-  //   } catch (tunitas::app::exception::Generic const &g) {
-  //     g.stream() << g << '\n';
-  //     return g.code();          ... equivalently ::exit(g.code());
-  //   }
-  //
-  class [[nodiscard]] Version;
+  using Version [[deprecated("DO NOT USE; instead use app::exception:Version")]] = ::app::exception::Version;
 }
 #endiv
-#divert <hpp>
-#import tunitas.app.exception.aspect.Version
-#import tunitas.app.exception.aspect.Messaging
-#import tunitas.scarpet.exception.aspect.Exiting
-#import std.string
-#import std.exception
-class tunitas::scarpet::exception::Version
-  : public aspect::Exiting,
-    public tunitas::app::exception::aspect::Version,
-    public tunitas::app::exception::aspect::Messaging,
-    public std::exception {
-  struct ancestors {
-    struct aspects {
-      using Exiting = scarpet::exception::aspect::Exiting;
-      using Version = tunitas::app::exception::aspect::Version;
-      using Messaging = tunitas::app::exception::aspect::Messaging;
-    };
-    using Exception = std::exception;
-  };
-public:
-  inline explicit Version(std::string const &NAME);
-  auto what() const noexcept -> char const * final;
-  auto stream() const noexcept -> std::ostream & final;
-  auto code() const noexcept -> sys::exits::Code final;
-private:
-  static auto format(std::string const &NAME) -> std::string;
-};
-#endiv
-#divert <ipp>
-#import sys.exits.constants
-tunitas::scarpet::exception::Version::Version(std::string const &NAME)
-  : ancestors::aspects::Messaging{format(NAME)}
-{ }
-#endiv
-#divert <cpp>
-#import std.ostringstream
-#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
-namespace tunitas::scarpet::exception {
-  auto Version::format(std::string const &NAME) -> std::string {
-    std::ostringstream buf;
-    buf << "version: " << NAME << " " << autotools::autoconf::Config<CONFIG>::version();
-    return buf.str();
-  }
-  auto Version::what() const noexcept -> char const * {
-    return ancestors::aspects::Messaging::what();
-  }
-  auto Version::stream() const noexcept -> std::ostream & {
-    return ancestors::aspects::Version::stream();                                                         
-  }
-  auto Version::code() const noexcept -> sys::exits::Code {
-    return ancestors::aspects::Version::code();
-  }
-}
-#endiv
+//
+// WATCHOUT - you still have to (independently) acquire app.exception.Version
+// otherwise you will see the super-cryptic mis-diagnosis as follows:
+//
+//    src/tunitas/scarpet/exception/Version.xcpp:8:2: warning: #warning tunitas.scarpet.exception.Version is deprecated, instead #import app.exception.Version [-Wcpp]
+//        8 | #warning tunitas.scarpet.exception.Version is deprecated, instead #import app.exception.Version
+//          |  ^~~~~~~
+//    src/app/publish/options/Parser.xcpp: In member function ‘app::publish::options::Parser::Result app::publish::options::Parser::operator()(tunitas::app::options::Args)’:
+//    src/app/publish/options/Parser.xcpp:85:44: error: too many initializers for ‘app::exception::Version’
+//       85 |           throw exception::Version{cfg.NAME};
+//          |                                            ^
+//

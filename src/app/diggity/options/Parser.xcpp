@@ -49,6 +49,7 @@ namespace app::diggity::options {
 #divert <cpp>
 #import app.exception.Bad_Filepath
 #import app.exception.Bad_Domain
+#import app.exception.Version
 #import app.options.get_domain
 #import app.diggity.defaults
 #import app.diggity.exception.Usage
@@ -60,8 +61,6 @@ namespace app::diggity::options {
 #import std.logic_error
 #import sys.exits.constants
 #import tunitas.app.options.get_filepath
-#import tunitas.scarpet.error.Code
-#import tunitas.scarpet.exception.Version
 #import tunitas.scarpet.error.Code
 namespace app::diggity::options {
   auto Parser::operator()(Args av) -> Result {

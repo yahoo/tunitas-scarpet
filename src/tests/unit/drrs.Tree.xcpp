@@ -52,7 +52,7 @@ auto tests::unit::drrs::Tree::generate_something_interesting() -> Subject {
   Populator enpopulator;
   enpopulator.populate(apple);
   std::cerr << "populated jackass fqdn = " << view(jackass.fqdn()) << '\n';
-  return std::move(apple);
+  return apple;
 }
 auto tests::unit::drrs::Tree::test_constructor_top() -> void {
   auto subject = Subject{"www", Subject::top()};

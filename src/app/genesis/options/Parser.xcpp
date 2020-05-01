@@ -51,6 +51,7 @@ namespace app::genesis::options {
 #import app.options.get_encoding
 #import app.exception.Bad_Encoding
 #import app.exception.Bad_Filepath
+#import app.exception.Version
 #import app.genesis.defaults
 #import app.genesis.exception.Usage
 #import app.genesis.options.indicator.constants
@@ -61,8 +62,6 @@ namespace app::genesis::options {
 #import std.logic_error
 #import sys.exits.constants
 #import tunitas.app.options.get_filepath
-#import tunitas.scarpet.error.Code
-#import tunitas.scarpet.exception.Version
 #import tunitas.scarpet.error.Code
 namespace app::genesis::options {
   auto Parser::operator()(Args av) -> Result {

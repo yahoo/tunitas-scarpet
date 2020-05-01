@@ -28,10 +28,12 @@ bin_did_genesis_SOURCES = \
   obj/src/app/genesis/options/Specification.cpp \
   $(end)
 
-$(scold_cxxdir)/app/genesis/dependencies.mk: Makefile
-	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(bin_did_genesis_SOURCES))
-	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(bin_did_genesis_SOURCES))
-	@test -e $@
+$(bin_did_genesis_SOURCES) : obj/src/%.cpp : src/%.xcpp
+	$(TV_V_DIS) $(call TF_DISAGGREGATE_COMPILE, $@)
+	$(TF_V_DUN) test -e $@
+$(scold_cxxdir)/app/genesis/dependencies.mk:
+	$(TF_V_COM) $(call TF_COMPILE, $(bin_did_genesis_SOURCES))
+	$(TF_V_DUN) test -e $@
 include $(scold_cxxdir)/app/genesis/dependencies.mk
 clean-local::
 	rm -f $(scold_cxxdir)/app/genesis/dependencies.mk

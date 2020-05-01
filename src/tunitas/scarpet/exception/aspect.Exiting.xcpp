@@ -10,9 +10,12 @@ namespace tunitas::scarpet::exception::aspect {
   //
   // This mixin adds in stream() and code()
   //
+  // namespace aspect add extra requirements
+  // namespace feature adds implementations of those or other features (capabilities)
+  //
   // Usage:
   //
-  //   class my::Problem : public Exiting, public std::runtime_error {
+  //   class my::Problem : public Aspect, public aspect::Exiting, public std::runtime_error {
   //   public:
   //      Problem(std::string const &reason);
   //      auto what() const noexcept -> char const * override;
@@ -38,12 +41,12 @@ namespace tunitas::scarpet::exception::aspect {
 #import tunitas.scarpet.exception.Aspect
 #import std.ostream
 #import sys.exits.Code
-class tunitas::scarpet::exception::aspect::Exiting : public Aspect {
-  using ancestor = Aspect;
+class tunitas::scarpet::exception::aspect::Exiting {
 protected:
   virtual ~Exiting() = default;
 public:
   Exiting() = default;
+  virtual auto what() const noexcept -> char const * = 0;
   virtual auto stream() const noexcept -> std::ostream & = 0;
   virtual auto code() const noexcept -> sys::exits::Code = 0;
 };

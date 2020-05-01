@@ -71,9 +71,7 @@ lib_libtunitas_scarpet_la_MODULE_SOURCES_SET = \
   $(lib_libtunitas_scarpet_resolve_la_SOURCES) \
   $(lib_libwant_la_SOURCES) \
   $(end)
-module_SOURCE_SET = # NO NOT READY YET ---> $(lib_libtunitas_scarpet_la_MODULE_SOURCES_SET)
-module_BB_SOURCE_SET = \
-  $(warning module_BB_SOURCE_SET should be deprecating real soon now, move to use module_SOURCE_SET, whenever it is ready) \
+module_SOURCE_SET = \
   $(lib_libtunitas_scarpet_la_MODULE_SOURCES_SET) \
   $(end)
 
@@ -204,7 +202,7 @@ TESTS = \
 #install: check
 default: all
 
-# REMOVE WHEN: baleful_ballad:hypogeal-twilight-0.??.? has work that supercedes this
+# [[REMOVEWHEN]]: hypogeal-twilight has work that supercedes this (and when is that?  hypogeal-twilight >= 0.7000? when?
 Makefile_nonstd_PACKAGE_CPPFLAGS_SET = @nonstd_boost_CPPFLAGS@ @nonstd_gcc_CPPFLAGS@
 Makefile_nonstd_PACKAGE_CFLAGS_SET   = @nonstd_boost_CFLAGS@   @nonstd_gcc_CFLAGS@
 Makefile_nonstd_PACKAGE_CXXFLAGS_SET = @nonstd_boost_CXXFLAGS@ @nonstd_gcc_CXXFLAGS@
@@ -222,10 +220,10 @@ Makefile_PACKAGE_CPPFLAGS_SET  = @CPPFLAGS_httpd@ @CPPFLAGS_apr@ @CPPFLAGS_apreq
 Makefile_PACKAGE_CFLAGS_SET    =   @CFLAGS_httpd@   @CFLAGS_apr@   @CFLAGS_apreq@   @CFLAGS_uuid@
 Makefile_PACKAGE_CXXFLAGS_SET  = @CXXFLAGS_httpd@ @CXXFLAGS_apr@ @CXXFLAGS_apreq@ @CXXFLAGS_uuid@
 Makefile_PACKAGE_LDFLAGS_SET   =  @LDFLAGS_httpd@  @LDFLAGS_apr@  @LDFLAGS_apreq@  @LDFLAGS_uuid@
-Makefile_CHECK_CPPFLAGS_SET    = @CPPFLAGS_cppunit@
-Makefile_CHECK_CFLAGS_SET      =   @CFLAGS_cppunit@
-Makefile_CHECK_CXXFLAGS_SET    = @CXXFLAGS_cppunit@
-Makefile_CHECK_LDFLAGS_SET     =  @LDFLAGS_cppunit@
+Makefile_CHECK_CPPFLAGS_SET    = @CPPFLAGS_cppunit@ @CPPFLAGS_no_install@
+Makefile_CHECK_CFLAGS_SET      =   @CFLAGS_cppunit@   @CFLAGS_no_install@
+Makefile_CHECK_CXXFLAGS_SET    = @CXXFLAGS_cppunit@ @CXXFLAGS_no_install@
+Makefile_CHECK_LDFLAGS_SET     =  @LDFLAGS_cppunit@  @LDFLAGS_no_install@
 
 # See the 'Usage' statement in @hypogeal_twilight_datadir@/mk/toolflags.mk
 # See the definitions and expected usage of

@@ -62,7 +62,7 @@ namespace tunitas::scarpet {
     for (auto &c : candidate) {
       if (std::isalpha(c)) { c = std::tolower(c); }
     }
-    return std::move(candidate);
+    return candidate;
   }
   auto pki::to_UPPERCASE(Encoding e) -> std::string {
     auto candidate = to_string(e);
@@ -70,7 +70,7 @@ namespace tunitas::scarpet {
     for (auto &c : candidate) {
       if (std::isalpha(c)) { c = std::toupper(c); }
     }
-    return std::move(candidate);
+    return candidate;
   }
   template<typename RESULT> auto pki::to_communityCamelCase(Encoding encoding, re::string<c::const_stringz> prefix) -> RESULT requires std::is_same_v<RESULT, dns::Label> {
     // [[FIXTHIS]] is there some way to use move semantics here by sharing the indirect storage of sss?
@@ -131,7 +131,7 @@ namespace tunitas::scarpet {
           candidate[i] = std::tolower(c);
         }
       }
-      return std::move(candidate);
+      return candidate;
     }
   }
 }

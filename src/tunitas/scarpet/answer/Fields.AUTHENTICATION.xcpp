@@ -19,7 +19,7 @@ namespace tunitas::scarpet::answer::packaging {
 #import tunitas.scarpet.answer.PublicKey
 namespace tunitas::scarpet::answer::packaging {
   template<> class Fields<fields::AUTHENTICATION> : public PublicKey<stanza::AUTHENTICATIONS> {
-    using ancestor = PublicKey<stanza::AUTHENTICATIONS>;
+    using Ancestor = PublicKey<stanza::AUTHENTICATIONS>;
   public:
     Fields() = default;
   };

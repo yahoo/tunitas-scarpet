@@ -65,7 +65,7 @@ auto tests::unit::pki::Material::fillup() -> Subject {
   for (auto i{0u}, e{0x100u}; e != i; ++i) {
     ret.push_back(std::byte(i));
   }
-  return std::move(ret);
+  return ret;
 }
 auto tests::unit::pki::Material::test_operator_eq() -> void {
   using B = std::byte;

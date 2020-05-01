@@ -33,7 +33,7 @@ namespace app::authgen {
 #import std.move
 #import std.error_code
 #import sys.exits.constants
-#import tunitas.scarpet.exception.Quitting
+#import app.exception.Quitting
 #import want.stream.duo.Files
 #import want.stream.duo.gang
 auto app::authgen::process(Configuration const &cfg) -> sys::exits::Code try {
@@ -41,7 +41,7 @@ auto app::authgen::process(Configuration const &cfg) -> sys::exits::Code try {
   auto pkey = []() -> evp::PKey {
                 evp::PKey pkey;
                 pkey.assign(ec::generate(ec::group::Name::PRIME256V1));
-                return std::move(pkey);
+                return pkey;
               }();
   auto req = [&pkey, &cfg]() -> x509::Req {
                x509::Req req;
@@ -50,7 +50,7 @@ auto app::authgen::process(Configuration const &cfg) -> sys::exits::Code try {
                req.get_subject_name().add_entry_by_txt(cfg.fields); // <----------- Wowza is this slick!
                req.sign(pkey, EVP_sha256());
                std::cout << "DEBUG " << pem::to_string(req);
-               return std::move(req);
+               return req;
              }();
   auto crt = [&req, &pkey]() -> x509::Crt {
                 x509::Crt crt;
@@ -67,7 +67,7 @@ auto app::authgen::process(Configuration const &cfg) -> sys::exits::Code try {
                 crt.add_ext(x509::extension::config(NID_basic_constraints, "critical,CA:TRUE"));
                 // [[FIXTHIS]] A few more extensions here ... SKI, AKI, EU ... and all that.
                 crt.sign(pkey, EVP_sha256());
-                return std::move(crt);
+                return crt;
               }();
   using namespace want::stream::duo;
   Files out;

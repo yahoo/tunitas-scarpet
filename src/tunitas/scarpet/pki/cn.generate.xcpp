@@ -47,6 +47,6 @@ auto tunitas::scarpet::pki::cn::generate() -> std::string {
     // This is unexpected and troublesome.
     throw exception::Invariant{"not 64 hex chars (not 256 bits)"};
   }
-  return std::move(ret);
+  return ret;
 }
 #endiv

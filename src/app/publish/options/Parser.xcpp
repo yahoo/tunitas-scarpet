@@ -51,6 +51,7 @@ namespace app::publish::options {
 #import app.exception.Bad_Filepath
 #import app.exception.Bad_Domain
 #import app.exception.Bad_Secret
+#import app.exception.Version
 #import app.options.get_domain
 #import app.options.get_secret_literal
 #import app.publish.defaults
@@ -63,8 +64,6 @@ namespace app::publish::options {
 #import std.logic_error
 #import sys.exits.constants
 #import tunitas.app.options.get_filepath
-#import tunitas.scarpet.error.Code
-#import tunitas.scarpet.exception.Version
 #import tunitas.scarpet.error.Code
 namespace app::publish::options {
   auto Parser::operator()(Args av) -> Result {

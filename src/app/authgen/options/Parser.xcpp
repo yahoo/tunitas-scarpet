@@ -49,6 +49,7 @@ namespace app::authgen::options {
 #endiv
 #divert <cpp>
 #import app.exception.Bad_Filepath
+#import app.exception.Version
 #import app.authgen.defaults
 #import app.authgen.exception.Usage
 #import app.authgen.options.indicator.constants
@@ -60,7 +61,6 @@ namespace app::authgen::options {
 #import sys.exits.constants
 #import tunitas.app.options.get_filepath
 #import tunitas.scarpet.error.Code
-#import tunitas.scarpet.exception.Version
 #import tunitas.scarpet.pki.cn.generate
 #import tunitas.scarpet.error.Code
 namespace app::authgen::options {

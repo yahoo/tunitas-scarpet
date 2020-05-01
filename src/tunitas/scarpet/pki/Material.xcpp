@@ -89,7 +89,7 @@ namespace tunitas::scarpet {
     auto stringify = [](Material const &material) -> std::string {
                        std::string ret;
                        std::transform(material.begin(), material.end(), std::back_inserter(ret), [](auto b) { return char(b); });
-                       return std::move(ret);
+                       return ret;
                      };
     switch (encoding) {
     case Encoding::NONE:

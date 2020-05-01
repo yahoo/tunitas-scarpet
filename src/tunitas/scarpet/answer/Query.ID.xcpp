@@ -13,6 +13,11 @@ namespace tunitas::scarpet::answer::packaging {
 #import tunitas.scarpet.drrs.Record.URI
 namespace tunitas::scarpet::answer::packaging {
   template<> struct Query<processor::Stanza<stanza::ID>> : public query::Prototype<dns::URI, processor::Stanza<stanza::ID>, drrs::Record<dns::URI>> {
+#if __GNUC__ < 10 // still bad on gcc (GCC) 9.3.1 20200413
+#warning BUGGY asserts is protected within this context
+    // Why is this not a compiler bug?
+    Query() = default;
+#endif
     inline auto name() const -> dns::Label { return "id"; }
   };
 }

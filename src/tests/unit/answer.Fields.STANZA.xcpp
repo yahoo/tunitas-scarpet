@@ -25,8 +25,7 @@ namespace tests::unit::answer {
 #divert <cpp>
 namespace tests::unit::answer {
   auto Fields<subject::Fields<fields::STANZA>>::test_constructor_default() -> void {
-#warning #if 0 COMPILER BUG YES MAYBE YES WE THINK SO src/tests/unit/answer.Fields.STANZA.xcpp:36:8: error: ‘tunitas::scarpet::answer::query::Prototype<DNS, PROCESSOR, RECORDATION>::Prototype() [with __ns_type DNS = (__ns_type)256; PROCESSOR = tunitas::scarpet::answer::processor::Stanza<(tunitas::scarpet::answer::processor::stanza::Name)0>; RECORDATION = tunitas::scarpet::drrs::Record<(__ns_type)256>]’ is protected within this context
-#if 0
+#if 8 < __GNUC__
     {
       using namespace ::tunitas::scarpet::answer;
       using namespace ::tunitas::scarpet::answer::packaging;
@@ -36,9 +35,11 @@ namespace tests::unit::answer {
       using Authentications = Query<Stanza<stanza::AUTHENTICATIONS>>;
       using Services        = Query<Stanza<stanza::SERVICES>>;
       using Proofs          = Query<Stanza<stanza::PROOFS>>;
-      Id{};
-      Contexts{};
+      auto id = Id{};
+      auto contexts = Contexts{};
     }
+#else
+#warning #if 0 COMPILER BUG YES MAYBE YES WE THINK SO src/tests/unit/answer.Fields.STANZA.xcpp:36:8: error: ‘tunitas::scarpet::answer::query::Prototype<DNS, PROCESSOR, RECORDATION>::Prototype() [with __ns_type DNS = (__ns_type)256; PROCESSOR = tunitas::scarpet::answer::processor::Stanza<(tunitas::scarpet::answer::processor::stanza::Name)0>; RECORDATION = tunitas::scarpet::drrs::Record<(__ns_type)256>]’ is protected within this context
 #endif
     auto subject = Subject{};
     CPPUNIT_ASSERT(sizeof(subject));

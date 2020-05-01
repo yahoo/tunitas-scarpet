@@ -16,6 +16,7 @@ namespace app::scissor {
 }
 #endiv
 #divert <cpp>
+#import app.exception.Quitting
 #import app.scissor.exception
 #import openssl.ec.generate
 #import openssl.evp.PKey
@@ -24,7 +25,6 @@ namespace app::scissor {
 #import std.error_code
 #import std.move
 #import sys.exits.constants
-#import tunitas.scarpet.exception.Quitting
 #import want.stream.duo.Files
 #import want.stream.duo.gang
 auto app::scissor::process(Configuration const &cfg) -> sys::exits::Code try {
@@ -32,7 +32,7 @@ auto app::scissor::process(Configuration const &cfg) -> sys::exits::Code try {
   auto pkey = []() -> evp::PKey {
                 evp::PKey pkey;
                 pkey.assign(ec::generate(ec::group::Name::PRIME256V1));
-                return std::move(pkey);
+                return pkey;
               }();
   auto req = [&pkey, &cfg]() -> x509::Req {
                x509::Req req;
@@ -40,7 +40,7 @@ auto app::scissor::process(Configuration const &cfg) -> sys::exits::Code try {
                // This is slick of course but it does throw std::error_code if openssl refuses the field values
                req.get_subject_name().add_entry_by_txt(cfg.fields); // <----------- Wowza is this slick!
                req.sign(pkey, EVP_sha256());
-               return std::move(req);
+               return req;
              }();
   using namespace want::stream::duo;
   Files out;

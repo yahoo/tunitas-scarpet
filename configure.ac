@@ -3,7 +3,7 @@ dnl Copyright 2019-2019, Oath Inc.
 dnl Licensed under the terms of the Apache-2.0 license.
 dnl See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
 
-AC_INIT([scarpet], [0.0.1], [tunitas@verizonmedia.com])
+AC_INIT([scarpet], [0.1.0], [tunitas@verizonmedia.com])
 TF_INIT(AC_PACKAGE_NAME, AC_PACKAGE_VERSION, AC_PACKAGE_BUGREPORT)
 
 TF_COMPONENT_METADIRECTORY_TIERS
@@ -11,6 +11,7 @@ TF_ENABLE_CONFIGURE_VERBOSE dnl first so that TF_MSG_VERBOSE works
 TF_ENABLE_GCC
 TF_ENABLE_GDB
 TF_ENABLE_GNU
+TF_ENABLE_LIBTOOL_NO_INSTALL
 TF_ENABLE_MOCK_BUILD
 
 TF_WITH_STD([scold])

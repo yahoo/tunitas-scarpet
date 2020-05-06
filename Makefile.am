@@ -1,7 +1,8 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright 2019-2019, Oath Inc.
+# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
 # Licensed under the terms of the Apache-2.0 license.
-# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 
 # silent-rules has no effect, see configure.ac
 # no can do:  -Wall -Werror
@@ -220,10 +221,17 @@ Makefile_PACKAGE_CPPFLAGS_SET  = @CPPFLAGS_httpd@ @CPPFLAGS_apr@ @CPPFLAGS_apreq
 Makefile_PACKAGE_CFLAGS_SET    =   @CFLAGS_httpd@   @CFLAGS_apr@   @CFLAGS_apreq@   @CFLAGS_uuid@
 Makefile_PACKAGE_CXXFLAGS_SET  = @CXXFLAGS_httpd@ @CXXFLAGS_apr@ @CXXFLAGS_apreq@ @CXXFLAGS_uuid@
 Makefile_PACKAGE_LDFLAGS_SET   =  @LDFLAGS_httpd@  @LDFLAGS_apr@  @LDFLAGS_apreq@  @LDFLAGS_uuid@
-Makefile_CHECK_CPPFLAGS_SET    = @CPPFLAGS_cppunit@ @CPPFLAGS_no_install@
-Makefile_CHECK_CFLAGS_SET      =   @CFLAGS_cppunit@   @CFLAGS_no_install@
-Makefile_CHECK_CXXFLAGS_SET    = @CXXFLAGS_cppunit@ @CXXFLAGS_no_install@
-Makefile_CHECK_LDFLAGS_SET     =  @LDFLAGS_cppunit@  @LDFLAGS_no_install@
+
+#                                                  if    did not substitute away                      then use this
+#                                                  |           |                                      |            else use the substitution
+#                                                  |           |              @CPPFLAGS_no_install@   |            |
+#                                                  |           |              |                       |            |
+#                                                  |           |              |                       |            |
+#                                                  v           v              v                       v            v
+Makefile_CHECK_CPPFLAGS_SET = @CPPFLAGS_cppunit@ $(if $(filter %_no_install@, @CPPFLAGS_no_install@), $(empty),    @CPPFLAGS_no_install@)
+Makefile_CHECK_CFLAGS_SET   =   @CFLAGS_cppunit@ $(if $(filter %_no_install@, @CFLAGS_no_install@),   $(empty),    @CFLAGS_no_install@)
+Makefile_CHECK_CXXFLAGS_SET = @CXXFLAGS_cppunit@ $(if $(filter %_no_install@, @CXXFLAGS_no_install@), $(empty),    @CXXFLAGS_no_install@)
+Makefile_CHECK_LDFLAGS_SET  =  @LDFLAGS_cppunit@ $(if $(filter %_no_install@, @LDFLAGS_no_install@),  -no-install, @LDFLAGS_no_install@)
 
 # See the 'Usage' statement in @hypogeal_twilight_datadir@/mk/toolflags.mk
 # See the definitions and expected usage of

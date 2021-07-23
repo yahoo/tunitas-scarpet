@@ -18,7 +18,7 @@ namespace app::diggity::exception {
   //     ...
   //     throw Usage{"program"};
   //     ...
-  //   } catch (tunitas::scarpet::exception::Aspect const &g) {
+  //   } catch (exception::aspect::Quitting const &g) {
   //     g.stream() << g << '\n';
   //     return g.code();          ... equivalently ::exit(g.code());
   //   }
@@ -27,87 +27,87 @@ namespace app::diggity::exception {
 }
 #endiv
 #divert <hpp>
-#import tunitas.app.exception.feature.Usage
+#import tunitas.application.exception.feature.Usage
 #import tunitas.exception.feature.Messaging
-#import tunitas.scarpet.exception.aspect.Exiting
+#import app.exception.Aspect
+#import tunitas.application.exception.Aspect
+#import tunitas.exception.Aspect
 #import std.exception
 #import std.string
-class app::diggity::exception::Usage
-  : public tunitas::scarpet::exception::aspect::Exiting,
-    public tunitas::app::exception::feature::Usage,
-    public tunitas::exception::feature::Messaging,
-    public std::exception {
-  struct ancestors {
-    using Aspect = tunitas::scarpet::exception::aspect::Exiting;
-    using Usage = tunitas::app::exception::feature::Usage;
+class app::diggity::exception::Usage final : public Aspect,
+                                             public tunitas::application::exception::Aspect,
+                                             public tunitas::exception::Aspect,
+                                             public tunitas::application::exception::feature::Usage,
+                                             public tunitas::exception::feature::Messaging,
+                                             public std::exception {
+  struct Ancestors {
+    using Usage = tunitas::application::exception::feature::Usage;
     using Messaging = tunitas::exception::feature::Messaging;
     using Exception = std::exception;
   };
 public:
   inline explicit Usage(std::string const &NAME);
-  inline Usage(std::string const &NAME, sys::exits::Code);
-  auto what() const noexcept -> char const * final;
-  auto stream() const noexcept -> std::ostream & final;
-  auto code() const noexcept -> sys::exits::Code final;
+  inline Usage(std::string const &NAME, exits::Code);
+  auto what() const noexcept -> char const * override final;
+  auto stream() const noexcept -> std::ostream & override final;
+  auto exit() const noexcept -> exits::Code override final;
+  auto code() const noexcept -> exits::Code override final;
 private:
   static auto format(std::string const &NAME) -> std::string;
 };
 #endiv
 #divert <ipp>
-#import sys.exits.constants
-app::diggity::exception::Usage::Usage(std::string const &NAME)
-  : Usage{NAME, sys::exits::OK}
-{ }
-app::diggity::exception::Usage::Usage(std::string const &NAME, sys::exits::Code code)
-  : ancestors::Usage{code}
-  , ancestors::Messaging{format(NAME)}
-  , ancestors::Exception{}
-{ }
+#import app.exits.constants
+namespace app::diggity::exception {
+  Usage::Usage(std::string const &NAME)
+    : Usage{NAME, exits::OK}
+  { }
+  Usage::Usage(std::string const &NAME, exits::Code code)
+    : Ancestors::Usage{code}
+    , Ancestors::Messaging{format(NAME)}
+    , Ancestors::Exception{}
+  { }
+}
 #endiv
 #divert <cpp>
 #import std.ostringstream
 #import app.diggity.examples
 #import app.well_known
 namespace app::diggity::exception {
+  auto Usage::what() const noexcept -> char const *     { return Ancestors::Messaging::what(); }
+  auto Usage::stream() const noexcept -> std::ostream & { return Ancestors::Usage::stream(); }
+  auto Usage::exit() const noexcept -> exits::Code      { return Ancestors::Usage::code(); }
+  auto Usage::code() const noexcept -> exits::Code      { return Ancestors::Usage::code(); }
   auto Usage::format(std::string const &NAME) -> std::string {
     std::ostringstream buf;
-    buf << "Look up (dig up, resolve) the DID Document behind the Decentralized Identifier (DID).\n"
-        << "The DID Document is disgorged onto the standard output.\n"
+    buf << "Look up (dig up, resolve) the DID Document behind the Decentralized Identifier (DID)."
+        << "\nThe DID Document is disgorged onto the standard output."
         << '\n'
-        << "usage: " << NAME << " [...options...] did { ...did... }\n"
+        << "\nusage: " << NAME << " [...options...] did { ...did... }"
         << '\n'
-        << "DID (Decentralized Identifier):\n"
-        << "  " << examples::DID0 << '\n'
-        << "  " << examples::DID1 << '\n'
-        << "  " << examples::DID2 << '\n'
-        << "  " << examples::DID3 << '\n'
-        << "  " << examples::DID4 << '\n'
+        << "\nDID (Decentralized Identifier):"
+        << "\n  " << examples::DID0
+        << "\n  " << examples::DID1
+        << "\n  " << examples::DID2
+        << "\n  " << examples::DID3
+        << "\n  " << examples::DID4
         << "\n"
-        << "Lookup (Digging) Options:\n"
+        << "\nLookup (Digging) Options:"
         << '\n'
-        << "--name-server=HOSTNAME               direct the query to this name server\n"
-        << "     --server=HOSTNAME               the default is the servers in " << well_known::RESOLV_CONF << "\n"
-        << "         --ns=HOSTNAME               e.g. " << examples::NAME_SERVER << '\n'
+        << "\n--name-server=HOSTNAME               direct the query to this name server"
+        << "\n     --server=HOSTNAME               the default is the servers in " << well_known::RESOLV_CONF
+        << "\n         --ns=HOSTNAME               e.g. " << examples::NAME_SERVER
         << '\n'
-        << "General Options:\n"
+        << "\nGeneral Options:"
         << '\n'
-        << "--usage, --help, -h                  emit this message, and exit\n"
-        << "--version, -  V                      emit the package version, and exit\n"
-        << "--dry-run, --dryrun, -y              dry run, do not start the server\n"
-        << "--warnings, --warning, -w            emit warnings\n"
-        << "--quiet, -q                          be quiet, emit no notices or warnings\n"
-        << "--verbose, -v                        be verbose (independent of --quiet)\n"
-        << "--debug, -d                          debug output (you should not need this)"; // no '\n'
+        << "\n--usage, --help, -h                  emit this message, and exit"
+        << "\n--version, -  V                      emit the package version, and exit"
+        << "\n--dry-run, --dryrun, -y              dry run, do not start the server"
+        << "\n--warnings, --warning, -w            emit warnings"
+        << "\n--quiet, -q                          be quiet, emit no notices or warnings"
+        << "\n--verbose, -v                        be verbose (independent of --quiet)"
+        << "\n--debug, -d                          debug output (you should not need this)";
     return buf.str();
-  }
-  auto Usage::what() const noexcept -> char const * {
-    return ancestors::Messaging::what();
-  }
-  auto Usage::stream() const noexcept -> std::ostream & {
-    return ancestors::Usage::stream();                                                         
-  }
-  auto Usage::code() const noexcept -> sys::exits::Code {
-    return ancestors::Usage::code();
   }
 }
 #endiv

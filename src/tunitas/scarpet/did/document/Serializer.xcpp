@@ -35,12 +35,12 @@ namespace tunitas::scarpet::did::document {
 #import std.conditional
 namespace tunitas::scarpet::did {
   template<typename SERIALIZEE, document::Mutability THE_MUTABILITY> class document::Serializer : public Visitor<SERIALIZEE, THE_MUTABILITY> {
-    using ancestor = Visitor<SERIALIZEE, THE_MUTABILITY>;
+    using Ancestor = Visitor<SERIALIZEE, THE_MUTABILITY>;
   protected:
     virtual ~Serializer() = default;
     Serializer() = default;
   public:
-    using Serializee = typename ancestor::Visitee;
+    using Serializee = typename Ancestor::Visitee;
     virtual auto accept(Serializee &) -> void = 0;
   };
 }

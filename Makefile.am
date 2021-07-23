@@ -86,13 +86,23 @@ include src/app/signify/Makefrag.am
 include src/app/zonegen/Makefrag.am
 include src/autotools/autoconf/Makefrag.am
 include src/mod/scarpet/Makefrag.am
+include src/tests/Makefrag.am
 include src/tests/unit/Makefrag.am
+include src/tests/authgen/Makefrag.am
+include src/tests/diggity/Makefrag.am
+include src/tests/genesis/Makefrag.am
+include src/tests/publish/Makefrag.am
+include src/tests/scissor/Makefrag.am
+include src/tests/signify/Makefrag.am
+include src/tests/zonegen/Makefrag.am
+include src/tests/run/Makefrag.am
+include src/tunitas/scarpet/Makefrag.am
+include src/tunitas/scarpet/application/Makefrag.am
 include src/tunitas/scarpet/answer/Makefrag.am
 include src/tunitas/scarpet/compiler/Makefrag.am
 include src/tunitas/scarpet/did/Makefrag.am
 include src/tunitas/scarpet/dns/Makefrag.am
 include src/tunitas/scarpet/drrs/Makefrag.am
-include src/tunitas/scarpet/Makefrag.am
 include src/tunitas/scarpet/model/Makefrag.am
 include src/tunitas/scarpet/pki/Makefrag.am
 include src/tunitas/scarpet/resolve/Makefrag.am
@@ -120,17 +130,34 @@ noinst_LTLIBRARIES = \
   $(lib_libtunitas_scarpet_resolve_la) \
   $(lib_libwant_la) \
   $(lib_libapp_la) \
+  $(lib_libapp_authgen_la) \
+  $(lib_libapp_diggity_la) \
+  $(lib_libapp_genesis_la) \
+  $(lib_libapp_publish_la) \
+  $(lib_libapp_scissor_la) \
+  $(lib_libapp_signify_la) \
+  $(lib_libapp_zonegen_la) \
   $(end)
 # WATCHOUT - these MUST be listed in this order so that the sequential install rule will allow the linker to process.
 #            libtool linking of libmod_apanolio.la MUST see the installed libtunitas-apanolio.la in order to be "finished"
 lib_LTLIBRARIES = \
   $(lib_libtunitas_scarpet_la) \
+  $(lib_libtunitas_scarpet_application_la) \
   $(lib_libmod_scarpet_la) \
   $(end)
 check_PROGRAMS = \
   $(check_bin_unit) \
+  $(check_bin_authgen) \
+  $(check_bin_diggity) \
+  $(check_bin_genesis) \
+  $(check_bin_publish) \
+  $(check_bin_scissor) \
+  $(check_bin_signify) \
+  $(check_bin_zonegen) \
   $(end)
 check_LTLIBRARIES = \
+  $(check_lib_libtests_la) \
+  $(check_lib_libtests_run_la) \
   $(end)
 
 autotools_autoconf_DEPENDENT_OBJECTS_SET = \
@@ -153,16 +180,26 @@ autotools_autoconf_DEPENDENT_GENERATED_SET = \
   $(end)
 $(autotools_autoconf_DEPENDENT_OBJECTS_SET) : $(autotools_autoconf_DEPENDENT_GENERATED_SET)
 
-# alphabetical is fine
+# alphabetical (or any order) is fine
+include tests/unit/Makefrag.am
+# the executables (their options and argument parsing)
 include tests/authgen/Makefrag.am
 include tests/diggity/Makefrag.am
 include tests/genesis/Makefrag.am
 include tests/publish/Makefrag.am
 include tests/scissor/Makefrag.am
-include tests/scenarios/Makefrag.am
 include tests/signify/Makefrag.am
-include tests/unit/Makefrag.am
 include tests/zonegen/Makefrag.am
+# the run series
+include tests/run/authgen/Makefrag.am
+include tests/run/diggity/Makefrag.am
+include tests/run/genesis/Makefrag.am
+include tests/run/publish/Makefrag.am
+include tests/run/scissor/Makefrag.am
+include tests/run/signify/Makefrag.am
+include tests/run/zonegen/Makefrag.am
+#
+include tests/scenarios/Makefrag.am
 
 if ENABLE_SERVER_TESTS
 ENABLED_SERVER_TESTS = \
@@ -182,6 +219,13 @@ XFAIL_TESTS = \
   $(tests_scissor_XFAIL_TESTS) \
   $(tests_signify_XFAIL_TESTS) \
   $(tests_zonegen_XFAIL_TESTS) \
+  $(tests_run_genesis_XFAIL_TESTS) \
+  $(tests_run_authgen_XFAIL_TESTS) \
+  $(tests_run_publish_XFAIL_TESTS) \
+  $(tests_run_diggity_XFAIL_TESTS) \
+  $(tests_run_scissor_XFAIL_TESTS) \
+  $(tests_run_signify_XFAIL_TESTS) \
+  $(tests_run_zonegen_XFAIL_TESTS) \
   $(tests_scenarios_XFAIL_TESTS) \
   $(ENABLED_SERVER_XFAIL_TESTS)
   $(end)
@@ -194,6 +238,13 @@ TESTS = \
   $(tests_scissor_TESTS) \
   $(tests_signify_TESTS) \
   $(tests_zonegen_TESTS) \
+  $(tests_run_genesis_TESTS) \
+  $(tests_run_authgen_TESTS) \
+  $(tests_run_publish_TESTS) \
+  $(tests_run_diggity_TESTS) \
+  $(tests_run_scissor_TESTS) \
+  $(tests_run_signify_TESTS) \
+  $(tests_run_zonegen_TESTS) \
   $(tests_scenarios_TESTS) \
   $(ENABLED_SERVER_TESTS)
   $(end)

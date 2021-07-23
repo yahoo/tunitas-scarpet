@@ -4,10 +4,10 @@
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <hpp>
-#import tunitas.scarpet.options.Encoding
+#import tunitas.scarpet.Encoding
 namespace app::scissor::defaults {
   inline namespace constants {
-    inline auto const ENCODING = ::tunitas::scarpet::options::Encoding::DER_BASE64URL;
+    inline auto const ENCODING = ::tunitas::scarpet::Encoding::DER_BASE64URL;
     inline auto const STRIP_ARMOR = true;
   }
 }

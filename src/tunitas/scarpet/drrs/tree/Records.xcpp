@@ -32,7 +32,7 @@ namespace tunitas::scarpet::drrs::tree {
 #forward tunitas.scarpet.drrs.tree.Tree
 #import tunitas.scarpet.drrs.tree.records.Variant
 class tunitas::scarpet::drrs::tree::Records : protected std::deque<records::Variant> {
-  using ancestor = std::deque<records::Variant>;
+  using Ancestor = std::deque<records::Variant>;
   friend class tree::Allocator;
   friend class tree::Tree;
 public:
@@ -41,12 +41,12 @@ public:
   auto operator=(Records const &) -> Records & = delete;
   Records(Records &&) = default;
   auto operator=(Records &&) -> Records & = default;
-  using ancestor::empty;
-  using ancestor::size; // constant, per std::deque since forever
-  using ancestor::const_iterator;
-  using ancestor::iterator;
-  using ancestor::begin;
-  using ancestor::end;
+  using Ancestor::empty;
+  using Ancestor::size; // constant, per std::deque since forever
+  using Ancestor::const_iterator;
+  using Ancestor::iterator;
+  using Ancestor::begin;
+  using Ancestor::end;
 };
 // Every user of tree::Records will need these sooner or later
 #import std.visit

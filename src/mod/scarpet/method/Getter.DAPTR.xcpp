@@ -29,9 +29,9 @@ namespace mod::scarpet::method {
 #import mod.scarpet.method.ptr.Getter
 namespace mod::scarpet::method {
   template<> class Getter<getter::DAPTR> : public ptr::Getter {
-    using ancestor = ptr::Getter;
+    using Ancestor = ptr::Getter;
   public:
-    using ancestor::Getter;
+    using Ancestor::Getter;
     inline auto operator()() -> status::Code;
   };
 }

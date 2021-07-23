@@ -1,0 +1,39 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <hpp>
+#import std.nothrow_t
+#import tunitas.Outcome
+#import tunitas.string.Storage
+#import tunitas.scarpet.required // cascade the namespace required
+#import tunitas.scarpet.encoding.Encoding
+namespace tunitas::scarpet::encoding {
+  namespace detail::interface {
+    //
+    // The encoding schemes, inbound.
+    // ADL will find these here.
+    //
+    // Usage:
+    //
+    //   auto enc = Encoding::DER_BASE64URL;
+    //   auto enc = Encoding::PEM;
+    //   cin >> enc;
+    //   auto e = from_string(syntax);
+    //
+    template<typename RESULT> auto from_string(string::Storage const &) -> RESULT = delete;
+    template<typename RESULT> auto from_string(std::nothrow_t, string::Storage const &) -> Outcome<RESULT> = delete;
+    template<> inline auto from_string<Encoding>(string::Storage const &) -> Encoding;
+    template<> inline auto from_string<Encoding>(std::nothrow_t, string::Storage const &) -> Outcome<Encoding>;
+  }
+  using detail::interface::from_string;
+}
+#endiv
+#divert <ipp>
+#import tunitas.scarpet.encoding.from_string_view
+namespace tunitas::scarpet::encoding::detail {
+  template<> auto interface::from_string<interface::Encoding>(string::Storage const &candidate) -> Encoding { return from_string_view<Encoding>(static_cast<string::View>(candidate)); }
+  template<> auto interface::from_string<interface::Encoding>(std::nothrow_t no, string::Storage const &candidate) -> Outcome<Encoding> { return from_string_view<Encoding>(no, static_cast<string::View>(candidate)); }
+}
+#endiv

@@ -4,46 +4,55 @@
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <hpp>
-#import tunitas.app.options.Args
-#import sys.exits.Code
+#import app.scissor.Configuration
+#import tunitas.application.options.c.Args
+#import app.exits.Code
 namespace app::scissor {
-  using Args = tunitas::app::options::Args;
-  auto main(Args) -> sys::exits::Code;
+  using Args = tunitas::application::options::c::Args;
+  inline auto main(int, char *[]) -> exits::Code;
+  inline auto main([[inout]] Args) -> exits::Code;
+  auto main([[inout]] Configuration &, [[inout]] Args) -> exits::Code;
+}
+#endiv
+#divert <ipp>
+#import app.exits.constants
+#import std.exception
+#import std.cerr
+namespace app {
+  auto scissor::main(int cc, char *vv[]) -> exits::Code { return main(Args(cc, vv)); }
+  auto scissor::main(Args args) -> exits::Code try {
+    auto program = Configuration::Program{args.front()};
+    auto cfg = Configuration{program};
+    return main(cfg, std::move(args));
+  } catch (std::exception const &e) {
+    std::cerr << args.front() << ": error, unexpected " << e.what() << '\n';
+    return exits::SOFTWARE;
+  }
 }
 #endiv
 #divert <cpp>
-auto main(int cc, char *vv[]) -> int {
-  return app::scissor::main(app::scissor::Args(cc, vv));
-}
-#import app.scissor.Configuration
 #import app.scissor.options.Parser
 #import app.scissor.options.Specification
 #import app.scissor.process
-#import tunitas.scarpet.exception.aspect.Exiting
-#import sys.exits.constants
-#import std.exception
-auto app::scissor::main(Args av) -> sys::exits::Code try {
-  auto program = Configuration::Program{av.front()};
-  auto cfg = Configuration{program};
+#import app.exception // cascade namespace exception
+#import tunitas.application.exception.aspect.Quitting
+auto app::scissor::main(Configuration &cfg, Args av) -> exits::Code try {
   auto spc = options::Specification{};
   auto parser = options::Parser{spc, cfg};
   auto parsed = parser(av);
   if (!ok(parsed)) {
     // [[FIXTHIS]] the error_code does not provide much fidelity on the problem ... "there was some problem"
     error(cfg) << "could not grok the options\n";
-    return sys::exits::FAIL;
+    return exits::FAIL;
   }
   if (cfg.dry_run_mode) {
     notice(cfg) << "not doing anything in dry-run mode\n";
   } else {
     return process(cfg);
   }
-  return sys::exits::OK;
-} catch (tunitas::scarpet::exception::aspect::Exiting const &e) {
+  return exits::OK;
+} catch (exception::aspect::Quitting const &e) {
   e.stream() << e.what() << '\n';
   return e.code();
-} catch (std::exception const &e) {
-  std::cerr << NAME << ": error, unexpected " << e.what() << '\n';
-  return sys::exits::SOFTWARE;
 }
 #endiv

@@ -53,10 +53,10 @@ namespace tunitas::scarpet::did {
 #import tunitas.scarpet.dns.Name
 namespace tunitas::scarpet::did {
   template<> class Document<DOME> : public document::Prototype {
-    using ancestor = document::Prototype;
+    using Ancestor = document::Prototype;
   public:
     Document() = default;
-    auto dump(std::ostream &) const -> void final;
+    auto dump(std::ostream &) const -> void override final;
     Method method; // presumably we know our own method name, but ensure that it isn't const-coded
     Identifier identifier;
     dns::Name ddss;

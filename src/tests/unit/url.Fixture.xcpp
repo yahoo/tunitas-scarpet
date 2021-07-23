@@ -82,34 +82,35 @@ auto tests::unit::url::Fixture::test_usage_Parser_slashprefix() -> void {
       CPPUNIT_ASSERT_EQUAL(expected, actual); } }
 }
 #import tests.unit.url.Parser
-#import unit.rigging.suite.Stream
-#import unit.rigging.suite.add
-#import unit.rigging.suite.call
+#import rigging.suite.io
 auto tests::unit::url::Fixture::suite() -> cppunit::Test * {
-  using namespace ::unit::rigging::suite;
+  using namespace ::rigging::suite;
   Stream series{"url"};
-  {
-    Stream cas{"case"};
-    {
-      Stream par{"parser"};
-      par << call("01", &Fixture::test_case_parser_01)
-        ;
-      cas << add(par.release());
-    }
-    series << add(cas.release());
-  } {
-    Stream use{"usage"};
-    {
-      Stream par{"Parser"};
-      par << call("slash", &Fixture::test_usage_Parser_slash)
-          << call("slashprefix", &Fixture::test_usage_Parser_slashprefix)
-        ;
-      use << add(par.release());
-    }
-    series << add(use.release());
-  }
-  series << add(Parser::suite())
+  series << []() {
+              Stream cas{"case"};
+              cas << [] {
+                       Stream par{"parser"};
+                       par << call("01", &Fixture::test_case_parser_01)
+                         ;
+                       return move(par);
+                     }()
+                ;
+              return move(cas);
+            }()
+         << []() {
+              Stream use{"usage"};
+              use << []() {
+                       Stream par{"Parser"};
+                       par << call("slash", &Fixture::test_usage_Parser_slash)
+                           << call("slashprefix", &Fixture::test_usage_Parser_slashprefix)
+                         ;
+                       return move(par);
+                     }()
+                ;
+              return move(use);
+            }()
+         << add<Parser>()
     ;
-  return series.release();
+  return finalize(series);
 }
 #endiv

@@ -25,7 +25,7 @@ namespace tunitas::scarpet::compiler::output {
 #import std.list
 #import tunitas.scarpet.compiler.output.Sink
 class tunitas::scarpet::compiler::output::List : public Sink, public std::list<std::string> {
-  struct ancestors {
+  struct Ancestors {
     using Sink = output::Sink;
     using List = std::list<std::string>;
   };

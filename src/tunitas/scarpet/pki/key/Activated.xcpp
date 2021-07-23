@@ -20,10 +20,10 @@ namespace tunitas::scarpet::pki::key {
 #import openssl.evp.PKey
 #import tunitas.scarpet.pki.key.d2i
 class tunitas::scarpet::pki::key::Activated : public openssl::evp::PKey {
-  using ancestor = openssl::evp::PKey;
+  using Ancestor = openssl::evp::PKey;
   friend auto d2i::PrivateKey(nonstd::span<unsigned char const>) -> Activated;
   friend auto d2i::PublicKey(nonstd::span<unsigned char const>) -> Activated;
-  inline explicit Activated(EVP_PKEY *pointer) : ancestor{pointer} { }
+  inline explicit Activated(EVP_PKEY *pointer) : Ancestor{pointer} { }
 public:
   Activated() = default;
 };

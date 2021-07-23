@@ -24,7 +24,7 @@ namespace app::signify {
 #import std.optional
 #import openssl.x509.Fields
 class app::signify::Configuration : public app::Configuration {
-  using ancestor = app::Configuration;
+  using Ancestor = app::Configuration;
 public:
   inline explicit Configuration(Program const &);
   std::optional<std::filesystem::path> authority_private_side;
@@ -36,7 +36,7 @@ public:
 #divert <ipp>
 namespace app::signify {
   Configuration::Configuration(Program const &program)
-    : ancestor{program}
+    : Ancestor{program}
   { }
 }
 #endiv

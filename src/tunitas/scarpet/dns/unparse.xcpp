@@ -59,7 +59,7 @@ namespace tunitas::scarpet {
     return Name{sss.data(), sss.size()};
   }
   auto dns::unparse(Name const &qdn) -> Name { return qdn; }
-  auto dns::unparse(Name &&qdn) -> Name { return std::forward<Name>(qdn); }
+  auto dns::unparse(Name &&qdn) -> Name { return forward<Name>(qdn); }
   template<typename... LABELs> auto dns::unparse(Label const &first, LABELs const &...rest) -> Name requires (std::is_base_of<Label, LABELs>::value && ... && (0 != sizeof...(LABELs))) {
     std::ostringstream buf;
     buf << view(first);

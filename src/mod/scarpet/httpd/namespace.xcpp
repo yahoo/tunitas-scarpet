@@ -24,6 +24,7 @@
 #import apache.httpd.server_rec
 #import apache.httpd.status.constants
 #import apache.runtime.pool_t
+#import mod.scarpet
 namespace mod::scarpet::httpd {
   using apache::httpd::cmd_parms;
   using apache::httpd::request_rec;

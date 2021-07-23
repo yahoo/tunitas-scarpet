@@ -127,27 +127,27 @@ auto tests::unit::dns::Fixture::suite() -> cppunit::Test * {
   Stream series{"dns"};
   series << call("Name", &Fixture::test_Name)
          << call("Type", &Fixture::test_Type)
+         << []() {
+              Stream type{"type"};
+              type << call("constants", &Fixture::test_type_constants)
+                   << call("DAPTR", &Fixture::test_type_DAPTR)
+                ;
+              return move(type);
+            }()
+         << []() {
+              Stream use{"usage"};
+              use << call("unparse", &Fixture::test_usage_unparse)
+                ;
+              return move(use);
+            }()
+         << []() {
+              Stream unp{"unparse"};
+              unp << add<dns::uunpparrsee::Function>()
+                  << add<dns::uunpparrsee::Template>()
+                ;
+              return move(unp);
+            }()
     ;
-  {
-    Stream type{"type"};
-    type << call("constants", &Fixture::test_type_constants)
-         << call("DAPTR", &Fixture::test_type_DAPTR)
-      ;
-    series << move(type);
-  }
-  {
-    Stream use{"usage"};
-    use << call("unparse", &Fixture::test_usage_unparse)
-      ;
-    series << move(use);
-  }
-  {
-    Stream unp{"unparse"};
-    unp << add<dns::uunpparrsee::Function>()
-        << add<dns::uunpparrsee::Template>()
-      ;
-    series << move(unp);
-  }
   return finalize(series);
 }
 #endiv

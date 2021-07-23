@@ -4,6 +4,7 @@
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
+#import tunitas.scarpet.pki
 namespace tunitas::scarpet::pki::key { }
 // Frequently used here in key space
 #import std.is_default_constructible

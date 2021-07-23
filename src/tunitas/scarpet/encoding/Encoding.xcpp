@@ -1,0 +1,57 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+namespace tunitas::scarpet::encoding {
+  namespace detail::interface {
+    //
+    // The encoding schemes
+    //
+    // RFC 4648  The Base16, Base32 and Base64 Data Encodings
+    //   https://tools.ietf.org/html/rfc4648
+    // Especially Section 5, Base 64 Encoding with URL and Filename Safe Alphabet
+    //   https://tools.ietf.org/html/rfc4648#section-5
+    //
+    // Also
+    //   https://wiki.openssl.org/index.php/Base64
+    //
+    // Usage:
+    //
+    //   auto enc = Encoding::DER_BASE64URL;
+    //   auto enc = Encoding::PEM;
+    //   cerr << enc;
+    //   cin >> enc;
+    //   auto s = to_string(enc);
+    //
+    enum class Encoding {
+      PEM,
+      DER_BASE64URL, // RFC
+    };
+  }
+  using detail::interface::Encoding;
+}
+#endiv
+#divert <hpp>
+#import tunitas.string.View
+#import std.underlying_type
+namespace tunitas::scarpet::encoding::detail {
+  inline auto codeword(Encoding) -> string::View;
+  namespace interface {
+      inline constexpr auto underlying(Encoding e) { return std::underlying_type_t<Encoding>(e); }
+  }
+}
+#endiv
+#divert <ipp>
+#import nonstd.exception.Unreachable
+namespace tunitas::scarpet::encoding {
+  auto detail::codeword(interface::Encoding en) -> string::View {
+    switch (en) {
+    case Encoding::PEM:           return "pem"sv;
+    case Encoding::DER_BASE64URL: return "der+base64url"sv;
+    default:                      throw nonstd::exception::Unreachable{}; // This is a programmer error; the caller should have handled this
+    }
+  }
+}
+#endiv

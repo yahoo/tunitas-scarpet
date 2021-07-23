@@ -6,9 +6,9 @@
 #divert <hpp>
 #forward app.Configuration
 #import options.longish.Step
-#import tunitas.scarpet.exception
+#import tunitas.scarpet.application.exception
 #import tunitas.scarpet.dns.Name
-#import tunitas.required.exception.app.Quitting
+#import tunitas.application.required.exception.Quitting
 #import std.string
 namespace app::options {
   //
@@ -16,7 +16,7 @@ namespace app::options {
   // Don't do too much validation on it; just enough to identify wholly inapproprite candidates.
   //
   // The interface follows the style (rhymes with)
-  // the "get_<thing>"(Configuration const &, Step) functions from tunitas::app::options
+  // the "get_<thing>"(Configuration const &, Step) functions from tunitas::application::options
   //
   // The Configuration is supplied to give ADL context towards the error reporting.
   // The recovered value is returned.
@@ -42,25 +42,25 @@ namespace app::options {
   //      break;
   //
   namespace packaging::get_domain::function {
-    namespace exception = tunitas::scarpet::exception;
+    namespace exception = tunitas::scarpet::application::exception;
     using Step = ::options::longish::Step;
     using Result = tunitas::scarpet::dns::Name;
-    template<tunitas::required::exception::app::Quitting QUITTING> inline auto get_domain(Configuration const &, Step const &) -> Result;
+    template<tunitas::application::required::exception::Quitting QUITTING> inline auto get_domain(Configuration const &, Step const &) -> Result;
   }
   using packaging::get_domain::function::get_domain;
 }
 #endiv
 #divert <ipp>
 #import app.Configuration
+#import app.exits.constants
 #import options.longish.Step
-#import tunitas.scarpet.exception.aspect.Exiting
-#import tunitas.app.options.get_word
 #import std.all_of
 #import std.isalnum
 #import std.move
-#import sys.exits.constants
+#import tunitas.application.exception.aspect.Quitting
+#import tunitas.application.options.get_word
 namespace app::options::packaging::get_domain {
-  template<tunitas::required::exception::app::Quitting QUITTING> auto function::get_domain(Configuration const &cfg, Step const &step) -> Result try {
+  template<tunitas::application::required::exception::Quitting QUITTING> auto function::get_domain(Configuration const &cfg, Step const &step) -> Result try {
     //
     // Get the word by the usual means.
     // See if it is appropriately (enough) shaped.
@@ -71,18 +71,18 @@ namespace app::options::packaging::get_domain {
     // Prove that all the characters are good; but allow for syntax problems (e.g. duplicated dots).  We let the library discover those
     if (!std::all_of(word.begin(), word.end(), good_enough_for_a_domain)) {
       error(cfg) << "in inappropriate characters in the domain name\n";
-      throw QUITTING{cfg.NAME, sys::exits::CONFIG};
+      throw QUITTING{cfg.NAME, exits::CONFIG};
     }
     return Result{word.data(), word.size()};
   } catch (...) {
     error(cfg) << "cannot recover an domain out of " << /*FIXTHIS format::q*/ required(step) << '\n';
     try {
       throw;
-    } catch (exception::aspect::Exiting const &) {
+    } catch (exception::aspect::Quitting const &) {
       throw;
     } catch (...) {
-      // throw exception::Quitting(cfg.NAME, sys::exits::CONFIG);
-      throw QUITTING(cfg.NAME, sys::exits::CONFIG);
+      // throw exception::Quitting(cfg.NAME, exits::CONFIG);
+      throw QUITTING(cfg.NAME, exits::CONFIG);
     }
   }
 }

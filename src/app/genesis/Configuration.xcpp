@@ -19,14 +19,14 @@ namespace app::genesis {
 #endiv
 #divert <hpp>
 #import app.Configuration
-#import tunitas.scarpet.options.Encoding
+#import tunitas.scarpet.Encoding
 #import std.filesystem.path
 #import std.optional
 class app::genesis::Configuration : public app::Configuration {
-  using ancestor = app::Configuration;
+  using Ancestor = app::Configuration;
 public:
   inline explicit Configuration(Program const &);
-  std::optional<tunitas::scarpet::options::Encoding> encoding;
+  std::optional<tunitas::scarpet::Encoding> encoding;
   std::optional<bool> strip_armor;
   std::optional<std::filesystem::path> private_side;
   std::optional<std::filesystem::path> public_side;
@@ -35,7 +35,7 @@ public:
 #divert <ipp>
 namespace app::genesis {
   Configuration::Configuration(Program const &program)
-    : ancestor{program}
+    : Ancestor{program}
   { }
 }
 #endiv

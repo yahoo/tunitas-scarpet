@@ -4,9 +4,8 @@
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
-#import tunitas.scarpet.options.indicator
+#import tunitas.scarpet.application.options.indicator
 namespace app::options::indicator {
-  using namespace tunitas::scarpet::options::indicator;
+  using namespace tunitas::scarpet::application::options::indicator;
 }
 #endiv
-ind

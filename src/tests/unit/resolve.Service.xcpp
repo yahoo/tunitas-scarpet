@@ -51,15 +51,16 @@ auto tests::unit::resolve::Service::test_constructor_channel_directory() -> void
 auto tests::unit::resolve::Service::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Service"};
-  {
-    Stream con{"constructor"};
-    con << call("default", &Service::test_constructor_default)
-       << call("directory", &Service::test_constructor_directory)
-       << call("channel", &Service::test_constructor_channel)
-       << call("channel,directory", &Service::test_constructor_channel_directory)
+  series << []() {
+              Stream con{"constructor"};
+              con << call("default", &Service::test_constructor_default)
+                  << call("directory", &Service::test_constructor_directory)
+                  << call("channel", &Service::test_constructor_channel)
+                  << call("channel,directory", &Service::test_constructor_channel_directory)
+                ;
+              return move(con);
+            }()
     ;
-    series << add(con.release());
-  }
   return finalize(series);
 }
 #endiv

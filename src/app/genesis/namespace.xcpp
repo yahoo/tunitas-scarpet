@@ -4,17 +4,11 @@
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
-#import std.string
-#import std.string_view
+#import app
 namespace app::genesis { }
 #endiv
 #divert <hpp>
-#import std.string_literals
-#import std.string_view_literals
-#import std.cout
-#import std.cerr
 namespace app::genesis {
-  using namespace std::literals;
-  inline auto NAME = "did-genesis"s;
+  [[deprecated("instead use cfg.NAME which is nearby or else options::Program{...}")]] inline auto const NAME = "did-genesis"s;
 }
 #endiv

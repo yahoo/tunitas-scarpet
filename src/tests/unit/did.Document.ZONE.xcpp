@@ -38,13 +38,14 @@ namespace tests::unit::did {
 auto tests::unit::did::rigging::Document<tests::unit::did::ZONE>::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Document<ZONE>"};
-  {
-    Stream cas{"case"};
-    cas << call("01", &Document::test_case_01)
-        << call("02", &Document::test_case_02)
-      ;
-    series << move(cas);
-  }
+  series << []() {
+              Stream cas{"case"};
+              cas << call("01", &Document::test_case_01)
+                  << call("02", &Document::test_case_02)
+                ;
+              return move(cas);
+            }()
+    ;
   return finalize(series);
 }
 #endiv

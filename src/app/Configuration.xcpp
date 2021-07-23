@@ -28,13 +28,13 @@ namespace app {
 }
 #endiv
 #divert <hpp>
-#import tunitas.scarpet.Configuration
-class app::Configuration : public ::tunitas::scarpet::Configuration {
-  using ancestor = ::tunitas::scarpet::Configuration;
+#import tunitas.scarpet.application.Configuration
+class app::Configuration : public ::tunitas::scarpet::application::Configuration {
+  using Ancestor = ::tunitas::scarpet::application::Configuration;
 protected:
   ~Configuration() = default;
 public:
-  inline explicit Configuration(Program const &program) : ancestor{program} { }
+  inline explicit Configuration(Program const &program) : Ancestor{program} { }
 };
 #import options.logging
 #endiv

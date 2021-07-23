@@ -55,7 +55,7 @@ namespace tunitas::scarpet::answer {
     Processor processor; // e.g. processor::Stanza<ID>
     inline auto type() const { return DNS; }
 #if __GNUC__ < 10
-#warning BUGGY asserts is protected within this context
+#warning GCC < 10 and this BUGGY asserts is protected within this context
     // still bad on gcc (GCC) 9.3.1 20200413
     // was   bad on gcc-c++-8.2.1-5.fc29.x86_64
   public:

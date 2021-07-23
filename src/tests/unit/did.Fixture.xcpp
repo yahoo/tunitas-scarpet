@@ -129,34 +129,35 @@ auto tests::unit::did::Fixture::test_unparse() -> void {
 auto tests::unit::did::Fixture::suite() -> cppunit::Test * {
   using namespace ::unit::rigging::suite;
   Stream series{"did"};
-  {
-    Stream ide{"identifier"};
-    ide << call("Name", &Fixture::test_identifier_Name)
-        << call("Identifier", &Fixture::test_identifier_Identifier)
-        << call("Method", &Fixture::test_identifier_Method)
-      ;
-    series << add(ide.release());
-  } {
-    Stream par{"Parser"};
-    par << call("good", &Fixture::test_Parser_good)
-        << call("bad", &Fixture::test_Parser_bad)
-      ;
-    series << add(par.release());
-  } {
-    Stream isa{"is_a_simple_word"};
-    isa << call("Method", &Fixture::test_is_a_simple_word_Method)
-        << call("Identifier", &Fixture::test_is_a_simple_word_Identifier)
-        << call("string_view", &Fixture::test_is_a_simple_word_string_view)
-      ;
-    series << add(isa.release());
-  }
-  series << call("unparse", &Fixture::test_unparse)
-    ;
-  series << add(Parser::suite())
+  series << []() {
+              Stream ide{"identifier"};
+              ide << call("Name", &Fixture::test_identifier_Name)
+                  << call("Identifier", &Fixture::test_identifier_Identifier)
+                  << call("Method", &Fixture::test_identifier_Method)
+                ;
+              return move(ide);
+            }()
+         << []() {
+              Stream par{"Parser"};
+              par << call("good", &Fixture::test_Parser_good)
+                  << call("bad", &Fixture::test_Parser_bad)
+                ;
+              return move(par);
+            }()
+         << []() {
+              Stream isa{"is_a_simple_word"};
+              isa << call("Method", &Fixture::test_is_a_simple_word_Method)
+                  << call("Identifier", &Fixture::test_is_a_simple_word_Identifier)
+                  << call("string_view", &Fixture::test_is_a_simple_word_string_view)
+                ;
+              return move(isa);
+            }()
+         << call("unparse", &Fixture::test_unparse)
+         << add<Parser>()
     // namespace rigging is defined in module tunitas.scarpet.did.Document.declaration
-         << add(rigging::Document<did::document::DOME>::suite())
-         << add(rigging::Document<did::document::JSON>::suite())
-         << add(rigging::Document<did::document::ZONE>::suite())
+         << add<rigging::Document<did::document::DOME>>()
+         << add<rigging::Document<did::document::JSON>>()
+         << add<rigging::Document<did::document::ZONE>>()
     ;
   return series.release();
 }

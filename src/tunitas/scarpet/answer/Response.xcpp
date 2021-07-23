@@ -40,7 +40,7 @@ namespace tunitas::scarpet::answer {
 #import tunitas.scarpet.answer.response.Prototype
 namespace tunitas::scarpet {
   template<answer::required::Payload PAYLOAD> class answer::Response : public response::Prototype {
-    using ancestor = response::Prototype;
+    using Ancestor = response::Prototype;
   public:
     using Value = PAYLOAD;
     inline explicit Response(Value &referenced) : referenced{referenced} { }

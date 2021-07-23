@@ -1,0 +1,25 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright Verizon Media
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+# For terms, see the LICENSE file at the top of this repository.
+check_lib_libtests_la = check/lib/libtests.la
+check_lib_libtests_la_LIBADD = 
+check_lib_libtests_la_LDFLAGS = $(AND_CHECK_LDFLAGS_SET)
+check_lib_libtests_la_MODULES = $(call TF_SOURCEStoMODULES, $(check_lib_libtests_la_SOURCES))
+check_lib_libtests_la_SOURCES = \
+  obj/src/tests/namespace.cpp \
+  $(end)
+#
+$(scold_cxxdir)/tests/dependencies.mk: $(check_lib_libtests_la_SOURCES)
+$(check_lib_libtests_la_SOURCES) : obj/src/%.cpp : src/%.xcpp
+	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
+	$(TF_V_DUN) test -e $@
+$(scold_cxxdir)/tests/dependencies.mk:
+	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
+	$(TF_V_DUN) test -e $@
+include $(scold_cxxdir)/tests/dependencies.mk
+clean-dependencies::
+	rm -f $(scold_cxxdir)/tests/dependencies.mk
+#end

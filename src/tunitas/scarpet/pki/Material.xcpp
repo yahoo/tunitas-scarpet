@@ -33,19 +33,19 @@ namespace tunitas::scarpet::pki {
 #import std.byte
 #import std.vector
 class tunitas::scarpet::pki::Material : public std::vector<std::byte> {
-  using ancestor = std::vector<std::byte>;
+  using Ancestor = std::vector<std::byte>;
 public:
   Material() = default;
-  using ancestor::vector;
-  using ancestor::operator=;
+  using Ancestor::vector;
+  using Ancestor::operator=;
   Material(Material const &) = delete;
   auto operator=(Material const &) -> Material & = delete;
   Material(Material &&) = default;
   auto operator=(Material &&) -> Material & = default;
-  inline explicit Material(ancestor const &);
-  inline Material(ancestor &&);
-  inline auto operator=(ancestor const &) -> Material &;
-  inline auto operator=(ancestor &&) -> Material &;
+  inline explicit Material(Ancestor const &);
+  inline Material(Ancestor &&);
+  inline auto operator=(Ancestor const &) -> Material &;
+  inline auto operator=(Ancestor &&) -> Material &;
 };
 #endiv
 #divert <ipp>
@@ -62,10 +62,10 @@ namespace tunitas::scarpet {
 }
 #import std.forward
 namespace tunitas::scarpet::pki {
-  Material::Material(ancestor const &that) : ancestor{that} { }
-  Material::Material(ancestor &&that) : ancestor{std::forward<ancestor>(that)} { }
-  auto Material::operator=(ancestor const &that) -> Material & { ancestor::operator=(that); return *this; }
-  auto Material::operator=(ancestor &&that) -> Material &      { ancestor::operator=(std::forward<ancestor>(that)); return *this; }
+  Material::Material(Ancestor const &that) : Ancestor{that} { }
+  Material::Material(Ancestor &&that) : Ancestor{forward<Ancestor>(that)} { }
+  auto Material::operator=(Ancestor const &that) -> Material & { Ancestor::operator=(that); return *this; }
+  auto Material::operator=(Ancestor &&that) -> Material &      { Ancestor::operator=(forward<Ancestor>(that)); return *this; }
 }
 #endiv
 #divert <cpp>

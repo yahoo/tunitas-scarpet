@@ -38,7 +38,12 @@ namespace tests::unit::answer {
       using Services        = Query<Stanza<stanza::SERVICES>>;
       using Proofs          = Query<Stanza<stanza::PROOFS>>;
       auto id = Id{};
-      auto contexts = Contexts{};
+      auto co = Contexts{};
+      auto pc = PublicKeys{};
+      auto au = Authentications{};
+      auto sv = Services{};
+      auto pr = Proofs{};
+      CPPUNIT_ASSERT(sizeof (id) + sizeof (co) + sizeof (pc) + sizeof (au) + sizeof (sv) + sizeof (pr));
     }
 #else
 #warning #if 0 COMPILER BUG YES MAYBE YES WE THINK SO src/tests/unit/answer.Fields.STANZA.xcpp:36:8: error: ‘tunitas::scarpet::answer::query::Prototype<DNS, PROCESSOR, RECORDATION>::Prototype() [with __ns_type DNS = (__ns_type)256; PROCESSOR = tunitas::scarpet::answer::processor::Stanza<(tunitas::scarpet::answer::processor::stanza::Name)0>; RECORDATION = tunitas::scarpet::drrs::Record<(__ns_type)256>]’ is protected within this context

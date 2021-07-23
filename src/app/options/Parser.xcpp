@@ -12,7 +12,7 @@ namespace app::options {
   // Usage:
   //
   //   class my::Parser : public app::options::Parser {
-  //     using ancestor = tunitas::scarpet::options::Parser;
+  //     using Ancestor = tunitas::scarpet::options::Parser;
   //   public:
   //     Parser(Specification const &, Configuration &);
   //   protected:
@@ -33,13 +33,14 @@ namespace app::options {
 }
 #endiv
 #divert <hpp>
-#import tunitas.scarpet.options.Parser
-#forward tunitas.scarpet.options.parser.Result
-class app::options::Parser : public tunitas::scarpet::options::Parser {
-  using ancestor = tunitas::scarpet::options::Parser;
+#import app.options.Specification
+#import tunitas.scarpet.application.options.Parser
+#forward tunitas.scarpet.application.options.parser.Result
+class app::options::Parser : public tunitas::scarpet::application::options::Parser {
+  using Ancestor = tunitas::scarpet::application::options::Parser;
 protected:
   ~Parser() = default;
-  inline explicit Parser(Specification const &spc) : ancestor{spc} { }
+  inline explicit Parser(Specification const &spc) : Ancestor{spc} { }
 public:
   // The descendant still must declare&define
   // auto operator()(Args) -> Result;

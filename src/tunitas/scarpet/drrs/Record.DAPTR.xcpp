@@ -31,7 +31,7 @@ namespace tunitas::scarpet::drrs {
 #import tunitas.scarpet.drrs.aspect.Redirect
 namespace tunitas::scarpet::drrs {
   template<> struct Record<dns::DAPTR> : public record::Prototype, public aspect::Redirect {
-    struct ancestors {
+    struct Ancestors {
       using Prototype = record::Prototype;
       using Redirect = aspect::Redirect;
     };

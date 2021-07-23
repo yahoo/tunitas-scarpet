@@ -4,5 +4,6 @@
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
+#import tunitas.scarpet
 namespace tunitas::scarpet::answer { }
 #endiv

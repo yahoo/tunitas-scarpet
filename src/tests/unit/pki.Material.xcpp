@@ -16,10 +16,10 @@ public:
   using Encoding = ::tunitas::scarpet::pki::Encoding;
   using Subject = ::tunitas::scarpet::pki::Material;
   auto test_constructor_default() -> void;
-  auto test_constructor_ancestor_copy() -> void;
-  auto test_constructor_ancestor_move() -> void;
-  auto test_assignment_ancestor_copy() -> void;
-  auto test_assignment_ancestor_move() -> void;
+  auto test_constructor_Ancestor_copy() -> void;
+  auto test_constructor_Ancestor_move() -> void;
+  auto test_assignment_Ancestor_copy() -> void;
+  auto test_assignment_Ancestor_move() -> void;
   auto test_operator_eq() -> void;
   auto test_operator_ne() -> void;
   auto test_to_string_none() -> void;
@@ -39,24 +39,24 @@ auto tests::unit::pki::Material::test_constructor_default() -> void {
 }
 #import std.byte
 #import std.vector
-auto tests::unit::pki::Material::test_constructor_ancestor_copy() -> void {
+auto tests::unit::pki::Material::test_constructor_Ancestor_copy() -> void {
   std::vector<std::byte> specimen;
   Subject subject{specimen};
   CPPUNIT_ASSERT(std::empty(subject));
 }
 #import std.move
-auto tests::unit::pki::Material::test_constructor_ancestor_move() -> void {
+auto tests::unit::pki::Material::test_constructor_Ancestor_move() -> void {
   std::vector<std::byte> specimen;
   Subject subject{std::move(specimen)};
   CPPUNIT_ASSERT(std::empty(subject));
 }
-auto tests::unit::pki::Material::test_assignment_ancestor_copy() -> void {
+auto tests::unit::pki::Material::test_assignment_Ancestor_copy() -> void {
   std::vector<std::byte> specimen;
   Subject subject;
   subject = specimen;
   CPPUNIT_ASSERT(std::empty(subject));
 }
-auto tests::unit::pki::Material::test_assignment_ancestor_move() -> void {
+auto tests::unit::pki::Material::test_assignment_Ancestor_move() -> void {
   std::vector<std::byte> specimen;
   Subject subject;
   subject = std::move(specimen);
@@ -118,36 +118,37 @@ auto tests::unit::pki::Material::test_to_string_foreach() -> void {
 auto tests::unit::pki::Material::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Material"};
-  {
-    Stream con{"constructor"};
-    con << call("default", &Material::test_constructor_default)
-      ;
-    {
-      Stream ans{"ancestor"};
-      ans << call("copy", &Material::test_constructor_ancestor_copy)
-          << call("move", &Material::test_constructor_ancestor_move)
-        ;
-      con << move(ans);
-    }
-    series << move(con);
-  } {
-    Stream ass{"assignment"};
-    ass << call("copy", &Material::test_assignment_ancestor_copy)
-        << call("move", &Material::test_assignment_ancestor_move)
-      ;
-    series << move(ass);
-  }
-  series << call("operator==", &Material::test_operator_eq)
+  series << []() {
+              Stream con{"constructor"};
+              con << call("default", &Material::test_constructor_default)
+                  << []() {
+                       Stream ans{"Ancestor"};
+                       ans << call("copy", &Material::test_constructor_Ancestor_copy)
+                           << call("move", &Material::test_constructor_Ancestor_move)
+                         ;
+                       return move(ans);
+                     }()
+                ;
+              return move(con);
+            }()
+         << []() {
+              Stream ass{"assignment"};
+              ass << call("copy", &Material::test_assignment_Ancestor_copy)
+                  << call("move", &Material::test_assignment_Ancestor_move)
+                ;
+              return move(ass);
+            }()
+         << call("operator==", &Material::test_operator_eq)
          << call("operator=", &Material::test_operator_ne)
+         << []() {
+              Stream tos{"to_string"};
+              tos << call("none", &Material::test_to_string_none)
+                  << call("passthru", &Material::test_to_string_passthru)
+                  << call("foreach", &Material::test_to_string_foreach)
+                ;
+              return move(tos);
+            }()
     ;
-  {
-    Stream tos{"to_string"};
-    tos << call("none", &Material::test_to_string_none)
-        << call("passthru", &Material::test_to_string_passthru)
-        << call("foreach", &Material::test_to_string_foreach)
-      ;
-    series << move(tos);
-  }
   return finalize(series);
 }
 #endiv

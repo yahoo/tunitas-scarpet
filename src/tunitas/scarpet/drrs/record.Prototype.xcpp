@@ -18,7 +18,7 @@ namespace tunitas::scarpet::drrs::record {
   //
   // Usage:
   //
-  //   as an ancestor
+  //   as an Ancestor
   //
   class Prototype;
 }

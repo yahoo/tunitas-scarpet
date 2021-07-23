@@ -1,0 +1,56 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+#import tunitas.application.options.argument.constants
+#import app.zonegen.options.indicator.constants
+namespace app::zonegen::options {
+  //
+  // The options specification of the key generator
+  //
+  // Usage:
+  //
+  //   auto spc = Specification{};
+  //   auto cfg = Configuration{};
+  //   auto parsed = Parser{spc, cfg};
+  //
+  namespace [[eponymous]] specification {
+    class Specification;
+    namespace oa = tunitas::application::options::argument;
+    namespace oi = app::zonegen::options::indicator;
+  }
+}
+#endiv
+#divert <hpp>
+#import app.options.Specification
+class app::zonegen::options::specification::Specification : public app::options::Specification {
+  using Ancestor = app::options::Specification;
+public:
+  Specification();
+};
+#endiv
+#divert <cpp>
+#import options.argument.constants // [[FIXTHIS]] ibidem.
+#import app.zonegen.options.indicator.constants
+namespace app::zonegen::options::specification {
+  Specification::Specification()
+    //
+    //          /-------------- enable MISSING processing
+    //          |
+    //          v
+    : Ancestor{":hVwqvdy",
+               {{"usage", oa::NO, oi::USAGE_SUBCOMMAND},
+                {"help", oa::NO, oi::USAGE_SUBCOMMAND},
+                {"version", oa::NO, oi::VERSION_SUBCOMMAND},
+                {"warning", oa::NO, oi::WARNING_MODE},
+                {"warnings", oa::NO, oi::WARNING_MODE},
+                {"quiet", oa::NO, oi::QUIET_MODE},
+                {"verbose", oa::NO, oi::VERBOSE_MODE},
+                {"debug", oa::NO, oi::DEBUG_MODE},
+                {"dry-run", oa::NO, oi::DRY_RUN_MODE},
+                {"dryrun", oa::NO, oi::DRY_RUN_MODE}}}
+  { }
+}
+#endiv

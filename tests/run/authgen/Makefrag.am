@@ -1,0 +1,47 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+
+tests_run_authgen_TESTS = \
+  tests/run/authgen/option.help.test \
+  tests/run/authgen/option.dry-run.test \
+  tests/run/authgen/option.dryrun.test \
+  tests/run/authgen/option.d.test \
+  tests/run/authgen/option.generate-common-name.test \
+  tests/run/authgen/option.generate-cn.test \
+  tests/run/authgen/option.gen-cn.test \
+  tests/run/authgen/option.gencn.test \
+  tests/run/authgen/option.help.test \
+  tests/run/authgen/option.h.test \
+  tests/run/authgen/option.q.test \
+  tests/run/authgen/option.quiet.test \
+  tests/run/authgen/option.usage.test \
+  tests/run/authgen/option.verbose.test \
+  tests/run/authgen/option.version.test \
+  tests/run/authgen/option.v.test \
+  tests/run/authgen/option.V.test \
+  tests/run/authgen/option.warnings.test \
+  tests/run/authgen/option.warning.test \
+  tests/run/authgen/option.w.test \
+  tests/run/authgen/option.y.test \
+  \
+  tests/run/authgen/field.C.test \
+  tests/run/authgen/field.ST.test \
+  tests/run/authgen/field.L.test \
+  tests/run/authgen/field.O.test \
+  tests/run/authgen/field.OU.test \
+  tests/run/authgen/field.CN.test \
+  tests/run/authgen/field.all.test \
+  \
+  tests/run/authgen/error.CN+gencn.test \
+  \
+  tests/run/authgen/run.01.test \
+  tests/run/authgen/run.02.test \
+  $(end)
+
+tests_run_authgen_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/run/authgen/*.test)
+tests_run_authgen_TESTS_SELFCHECK_EXPECTED = $(tests_run_authgen_TESTS)
+tests_run_authgen_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_run_authgen_TESTS_SELFCHECK_EXPECTED), $(tests_run_authgen_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_run_authgen_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_run_authgen_TESTS_SELFCHECK_ORPHANS)))

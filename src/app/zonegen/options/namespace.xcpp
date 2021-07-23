@@ -1,0 +1,17 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+#import app.options
+#import app.zonegen.exception
+#import app.options.exception
+namespace app::zonegen::options {
+  using namespace app::options; // cascade the namespaces
+  namespace exception {
+    using namespace app::zonegen::exception;
+    using namespace app::options::exception;
+  }
+}
+#endiv

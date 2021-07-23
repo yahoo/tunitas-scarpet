@@ -3,10 +3,15 @@
 // Licensed under the terms of the Apache-2.0 license.
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-#divert <hpp>
-#import app.authgen.options.indicator // matryoshka
+#divert <fpp>
 #import app.options.indicator.constants
 namespace app::authgen::options::indicator {
+  inline namespace constants { using namespace app::options::indicator::constants; }
+}
+#endiv
+#divert <hpp>
+#import app.authgen.options.indicator // matryoshka
+namespace app::authgen::options::indicator::constants {
   inline auto const PRIVATE_SIDE = Code::CODE_254;
   inline auto const PUBLIC_SIDE = Code::CODE_253;
   inline auto const GENERATE_COMMON_NAME = Code::CODE_252;

@@ -31,7 +31,7 @@ namespace tunitas::scarpet::drrs::aspect {
 #import tunitas.scarpet.dns.Labels
 namespace tunitas::scarpet::drrs {
   class aspect::Redirect : public Endpoint<dns::Labels> {
-    using ancestor = Endpoint<dns::Labels>;
+    using Ancestor = Endpoint<dns::Labels>;
   protected:
     virtual ~Redirect() = default;
     Redirect() = default;

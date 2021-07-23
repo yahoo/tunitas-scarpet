@@ -36,17 +36,17 @@ namespace tunitas::scarpet::answer::processor {
 #endiv
 #divert <hpp>
 class tunitas::scarpet::answer::processor::Pointers : public Prototype, public ares::function::Query<Response<drrs::Records<dns::PTR>>> {
-    using ancestor = ares::function::Query<Response<drrs::Records<dns::PTR>>>;
+    using Ancestor = ares::function::Query<Response<drrs::Records<dns::PTR>>>;
 protected:
   ~Pointers() = default;
 public:
   inline explicit Pointers(State &);
-  auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void final;
+  auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void override final;
 };
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::answer::processor {
-  Pointers::Pointers(State &state) : ancestor{state} { }
+  Pointers::Pointers(State &state) : Ancestor{state} { }
 }
 #endiv
 #divert <cpp>

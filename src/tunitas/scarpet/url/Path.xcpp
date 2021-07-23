@@ -51,11 +51,11 @@ namespace tunitas::scarpet::url {
 }
 #import std.tuple
 class tunitas::scarpet::url::Path : public std::tuple<bool, std::string, std::string> {
-  using ancestor = std::tuple<bool, std::string, std::string>;
+  using Ancestor = std::tuple<bool, std::string, std::string>;
 public:
-  using Tuple = ancestor;
+  using Tuple = Ancestor;
   Path() = default;
-  using ancestor::tuple;
+  using Ancestor::tuple;
 };
 #endiv
 #divert <ipp>
@@ -65,9 +65,9 @@ namespace tunitas::scarpet {
   auto url::ok(Path const &u) -> bool { return std::get<0>(static_cast<Path::Tuple const &>(u)); }
   auto url::prefix(Path const &u) -> std::string const & { return std::get<1>(static_cast<Path::Tuple const &>(u)); }
   auto url::prefix(Path &u) -> std::string &             { return std::get<1>(static_cast<Path::Tuple &>(u)); }
-  auto url::prefix(Path &&anon) -> std::string           { return std::get<1>(std::forward<Path::Tuple>(anon)); }
+  auto url::prefix(Path &&anon) -> std::string           { return std::get<1>(forward<Path::Tuple>(anon)); }
   auto url::urn(Path const &u) -> std::string const & { return std::get<2>(static_cast<Path::Tuple const &>(u)); }
   auto url::urn(Path &u) -> std::string &             { return std::get<2>(static_cast<Path::Tuple &>(u)); }
-  auto url::urn(Path &&u) -> std::string              { return std::get<2>(std::forward<Path::Tuple>(u)); }
+  auto url::urn(Path &&u) -> std::string              { return std::get<2>(forward<Path::Tuple>(u)); }
 }
 #endiv

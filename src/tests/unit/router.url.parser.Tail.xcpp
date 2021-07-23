@@ -86,20 +86,21 @@ auto tests::unit::router::url::parser::Tail::test_operator_call_throwing() -> vo
 auto tests::unit::router::url::parser::Tail::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Tail"};
-  {
-    Stream cal{"operator()"};
-    cal << call("returning", &Tail::test_operator_call_returning)
-      ;
-    {
-      Stream thr{"throwing()"};
-      thr << call("series", &Tail::test_operator_call_throwing)
-          << call("good", &Tail::test_operator_call_throwing_good)
-          << call("fail", &Tail::test_operator_call_throwing_fail)
-        ;
-      cal << add(thr.release());
-    }
-    series << add(cal.release());
-  }
+  series << []() {
+              Stream cal{"operator()"};
+              cal << call("returning", &Tail::test_operator_call_returning)
+                  << [] {
+                       Stream thr{"throwing()"};
+                       thr << call("series", &Tail::test_operator_call_throwing)
+                           << call("good", &Tail::test_operator_call_throwing_good)
+                           << call("fail", &Tail::test_operator_call_throwing_fail)
+                         ;
+                       return move(thr);
+                     }()
+                ;
+              return move(cal);
+            }()
+    ;
   return finalize(series);
 }
 #endiv

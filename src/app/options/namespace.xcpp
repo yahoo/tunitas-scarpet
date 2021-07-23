@@ -4,8 +4,8 @@
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
-#import tunitas.scarpet.options
+#import tunitas.scarpet.application.options
 namespace app::options {
-  using namespace tunitas::scarpet::options; // cascade the namespaces
+  using namespace tunitas::scarpet::application::options; // cascade the namespaces
 }
 #endiv

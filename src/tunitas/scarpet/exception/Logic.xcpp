@@ -15,21 +15,24 @@ namespace tunitas::scarpet::exception {
   //   throw exception::Logic{};
   //   throw exception::Logic{"programmer error"};
   //
-  class Logic;
+  class [[nodiscard]] Logic;
 }
 #endiv
 #divert <hpp>
+#import nonstd.exception.Logic
+#import tunitas.exception.Aspect
 #import tunitas.scarpet.exception.Aspect
-#import std.logic_error
-#import std.string
-class tunitas::scarpet::exception::Logic : public Aspect, public std::logic_error {
-  struct ancestors {
-    using Aspect = scarpet::exception::Aspect;
-    using Exception = std::logic_error;
+#import tunitas.string.View
+class tunitas::scarpet::exception::Logic final : public tunitas::exception::Aspect,
+                                                 public scarpet::exception::Aspect,
+                                                 public nonstd::exception::Logic<string::View> {
+  struct Ancestors {
+    struct Aspects { /*who cares*/ };
+    using Exception = nonstd::exception::Logic<string::View>;
   };
 public:
   inline Logic();
-  inline explicit Logic(std::string const &reason);
+  inline explicit Logic(string::View reason);
   auto what() const noexcept -> char const * override;
 };
 #endiv
@@ -38,15 +41,15 @@ namespace tunitas::scarpet::exception {
   Logic::Logic()
     : Logic{"bad logic"}
   { }
-  Logic::Logic(std::string const &reason)
-    : ancestors::Exception{reason}
+  Logic::Logic(string::View reason)
+    : Ancestors::Exception{reason}
   { }
 }
 #endiv
 #divert <cpp>
 namespace tunitas::scarpet::exception {
   auto Logic::what() const noexcept -> char const * {
-    return ancestors::Exception::what();
+    return Ancestors::Exception::what();
   }
 }
 #endiv

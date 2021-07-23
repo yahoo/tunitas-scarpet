@@ -57,14 +57,14 @@ public:
 #import std.forward
 namespace tunitas::scarpet::resolve {
   Service::Service(Channel &&channel)
-    : channel{std::forward<Channel>(channel)}
+    : channel{forward<Channel>(channel)}
   { }
   Service::Service(Directory &&directory)
-    : directory{std::forward<Directory>(directory)}
+    : directory{forward<Directory>(directory)}
   { }
   Service::Service(Channel &&channel, Directory &&directory)
-    : channel{std::forward<Channel>(channel)}
-    , directory{std::forward<Directory>(directory)}
+    : channel{forward<Channel>(channel)}
+    , directory{forward<Directory>(directory)}
   { }
 }
 #endiv

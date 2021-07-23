@@ -29,13 +29,13 @@ auto tests::unit::pki::Fixture::test_cn_generate() -> void {
 auto tests::unit::pki::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series("pki");
-  {
-    Stream cnn("cn");
-    cnn << call("generate", &Fixture::test_cn_generate)
-      ;
-    series << move(cnn);
-  }
-  series << add<key::Fixture>()
+  series << []() {
+              Stream cnn("cn");
+              cnn << call("generate", &Fixture::test_cn_generate)
+                ;
+              return move(cnn);
+            }()
+         << add<key::Fixture>()
          << add<Algorithm>()
          << add<Encoding>()
          << add<Material>()

@@ -1,4 +1,11 @@
 # yes bin should exist
 .libs
+authgen
+diggity
+genesis
+publish
+scissor
+signify
 unit
-#end
+zonegen
+

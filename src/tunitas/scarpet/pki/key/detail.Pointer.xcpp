@@ -24,9 +24,9 @@ namespace tunitas::scarpet::pki::key::detail {
 #import openssl.managed.Pointer
 #import openssl.managed.Deleter.EVP_PKEY
 class tunitas::scarpet::pki::key::detail::Pointer : public openssl::managed::Pointer<EVP_PKEY> {
-  using ancestor = openssl::managed::Pointer<EVP_PKEY>;
+  using Ancestor = openssl::managed::Pointer<EVP_PKEY>;
 public:
   Pointer() = default;
-  using ancestor::Pointer;
+  using Ancestor::Pointer;
 };
 #endiv

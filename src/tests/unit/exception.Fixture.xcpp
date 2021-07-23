@@ -7,10 +7,7 @@
 namespace tests::unit::exception { class Fixture; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
-class tests::unit::exception::Fixture : public cppunit::test::Fixture {
-public:
+struct tests::unit::exception::Fixture : public cppunit::test::Fixture {
   template<typename EXCEPTION> auto test_Aspect() -> void;
   auto test_Coding() -> void;
   auto test_Configuration() -> void;
@@ -31,13 +28,29 @@ protected:
 #divert <tpp>
 #import tests.unit.exception.Fixture.Thrower
 #import tunitas.scarpet.exception.Aspect
+#import tunitas.scarpet.application.exception.Aspect
+#import std.cerr
+#import std.exception
+#import std.type_info
 namespace tests::unit::exception {
   template<typename EXCEPTION> auto Fixture::test_Aspect() -> void {
     try {
       Thrower<EXCEPTION> thrower;
       thrower();
-    } catch (::tunitas::scarpet::exception::Aspect const &) {
+    } catch (::tunitas::scarpet::application::exception::Aspect const &) {
+      // Either this ancestry
       CPPUNIT_ASSERT(true);
+    } catch (::tunitas::scarpet::exception::Aspect const &) {
+      // Or else this ancestry
+      CPPUNIT_ASSERT(true);
+    } catch (...) {
+      // But not something more general
+      try {
+        throw;
+      } catch (std::exception const &e) {
+        std::cerr << "FAILING unexpected exception of type " << typeid(e).name() << '\n';
+      }
+      CPPUNIT_ASSERT(false);
     }
   }
 }
@@ -68,14 +81,14 @@ auto tests::unit::exception::Fixture::test_Logic() -> void {
   tunitas::scarpet::exception::Logic subject{"cannot get here (yet you did)"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
-#import tunitas.scarpet.exception.Options
+#import app.options.exception.Options
 auto tests::unit::exception::Fixture::test_Options() -> void {
-  tunitas::scarpet::exception::Options subject{"Encoding"};
+  ::app::options::exception::Options subject{"Encoding-or-something"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
 #import app.exception.Quitting
 auto tests::unit::exception::Fixture::test_Quitting() -> void {
-  app::exception::Quitting subject{"a.out"};
+  ::app::exception::Quitting subject{"a.out"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
 #import mod.scarpet.exception.router.Path
@@ -112,10 +125,9 @@ auto tests::unit::exception::Fixture::test_Version() -> void {
   app::exception::Version subject{"a.out"};
   CPPUNIT_ASSERT(nullptr != subject.what());
 }
-#import rigging.suite.io
 auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
-  Stream series{"exception"};
+  auto series = Stream{"exception"};
   series << call("Coding", &Fixture::test_Coding)
          << call("Configuration", &Fixture::test_Configuration)
          << call("Crypto", &Fixture::test_Crypto)
@@ -125,31 +137,33 @@ auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
          << call("Quitting", &Fixture::test_Quitting)
          << call("Runtime", &Fixture::test_Runtime)
          << call("Version", &Fixture::test_Version)
-    ;
-  {
-    Stream rou{"router"};
-    rou << call("Path", &Fixture::test_router_Path)
-      ;
-    series << add(rou.release());
-  } {
-    Stream asp{"Aspect"};
-    namespace ap = ::app::exception;
-    namespace subjecting = ::tunitas::scarpet::exception;
-    namespace modding = ::mod::scarpet::exception;
-    asp << call("Coding", &Fixture::test_Aspect<subjecting::Coding>)
-        << call("Crypto", &Fixture::test_Aspect<subjecting::Crypto>)
-        << call("Options", &Fixture::test_Aspect<subjecting::Options>)
-        << call("Configuration", &Fixture::test_Aspect<subjecting::Configuration>)
-        << call("Invariant", &Fixture::test_Aspect<subjecting::Invariant>)
-        << call("Logic", &Fixture::test_Aspect<subjecting::Logic>)
-        << call("Quitting", &Fixture::test_Aspect<ap::Quitting>)
-        << call("router:Path", &Fixture::test_Aspect<modding::router::Path>)
-        << call("Runtime", &Fixture::test_Aspect<subjecting::Runtime>)
-        << call("System", &Fixture::test_Aspect<subjecting::System>)
-        << call("Version", &Fixture::test_Aspect<ap::Version>)
-      ;
-    series << add(asp.release());
-  }
+         << []() {
+              auto rou = Stream{"router"};
+              rou << call("Path", &Fixture::test_router_Path)
+                  << END;
+              return move(rou);
+            }()
+         << []() {
+              Stream asp{"Aspect"};
+              namespace ae = ::app::exception;
+              namespace aoe = ::app::options::exception;
+              namespace tse = ::tunitas::scarpet::exception;
+              namespace mse = ::mod::scarpet::exception;
+              asp << call("Coding", &Fixture::test_Aspect<tse::Coding>)
+                  << call("Crypto", &Fixture::test_Aspect<tse::Crypto>)
+                  << call("Configuration", &Fixture::test_Aspect<tse::Configuration>)
+                  << call("Invariant", &Fixture::test_Aspect<tse::Invariant>)
+                  << call("Logic", &Fixture::test_Aspect<tse::Logic>)
+                  << call("Runtime", &Fixture::test_Aspect<tse::Runtime>)
+                  << call("System", &Fixture::test_Aspect<tse::System>)
+                  << call("Quitting", &Fixture::test_Aspect<ae::Quitting>)
+                  << call("Version", &Fixture::test_Aspect<ae::Version>)
+                  << call("Options", &Fixture::test_Aspect<aoe::Options>)
+                  << call("router:Path", &Fixture::test_Aspect<mse::router::Path>)
+                  << END;
+              return move(asp);
+            }()
+         << END;
   return finalize(series);
 }
 #endiv

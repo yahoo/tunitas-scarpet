@@ -16,7 +16,7 @@ namespace tunitas::scarpet::drrs {
 #import std.string
 namespace tunitas::scarpet::drrs {
   template<> struct Record<dns::TXT>  : public record::Prototype {
-    using ancestor = record::Prototype;
+    using Ancestor = record::Prototype;
   public:
     Record() = default;
     inline Record(std::string text) : text{text} { }

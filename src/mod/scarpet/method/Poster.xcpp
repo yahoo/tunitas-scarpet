@@ -33,9 +33,9 @@ namespace mod::scarpet::method {
 #import apache.httpd.status.Code
 #import mod.scarpet.method.Prototype
 class mod::scarpet::method::Poster : public method::Prototype {
-  using ancestor = method::Prototype;
+  using Ancestor = method::Prototype;
 public:
-  using ancestor::Prototype;
+  using Ancestor::Prototype;
   auto operator()() -> apache::httpd::status::Code;
 protected:
   auto banner_failure() -> void;

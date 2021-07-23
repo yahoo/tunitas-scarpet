@@ -151,22 +151,23 @@ auto tests::unit::drrs::Allocator::suite() -> cppunit::Test * {
   Stream series{"Allocator"};
   series << call("constructor", &Allocator::test_constructor)
          << call("make_child", &Allocator::test_make_child)
+         << []() {
+              Stream rec{"make_record"};
+              rec << call("PTR", &Allocator::test_make_record<dns::PTR>)
+                  << call("SRV", &Allocator::test_make_record<dns::SRV>)
+                  << call("TXT", &Allocator::test_make_record<dns::TXT>)
+                  << call("URI", &Allocator::test_make_record<dns::URI>)
+                ;
+              return move(rec);
+            }()
+         << []() {
+              Stream exe{"exercise"};
+              exe << call("01", &Allocator::test_exercise_01)
+                  << call("02", &Allocator::test_exercise_02)
+                ;
+              return move(exe);
+            }()
     ;
-  {
-    Stream rec{"make_record"};
-    rec << call("PTR", &Allocator::test_make_record<dns::PTR>)
-        << call("SRV", &Allocator::test_make_record<dns::SRV>)
-        << call("TXT", &Allocator::test_make_record<dns::TXT>)
-        << call("URI", &Allocator::test_make_record<dns::URI>)
-      ;
-    series << add(rec.release());
-  } {
-    Stream exe{"exercise"};
-    exe << call("01", &Allocator::test_exercise_01)
-        << call("02", &Allocator::test_exercise_02)
-      ;
-    series << add(exe.release());
-  }
   return finalize(series);
 }
 #endiv

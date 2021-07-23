@@ -20,8 +20,8 @@ namespace tunitas::scarpet::did::document::json {
 #divert <hpp>
 #import tunitas.scarpet.did.document.json.Writer
 class tunitas::scarpet::did::document::json::Pretty : public Writer {
-  using ancestor = Writer;
+  using Ancestor = Writer;
 public:
-  inline explicit Pretty(std::ostream &outbound) : ancestor{outbound, Mode::PRETTY} { }
+  inline explicit Pretty(std::ostream &outbound) : Ancestor{outbound, Mode::PRETTY} { }
 };
 #endiv

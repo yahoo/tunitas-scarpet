@@ -24,9 +24,9 @@ namespace tunitas::scarpet::answer::processor {
 #import tunitas.scarpet.answer.processor.Pointers
 namespace tunitas::scarpet::answer::processor {
   template<> class Stanza<stanza::AUTHENTICATIONS> : public Pointers {
-    using ancestor = Pointers;
+    using Ancestor = Pointers;
   public:
-    using ancestor::Pointers;
+    using Ancestor::Pointers;
   };
 }
 #endiv

@@ -46,7 +46,7 @@ class tunitas::scarpet::drrs::tree::Children : protected std::list<std::unique_p
   static_assert(1+sizeof (std::iterator_traits<std::_List_iterator<std::unique_ptr<Tree>>>));
   static_assert(1+sizeof (std::iterator_traits<std::list<std::unique_ptr<Tree>>::iterator>));
 #endif
-  using ancestor = std::list<std::unique_ptr<Tree>>;
+  using Ancestor = std::list<std::unique_ptr<Tree>>;
   friend class tree::Allocator;
   friend class tree::Tree;
 public:
@@ -55,18 +55,18 @@ public:
   auto operator=(Children const &) -> Children & = delete;
   Children(Children &&) = default;
   auto operator=(Children &&) -> Children & = default;
-  using ancestor::empty;
-  using ancestor::size; // constant, per std::list since C++11
+  using Ancestor::empty;
+  using Ancestor::size; // constant, per std::list since C++11
 #if 0 // [[REMOVETHIS]]
   static_assert(1+sizeof (std::list<std::unique_ptr<Tree>>::iterator));
-  static_assert(1+sizeof (ancestor::iterator));
+  static_assert(1+sizeof (Ancestor::iterator));
   static_assert(1+sizeof (std::iterator_traits<std::list<std::unique_ptr<Tree>>::iterator>));
-  static_assert(1+sizeof (std::iterator_traits<ancestor::iterator>));
+  static_assert(1+sizeof (std::iterator_traits<Ancestor::iterator>));
 #endif
-  using iterator = tree::children::Iterator<ancestor::iterator>;
+  using iterator = tree::children::Iterator<Ancestor::iterator>;
   inline auto begin() -> iterator;
   inline auto end() -> iterator;
-  using const_iterator = tree::children::Iterator<ancestor::const_iterator>;
+  using const_iterator = tree::children::Iterator<Ancestor::const_iterator>;
   inline auto begin() const -> const_iterator;
   inline auto end() const -> const_iterator;
 };
@@ -74,9 +74,9 @@ public:
 #divert <ipp>
 #import tunitas.scarpet.drrs.tree.children.Iterator
 namespace tunitas::scarpet::drrs::tree {
-  auto Children::begin() -> iterator { return iterator{ancestor::begin()}; }
-  auto Children::end() -> iterator { return iterator{ancestor::end()}; }
-  auto Children::begin() const -> const_iterator { return const_iterator{ancestor::begin()}; }
-  auto Children::end() const -> const_iterator { return const_iterator{ancestor::end()}; }
+  auto Children::begin() -> iterator { return iterator{Ancestor::begin()}; }
+  auto Children::end() -> iterator { return iterator{Ancestor::end()}; }
+  auto Children::begin() const -> const_iterator { return const_iterator{Ancestor::begin()}; }
+  auto Children::end() const -> const_iterator { return const_iterator{Ancestor::end()}; }
 }
 #endiv

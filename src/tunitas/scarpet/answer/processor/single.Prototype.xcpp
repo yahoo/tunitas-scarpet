@@ -25,7 +25,7 @@ namespace tunitas::scarpet::answer::processor::single {
 #import tunitas.scarpet.drrs.Record
 #import tunitas.scarpet.dns.Type
 class tunitas::scarpet::answer::processor::single::Prototype : public processor::Prototype {
-  using ancestor = processor::Prototype;
+  using Ancestor = processor::Prototype;
 protected:
   ~Prototype() = default;
   Prototype() = default;

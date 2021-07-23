@@ -12,21 +12,21 @@ namespace app::options {
   // Usage:
   //
   //   class my::Specification : public app::options::Specification {
-  //     using ancestor = app::options::Specification;
+  //     using Ancestor = app::options::Specification;
   //   public:
-  //     Specification() ; ancestor{Shortspec::Initializer{...}, Longspec::Initializer{...}} { }
+  //     Specification() ; Ancestor{Shortspec::Initializer{...}, Longspec::Initializer{...}} { }
   //   };
   //
   class Specification;
 }
 #endiv
 #divert <hpp>
-#import tunitas.scarpet.options.Specification
-class app::options::Specification : public tunitas::scarpet::options::Specification {
-  using ancestor = tunitas::scarpet::options::Specification;
+#import tunitas.scarpet.application.options.Specification
+class app::options::Specification : public tunitas::scarpet::application::options::Specification {
+  using Ancestor = tunitas::scarpet::application::options::Specification;
 protected:
   ~Specification() = default;
 public:
-  inline Specification(Shortish::Initializer s, Longish::Initializer l) : ancestor{s, l} { }
+  inline Specification(Shortish::Initializer s, Longish::Initializer l) : Ancestor{s, l} { }
 };
 #endiv

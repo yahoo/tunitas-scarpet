@@ -41,17 +41,17 @@ auto tests::unit::compiler::Fixture::test_compile_ZONE() -> void {
 auto tests::unit::compiler::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"compiler"};
-  {
-    Stream com{"compile"};
-    com << call("DOME", &Fixture::test_compile_DOME)
-        << call("JSON", &Fixture::test_compile_JSON)
-        << call("ZONE", &Fixture::test_compile_ZONE)
-      ;
-    series << add(com.release());
-  }
-  series << add(compiler::Compile<compiler::answer_dome::Source, compiler::answer_dome::Destination>::suite())
-         << add(compiler::Compile<compiler::dome_json::Source, compiler::dome_json::Destination>::suite())
-         << add(compiler::Compile<compiler::dome_zone::Source, compiler::dome_zone::Destination>::suite())
+  series << []() {
+              Stream com{"compile"};
+              com << call("DOME", &Fixture::test_compile_DOME)
+                  << call("JSON", &Fixture::test_compile_JSON)
+                  << call("ZONE", &Fixture::test_compile_ZONE)
+                ;
+              return move(com);
+            }()
+         << add<compiler::Compile<compiler::answer_dome::Source, compiler::answer_dome::Destination>>()
+         << add<compiler::Compile<compiler::dome_json::Source, compiler::dome_json::Destination>>()
+         << add<compiler::Compile<compiler::dome_zone::Source, compiler::dome_zone::Destination>>()
     ;
   return finalize(series);
 }

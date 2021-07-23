@@ -24,7 +24,7 @@ namespace tunitas::scarpet::compiler::output {
 #divert <hpp>
 #import tunitas.scarpet.compiler.output.Sink
 class tunitas::scarpet::compiler::output::Null : public Sink {
-  using ancestor = Sink;
+  using Ancestor = Sink;
   auto record(std::string) -> void final { }
 public:
   Null() = default;

@@ -92,8 +92,7 @@ auto tests::unit::output::Fixture::suite() -> cppunit::Test * {
   series << call("Null", &Fixture::test_Null)
          << call("List", &Fixture::test_List)
          << call("Stream", &Fixture::test_Stream)
-    ;
-  series << call("error", &Fixture::test_error)
+         << call("error", &Fixture::test_error)
          << call("warning", &Fixture::test_warning)
          << call("notice", &Fixture::test_notice)
          << call("verbose", &Fixture::test_verbose)

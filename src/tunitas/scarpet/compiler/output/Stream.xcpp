@@ -26,7 +26,7 @@ namespace tunitas::scarpet::compiler::output {
 #import tunitas.scarpet.compiler.output.Sink
 #import std.ostream
 class tunitas::scarpet::compiler::output::Stream : public Sink {
-  using ancestor = Sink;
+  using Ancestor = Sink;
   auto record(std::string message) -> void override;
   std::ostream &origin;
 public:

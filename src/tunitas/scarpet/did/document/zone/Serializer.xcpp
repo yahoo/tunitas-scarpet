@@ -23,7 +23,7 @@ namespace tunitas::scarpet::did::document::zone {
 #import std.is_same
 #import std.ostream
 class tunitas::scarpet::did::document::zone::Serializer : public document::Serializer<drrs::flat::Variant, CONSTIE> {
-  using ancestor = document::Serializer<drrs::flat::Variant, CONSTIE>;
+  using Ancestor = document::Serializer<drrs::flat::Variant, CONSTIE>;
 public:
   inline explicit Serializer(std::ostream &);
   auto accept(Serializee &) -> void override;

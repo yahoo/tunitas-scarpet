@@ -4,5 +4,21 @@
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
-namespace app { }
+#import tunitas.string
+namespace app {
+  namespace string = tunitas::string;
+}
+#endiv
+#divert <hpp>
+#import tunitas.string.literals
+namespace app {
+  // Up at <hpp because certain inline string literals appear here in each application.
+  using namespace string::literals;
+}
+#endiv
+#divert <ipp>
+// Every application (cli appliation with a tui) will need these
+#import std.cout
+#import std.cerr
+#import std.clog
 #endiv

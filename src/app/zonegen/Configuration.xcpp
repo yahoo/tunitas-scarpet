@@ -1,0 +1,35 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+namespace app::zonegen {
+  //
+  // The configuration of the zone generator
+  //
+  // Usage:
+  //
+  //   auto av = Args{cc, vv};
+  //   auto program = Program{av};
+  //   auto cfg = Configuration{program};
+  //
+  class Configuration;
+}
+#endiv
+#divert <hpp>
+#import app.Configuration
+class app::zonegen::Configuration : public app::Configuration {
+  using Ancestor = app::Configuration;
+public:
+  inline explicit Configuration(Program const &);
+  //
+  // Any new configuration variables go here
+  //
+};
+#endiv
+#divert <ipp>
+namespace app::zonegen {
+  Configuration::Configuration(Program const &program) : Ancestor{program} { }
+}
+#endiv

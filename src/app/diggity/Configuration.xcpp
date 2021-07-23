@@ -23,7 +23,7 @@ namespace app::diggity {
 #import std.string
 #import tunitas.scarpet.dns.Name
 class app::diggity::Configuration : public app::Configuration {
-  using ancestor = app::Configuration;
+  using Ancestor = app::Configuration;
 public:
   inline explicit Configuration(Program const &);
   std::optional<tunitas::scarpet::dns::Name> name_server; // a specified name server, else the servers in /etc/resolv.conf
@@ -32,7 +32,7 @@ public:
 #divert <ipp>
 namespace app::diggity {
   Configuration::Configuration(Program const &program)
-    : ancestor{program}
+    : Ancestor{program}
   { }
 }
 #endiv

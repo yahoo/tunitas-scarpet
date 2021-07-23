@@ -5,6 +5,7 @@
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import ares.dns
+#import mod.scarpet
 namespace mod::scarpet::dns {
   using namespace ares::dns; // cascade this namespace, because otherwise it's confusing
 }

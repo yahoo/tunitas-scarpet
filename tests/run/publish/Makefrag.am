@@ -1,0 +1,64 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+
+tests_run_publish_TESTS = \
+  tests/run/publish/option.help.test \
+  tests/run/publish/option.dry-run.test \
+  tests/run/publish/option.dryrun.test \
+  tests/run/publish/option.d.test \
+  tests/run/publish/option.did-document-storage-service.test \
+  tests/run/publish/option.ddss.test \
+  tests/run/publish/option.did-document.test \
+  tests/run/publish/option.did-document-json.test \
+  tests/run/publish/option.did-document-zone.test \
+  tests/run/publish/option.document.test \
+  tests/run/publish/option.doc.test \
+  tests/run/publish/option.document.guess-json.test \
+  tests/run/publish/option.document.guess-zone.test \
+  tests/run/publish/option.document-json.test \
+  tests/run/publish/option.document-zone.test \
+  tests/run/publish/option.json.test \
+  tests/run/publish/option.zone.test \
+  tests/run/publish/option.did-domain.test \
+  tests/run/publish/option.domain.test \
+  tests/run/publish/option.name-server-update-secret-value.test \
+  tests/run/publish/option.name-server-update-secret.test \
+  tests/run/publish/option.update-secret-value.test \
+  tests/run/publish/option.update-secret.test \
+  tests/run/publish/option.secret.test \
+  tests/run/publish/option.name-server-update-secret-file.test \
+  tests/run/publish/option.update-secret-file.test \
+  tests/run/publish/option.secret-file.test \
+  tests/run/publish/option.secret-value.test \
+  tests/run/publish/option.name-server.test \
+  tests/run/publish/option.server.test \
+  tests/run/publish/option.ns.test \
+  tests/run/publish/option.n.test \
+  tests/run/publish/option.help.test \
+  tests/run/publish/option.h.test \
+  tests/run/publish/option.q.test \
+  tests/run/publish/option.quiet.test \
+  tests/run/publish/option.usage.test \
+  tests/run/publish/option.verbose.test \
+  tests/run/publish/option.version.test \
+  tests/run/publish/option.v.test \
+  tests/run/publish/option.V.test \
+  tests/run/publish/option.warnings.test \
+  tests/run/publish/option.warning.test \
+  tests/run/publish/option.w.test \
+  tests/run/publish/option.y.test \
+  $(tests_run_publish_XFAIL_TESTS)
+  $(end)
+tests_run_publish_XFAIL_TESTS = \
+  tests/run/publish/run.01.test \
+  tests/run/publish/run.02.test \
+  tests/run/publish/run.03.test \
+  $(end)
+
+tests_run_publish_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/run/publish/*.test)
+tests_run_publish_TESTS_SELFCHECK_EXPECTED = $(tests_run_publish_TESTS)
+tests_run_publish_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_run_publish_TESTS_SELFCHECK_EXPECTED), $(tests_run_publish_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_run_publish_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_run_publish_TESTS_SELFCHECK_ORPHANS)))

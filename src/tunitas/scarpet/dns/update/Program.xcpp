@@ -31,15 +31,15 @@ namespace tunitas::scarpet::dns::update {
 #divert <hpp>
 #import tunitas.scarpet.dns.Name
 #forward tunitas.scarpet.did.Document.ZONE
-#import shell.run.Program.NSUPDATE
+#import shell.program.Program.NSUPDATE
 #import std.string
-class tunitas::scarpet::dns::update::Program : public shell::run::Program<shell::run::NSUPDATE> {
-  using ancestor = shell::run::Program<shell::run::NSUPDATE>;
+class tunitas::scarpet::dns::update::Program : public shell::program::Program<shell::program::NSUPDATE> {
+  using Ancestor = shell::program::Program<shell::program::NSUPDATE>;
   using Document = tunitas::scarpet::did::Document<tunitas::scarpet::did::ZONE>;
 public:
   Program() = default;
   // These "can't fail" and if they do have problems then those issues can be recognized later.
-  // [[FIXTHIS]] except for document(...) these members should be up in the ancestor, Program<NSUPDATE>
+  // [[FIXTHIS]] except for document(...) these members should be up in the Ancestor, Program<NSUPDATE>
   inline auto server(dns::Name const &) -> void;
   inline auto key(std::string const &name, std::string const &value) -> void;
   auto document(Document const &) -> void;

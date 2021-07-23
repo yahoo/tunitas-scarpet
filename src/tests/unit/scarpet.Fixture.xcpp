@@ -4,58 +4,60 @@
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
-namespace tests::unit::scarpet { class Fixture; }
+#import tunitas.scarpet
+namespace tests::unit::scarpet {
+  namespace [[eponymous]] fixture {
+    class Fixture;
+    namespace library = ::tunitas::scarpet;
+  }
+  using fixture::Fixture;
+}
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
-class tests::unit::scarpet::Fixture : public cppunit::test::Fixture {
-public:
-  auto test_Program() -> void;
-  auto test_Configuration() -> void;
+struct tests::unit::scarpet::fixture::Fixture : public cppunit::test::Fixture {
+  auto test_usage_Encoding() -> void; // because there is a separate fixture tests::unit::scarpet::Encoding
   auto test_Club() -> void;
   auto test_Protocol() -> void;
   static auto suite() -> cppunit::Test *;
-protected:
-  struct Configuration;
 };
 #endiv
 #divert <cpp>
-#import std.empty
-#import tunitas.scarpet.Program
-auto tests::unit::scarpet::Fixture::test_Program() -> void {
-  auto program = tunitas::scarpet::Program{"a.out"};
-  CPPUNIT_ASSERT(0 != program.size());
-}
-#import tests.unit.scarpet.Fixture.Configuration
-auto tests::unit::scarpet::Fixture::test_Configuration() -> void {
-  auto program = tunitas::scarpet::Program{"a.out"};
-  auto cfg = Configuration{program};
-  CPPUNIT_ASSERT(!cfg.debug_mode);
-  cfg.warning_mode = true;
-  CPPUNIT_ASSERT(cfg.warning_mode);
-}
+#import tunitas.scarpet.Encoding
 #import tunitas.scarpet.Club
-auto tests::unit::scarpet::Fixture::test_Club() -> void {
-  auto subject = tunitas::scarpet::Club{"cudgel"};
-  CPPUNIT_ASSERT(0 != subject.size());
-  CPPUNIT_ASSERT("cudgel"sv == view(subject));
-}
 #import tunitas.scarpet.Protocol
-auto tests::unit::scarpet::Fixture::test_Protocol() -> void {
-  auto subject = tunitas::scarpet::Protocol{"this+that"};
-  CPPUNIT_ASSERT(0 != subject.size());
-  CPPUNIT_ASSERT("this+that"sv == view(subject));
-}
-#import rigging.suite.io
-auto tests::unit::scarpet::Fixture::suite() -> cppunit::Test * {
-  using namespace ::rigging::suite;
-  Stream series{"scarpet"};
-  series << call("Program", &Fixture::test_Program)
-         << call("Configuration", &Fixture::test_Configuration)
-         << call("Club", &Fixture::test_Club)
-         << call("Protocol", &Fixture::test_Protocol)
-    ;
-  return finalize(series);
+#import tests.unit.scarpet.Encoding
+namespace tests::unit::scarpet::fixture {
+  auto Fixture::test_usage_Encoding() -> void {
+    using Subject = library::Encoding;
+    auto p = Subject::PEM;
+    auto d = Subject::DER_BASE64URL;
+    CPPUNIT_ASSERT(p != d);
+  }
+  auto Fixture::test_Club() -> void {
+    auto subject = library::Club{"cudgel"};
+    CPPUNIT_ASSERT(0 != subject.size());
+    CPPUNIT_ASSERT("cudgel"sv == view(subject));
+  }
+  auto Fixture::test_Protocol() -> void {
+    auto subject = library::Protocol{"this+that"};
+    CPPUNIT_ASSERT(0 != subject.size());
+    CPPUNIT_ASSERT("this+that"sv == view(subject));
+  }
+  auto Fixture::suite() -> cppunit::Test * {
+    using namespace rigging::suite;
+    auto series = Stream{"scarpet"};
+    series << []() {
+                Stream use("usage");
+                use << call("Encoding", &Fixture::test_usage_Encoding)
+                  // Club and Protocol are tested directly (no subfixture)
+                    << END;
+                return move(use);
+              }()
+           << call("Club", &Fixture::test_Club)
+           << call("Protocol", &Fixture::test_Protocol)
+           << add<Encoding>()
+           << END;
+    return finalize(series);
+  }
 }
 #endiv

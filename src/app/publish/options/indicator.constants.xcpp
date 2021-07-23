@@ -3,10 +3,15 @@
 // Licensed under the terms of the Apache-2.0 license.
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-#divert <hpp>
-#import app.publish.options.indicator // matryoshka
+#divert <fpp>
 #import app.options.indicator.constants
 namespace app::publish::options::indicator {
+  inline namespace constants { using namespace app::options::indicator::constants; }
+}
+#endiv
+#divert <hpp>
+#import app.publish.options.indicator // matryoshka
+namespace app::publish::options::indicator::constants {
   inline auto const DID_DOCUMENT_GUESS = Code::CODE_254;
   inline auto const DID_DOCUMENT_JSON = Code::CODE_253;
   inline auto const DID_DOCUMENT_ZONE = Code::CODE_252;

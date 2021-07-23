@@ -5,7 +5,13 @@
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import app.options
+#import app.signify.exception
+#import app.options.exception
 namespace app::signify::options {
   using namespace app::options; // cascade the namespaces
+  namespace exception {
+    using namespace app::signify::exception;
+    using namespace app::options::exception;
+  }
 }
 #endiv

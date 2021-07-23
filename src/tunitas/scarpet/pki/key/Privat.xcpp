@@ -24,8 +24,8 @@ namespace tunitas::scarpet::pki::key {
 #import tunitas.scarpet.pki.key.to_string
 #import want.openssl.memory.Buffer
 class tunitas::scarpet::pki::key::Privat : private want::openssl::memory::Buffer {
-  using ancestor = want::openssl::memory::Buffer;
-  inline explicit Privat(ancestor &&);
+  using Ancestor = want::openssl::memory::Buffer;
+  inline explicit Privat(Ancestor &&);
   friend auto key::privat(Activated const &) -> Privat;
   friend auto key::publik(Activated const &) -> Publik;
   friend auto key::publik(Privat const &) -> Publik;
@@ -46,7 +46,7 @@ namespace tunitas::scarpet::pki::key {
 #import std.forward
 namespace tunitas::scarpet::pki::key {
   Privat::Privat(Buffer &&buffer)
-    : ancestor{std::forward<Buffer>(buffer)}
+    : Ancestor{forward<Buffer>(buffer)}
   { }
 }
 #endiv

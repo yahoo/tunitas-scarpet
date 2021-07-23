@@ -36,7 +36,7 @@ namespace tunitas::scarpet::drrs {
 #import std.string
 namespace tunitas::scarpet::drrs {
   template<> struct Record<dns::NAPTR> : public record::Prototype, public aspect::Redirect {
-    struct ancestors {
+    struct Ancestors {
       using Prototype = record::Prototype;
       using Redirect = aspect::Redirect;
     };

@@ -122,20 +122,21 @@ auto tests::unit::drrs::Tree::test_records() -> void {
 auto tests::unit::drrs::Tree::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Tree"};
-  {
-    Stream con{"constructor"};
-    con << call("top", &Tree::test_constructor_top)
-        << call("ref", &Tree::test_constructor_ref)
-      ;
-    series << add(con.release());
-  } {
-    Stream nam{"name"};
-    nam << call("unqualified", &Tree::test_name_unqualified)
-        << call("fully-qualified", &Tree::test_name_fully_qualified)
-      ;
-    series << add(nam.release());
-  }
-  series << call("records", &Tree::test_records)
+  series << []() {
+              Stream con{"constructor"};
+              con << call("top", &Tree::test_constructor_top)
+                  << call("ref", &Tree::test_constructor_ref)
+                ;
+              return move(con);
+            }()
+         << []() {
+              Stream nam{"name"};
+              nam << call("unqualified", &Tree::test_name_unqualified)
+                  << call("fully-qualified", &Tree::test_name_fully_qualified)
+                ;
+              return move(nam);
+            }()
+         << call("records", &Tree::test_records)
          << call("children", &Tree::test_children)
     ;
   return finalize(series);

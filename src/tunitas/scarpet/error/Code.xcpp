@@ -25,6 +25,7 @@ namespace tunitas::scarpet::error {
     INVALID_URN, // ....................... invalid URN shape at all; not even close to did:<method>:<identifier>
     INVALID_METHOD, // .................... invalid method within a valid syntax of did:<method>:<identifier>
     INVALID_IDENTIFIER, // ................ invalid identifier within a valid syntax of did:<method>:<identifier>
+    INVALID_ENCODING, // .................. invalid encoding (name of encoding)
     UNKNOWN_METHOD, // .................... unknown DID method, though valid syntactically
     NOT_FOUND, // ......................... lookup of the DID or something else was "not found"
     UNKNOWN_IDENTIFIER = NOT_FOUND, // .... same thing

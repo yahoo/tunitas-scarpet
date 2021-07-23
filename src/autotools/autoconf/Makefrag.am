@@ -8,12 +8,14 @@
 #
 # It was not envisioned that there would be a desire to have *two* copies of a two-word configuration.
 # So what we're doing here is dubious; it uses the older and newer generations together (Makefrag.mk a.b.Makefrag.mk)
-# with the implicit understanding that they don't clash in the hidden Makefile rules underneaty.
+# with the implicit understanding that they don't clash in the hidden Makefile rules underneath.
 #
 # These both surface the same definitions, so having two available is just vanity in the name of small-minded consistency
 #
 #   autotools.autoconf.Config.tunitas.scarpet.CONFIG  autotools::autoconf::Config<tunitas::scarpet::CONFIG>
 #   autotools.autoconf.Config.mod.scarpet.CONFIG>     autotools::autoconf::Config<mod::scarpet::CONFIG>
+#
+# [[TODO]] [[FIXTHIS]] another hack is to make one of these be defined in terms of the other (hint: use inheritance in the C++)
 #
 lib_libautotools_autoconf_la_TAG = tunitas::scarpet::CONFIG
 lib_libautotools_autoconf_la_IMPORT = tunitas.scarpet

@@ -20,9 +20,9 @@ namespace tunitas::scarpet::answer::processor {
 #divert <hpp>
 namespace tunitas::scarpet::answer::processor {
   template<> class Proof<proof::CREATOR> : public Single<dns::URI> {
-    using ancestor = Single<dns::URI>;
+    using Ancestor = Single<dns::URI>;
   public:
-    using ancestor::Single;
+    using Ancestor::Single;
   };
 }
 #endiv

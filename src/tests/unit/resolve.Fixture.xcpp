@@ -89,21 +89,21 @@ auto tests::unit::resolve::Fixture::test_document_something() -> void {
 auto tests::unit::resolve::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"resolve"};
-  {
-    Stream some{"something"};
-    some << call("lookup", &Fixture::test_lookup_something)
-         << call("document", &Fixture::test_document_something)
-    ;
-    series << move(some);
-  }
   namespace testing = ::tests::unit::resolve;
   namespace subjecting = ::tunitas::scarpet::resolve;
-  series << add(testing::Lookup<subjecting::NA>::suite())
-         << add(testing::Lookup<subjecting::DA>::suite())
-         << add(testing::Document<subjecting::DRRS>::suite())
-         << add(testing::Document<subjecting::FILE>::suite())
-         << add(testing::Document<subjecting::REST>::suite())
-         << add(testing::Document<subjecting::ZONE>::suite())
+  series << []() {
+              Stream some{"something"};
+              some << call("lookup", &Fixture::test_lookup_something)
+                   << call("document", &Fixture::test_document_something)
+                ;
+              return move(some);
+            }()
+         << add<testing::Lookup<subjecting::NA>>()
+         << add<testing::Lookup<subjecting::DA>>()
+         << add<testing::Document<subjecting::DRRS>>()
+         << add<testing::Document<subjecting::FILE>>()
+         << add<testing::Document<subjecting::REST>>()
+         << add<testing::Document<subjecting::ZONE>>()
     ;
   return finalize(series);
 }

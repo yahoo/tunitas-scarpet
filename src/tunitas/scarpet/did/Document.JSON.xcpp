@@ -22,14 +22,14 @@ namespace tunitas::scarpet::did {
 #import tunitas.scarpet.did.document.aspect.Visitable
 namespace tunitas::scarpet::did {
   template<> class Document<JSON> : public document::Prototype, public document::aspect::Visitable<json::Value, document::CONSTIE> {
-    struct ancestors {
+    struct Ancestors {
       using Prototype = document::Prototype;
       using Visitable = document::aspect::Visitable<json::Value, document::CONSTIE>;
     };
   public:
     Document() = default;
     json::Value object;
-    inline auto dump(std::ostream &) const -> void final;
+    inline auto dump(std::ostream &) const -> void override final;
     inline auto visit(Visitor &) const -> void override;
   };
 }

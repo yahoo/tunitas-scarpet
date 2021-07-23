@@ -4,6 +4,7 @@
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
+#import tunitas.scarpet
 #import ares.dns
 #import ares.managed
 #import std.is_enum

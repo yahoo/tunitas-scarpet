@@ -25,10 +25,10 @@ namespace tunitas::scarpet::pki::key {
 #import tunitas.scarpet.pki.key.Privat
 #import tunitas.scarpet.pki.key.Publik
 class tunitas::scarpet::pki::key::Pair : private std::pair<Privat, Publik> {
-  using ancestor = std::pair<Privat, Publik>;
+  using Ancestor = std::pair<Privat, Publik>;
 public:
   Pair() = default;
-  using ancestor::pair;
+  using Ancestor::pair;
   inline auto privat() -> Privat & { return first; }
   inline auto privat() const -> Privat const & { return first; }
   inline auto publik() -> Publik & { return second; }

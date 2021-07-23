@@ -17,14 +17,14 @@ namespace mod::scarpet::exception::router::aspect {
   // Usage:
   //
   //   class my::Problem : public router::Aspect, public router::aspect::Path, public std::runtime_error {
-  //     struct ancestors {
+  //     struct Ancestors {
   //       using Aspect = scarpet::router::Aspect;
   //       using Path = scarpet::router::aspect::Path;
   //       using Exception = std::runtime_error;
   //   . };
   //   public:
   //     inline Problem(std::string const &reason, std::string const &path);
-  //     auto what() const noexcept -> char const * { return ancestors::Exception::what(); };
+  //     auto what() const noexcept -> char const * { return Ancestors::Exception::what(); };
   //   };
   // 
   class Path;

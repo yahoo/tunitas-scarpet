@@ -5,7 +5,7 @@
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <hpp>
 #import app.publish.Configuration
-#import sys.exits.Code
+#import app.exits.Code
 namespace app::publish {
   //
   // Process ... publish the DID Document (DDNS UPDATE)
@@ -14,7 +14,7 @@ namespace app::publish {
   //
   //   ...oh come on...
   //
-  auto process(Configuration const &) -> sys::exits::Code;
+  auto process(Configuration const &) -> exits::Code;
 }
 #endiv
 #divert <cpp>
@@ -25,13 +25,14 @@ namespace app::publish {
 #import app.publish.zone.load
 #import nonstd.exception.Unimplemented
 #import nonstd.exception.Unreachable
-#import sys.exits.constants
+#import app.exits.constants
+#import sys.wait.functions
 #import std.cerr
-auto app::publish::process(Configuration const &cfg) -> sys::exits::Code {
+auto app::publish::process(Configuration const &cfg) -> exits::Code {
   auto loaded_tsig_key = tsig::load(cfg);
   if (!ok(loaded_tsig_key)) {
     error(cfg) << "could not load the update tsig because " << error_code(loaded_tsig_key).message() << '\n';
-    return sys::exits::FAIL;
+    return exits::FAIL;
   }
   auto tsig_key_value = value(std::move(loaded_tsig_key));
   using namespace tunitas::scarpet;
@@ -62,14 +63,14 @@ auto app::publish::process(Configuration const &cfg) -> sys::exits::Code {
   }();
   if (!ok(loaded_zone_document)) {
     /*ee(cfg)*/ ::options::error(cfg) << "could not load the update tsig because " << error_code(loaded_zone_document).message() << '\n';
-    return sys::exits::FAIL;
+    return exits::FAIL;
   }
   auto zone_document = tunitas::outcome::value(std::move(loaded_zone_document));
   dns::update::Program program;
   auto started = program.start();
   if (!ok(started)) {
     /*ee(cfg)*/ ::options::error(cfg) << "could not start the name server update process because " << error_code(started).message() << '\n';
-    return sys::exits::FAIL;
+    return exits::FAIL;
   }
   program.server(*cfg.name_server);
   program.key(*cfg.update_tsig_key_name, tsig_key_value);
@@ -77,18 +78,18 @@ auto app::publish::process(Configuration const &cfg) -> sys::exits::Code {
   auto waited = program.wait();
   if (!ok(waited)) {
     /*ee(cfg)*/ ::options::error(cfg) << "could not finish the name server update process because " << error_code(waited).message() << '\n';
-    return sys::exits::FAIL;
+    return exits::FAIL;
   }
-  auto status = value(waited);
-  if (ifexited(status)) {
-    auto ex = exitstatus(status);
+  auto tatus = status(waited);
+  if (ifexited(tatus)) {
+    auto ex = exitstatus(tatus);
     if (0 != ex) {
       verbose(cfg) << "nsupdate exited " << ex << '\n';
     }
-    return sys::exits::Code{ex};
+    return exits::Code{ex};
   }
-  // ifexited(status) ^ ifsignaled(status)
-  verbose(cfg) << "nsupdate was killed with " << termsig(status) << '\n';
-  return sys::exits::SOFTWARE;
+  // ifexited(tatus) ^ ifsignaled(tatus)
+  verbose(cfg) << "nsupdate was killed with " << /*FIXTHIS-v2.0 underlying(...)*/ (int)termsig(tatus) << '\n';
+  return exits::SOFTWARE;
 }
 #endiv

@@ -22,24 +22,28 @@ namespace tunitas::scarpet::exception {
   //     ...handle it...
   //   }
   //
-  class System;
+  class [[nodiscard]] System;
 }
 #endiv
 #divert <hpp>
-#import tunitas.scarpet.exception.Aspect
+#import nonstd.exception.System
 #import std.errc
 #import std.error_category
 #import std.error_code
-#import std.system_error
-class tunitas::scarpet::exception::System : public exception::Aspect, public std::system_error {
-  struct ancestors {
-    using Aspect = scarpet::exception::Aspect;
-    using Exception = std::system_error;
+#import tunitas.exception.Aspect
+#import tunitas.scarpet.exception.Aspect
+#import tunitas.string.View
+class tunitas::scarpet::exception::System final : public tunitas::exception::Aspect,
+                                                  public scarpet::exception::Aspect,
+                                                  public nonstd::exception::System<string::View> {
+  struct Ancestors {
+    struct Aspects { /*who cares*/ };
+    using Exception = nonstd::exception::System<string::View>;
   };
 public:
-  inline System(int, std::error_category const &, std::string const &reason);
-  inline System(std::errc, std::string const &reason);
-  inline System(std::error_code, std::string const &reason);
+  inline System(int, std::error_category const &, string::View reason);
+  inline System(std::errc, string::View reason);
+  inline System(std::error_code, string::View reason);
   auto what() const noexcept -> char const * override;
 };
 #endiv
@@ -47,19 +51,19 @@ public:
 #import std.error_condition
 #import std.system_category
 namespace tunitas::scarpet::exception {
-  System::System(int code, std::error_category const &category, std::string const &reason)
-    : ancestors::Exception{std::error_code{code, category}, reason}
+  System::System(int code, std::error_category const &category, string::View reason)
+    : Ancestors::Exception{std::error_code{code, category}, reason}
   { } 
-  System::System(std::errc code, std::string const &reason)
-    : ancestors::Exception{std::error_code{std::error_condition{code}.value(), std::system_category()}, reason}
+  System::System(std::errc code, string::View reason)
+    : Ancestors::Exception{std::error_code{std::error_condition{code}.value(), std::system_category()}, reason}
   { }
-  System::System(std::error_code ec, std::string const &reason)
-    : ancestors::Exception{ec, reason}
+  System::System(std::error_code ec, string::View reason)
+    : Ancestors::Exception{ec, reason}
   { }
 }
 #endiv
 #divert <cpp>
 auto tunitas::scarpet::exception::System::what() const noexcept -> char const * {
-  return ancestors::Exception::what();
+  return Ancestors::Exception::what();
 }
 #endiv

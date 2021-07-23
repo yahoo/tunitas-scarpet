@@ -17,13 +17,13 @@ namespace tunitas::scarpet::drrs {
 #import tunitas.scarpet.dns.Name
 namespace tunitas::scarpet::drrs {
   template<> struct Record<dns::SRV>  : public record::Prototype, public aspect::Endpoint<dns::Name> {
-    struct ancestors {
+    struct Ancestors {
       using Prototype = record::Prototype;
       using Endpoint = aspect::Endpoint<dns::Name>;
     };
   public:
     Record() = default;
-    // Though pass by reference here, but the endpoint will be copied in the ancestor's constructor
+    // Though pass by reference here, but the endpoint will be copied in the Ancestor's constructor
     inline Record(Priority, Weight, dns::Name const &endpoint);
   };
 }
@@ -31,7 +31,7 @@ namespace tunitas::scarpet::drrs {
 #divert <ipp>
 namespace tunitas::scarpet::drrs {
   Record<dns::SRV>::Record(Priority priority, Weight weight, dns::Name const &endpoint)
-    : ancestors::Endpoint{priority, weight, endpoint}
+    : Ancestors::Endpoint{priority, weight, endpoint}
   { }
 }
 #endiv

@@ -72,21 +72,22 @@ auto tests::unit::names::Fixture::suite() -> cppunit::Test * {
   namespace subjecting = ::tunitas::scarpet;
   series << call("Club", &Fixture::test_generally<subjecting::Club>)
          << call("Protocol", &Fixture::test_generally<subjecting::Protocol>)
+         << []() {
+              Stream did{"did"};
+              did << call("Method", &Fixture::test_generally<subjecting::did::Method>)
+                  << call("Identifier", &Fixture::test_generally<subjecting::did::Identifier>)
+                ;
+              return move(did);
+            }()
+         << []() {
+              Stream dns{"dns"};
+              dns << call("Labels", &Fixture::test_generally<subjecting::dns::Labels>)
+                  << call("Label", &Fixture::test_generally<subjecting::dns::Label>)
+                  << call("Name", &Fixture::test_generally<subjecting::dns::Name>)
+                ;
+              return move(dns);
+            }()
     ;
-  {
-    Stream did{"did"};
-    did << call("Method", &Fixture::test_generally<subjecting::did::Method>)
-        << call("Identifier", &Fixture::test_generally<subjecting::did::Identifier>)
-      ;
-    series << add(did.release());
-  } {
-    Stream dns{"dns"};
-    dns << call("Labels", &Fixture::test_generally<subjecting::dns::Labels>)
-        << call("Label", &Fixture::test_generally<subjecting::dns::Label>)
-        << call("Name", &Fixture::test_generally<subjecting::dns::Name>)
-      ;
-    series << add(dns.release());
-  }
   return finalize(series);
 }
 #endiv

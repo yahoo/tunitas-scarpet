@@ -1,0 +1,66 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+// For terms, see the LICENSE file at the top of this repository.
+#divert <fpp>
+namespace tests::run {
+  //
+  // A collector for std::string interfacing to the tunitas::application::c::Args system (which uses char *)
+  // This is test rigging.
+  // It gives a convenient constructor and an operator cast to produce the lifetime-anchored pointer-vector.
+  //
+  // et temptare et testers?
+  //
+  // Design:
+  //
+  //   Collected::Value is a c::argv (non-const) because such is destined to be passed to a call to
+  //   POSIX-defined main(int, char *v[] {...}
+  //   And POSIX is C and C only really admits to the non-const variant.
+  //
+  // Usage:
+  //
+  //   auto collected Collected{"a.out"s, "--option"s, "--something"s, "--something"s, "--dark_side"};
+  //   auto args = (tunitas::application::c::Args) collected;
+  //   ...and then you can work with it...
+  //
+  struct Collected;
+}
+#endiv
+#divert <hpp>
+#import tunitas.application.options.c.Args
+#import tunitas.required.Stringable
+#import std.string
+#import std.vector
+struct tests::run::Collected {
+  Collected() = default;
+  Collected(Collected const &) = delete;
+  auto operator=(Collected const &) -> Collected & = delete;
+  Collected(Collected &&) = default;
+  auto operator=(Collected &&) -> Collected & = default;
+  template<typename... STRINGS> inline explicit Collected(std::string arg0, STRINGS ...) requires (true && ... && ::tunitas::required::Stringable<STRINGS>);
+  using Value = ::tunitas::application::options::c::Args;
+  inline operator Value();
+private:
+  std::vector<std::string> storage;
+  std::vector<char *> spine;
+};
+#endiv
+#divert <ipp>
+namespace tests::run {
+  template<typename... STRINGS> Collected::Collected(std::string arg0, STRINGS ...args) requires (true && ... && ::tunitas::required::Stringable<STRINGS>)
+    : storage{move(arg0), std::move(args)...} {
+    spine.reserve(1+storage.size());
+    spine.clear();
+    for (auto &arg : storage) {
+      spine.push_back(arg.data());
+    }
+    spine.push_back(nullptr); // because tunitas::application::c::Args actually checks for this
+  }
+  Collected::operator Value() {
+    // WATCHOUT - storage has the size, but the spine has the extra nullptr at the end.
+    return Value{storage.size(), spine.data()};
+  }
+}
+#endiv

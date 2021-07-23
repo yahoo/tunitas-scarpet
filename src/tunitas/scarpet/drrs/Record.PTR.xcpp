@@ -18,7 +18,7 @@ namespace tunitas::scarpet::drrs {
 #import tunitas.scarpet.dns.Name
 namespace tunitas::scarpet::drrs {
   template<> struct Record<dns::PTR>  : public record::Prototype {
-    using ancestor = record::Prototype;
+    using Ancestor = record::Prototype;
   public:
     Record() = default;
     inline explicit Record(dns::Name);

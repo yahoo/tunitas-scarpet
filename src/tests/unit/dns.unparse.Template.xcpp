@@ -190,43 +190,48 @@ auto tests::unit::dns::uunpparrsee::Template::test_label_four_name() -> void {
 auto tests::unit::dns::uunpparrsee::Template::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"unparse"};
-  {
-    Stream lab{"labels"};
-    lab << call("copy", &Template::test_labels_copy)
-        << call("forward", &Template::test_labels_forward)
-      ;
-    series << move(lab);
-  } {
-    Stream nam{"name"};
-    nam << call("copy", &Template::test_name_copy)
-        << call("forward", &Template::test_name_forward)
-      ;
-    series << move(nam);
-  } {
-    Stream lab{"label..."};
-    lab << call("one", &Template::test_label_one)
-        << call("two", &Template::test_label_two)
-        << call("three", &Template::test_label_three)
-        << call("four", &Template::test_label_four)
-      ;
-    series << move(lab);
-  } {
-    Stream lab{"label...labels"};
-    lab << call("one", &Template::test_label_one_labels)
-        << call("two", &Template::test_label_two_labels)
-        << call("three", &Template::test_label_three_labels)
-        << call("four", &Template::test_label_four_labels)
-      ;
-    series << move(lab);
-  } {
-    Stream lab{"label...name"};
-    lab << call("one", &Template::test_label_one_name)
-        << call("two", &Template::test_label_two_name)
-        << call("three", &Template::test_label_three_name)
-        << call("four", &Template::test_label_four_name)
-      ;
-    series << move(lab);
-  }
-  return finalize(series);
+  series << []() {
+              Stream lab{"labels"};
+              lab << call("copy", &Template::test_labels_copy)
+                  << call("forward", &Template::test_labels_forward)
+                ;
+              return move(lab);
+            }()
+         << []() {
+              Stream nam{"name"};
+              nam << call("copy", &Template::test_name_copy)
+                  << call("forward", &Template::test_name_forward)
+                ;
+              return move(nam);
+            }()
+         << []() {
+              Stream lab{"label..."};
+              lab << call("one", &Template::test_label_one)
+                  << call("two", &Template::test_label_two)
+                  << call("three", &Template::test_label_three)
+                  << call("four", &Template::test_label_four)
+                ;
+              return move(lab);
+            }()
+         << []() {
+              Stream lab{"label...labels"};
+              lab << call("one", &Template::test_label_one_labels)
+                  << call("two", &Template::test_label_two_labels)
+                  << call("three", &Template::test_label_three_labels)
+                  << call("four", &Template::test_label_four_labels)
+                ;
+              return move(lab);
+            }()
+         << []() {
+              Stream lab{"label...name"};
+              lab << call("one", &Template::test_label_one_name)
+                  << call("two", &Template::test_label_two_name)
+                  << call("three", &Template::test_label_three_name)
+                  << call("four", &Template::test_label_four_name)
+                ;
+              return move(lab);
+            }()
+    ;
+    return finalize(series);
 }
 #endiv

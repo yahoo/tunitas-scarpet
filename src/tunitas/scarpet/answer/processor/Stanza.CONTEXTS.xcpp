@@ -21,16 +21,16 @@ namespace tunitas::scarpet::answer::processor {
 #divert <hpp>
 namespace tunitas::scarpet::answer::processor {
   template<> class Stanza<stanza::CONTEXTS> : public Prototype, public ares::function::Query<Response<drrs::Records<dns::URI>>> {
-    using ancestor = ares::function::Query<Response<drrs::Records<dns::URI>>>;
+    using Ancestor = ares::function::Query<Response<drrs::Records<dns::URI>>>;
   public:
     inline explicit Stanza(State &);
-    auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void final;
+    auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void override final;
   };
 }
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::answer::processor {
-  Stanza<stanza::CONTEXTS>::Stanza(State &state) : ancestor{state} { }
+  Stanza<stanza::CONTEXTS>::Stanza(State &state) : Ancestor{state} { }
 }
 #endiv
 #divert <cpp>

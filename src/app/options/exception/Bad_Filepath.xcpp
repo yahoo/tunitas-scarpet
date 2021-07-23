@@ -1,0 +1,48 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+namespace app::options::exception {
+  //
+  // Bloffo ... all this does is create a new type, a new descendant of Quitting.
+  //
+  // Transform the failure of tunitas::application::options::get_filepath<...>(...)
+  // into a well-known exception that the application { genesis, publish, etc. } can capture and redirect elsewhere.o
+  //
+  // In order to clear the template requirements for get_filepath<QUITTING>(...)
+  // the exception must be "shaped like" a Tunitas Quitting exception; hence the ancestry.
+  //
+  // The NAME and reason which are often supplied in the constructor are unimportant here.
+  // Because we're using the exception to capture and redirect, we don't care what the message might be.
+  //
+  // Usage:
+  //
+  //   try {
+  //     auto cfg = Configuration{...somehow...};
+  //     auto step = Step{...somehow...};
+  //     ...
+  //     cfg.public_side = get_filepath<exception::Bad_Filepath>(cfg, step);
+  //     ...
+  //   } catch (Bad_Filepath const &) {
+  //     ...that was a bad bad file...
+  //     return Result{std:error_code{error::Code::OPTIONS}};
+  //   }
+  //
+  class [[nodiscard]] Bad_Filepath;
+}
+#endiv
+#divert <hpp>
+#import app.exception.partial.Quitting
+#import app.options.exception.Aspect
+class app::options::exception::Bad_Filepath : public Aspect, public app::exception::partial::Quitting {
+  struct Ancestors {
+    using Aspect = options::exception::Aspect;
+    using Exception = app::exception::partial::Quitting;
+  };
+public:
+  using Ancestors::Exception::Quitting;
+  auto what() const noexcept -> Results::What { return Ancestors::Exception::what(); }
+};
+#endiv

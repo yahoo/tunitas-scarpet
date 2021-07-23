@@ -24,10 +24,10 @@ namespace tunitas::scarpet::drrs {
 #import std.list
 namespace tunitas::scarpet {
   template<dns::Type TYPE> struct drrs::Records : public record::Prototype, public std::list<Record<TYPE>> {
-    using ancestor = std::list<Record<TYPE>>;
+    using Ancestor = std::list<Record<TYPE>>;
   public:
     Records() = default;
-    using ancestor::list;
+    using Ancestor::list;
   };
 };
 #endiv

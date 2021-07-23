@@ -28,7 +28,7 @@ namespace tunitas::scarpet::did {
   template<> class Document<ZONE> : public document::Prototype,
                                     public document::aspect::Serializable<drrs::flat::Variant, document::CONSTIE>, // [[REMOVETHIS]] it is exactly same as Visitor
                                     public document::aspect::Visitable<drrs::flat::Variant, document::CONSTIE> {
-    struct ancestors {
+    struct Ancestors {
       using Prototype = document::Prototype;
       using Serializable = document::aspect::Serializable<drrs::flat::Variant, document::CONSTIE>;
       using Visitable = document::aspect::Visitable<drrs::flat::Variant, document::CONSTIE>;
@@ -36,7 +36,7 @@ namespace tunitas::scarpet::did {
   public:
     Document() = default;
     drrs::Flat flat;
-    inline auto dump(std::ostream &) const -> void final;
+    inline auto dump(std::ostream &) const -> void override final;
     auto serialize(Serializer &) const -> void override; // [[REMOVETHIS]] it is exactly same as Visitor
     auto visit(Visitor &) const -> void override;
   };

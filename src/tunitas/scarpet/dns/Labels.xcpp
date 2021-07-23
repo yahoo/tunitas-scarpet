@@ -55,10 +55,10 @@ namespace tunitas::scarpet::dns {
 #import std.deque
 namespace tunitas::scarpet {
   class dns::Labels : public std::deque<Label> {
-    using ancestor = std::deque<Label>;
+    using Ancestor = std::deque<Label>;
   public:
     Labels() = default;
-    using ancestor::deque;
+    using Ancestor::deque;
   };
 }
 #endiv

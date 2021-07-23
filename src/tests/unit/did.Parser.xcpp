@@ -187,35 +187,37 @@ auto tests::unit::did::Parser::suite() -> cppunit::Test * {
          << call("did::", &Parser::test_did_colon_colon)
          << call("did:m:", &Parser::test_did_colon_identifier_empty)
          << call("did::i", &Parser::test_did_colon_method_empty)
+         << []() {
+              Stream good("good");
+              good << call("01", &Parser::test_good_01)
+                   << call("02", &Parser::test_good_02)
+                   << call("03", &Parser::test_good_03)
+                   << call("04", &Parser::test_good_04)
+                ;
+              return move(good);
+            }()
+         << []() {
+              Stream fail("fail");
+              fail << call("01", &Parser::test_fail_01)
+                   << call("02", &Parser::test_fail_02)
+                   << call("03", &Parser::test_fail_03)
+                   << call("04", &Parser::test_fail_04)
+                   << call("05", &Parser::test_fail_05)
+                ;
+              return move(fail);
+            }()
+         << []() {
+              Stream cas("case");
+              cas << call("01", &Parser::test_case_01)
+                  << call("02", &Parser::test_case_02)
+                  << call("03", &Parser::test_case_03)
+                  << call("04", &Parser::test_case_04)
+                  << call("05", &Parser::test_case_05)
+                  << call("06", &Parser::test_case_06)
+                ;
+              return move(cas);
+            }()
     ;
-  {
-    Stream good("good");
-    good << call("01", &Parser::test_good_01)
-         << call("02", &Parser::test_good_02)
-         << call("03", &Parser::test_good_03)
-         << call("04", &Parser::test_good_04)
-      ;
-    series << move(good);
-  } {
-    Stream fail("fail");
-    fail << call("01", &Parser::test_fail_01)
-         << call("02", &Parser::test_fail_02)
-         << call("03", &Parser::test_fail_03)
-         << call("04", &Parser::test_fail_04)
-         << call("05", &Parser::test_fail_05)
-      ;
-    series << move(fail);
-  } {
-    Stream cas("case");
-    cas << call("01", &Parser::test_case_01)
-        << call("02", &Parser::test_case_02)
-        << call("03", &Parser::test_case_03)
-        << call("04", &Parser::test_case_04)
-        << call("05", &Parser::test_case_05)
-        << call("06", &Parser::test_case_06)
-      ;
-    series << move(cas);
-  }
-  return series.release();
+  return finalize(series);
 }
 #endiv

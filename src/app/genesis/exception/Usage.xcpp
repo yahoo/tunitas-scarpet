@@ -18,7 +18,7 @@ namespace app::genesis::exception {
   //     ...
   //     throw Usage{"program"};
   //     ...
-  //   } catch (tunitas::scarpet::exception::Aspect const &g) {
+  //   } catch (exception::aspect::Quitting const &g) {
   //     g.stream() << g << '\n';
   //     return g.code();          ... equivalently ::exit(g.code());
   //   }
@@ -27,91 +27,62 @@ namespace app::genesis::exception {
 }
 #endiv
 #divert <hpp>
-#import tunitas.app.exception.feature.Usage
-#import tunitas.exception.feature.Messaging
-#import tunitas.scarpet.exception.aspect.Exiting
-#import std.exception
-#import std.string
-class app::genesis::exception::Usage
-  : public tunitas::scarpet::exception::aspect::Exiting,
-    public tunitas::app::exception::feature::Usage,
-    public tunitas::exception::feature::Messaging,
-    public std::exception {
-  struct ancestors {
-    using Aspect = tunitas::scarpet::exception::aspect::Exiting;
-    using Usage = tunitas::app::exception::feature::Usage;
-    using Messaging = tunitas::exception::feature::Messaging;
-    using Exception = std::exception;
-  };
+#import app.exception.partial.Usage
+class app::genesis::exception::Usage final : public app::exception::partial::Usage {
+  using Ancestor = app::exception::partial::Usage;
 public:
-  inline explicit Usage(std::string const &NAME);
-  inline Usage(std::string const &NAME, sys::exits::Code);
-  auto what() const noexcept -> char const * final;
-  auto stream() const noexcept -> std::ostream & final;
-  auto code() const noexcept -> sys::exits::Code final;
+  inline explicit Usage(Arguments::Name);
+  inline explicit Usage(Arguments::Name, exits::Code);
 private:
-  static auto format(std::string const &NAME) -> std::string;
+  static auto format(Arguments::Name NAME) -> Arguments::Message;
 };
 #endiv
 #divert <ipp>
-#import sys.exits.constants
-app::genesis::exception::Usage::Usage(std::string const &NAME)
-  : Usage{NAME, sys::exits::OK}
-{ }
-app::genesis::exception::Usage::Usage(std::string const &NAME, sys::exits::Code code)
-  : ancestors::Usage{code}
-  , ancestors::Messaging{format(NAME)}
-  , ancestors::Exception{}
-{ }
+#import app.exits.constants
+namespace app::genesis::exception {
+  Usage::Usage(Arguments::Name NAME) : Usage{NAME, exits::OK} { }
+  Usage::Usage(Arguments::Name NAME, exits::Code code) : Ancestor{format(NAME), code} { }
+}
 #endiv
 #divert <cpp>
 #import std.ostringstream
 namespace app::genesis::exception {
-  auto Usage::format(std::string const &NAME) -> std::string {
+  auto Usage::format(Arguments::Name NAME) -> Arguments::Message {
     std::ostringstream buf;
-    buf << "Generate a key pair\n"
+    buf << "Generate a key pair"
         << '\n'
-        << "usage: " << NAME << " [...options...]\n"
+        << "\nusage: " << NAME << " [...options...]"
         << '\n'
-        << "Presentation Options:\n"
+        << "\nPresentation Options:"
         << '\n'
-        << "--encoding=der+base64url           use DER (Distinguished Encoding Rules) with BASE64URL (urlsafe) encoding\n"
-        << "                                   this is the default\n"
-        << "--encoding=pem                     use PEM (Privacy-Enhanced Mail) Encoding\n"
-        << "--strip-armor, -s                  removes the wrappers -----BEGIN ... KEY----- -----END ... KEY-----\n"
-        << "                                   only applicable for --encoding=pem, this is the default\n"
-        << "--keep-armor, -a                   keeps the wrappers -----BEGIN ... KEY----- -----END ... KEY-----\n"
-        << "                                   only applicable for --encoding=pem\n"
+        << "\n--encoding=der+base64url           use DER (Distinguished Encoding Rules) with BASE64URL (urlsafe) encoding"
+        << "\n                                   this is the default"
+        << "\n--encoding=pem                     use PEM (Privacy-Enhanced Mail) Encoding"
+        << "\n--strip-armor, -s                  removes the wrappers -----BEGIN ... KEY----- -----END ... KEY-----"
+        << "\n                                   only applicable for --encoding=pem, this is the default"
+        << "\n--keep-armor, -a                   keeps the wrappers -----BEGIN ... KEY----- -----END ... KEY-----"
+        << "\n                                   only applicable for --encoding=pem"
         << '\n'
-        << "Generation Options:\n"
+        << "\nGeneration Options:"
         << '\n'
-        << "--private-side=FILEPATH            write the private key to the FILEPATH\n"
-        << " --private-key=FILEPATH            simpler\n"
-        << "     --private=FILEPATH            simplest\n"
+        << "\n--private-side=FILEPATH            write the private key to the FILEPATH"
+        << "\n --private-key=FILEPATH            simpler"
+        << "\n     --private=FILEPATH            simplest"
         << '\n'
-        << "--public-side=FILEPATH             write the public key (the DID) to the FILEPATH\n"
-        << " --public-key=FILEPATH             simpler\n"
-        << "    --public=FILEPATH              simplest\n"
+        << "\n--public-side=FILEPATH             write the public key (the DID) to the FILEPATH"
+        << "\n --public-key=FILEPATH             simpler"
+        << "\n    --public=FILEPATH              simplest"
         << '\n'
-        << "General Options:\n"
+        << "\nGeneral Options:"
         << '\n'
-        << "--usage, --help, -h                emit this message, and exit\n"
-        << "--version, -V                      emit the package version, and exit\n"
-        << "--dry-run, --dryrun, -y            dry run, do not start the server\n"
-        << "--warnings, --warning, -w          emit warnings\n"
-        << "--quiet, -q                        be quiet, emit no notices or warnings\n"
-        << "--verbose, -v                      be verbose (independent of --quiet)\n"
-        << "--debug, -d                        debug output (you should not need this)"; // no '\n'
+        << "\n--usage, --help, -h                emit this message, and exit"
+        << "\n--version, -V                      emit the package version, and exit"
+        << "\n--dry-run, --dryrun, -y            dry run, do not start the server"
+        << "\n--warnings, --warning, -w          emit warnings"
+        << "\n--quiet, -q                        be quiet, emit no notices or warnings"
+        << "\n--verbose, -v                      be verbose (independent of --quiet)"
+        << "\n--debug, -d                        debug output (you should not need this)";
     return buf.str();
-  }
-  auto Usage::what() const noexcept -> char const * {
-    return ancestors::Messaging::what();
-  }
-  auto Usage::stream() const noexcept -> std::ostream & {
-    return ancestors::Usage::stream();                                                         
-  }
-  auto Usage::code() const noexcept -> sys::exits::Code {
-    return ancestors::Usage::code();
   }
 }
 #endiv

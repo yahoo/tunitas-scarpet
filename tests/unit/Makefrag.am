@@ -3,7 +3,10 @@
 # Licensed under the terms of the Apache-2.0 license.
 # For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 # For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-
+#
+# yes, the compiler and resolver are unimplemneted
+# yes, the all.test will fail because it entails the compiler and resolver tests
+# yes, we have no bananas today
 tests_unit_XFAIL_TESTS = \
   tests/unit/compiler.test \
   tests/unit/resolve.test \

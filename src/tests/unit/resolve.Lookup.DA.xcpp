@@ -37,13 +37,14 @@ namespace tests::unit::resolve {
 auto tests::unit::resolve::Lookup<tests::unit::resolve::DA>::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"lookup<DA>"};
-  {
-    Stream cas{"case"};
-    cas << call("01", &Lookup::test_case_01)
-        << call("02", &Lookup::test_case_02)
-      ;
-    series << move(cas);
-  }
+  series << []() {
+              Stream cas{"case"};
+              cas << call("01", &Lookup::test_case_01)
+                  << call("02", &Lookup::test_case_02)
+                ;
+              return move(cas);
+            }()
+    ;
   return finalize(series);
 }
 #endiv

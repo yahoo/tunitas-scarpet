@@ -19,24 +19,23 @@ namespace app::authgen {
 #endiv
 #divert <hpp>
 #import app.Configuration
-#import options.Boolean
 #import std.filesystem.path
 #import std.optional
 #import openssl.x509.Fields
 class app::authgen::Configuration : public app::Configuration {
-  using ancestor = app::Configuration;
+  using Ancestor = app::Configuration;
 public:
   inline explicit Configuration(Program const &);
   std::optional<std::filesystem::path> private_side;
   std::optional<std::filesystem::path> public_side;
   openssl::x509::Fields fields; // this has optionals within
-  options::Boolean generate_common_name;
+  bool generate_common_name{};
 };
 #endiv
 #divert <ipp>
 namespace app::authgen {
   Configuration::Configuration(Program const &program)
-    : ancestor{program}
+    : Ancestor{program}
   { }
 }
 #endiv

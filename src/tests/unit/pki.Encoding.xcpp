@@ -91,19 +91,22 @@ auto tests::unit::pki::Encoding::suite() -> cppunit::Test * {
          << call("to_string", &Encoding::test_to_string)
          << call("to_lowercase", &Encoding::test_to_lowercase)
          << call("to_UPPERCASE", &Encoding::test_to_UPPERCASE)
+         << []() {
+              Stream tos{"to_string"};
+              tos << call("simple", &Encoding::test_to_string_simple)
+                  << call("unprefixed", &Encoding::test_to_string_unprefixed)
+                  << call("prefixed", &Encoding::test_to_string_prefixed)
+                ;
+              return move(tos);
+            }()
+         << []() {
+              Stream tos{"to_communityCamelCase"};
+              tos << call("unprefixed", &Encoding::test_to_communityCamelCase_unprefixed)
+                  << call("prefixed", &Encoding::test_to_communityCamelCase_prefixed)
+                ;
+              return move(tos);
+            }()
     ;
-  {
-    Stream tos{"to_string"};
-    tos << call("simple", &Encoding::test_to_string_simple)
-        << call("unprefixed", &Encoding::test_to_string_unprefixed)
-        << call("prefixed", &Encoding::test_to_string_prefixed)
-      ;
-  } {
-    Stream tos{"to_communityCamelCase"};
-    tos << call("unprefixed", &Encoding::test_to_communityCamelCase_unprefixed)
-        << call("prefixed", &Encoding::test_to_communityCamelCase_prefixed)
-      ;
-  }
   return finalize(series);
 }
 #endiv

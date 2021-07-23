@@ -3,10 +3,15 @@
 // Licensed under the terms of the Apache-2.0 license.
 // For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+#import tunitas.scarpet.application.options.indicator.constants
+namespace app::options::indicator {
+  inline namespace constants { using namespace tunitas::scarpet::application::options::indicator::constants; }
+}
+#endiv
 #divert <hpp>
 #import app.options.indicator // matryoshka
-#import tunitas.scarpet.options.indicator.constants
-namespace app::options::indicator {
+namespace app::options::indicator::constants {
   //
   // See the cascading of the indicator namespaces back up into tunitas::scarpet
   // Are there any application-wide constants? 

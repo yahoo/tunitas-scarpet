@@ -200,18 +200,18 @@ auto tests::unit::url::Parser::suite() -> cppunit::Test * {
          << call("bad_urn_1_with_slash", &Parser::test_bad_urn_1_with_slash)
          << call("bad_urn_2_with_slash", &Parser::test_bad_urn_2_with_slash)
          << call("bad_urn_3_not_urn", &Parser::test_bad_urn_3_not_isurn)
+         << []() {
+              Stream cas{"case"};
+              cas << call("01", &Parser::test_case_01)
+                  << call("02", &Parser::test_case_02)
+                  << call("03", &Parser::test_case_03)
+                  << call("04", &Parser::test_case_04)
+                  << call("05", &Parser::test_case_05)
+                  << call("06", &Parser::test_case_06)
+                ;
+              return move(cas);
+            }()
     ;
-  {
-    Stream cas{"case"};
-    cas << call("01", &Parser::test_case_01)
-        << call("02", &Parser::test_case_02)
-        << call("03", &Parser::test_case_03)
-        << call("04", &Parser::test_case_04)
-        << call("05", &Parser::test_case_05)
-        << call("06", &Parser::test_case_06)
-      ;
-    series << move(cas);
-  }
-  return series.release();
+  return finalize(series);
 }
 #endiv

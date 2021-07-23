@@ -9,8 +9,7 @@ namespace tests::unit::want { class Fixture; }
 #divert <hpp>
 #import cppunit.Test
 #import cppunit.test.Fixture
-class tests::unit::want::Fixture : public cppunit::test::Fixture {
-public:
+struct tests::unit::want::Fixture : public cppunit::test::Fixture {
   auto test_to_string_string() -> void;
   auto test_to_string_others() -> void;
   auto test_strftime() -> void;
@@ -67,14 +66,14 @@ auto tests::unit::want::Fixture::test_strftime() -> void {
 auto tests::unit::want::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"want"};
-  {
-    Stream tos{"to_string"};
-    tos << call("string", &Fixture::test_to_string_string)
-        << call("others", &Fixture::test_to_string_others)
-      ;
-    series << move(tos);
-  }
-  series << call("strftime", &Fixture::test_strftime)
+  series << []() {
+              Stream tos{"to_string"};
+              tos << call("string", &Fixture::test_to_string_string)
+                  << call("others", &Fixture::test_to_string_others)
+                ;
+              return move(tos);
+            }()
+         << call("strftime", &Fixture::test_strftime)
     ;
   return finalize(series);
 }

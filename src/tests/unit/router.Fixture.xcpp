@@ -25,17 +25,18 @@ auto tests::unit::router::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"router"};
   series << call("something", &Fixture::test_something)
+         << []() {
+              Stream uuu{"url"};
+              uuu << []() {
+                       Stream par{"parser"};
+                       par << add(url::parser::Tail::suite())
+                         ;
+                       return move(par);
+                     }()
+                ;
+              return move(uuu);
+            }()
     ;
-  {
-    Stream uuu{"url"};
-    {
-      Stream par{"parser"};
-      par << add(url::parser::Tail::suite())
-        ;
-      uuu << add(par.release());
-    }
-    series << add(uuu.release());
-  }
   return finalize(series);
 }
 #endiv

@@ -1,0 +1,31 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+
+tests_run_zonegen_TESTS = $(tests_run_zonegen_XFAIL_TESTS)
+tests_run_zonegen_XFAIL_TESTS = \
+  tests/run/zonegen/option.help.test \
+  tests/run/zonegen/option.dry-run.test \
+  tests/run/zonegen/option.dryrun.test \
+  tests/run/zonegen/option.d.test \
+  tests/run/zonegen/option.help.test \
+  tests/run/zonegen/option.h.test \
+  tests/run/zonegen/option.q.test \
+  tests/run/zonegen/option.quiet.test \
+  tests/run/zonegen/option.usage.test \
+  tests/run/zonegen/option.verbose.test \
+  tests/run/zonegen/option.version.test \
+  tests/run/zonegen/option.v.test \
+  tests/run/zonegen/option.V.test \
+  tests/run/zonegen/option.warnings.test \
+  tests/run/zonegen/option.warning.test \
+  tests/run/zonegen/option.w.test \
+  tests/run/zonegen/option.y.test \
+  $(end)
+
+tests_run_zonegen_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/run/zonegen/*.test)
+tests_run_zonegen_TESTS_SELFCHECK_EXPECTED = $(tests_run_zonegen_TESTS)
+tests_run_zonegen_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_run_zonegen_TESTS_SELFCHECK_EXPECTED), $(tests_run_zonegen_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_run_zonegen_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_run_zonegen_TESTS_SELFCHECK_ORPHANS)))

@@ -18,7 +18,7 @@ namespace app::authgen::exception {
   //     ...
   //     throw Usage{"program"};
   //     ...
-  //   } catch (tunitas::scarpet::exception::Aspect const &g) {
+  //   } catch (exception::aspect::Quitting const &g) {
   //     g.stream() << g << '\n';
   //     return g.code();          ... equivalently ::exit(g.code());
   //   }
@@ -27,98 +27,97 @@ namespace app::authgen::exception {
 }
 #endiv
 #divert <hpp>
-#import tunitas.app.exception.feature.Usage
-#import tunitas.app.exception.Messaging
-#import tunitas.scarpet.exception.aspect.Exiting
+#import tunitas.application.exception.feature.Usage
+#import tunitas.exception.feature.Messaging
+#import app.exception.Aspect
+#import tunitas.application.exception.Aspect
+#import tunitas.exception.Aspect
 #import std.exception
 #import std.string
-class app::authgen::exception::Usage
-  : public tunitas::scarpet::exception::aspect::Exiting,
-    public tunitas::app::exception::feature::Usage,
-    public tunitas::app::exception::Messaging,
-    public std::exception {
+class app::authgen::exception::Usage final : public app::exception::Aspect,
+                                             public tunitas::application::exception::Aspect,
+                                             public tunitas::exception::Aspect,
+                                             public tunitas::application::exception::feature::Usage,
+                                             public tunitas::exception::feature::Messaging,
+                                             public std::exception {
   struct Ancestors {
-    using Aspect = tunitas::scarpet::exception::aspect::Exiting;
-    using Usage = tunitas::app::exception::feature::Usage;
-    using Messaging = tunitas::app::exception::Messaging;
+    using Usage = tunitas::application::exception::feature::Usage;
+    using Messaging = tunitas::exception::feature::Messaging;
     using Exception = std::exception;
   };
 public:
   inline explicit Usage(std::string const &NAME);
-  inline Usage(std::string const &NAME, sys::exits::Code);
-  auto what() const noexcept -> char const * final;
-  auto stream() const noexcept -> std::ostream & final;
-  auto code() const noexcept -> sys::exits::Code final;
+  inline Usage(std::string const &NAME, exits::Code);
+  auto what() const noexcept -> char const * override final;
+  auto stream() const noexcept -> std::ostream & override final;
+  auto exit() const noexcept -> exits::Code override final;
+  auto code() const noexcept -> exits::Code override final;
 private:
   static auto format(std::string const &NAME) -> std::string;
 };
 #endiv
 #divert <ipp>
-#import sys.exits.constants
-app::authgen::exception::Usage::Usage(std::string const &NAME)
-  : Usage{NAME, sys::exits::OK}
-{ }
-app::authgen::exception::Usage::Usage(std::string const &NAME, sys::exits::Code code)
-  : Ancestors::Usage{code}
-  , Ancestors::Messaging{format(NAME)}
-  , Ancestors::Exception{}
-{ }
+#import app.exits.constants
+namespace app::authgen::exception {
+  Usage::Usage(std::string const &NAME)
+    : Usage{NAME, exits::OK}
+  { }
+  Usage::Usage(std::string const &NAME, exits::Code code)
+    : Ancestors::Usage{code}
+    , Ancestors::Messaging{format(NAME)}
+  { }
+}
 #endiv
 #divert <cpp>
 #import std.ostringstream
 namespace app::authgen::exception {
+  auto Usage::what() const noexcept -> char const *     { return Ancestors::Messaging::what(); }
+  auto Usage::stream() const noexcept -> std::ostream & { return Ancestors::Usage::stream(); }
+  auto Usage::exit() const noexcept -> exits::Code      { return Ancestors::Usage::code(); }
+  auto Usage::code() const noexcept -> exits::Code      { return Ancestors::Usage::code(); }
   auto Usage::format(std::string const &NAME) -> std::string {
     std::ostringstream buf;
-    buf << "Generate a Certificate Authority (CA) as a self-signed certificate\n"
+    buf << "Generate a Certificate Authority (CA) as a self-signed certificate"
         << '\n'
-        << "usage: " << NAME << " [...options...] [...fields...]\n"
+        << "\nusage: " << NAME << " [...options...] [...fields...]"
         << '\n'
-        << "X.509 Field Values:\n"
+        << "\nX.509 Field Values:"
         << '\n'
-        << "  C=country                        optional, ISO 3166-1 alpha-2)\n"
-        << "  ST=state                         optional, full name, do not abbreviate\n"
-        << "  L=locality                       optional, full name, do not abbreviate\n"
-        << "  O=organization                   optional, legal business name, should be canonical\n"
-        << "  OU=organizational unit           optional\n"
-        << "  CN=common name                   leave blank, this is not helpful in a Certificate Authority\n"
+        << "\n  C=country                        optional, ISO 3166-1 alpha-2)"
+        << "\n  ST=state                         optional, full name, do not abbreviate"
+        << "\n  L=locality                       optional, full name, do not abbreviate"
+        << "\n  O=organization                   optional, legal business name, should be canonical"
+        << "\n  OU=organizational unit           optional"
+        << "\n  CN=common name                   leave blank, this is not helpful in a Certificate Authority"
 #if 0
       // [[FIXTHIS]] not yet ... this is not yet a field in module-openssl <= 0.3.0-0.devel
-        << "  eA=email                         leave blank, this is not helpful in a Certificate Authority\n"
+        << "\n  eA=email                         leave blank, this is not helpful in a Certificate Authority"
 #endif
         << '\n'
-        << "Generation Options\n"
+        << "\nGeneration Options"
         << '\n'
-        << "--generate-common-name             generate the common name with 256 bits\n"
-        << "         --generate-cn             this option precludes the use of CN=name\n"
-        << "               --gencn\n"
+        << "\n--generate-common-name             generate the common name with 256 bits"
+        << "\n         --generate-cn             this option precludes the use of CN=name"
+        << "\n               --gencn"
         << '\n'
-        << "--private-side=FILEPATH            write the private key to the FILEPATH\n"
-        << " --private-key=FILEPATH            simpler\n"
-        << "     --private=FILEPATH            simplest\n"
+        << "\n--private-side=FILEPATH            write the private key to the FILEPATH"
+        << "\n --private-key=FILEPATH            simpler"
+        << "\n     --private=FILEPATH            simplest"
         << '\n'
-        << "--public-side=FILEPATH             write the public certificate to the FILEPATH\n"
-        << " --public-crt=FILEPATH             simpler\n"
-        << "     --public=FILEPATH             simplest\n"
+        << "\n--public-side=FILEPATH             write the public certificate to the FILEPATH"
+        << "\n --public-crt=FILEPATH             simpler"
+        << "\n     --public=FILEPATH             simplest"
         << '\n'
-        << "General Options:\n"
+        << "\nGeneral Options:"
         << '\n'
-        << "--usage, --help, -h                emit this message, and exit\n"
-        << "--version, -V                      emit the package version, and exit\n"
-        << "--dry-run, --dryrun, -y            dry run, do not start the server\n"
-        << "--warnings, --warning, -w          emit warnings\n"
-        << "--quiet, -q                        be quiet, emit no notices or warnings\n"
-        << "--verbose, -v                      be verbose (independent of --quiet)\n"
-        << "--debug, -d                        debug output (you should not need this)"; // no '\n'
+        << "\n--usage, --help, -h                emit this message, and exit"
+        << "\n--version, -V                      emit the package version, and exit"
+        << "\n--dry-run, --dryrun, -y            dry run, do not start the server"
+        << "\n--warnings, --warning, -w          emit warnings"
+        << "\n--quiet, -q                        be quiet, emit no notices or warnings"
+        << "\n--verbose, -v                      be verbose (independent of --quiet)"
+        << "\n--debug, -d                        debug output (you should not need this)";
     return buf.str();
-  }
-  auto Usage::what() const noexcept -> char const * {
-    return Ancestors::Messaging::what();
-  }
-  auto Usage::stream() const noexcept -> std::ostream & {
-    return Ancestors::Usage::stream();
-  }
-  auto Usage::code() const noexcept -> sys::exits::Code {
-    return Ancestors::Usage::code();
   }
 }
 #endiv

@@ -90,26 +90,29 @@ auto tests::unit::model::Fixture::test_proof_Definition() -> void {
 auto tests::unit::model::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"model"};
-  {
-    Stream bas{"basic"};
-    bas << call("Model", &Fixture::test_basic_Model)
-        << call("Contexts", &Fixture::test_basic_Contexts)
-        << call("Keys", &Fixture::test_basic_Keys)
-        << call("Services", &Fixture::test_basic_Services)
-        << call("Proofs", &Fixture::test_basic_Proofs)
-      ;
-    series << move(bas);
-  } {
-    Stream ser{"service"};
-    ser << call("Definition", &Fixture::test_service_Definition)
-      ;
-    series << move(ser);
-  } {
-    Stream pro{"proof"};
-    pro << call("Definition", &Fixture::test_proof_Definition)
-      ;
-    series << move(pro);
-  }
+  series << []() {
+              Stream bas{"basic"};
+              bas << call("Model", &Fixture::test_basic_Model)
+                  << call("Contexts", &Fixture::test_basic_Contexts)
+                  << call("Keys", &Fixture::test_basic_Keys)
+                  << call("Services", &Fixture::test_basic_Services)
+                  << call("Proofs", &Fixture::test_basic_Proofs)
+                ;
+              return move(bas);
+            }()
+         << []() {
+              Stream ser{"service"};
+              ser << call("Definition", &Fixture::test_service_Definition)
+                ;
+              return move(ser);
+            }()
+         << []() {
+              Stream pro{"proof"};
+              pro << call("Definition", &Fixture::test_proof_Definition)
+                ;
+              return move(pro);
+            }()
+    ;
   return finalize(series);
 }
 #endiv

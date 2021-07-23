@@ -18,7 +18,7 @@ namespace app::exception {
   //     ...
   //     throw Version{"program"};
   //     ...
-  //   } catch (tunitas::app::exception::Generic const &g) {
+  //   } catch (tunitas::application::exception::Generic const &g) {
   //     g.stream() << g << '\n';
   //     return g.code();          ... equivalently ::exit(g.code());
   //   }
@@ -27,48 +27,48 @@ namespace app::exception {
 }
 #endiv
 #divert <hpp>
-#import tunitas.exception.Aspect
-#import tunitas.app.exception.Aspect
-#import tunitas.scarpet.exception.Aspect
-#import tunitas.app.exception.feature.Version
+#import app.exception.Aspect
+#import tunitas.application.exception.Aspect
+#import tunitas.application.exception.feature.Version
 #import tunitas.exception.feature.Messaging
-#import tunitas.scarpet.exception.aspect.Exiting
+#import tunitas.exception.Aspect
+#import tunitas.scarpet.exception.Aspect
 #import std.string
 #import std.exception
-class app::exception::Version : public tunitas::exception::Aspect,
-                                public tunitas::app::exception::Aspect,
-                                public tunitas::scarpet::exception::Aspect,
-                                public tunitas::scarpet::exception::aspect::Exiting, // require an aspect
-                                public tunitas::app::exception::feature::Version, //    implement a feature
-                                public tunitas::exception::feature::Messaging,
-                                public std::exception {
+class app::exception::Version final : public Aspect,
+                                      public tunitas::application::exception::Aspect,
+                                      public tunitas::application::exception::feature::Version,
+                                      public tunitas::exception::feature::Messaging,
+                                      public tunitas::exception::Aspect,
+                                      public tunitas::scarpet::exception::Aspect,
+                                      public std::exception {
   struct Ancestors {
     struct Aspects {
-      using Tunitas = tunitas::exception::Aspect;
-      using App = tunitas::app::exception::Aspect;
-      using Scarpet = tunitas::scarpet::exception::Aspect;
-      using Exiting = tunitas::scarpet::exception::aspect::Exiting;
+      using App = app::exception::Aspect;
     };
     struct Features {
-      using Version = tunitas::app::exception::feature::Version;
+      using Version = tunitas::application::exception::feature::Version;
       using Messaging = tunitas::exception::feature::Messaging;
     };
     using Exception = std::exception;
   };
 public:
   inline explicit Version(std::string const &NAME);
-  auto what() const noexcept -> char const * final;
-  auto stream() const noexcept -> std::ostream & final;
-  auto code() const noexcept -> sys::exits::Code final;
+  auto what() const noexcept -> char const * override final;
+  auto stream() const noexcept -> std::ostream & override final;
+  auto exit() const noexcept -> exits::Code override final;
+  auto code() const noexcept -> exits::Code override final;
 private:
   static auto format(std::string const &NAME) -> std::string;
 };
 #endiv
 #divert <ipp>
-#import sys.exits.constants
-app::exception::Version::Version(std::string const &NAME)
-  : Ancestors::Features::Messaging{format(NAME)}
-{ }
+#import app.exits.constants
+namespace app::exception {
+  Version::Version(std::string const &NAME)
+    : Ancestors::Features::Messaging{format(NAME)}
+  { }
+}
 #endiv
 #divert <cpp>
 #import std.ostringstream
@@ -79,14 +79,9 @@ namespace app::exception {
     buf << "version: " << NAME << " " << autotools::autoconf::Config<tunitas::scarpet::CONFIG>::version();
     return buf.str();
   }
-  auto Version::what() const noexcept -> char const * {
-    return Ancestors::Features::Messaging::what();
-  }
-  auto Version::stream() const noexcept -> std::ostream & {
-    return Ancestors::Features::Version::stream();                                                         
-  }
-  auto Version::code() const noexcept -> sys::exits::Code {
-    return Ancestors::Features::Version::code();
-  }
+  auto Version::what() const noexcept -> char const *     { return Ancestors::Features::Messaging::what(); }
+  auto Version::stream() const noexcept -> std::ostream & { return Ancestors::Features::Version::stream(); }
+  auto Version::exit() const noexcept -> exits::Code      { return Ancestors::Features::Version::code(); }
+  auto Version::code() const noexcept -> exits::Code      { return Ancestors::Features::Version::code(); }
 }
 #endiv

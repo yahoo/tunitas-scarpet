@@ -5,7 +5,7 @@
 // For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <hpp>
 #import app.signify.Configuration
-#import sys.exits.Code
+#import app.exits.Code
 namespace app::signify {
   //
   // Process ... sign the CSR, return the certificate
@@ -14,7 +14,7 @@ namespace app::signify {
   //
   //   ...oh come on...
   //
-  auto process(Configuration const &) -> sys::exits::Code;
+  auto process(Configuration const &) -> exits::Code;
 }
 #endiv
 #divert <cpp>
@@ -31,9 +31,9 @@ namespace app::signify {
 #import std.filesystem.path
 #import std.ofstream
 #import std.string_view_literals
-#import sys.exits.constants
+#import app.exits.constants
 #import sys.posix.exists // equivalently: std::filesystem::exists
-auto app::signify::process(Configuration const &cfg) -> sys::exits::Code try {
+auto app::signify::process(Configuration const &cfg) -> exits::Code try {
   using namespace openssl;
   auto ca_key = pem::load<evp::PKey>(*cfg.authority_private_side);
   auto ca_crt = pem::load<x509::Crt>(*cfg.authority_public_side);
@@ -55,13 +55,13 @@ auto app::signify::process(Configuration const &cfg) -> sys::exits::Code try {
   outbound.exceptions(std::ios::badbit|std::ios::failbit);
   outbound.open(*cfg.certificate);
   outbound << pem::to_string(their_crt);
-  return sys::exits::OK;
+  return exits::OK;
 } catch (std::error_code const &ec) {
   if (openssl::error::Code::PEM != ec) {
     throw;
   }
   std::cerr << NAME << ": error, bad PEM encoding among the input files\n";
-  return sys::exits::FAIL;
+  return exits::FAIL;
 } catch (std::system_error const &ec) {
   auto present = [](std::filesystem::path const &candidate) -> std::string_view {
                    return sys::posix::exists(candidate) ? "present"sv :  "absent"sv;
@@ -72,6 +72,6 @@ auto app::signify::process(Configuration const &cfg) -> sys::exits::Code try {
            << "  [in]csr:    " << *cfg.request << " is " << present(*cfg.request) << '\n'
            << " [out]crt:    " << *cfg.certificate << " is " << present(*cfg.certificate) << '\n'
     ;
-  return sys::exits::FAIL;
+  return exits::FAIL;
 }
 #endiv

@@ -17,9 +17,9 @@ namespace tunitas::scarpet::answer::processor {
   //   by inheritance, see e.g. PublicKey<CONTROLLER> or siblings
   //
   //   class my::Single<SOMETHING> : public Single<dns::TXT> {
-  //     using ancestor = Single<dns::TXT>;
+  //     using Ancestor = Single<dns::TXT>;
   //   public:
-  //      using ancestor::Single;
+  //      using Ancestor::Single;
   //   };
   //
   template<dns::Type> class Single;

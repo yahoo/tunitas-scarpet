@@ -1,0 +1,72 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+// For terms, see the LICENSE file at the top of this repository.
+#divert <fpp>
+namespace tests::authgen { class Options; }
+#endiv
+#divert <hpp>
+#import cppunit.Test
+#import cppunit.test.Fixture
+#import tests.run.Driver
+#import app.authgen.Configuration
+class tests::authgen::Options : public cppunit::test::Fixture, private run::Driver<::app::authgen::Configuration> {
+  struct Ancestors {
+    using Fixture = cppunit::test::Fixture;
+    using Driver = run::Driver<::app::authgen::Configuration>;
+  };
+public:
+  auto test_h() -> void;
+  auto test_help() -> void;
+  auto test_usage() -> void;
+  //
+  auto test_V() -> void;
+  auto test_version() -> void;
+  //
+  static auto suite() -> cppunit::Test *;
+private:
+  // here the args are argv[1]..argv[argc-1]] with the argv[0] being implicit and supplied within
+  template<typename... STRINGS> auto drive(STRINGS ...args) -> void requires (true && ... && tunitas::required::Stringable<STRINGS>);
+};
+#endiv
+#divert <ipp>
+#import app.authgen.main
+#import std.move
+namespace tests::authgen {
+  template<typename... STRINGS> auto Options::drive(STRINGS ...args) -> void requires (true && ... && tunitas::required::Stringable<STRINGS>) {
+    Ancestors::Driver::invoke(app::authgen::main, std::move(args)...);
+  }
+}
+#endiv
+#divert <cpp>
+auto tests::authgen::Options::test_h() -> void       { drive("-h"); }
+auto tests::authgen::Options::test_help() -> void    { drive("--help"); }
+auto tests::authgen::Options::test_usage() -> void   { drive("--usage"); }
+auto tests::authgen::Options::test_V() -> void       { drive("-V"); }
+auto tests::authgen::Options::test_version() -> void { drive("--version"); }
+#import tests.authgen.Options
+#import rigging.suite.io
+auto tests::authgen::Options::suite() -> cppunit::Test * {
+  using namespace rigging::suite;
+  Stream series{"authgen"};
+  series << []() {
+              Stream use{"usage"};
+              use << call("-h", &Options::test_h)
+                  << call("--help", &Options::test_help)
+                  << call("--usage", &Options::test_usage)
+                ;
+              return move(use);
+            }()
+         << []() {
+              Stream ver{"version"};
+              ver << call("-V", &Options::test_V)
+                  << call("--version", &Options::test_version)
+                ;
+              return move(ver);
+            }()
+    ;
+  return finalize(series);
+}
+#endiv

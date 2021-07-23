@@ -38,7 +38,7 @@ namespace tunitas::scarpet {
   template<typename ...REST> auto dns::re_string(Label const &first, REST const &...rest) -> std::string {
     auto tos = to_string(first);
     if constexpr(0 == sizeof...(REST)) {
-        return std::move(tos);
+      return tos;
     } else {
       return tos + '.' + re_string(rest...);
     }

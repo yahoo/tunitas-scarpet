@@ -10,7 +10,7 @@ namespace tunitas::scarpet::did::document::json {
   // Descendants only.
   // [[FUTURE]] support the various the idiosyncratic binary encodings for JSON...
   //
-  // This is an ancestor, but most of the function lives here.
+  // This is an Ancestor, but most of the function lives here.
   //
   // Usage: 
   //
@@ -26,7 +26,7 @@ namespace tunitas::scarpet::did::document::json {
 #import std.ostream
 #import std.unique_ptr
 class tunitas::scarpet::did::document::json::Writer : public document::Visitor<json::Value, CONSTIE> {
-  using ancestor = document::Visitor<json::Value, CONSTIE>;
+  using Ancestor = document::Visitor<json::Value, CONSTIE>;
 protected:
   virtual ~Writer() = default;
   enum Mode { COMPACT, PRETTY };

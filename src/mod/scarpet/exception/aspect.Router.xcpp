@@ -14,7 +14,7 @@ namespace mod::scarpet::exception::aspect {
   // Usage:
   //
   //   class my::Problem : public aspect::Router, public Aspect, public std::invalid_argument {
-  //     struct ancestors { ... };
+  //     struct Ancestors { ... };
   //   public:
   //     Problem(...);
   //     auto what() const noexcept -> char const *;

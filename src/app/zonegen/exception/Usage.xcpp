@@ -1,0 +1,71 @@
+// This is -*- c++ -*- in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+namespace app::zonegen::exception {
+  //
+  // The zonegen usage message, as an application exception
+  //
+  // Usage: (sic)
+  //
+  //   throw Usage{"program"};
+  //
+  // Usage: (sic)
+  //
+  //   try {
+  //     ...
+  //     throw Usage{"program"};
+  //     ...
+  //   } catch (exception::aspect::Quitting const &g) {
+  //     g.stream() << g << '\n';
+  //     return g.code();          ... equivalently ::exit(g.code());
+  //   }
+  //
+  class [[nodiscard]] Usage;
+}
+#endiv
+#divert <hpp>
+#import app.exception.partial.Usage
+class app::zonegen::exception::Usage final : public app::exception::partial::Usage {
+  using Ancestor = app::exception::partial::Usage;
+public:
+  inline explicit Usage(Arguments::Name);
+  inline explicit Usage(Arguments::Name, exits::Code);
+private:
+  static auto format(Arguments::Name NAME) -> Arguments::Message;
+};
+#endiv
+#divert <ipp>
+#import app.exits.constants
+namespace app::zonegen::exception {
+  Usage::Usage(Arguments::Name NAME) : Usage{NAME, exits::OK} { }
+  Usage::Usage(Arguments::Name NAME, exits::Code code) : Ancestor{format(NAME), code} { }
+}
+#endiv
+#divert <cpp>
+#import std.ostringstream
+#import app.well_known
+namespace app::zonegen::exception {
+  auto Usage::format(Arguments::Name NAME) -> Arguments::Message {
+    std::ostringstream buf;
+    buf << "Generate the DNS"
+        << '\n'
+        << "\nusage: " << NAME << " [...options...]"
+        << '\n'
+        << "\n[[TODO]] and on and on."
+        << '\n'
+        << "\nGeneral Options:"
+        << '\n'
+        << "\n--usage, --help, -h                       emit this message, and exit"
+        << "\n--version, -V                             emit the package version, and exit"
+        << "\n--dry-run, --dryrun, -y                   dry run, do not start the server"
+        << "\n--warnings, --warning, -w                 emit warnings"
+        << "\n--quiet, -q                               be quiet, emit no notices or warnings"
+        << "\n--verbose, -v                             be verbose (independent of --quiet)"
+        << "\n--debug, -d                               debug output (you should not need this)";
+    return buf.str();
+  }
+}
+#endiv

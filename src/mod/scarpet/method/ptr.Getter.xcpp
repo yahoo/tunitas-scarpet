@@ -34,10 +34,10 @@ namespace mod::scarpet::method::ptr {
 #forward tunitas.scarpet.Club
 #import tunitas.Outcome
 class mod::scarpet::method::ptr::Getter : public method::Prototype {
-  using ancestor = Prototype;
+  using Ancestor = Prototype;
 protected:
   ~Getter() = default;
-  using ancestor::Prototype;
+  using Ancestor::Prototype;
   //
   // All the type aliases here make it easy to cut & past the idiom above into operator()() of the descendant
   // The type alias set approximates 'using namespace tunitas::scarpet' here within this structure.

@@ -9,7 +9,7 @@ lib_libmod_scarpet_la_LIBADD = \
   $(lib_libtunitas_scarpet_la) \
   $(lib_libautotools_autoconf_la) \
   $(lib_libwant_la) \
-  -lapache-httpd-module \
+  -lapache-httpd \
   -lares-module \
   -lsys-posix-module \
   $(end)

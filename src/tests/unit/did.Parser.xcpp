@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::did { class Parser; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 #import tunitas.scarpet.did.Parser
 class tests::unit::did::Parser : public cppunit::test::Fixture {
 public:
@@ -173,11 +172,8 @@ auto tests::unit::did::Parser::test_case_06() -> void {
   CPPUNIT_ASSERT_EQUAL("flannel"s, s_str(method(parsed)));
   CPPUNIT_ASSERT_EQUAL("cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"s, s_str(identifier(parsed)));
 }
-#import unit.rigging.suite.Stream
-#import unit.rigging.suite.add
-#import unit.rigging.suite.call
 auto tests::unit::did::Parser::suite() -> cppunit::Test * {
-  using namespace ::unit::rigging::suite;
+  using namespace rigging::suite;
   Stream series{"Parser"};
   series << call("empty", &Parser::test_empty)
          << call("slash", &Parser::test_slash)
@@ -186,35 +182,37 @@ auto tests::unit::did::Parser::suite() -> cppunit::Test * {
          << call("did::", &Parser::test_did_colon_colon)
          << call("did:m:", &Parser::test_did_colon_identifier_empty)
          << call("did::i", &Parser::test_did_colon_method_empty)
+         << []() {
+              Stream good("good");
+              good << call("01", &Parser::test_good_01)
+                   << call("02", &Parser::test_good_02)
+                   << call("03", &Parser::test_good_03)
+                   << call("04", &Parser::test_good_04)
+                ;
+              return move(good);
+            }()
+         << []() {
+              Stream fail("fail");
+              fail << call("01", &Parser::test_fail_01)
+                   << call("02", &Parser::test_fail_02)
+                   << call("03", &Parser::test_fail_03)
+                   << call("04", &Parser::test_fail_04)
+                   << call("05", &Parser::test_fail_05)
+                ;
+              return move(fail);
+            }()
+         << []() {
+              Stream cas("case");
+              cas << call("01", &Parser::test_case_01)
+                  << call("02", &Parser::test_case_02)
+                  << call("03", &Parser::test_case_03)
+                  << call("04", &Parser::test_case_04)
+                  << call("05", &Parser::test_case_05)
+                  << call("06", &Parser::test_case_06)
+                ;
+              return move(cas);
+            }()
     ;
-  {
-    Stream good("good");
-    good << call("01", &Parser::test_good_01)
-         << call("02", &Parser::test_good_02)
-         << call("03", &Parser::test_good_03)
-         << call("04", &Parser::test_good_04)
-      ;
-    series << move(good);
-  } {
-    Stream fail("fail");
-    fail << call("01", &Parser::test_fail_01)
-         << call("02", &Parser::test_fail_02)
-         << call("03", &Parser::test_fail_03)
-         << call("04", &Parser::test_fail_04)
-         << call("05", &Parser::test_fail_05)
-      ;
-    series << move(fail);
-  } {
-    Stream cas("case");
-    cas << call("01", &Parser::test_case_01)
-        << call("02", &Parser::test_case_02)
-        << call("03", &Parser::test_case_03)
-        << call("04", &Parser::test_case_04)
-        << call("05", &Parser::test_case_05)
-        << call("06", &Parser::test_case_06)
-      ;
-    series << move(cas);
-  }
-  return series.release();
+  return finalize(series);
 }
 #endiv

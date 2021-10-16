@@ -1,0 +1,40 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+namespace app::options::exception {
+  //
+  // The aspect of an options exception.
+  // Descendants only.
+  //
+  // Specification:
+  //
+  //   There was a problem with the options (e.g. during parsing).
+  //   This is fatal to the application.
+  //
+  // Design:
+  //
+  //   All the application options exceptions will inherit from partial::Quitting.
+  //
+  // Usage:
+  //
+  //   In the usual late-binding MI stylings (so you can see what's going on)
+  //
+  //   class my::Proboem : public Aspect, public app::exception::Aspect, public partial::Quitting {
+  //     ...more...
+  //   };
+  //
+  struct Aspect;
+}
+#endiv
+#divert <hpp>
+struct app::options::exception::Aspect {
+protected:
+  [[key_method]] virtual ~Aspect() = default;
+public:
+  Aspect() = default;
+  virtual auto what() const noexcept -> char const * = 0;
+};
+#endiv

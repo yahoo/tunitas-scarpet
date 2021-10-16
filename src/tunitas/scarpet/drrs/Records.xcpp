@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tunitas.scarpet.drrs.Record.declaration
 namespace tunitas::scarpet::drrs {
@@ -23,10 +24,10 @@ namespace tunitas::scarpet::drrs {
 #import std.list
 namespace tunitas::scarpet {
   template<dns::Type TYPE> struct drrs::Records : public record::Prototype, public std::list<Record<TYPE>> {
-    using ancestor = std::list<Record<TYPE>>;
+    using Ancestor = std::list<Record<TYPE>>;
   public:
     Records() = default;
-    using ancestor::list;
+    using Ancestor::list;
   };
 };
 #endiv

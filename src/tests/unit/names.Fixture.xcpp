@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tunitas.scarpet.dns
 namespace tests::unit::names {
@@ -10,8 +11,6 @@ namespace tests::unit::names {
 }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 class tests::unit::names::Fixture : public cppunit::test::Fixture {
 public:
   template<typename NAME> auto test_generally() -> void;
@@ -64,28 +63,28 @@ namespace tests::unit::names {
 #import tunitas.scarpet.dns.Labels
 #import tunitas.scarpet.dns.Label
 #import tunitas.scarpet.dns.Name
-#import rigging.suite.io
 auto tests::unit::names::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"names"};
   namespace subjecting = ::tunitas::scarpet;
   series << call("Club", &Fixture::test_generally<subjecting::Club>)
          << call("Protocol", &Fixture::test_generally<subjecting::Protocol>)
+         << []() {
+              Stream did{"did"};
+              did << call("Method", &Fixture::test_generally<subjecting::did::Method>)
+                  << call("Identifier", &Fixture::test_generally<subjecting::did::Identifier>)
+                ;
+              return move(did);
+            }()
+         << []() {
+              Stream dns{"dns"};
+              dns << call("Labels", &Fixture::test_generally<subjecting::dns::Labels>)
+                  << call("Label", &Fixture::test_generally<subjecting::dns::Label>)
+                  << call("Name", &Fixture::test_generally<subjecting::dns::Name>)
+                ;
+              return move(dns);
+            }()
     ;
-  {
-    Stream did{"did"};
-    did << call("Method", &Fixture::test_generally<subjecting::did::Method>)
-        << call("Identifier", &Fixture::test_generally<subjecting::did::Identifier>)
-      ;
-    series << add(did.release());
-  } {
-    Stream dns{"dns"};
-    dns << call("Labels", &Fixture::test_generally<subjecting::dns::Labels>)
-        << call("Label", &Fixture::test_generally<subjecting::dns::Label>)
-        << call("Name", &Fixture::test_generally<subjecting::dns::Name>)
-      ;
-    series << add(dns.release());
-  }
   return finalize(series);
 }
 #endiv

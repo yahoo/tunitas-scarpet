@@ -1,9 +1,10 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
-namespace tunitas::scarpet::options {
+namespace tunitas::scarpet::application::options {
   //
   // The generalities of the options Parser among all the applications (at the library data).
   // Descendants only.
@@ -16,7 +17,7 @@ namespace tunitas::scarpet::options {
   // Usage:
   //
   //   class my::Parser : public tunitas::scarpet::options::Parser {
-  //     using ancestor = tunitas::scarpet::options::Parser;
+  //     using Ancestor = tunitas::scarpet::options::Parser;
   //   public:
   //     Parser(Specification const &, Configuration &);
   //   protected:
@@ -37,16 +38,16 @@ namespace tunitas::scarpet::options {
 }
 #endiv
 #divert <hpp>
-#import tunitas.app.options.Args
-#import tunitas.scarpet.options.parser.Result
-#forward tunitas.scarpet.options.Specification
-class tunitas::scarpet::options::Parser {
+#import tunitas.application.options.Args
+#import tunitas.scarpet.application.options.parser.Result
+#forward tunitas.scarpet.application.options.Specification
+class tunitas::scarpet::application::options::Parser {
 protected:
   ~Parser() = default;
   inline explicit Parser(Specification const &spc) : spc{spc} { }
   Specification const &spc;
 public:
-  using Result = scarpet::options::parser::Result;
+  using Result = parser::Result;
   // The descendant must declare&define
   // auto operator()(Args) -> Result;
 };

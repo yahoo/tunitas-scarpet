@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::url { class Parser; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 #import tunitas.scarpet.url.Parser
 class tests::unit::url::Parser : public cppunit::test::Fixture {
 public:
@@ -176,11 +175,8 @@ auto tests::unit::url::Parser::test_case_06() -> void {
   CPPUNIT_ASSERT(ok(parsed));
   CPPUNIT_ASSERT_EQUAL("did:flannel:cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"s, urn(parsed));
 }
-#import unit.rigging.suite.Stream
-#import unit.rigging.suite.add
-#import unit.rigging.suite.call
 auto tests::unit::url::Parser::suite() -> cppunit::Test * {
-  using namespace ::unit::rigging::suite;
+  using namespace rigging::suite;
   Stream series{"Parser"};
   series << call("empty", &Parser::test_empty)
          << call("slash", &Parser::test_slash)
@@ -199,18 +195,18 @@ auto tests::unit::url::Parser::suite() -> cppunit::Test * {
          << call("bad_urn_1_with_slash", &Parser::test_bad_urn_1_with_slash)
          << call("bad_urn_2_with_slash", &Parser::test_bad_urn_2_with_slash)
          << call("bad_urn_3_not_urn", &Parser::test_bad_urn_3_not_isurn)
+         << []() {
+              Stream cas{"case"};
+              cas << call("01", &Parser::test_case_01)
+                  << call("02", &Parser::test_case_02)
+                  << call("03", &Parser::test_case_03)
+                  << call("04", &Parser::test_case_04)
+                  << call("05", &Parser::test_case_05)
+                  << call("06", &Parser::test_case_06)
+                ;
+              return move(cas);
+            }()
     ;
-  {
-    Stream cas{"case"};
-    cas << call("01", &Parser::test_case_01)
-        << call("02", &Parser::test_case_02)
-        << call("03", &Parser::test_case_03)
-        << call("04", &Parser::test_case_04)
-        << call("05", &Parser::test_case_05)
-        << call("06", &Parser::test_case_06)
-      ;
-    series << move(cas);
-  }
-  return series.release();
+  return finalize(series);
 }
 #endiv

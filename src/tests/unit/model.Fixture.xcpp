@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::model { class Fixture; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 class tests::unit::model::Fixture : public cppunit::test::Fixture {
 public:
   auto test_basic_Model() -> void;
@@ -85,30 +84,32 @@ auto tests::unit::model::Fixture::test_proof_Definition() -> void {
     }
   }
 }
-#import rigging.suite.io
 auto tests::unit::model::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"model"};
-  {
-    Stream bas{"basic"};
-    bas << call("Model", &Fixture::test_basic_Model)
-        << call("Contexts", &Fixture::test_basic_Contexts)
-        << call("Keys", &Fixture::test_basic_Keys)
-        << call("Services", &Fixture::test_basic_Services)
-        << call("Proofs", &Fixture::test_basic_Proofs)
-      ;
-    series << move(bas);
-  } {
-    Stream ser{"service"};
-    ser << call("Definition", &Fixture::test_service_Definition)
-      ;
-    series << move(ser);
-  } {
-    Stream pro{"proof"};
-    pro << call("Definition", &Fixture::test_proof_Definition)
-      ;
-    series << move(pro);
-  }
+  series << []() {
+              Stream bas{"basic"};
+              bas << call("Model", &Fixture::test_basic_Model)
+                  << call("Contexts", &Fixture::test_basic_Contexts)
+                  << call("Keys", &Fixture::test_basic_Keys)
+                  << call("Services", &Fixture::test_basic_Services)
+                  << call("Proofs", &Fixture::test_basic_Proofs)
+                ;
+              return move(bas);
+            }()
+         << []() {
+              Stream ser{"service"};
+              ser << call("Definition", &Fixture::test_service_Definition)
+                ;
+              return move(ser);
+            }()
+         << []() {
+              Stream pro{"proof"};
+              pro << call("Definition", &Fixture::test_proof_Definition)
+                ;
+              return move(pro);
+            }()
+    ;
   return finalize(series);
 }
 #endiv

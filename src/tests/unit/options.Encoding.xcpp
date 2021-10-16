@@ -6,8 +6,6 @@
 namespace tests::unit::options { class Encoding; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 #import tunitas.scarpet.options.Encoding
 class tests::unit::options::Encoding : public cppunit::test::Fixture {
 public:
@@ -128,7 +126,6 @@ auto tests::unit::options::Encoding::test_from_string_nothrow_bad() -> void {
     CPPUNIT_ASSERT(false);
   }
 }
-#import rigging.suite.io
 auto tests::unit::options::Encoding::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series("Encoding");

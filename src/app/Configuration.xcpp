@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace app {
   //
@@ -27,13 +28,13 @@ namespace app {
 }
 #endiv
 #divert <hpp>
-#import tunitas.scarpet.Configuration
-class app::Configuration : public ::tunitas::scarpet::Configuration {
-  using ancestor = ::tunitas::scarpet::Configuration;
+#import tunitas.scarpet.application.Configuration
+class app::Configuration : public ::tunitas::scarpet::application::Configuration {
+  using Ancestor = ::tunitas::scarpet::application::Configuration;
 protected:
   ~Configuration() = default;
 public:
-  inline explicit Configuration(Program const &program) : ancestor{program} { }
+  inline explicit Configuration(Program const &program) : Ancestor{program} { }
 };
 #import options.logging
 #endiv

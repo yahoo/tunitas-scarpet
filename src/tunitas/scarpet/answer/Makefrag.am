@@ -1,7 +1,8 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
 # Copyright Yahoo Inc. 2021
 # Licensed under the terms of the Apache-2.0 license.
-# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 
 lib_libtunitas_scarpet_answer_la = lib/libtunitas-scarpet-answer.la
 lib_libtunitas_scarpet_answer_la_LIBADD = -lares-module
@@ -100,12 +101,15 @@ lib_libtunitas_scarpet_answer_la_SOURCES = \
   obj/src/tunitas/scarpet/answer/response.Prototype.cpp \
   obj/src/tunitas/scarpet/answer/Response.cpp \
   $(end)
-
-$(scold_cxxdir)/tunitas/scarpet/answer/dependencies.mk: Makefile
-	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_answer_la_SOURCES))
-	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_answer_la_SOURCES))
-	@test -e $@
+#
+$(scold_cxxdir)/tunitas/scarpet/answer/dependencies.mk: $(lib_libtunitas_scarpet_answer_la_SOURCES)
+$(lib_libtunitas_scarpet_answer_la_SOURCES) : obj/src/%.cpp : src/%.xcpp
+	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
+	$(TF_V_DUN) test -e $@
+$(scold_cxxdir)/tunitas/scarpet/answer/dependencies.mk:
+	$(TF_V_DIS) $(call TF_DEPENDENCIES, $^)
+	$(TF_V_DUN) test -e $@
 include $(scold_cxxdir)/tunitas/scarpet/answer/dependencies.mk
-clean-local::
+clean-dependencies::
 	rm -f $(scold_cxxdir)/tunitas/scarpet/answer/dependencies.mk
 #end

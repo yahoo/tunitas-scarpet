@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tunitas.scarpet.drrs.Record.declaration
 namespace tunitas::scarpet::drrs {
@@ -16,13 +17,13 @@ namespace tunitas::scarpet::drrs {
 #import tunitas.scarpet.dns.Name
 namespace tunitas::scarpet::drrs {
   template<> struct Record<dns::SRV>  : public record::Prototype, public aspect::Endpoint<dns::Name> {
-    struct ancestors {
+    struct Ancestors {
       using Prototype = record::Prototype;
       using Endpoint = aspect::Endpoint<dns::Name>;
     };
   public:
     Record() = default;
-    // Though pass by reference here, but the endpoint will be copied in the ancestor's constructor
+    // Though pass by reference here, but the endpoint will be copied in the Ancestor's constructor
     inline Record(Priority, Weight, dns::Name const &endpoint);
   };
 }
@@ -30,7 +31,7 @@ namespace tunitas::scarpet::drrs {
 #divert <ipp>
 namespace tunitas::scarpet::drrs {
   Record<dns::SRV>::Record(Priority priority, Weight weight, dns::Name const &endpoint)
-    : ancestors::Endpoint{priority, weight, endpoint}
+    : Ancestors::Endpoint{priority, weight, endpoint}
   { }
 }
 #endiv

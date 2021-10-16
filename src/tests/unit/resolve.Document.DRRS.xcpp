@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tests.unit.resolve.Document.declaration
 namespace tests::unit::resolve {
@@ -9,8 +10,6 @@ namespace tests::unit::resolve {
 }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 #import tests.unit.resolve.aspect.Configuration
 #import tests.unit.resolve.aspect.Service
 namespace tests::unit::resolve {
@@ -59,17 +58,17 @@ namespace tests::unit::resolve {
     CPPUNIT_ASSERT(true);
   }
 }
-#import rigging.suite.io
 auto tests::unit::resolve::Document<tests::unit::resolve::DRRS>::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"document<DRRS>"};
-  {
-    Stream cas{"case"};
-    cas << call("01", &Document::test_case_01)
-        << call("02", &Document::test_case_02)
-      ;
-    series << move(cas);
-  }
+  series << []() {
+              Stream cas{"case"};
+              cas << call("01", &Document::test_case_01)
+                  << call("02", &Document::test_case_02)
+                ;
+              return move(cas);
+            }()
+    ;
   return finalize(series);
 }
 #endiv

@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::dns { class Fixture; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 class tests::unit::dns::Fixture : public cppunit::test::Fixture {
 public:
   auto test_Name() -> void;
@@ -120,33 +119,32 @@ auto tests::unit::dns::Fixture::test_usage_unparse() -> void {
 }
 #import tests.unit.dns.unparse.Function
 #import tests.unit.dns.unparse.Template
-#import rigging.suite.io
 auto tests::unit::dns::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"dns"};
   series << call("Name", &Fixture::test_Name)
          << call("Type", &Fixture::test_Type)
+         << []() {
+              Stream type{"type"};
+              type << call("constants", &Fixture::test_type_constants)
+                   << call("DAPTR", &Fixture::test_type_DAPTR)
+                ;
+              return move(type);
+            }()
+         << []() {
+              Stream use{"usage"};
+              use << call("unparse", &Fixture::test_usage_unparse)
+                ;
+              return move(use);
+            }()
+         << []() {
+              Stream unp{"unparse"};
+              unp << add<dns::uunpparrsee::Function>()
+                  << add<dns::uunpparrsee::Template>()
+                ;
+              return move(unp);
+            }()
     ;
-  {
-    Stream type{"type"};
-    type << call("constants", &Fixture::test_type_constants)
-         << call("DAPTR", &Fixture::test_type_DAPTR)
-      ;
-    series << move(type);
-  }
-  {
-    Stream use{"usage"};
-    use << call("unparse", &Fixture::test_usage_unparse)
-      ;
-    series << move(use);
-  }
-  {
-    Stream unp{"unparse"};
-    unp << add<dns::uunpparrsee::Function>()
-        << add<dns::uunpparrsee::Template>()
-      ;
-    series << move(unp);
-  }
   return finalize(series);
 }
 #endiv

@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tunitas.scarpet.answer.processor.Stanza.declaration
 namespace tunitas::scarpet::answer::processor {
@@ -19,16 +20,16 @@ namespace tunitas::scarpet::answer::processor {
 #divert <hpp>
 namespace tunitas::scarpet::answer::processor {
   template<> class Stanza<stanza::ID> : public Prototype, public ares::function::Query<Response<drrs::Record<dns::URI>>> {
-    using ancestor = ares::function::Query<Response<drrs::Record<dns::URI>>>;
+    using Ancestor = ares::function::Query<Response<drrs::Record<dns::URI>>>;
   public:
     inline explicit Stanza(State &);
-    auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void final;
+    auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void override final;
   };
 }
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::answer::processor {
-  Stanza<stanza::ID>::Stanza(State &response) : ancestor{response} { }
+  Stanza<stanza::ID>::Stanza(State &response) : Ancestor{response} { }
 }
 #endiv
 #divert <cpp>

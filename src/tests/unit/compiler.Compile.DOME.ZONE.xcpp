@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tests.unit.compiler.Compile.declaration
 #forward tunitas.scarpet.did.Document.DOME
@@ -15,8 +16,6 @@ namespace tests::unit::compiler {
 }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 namespace tests::unit::compiler {
   template<> class Compile<dome_zone::Source, dome_zone::Destination> : public cppunit::test::Fixture {
   public:
@@ -44,7 +43,6 @@ namespace tests::unit::compiler {
     CPPUNIT_ASSERT(!compiled);
   }
 }
-#import rigging.suite.io
 namespace tests::unit::compiler {
   auto Compile<dome_zone::Source, dome_zone::Destination>::suite() -> cppunit::Test * {
     using namespace ::rigging::suite;

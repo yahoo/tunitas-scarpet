@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tunitas.scarpet.did.document.Visitor
 namespace tunitas::scarpet::did::document {
@@ -34,12 +35,12 @@ namespace tunitas::scarpet::did::document {
 #import std.conditional
 namespace tunitas::scarpet::did {
   template<typename SERIALIZEE, document::Mutability THE_MUTABILITY> class document::Serializer : public Visitor<SERIALIZEE, THE_MUTABILITY> {
-    using ancestor = Visitor<SERIALIZEE, THE_MUTABILITY>;
+    using Ancestor = Visitor<SERIALIZEE, THE_MUTABILITY>;
   protected:
     virtual ~Serializer() = default;
     Serializer() = default;
   public:
-    using Serializee = typename ancestor::Visitee;
+    using Serializee = typename Ancestor::Visitee;
     virtual auto accept(Serializee &) -> void = 0;
   };
 }

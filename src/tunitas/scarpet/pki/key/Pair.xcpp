@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tunitas::scarpet::pki::key {
   //
@@ -24,10 +25,10 @@ namespace tunitas::scarpet::pki::key {
 #import tunitas.scarpet.pki.key.Privat
 #import tunitas.scarpet.pki.key.Publik
 class tunitas::scarpet::pki::key::Pair : private std::pair<Privat, Publik> {
-  using ancestor = std::pair<Privat, Publik>;
+  using Ancestor = std::pair<Privat, Publik>;
 public:
   Pair() = default;
-  using ancestor::pair;
+  using Ancestor::pair;
   inline auto privat() -> Privat & { return first; }
   inline auto privat() const -> Privat const & { return first; }
   inline auto publik() -> Publik & { return second; }

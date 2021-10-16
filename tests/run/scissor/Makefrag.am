@@ -1,0 +1,60 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+
+tests_run_scissor_TESTS = \
+  tests/run/scissor/option.help.test \
+  tests/run/scissor/option.dry-run.test \
+  tests/run/scissor/option.dryrun.test \
+  tests/run/scissor/option.d.test \
+  tests/run/scissor/option.generate-common-name.test \
+  tests/run/scissor/option.generate-cn.test \
+  tests/run/scissor/option.gen-cn.test \
+  tests/run/scissor/option.gencn.test \
+  tests/run/scissor/option.help.test \
+  tests/run/scissor/option.h.test \
+  tests/run/scissor/option.private-side.test \
+  tests/run/scissor/option.private-key.test \
+  tests/run/scissor/option.private.test \
+  tests/run/scissor/option.certificate-signing-request.test \
+  tests/run/scissor/option.signing-request.test \
+  tests/run/scissor/option.sign.test \
+  tests/run/scissor/option.request-side.test \
+  tests/run/scissor/option.request.test \
+  tests/run/scissor/option.csr.test \
+  tests/run/scissor/option.q.test \
+  tests/run/scissor/option.quiet.test \
+  tests/run/scissor/option.usage.test \
+  tests/run/scissor/option.verbose.test \
+  tests/run/scissor/option.version.test \
+  tests/run/scissor/option.v.test \
+  tests/run/scissor/option.V.test \
+  tests/run/scissor/option.warnings.test \
+  tests/run/scissor/option.warning.test \
+  tests/run/scissor/option.w.test \
+  tests/run/scissor/option.y.test \
+  \
+  tests/run/scissor/field.C.test \
+  tests/run/scissor/field.ST.test \
+  tests/run/scissor/field.L.test \
+  tests/run/scissor/field.O.test \
+  tests/run/scissor/field.OU.test \
+  tests/run/scissor/field.CN.test \
+  tests/run/scissor/field.all.test \
+  \
+  tests/run/scissor/error.CN+gencn.test \
+  \
+  tests/run/scissor/run.01.test \
+  tests/run/scissor/run.02.test \
+  $(end)
+local-clean:: local-clean/tests/run/scissor
+	rm -f tests/run/scissor/*.csr.pem
+	rm -f tests/run/scissor/*.crt.pem
+	rm -f tests/run/scissor/*.key.pem
+
+tests_run_scissor_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/run/scissor/*.test)
+tests_run_scissor_TESTS_SELFCHECK_EXPECTED = $(tests_run_scissor_TESTS)
+tests_run_scissor_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_run_scissor_TESTS_SELFCHECK_EXPECTED), $(tests_run_scissor_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_run_scissor_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_run_scissor_TESTS_SELFCHECK_ORPHANS)))

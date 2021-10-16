@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tests.unit.resolve.Lookup.declaration
 namespace tests::unit::resolve {
@@ -9,8 +10,6 @@ namespace tests::unit::resolve {
 }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 namespace tests::unit::resolve {
   template<> class Lookup<DA> : public cppunit::test::Fixture {
   public:
@@ -32,17 +31,17 @@ namespace tests::unit::resolve {
     CPPUNIT_ASSERT(true);
   }
 }
-#import rigging.suite.io
 auto tests::unit::resolve::Lookup<tests::unit::resolve::DA>::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"lookup<DA>"};
-  {
-    Stream cas{"case"};
-    cas << call("01", &Lookup::test_case_01)
-        << call("02", &Lookup::test_case_02)
-      ;
-    series << move(cas);
-  }
+  series << []() {
+              Stream cas{"case"};
+              cas << call("01", &Lookup::test_case_01)
+                  << call("02", &Lookup::test_case_02)
+                ;
+              return move(cas);
+            }()
+    ;
   return finalize(series);
 }
 #endiv

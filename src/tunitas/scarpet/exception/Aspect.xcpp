@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tunitas::scarpet::exception {
   //
@@ -11,9 +12,21 @@ namespace tunitas::scarpet::exception {
   // It allows the normal exception taxonomy to be used while at the same time offering
   // a dimension which is unique to the Tunitas Scarpet subsystem.
   //
+  // It is HIGHLY LIKELY that you will also need to mixin tunitas::exception::Aspect
+  // Various schemes expect Tunitas-Aspect, Scarpet-Aspect and App-Aspect (which are all independent)
+  //
   // Usage:
   //
-  //   class my::Problem : public Aspect, public std::runtime_error {
+  //   class my::Difficulty : public tunitas::scarpet::exception::Aspect,
+  //                          public std::runtime_error {
+  //   public:
+  //      Difficulty(std::string const &reason);
+  //      auto what() const noexcept -> char const * override;
+  //   };
+  //
+  //   class my::Problem : public tunitas::exception::Aspect,
+  //                       public tunitas::scarpet::exception::Aspect,
+  //                       public std::runtime_error {
   //   public:
   //      Problem(std::string const &reason);
   //      auto what() const noexcept -> char const * override;
@@ -39,4 +52,3 @@ public:
   virtual auto what() const noexcept -> char const * = 0;
 };
 #endiv
-

@@ -1,12 +1,16 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
 # Copyright Yahoo Inc. 2021
 # Licensed under the terms of the Apache-2.0 license.
-# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 
 # silent-rules has no effect, see configure.ac
 # no can do:  -Wall -Werror
 AUTOMAKE_OPTIONS = no-define subdir-objects foreign
 ACLOCAL_AMFLAGS = -I m4
+
+plusplus = ++
+_module = -module
 
 LOCAL_ServerRoot = ./httpd
 
@@ -71,9 +75,7 @@ lib_libtunitas_scarpet_la_MODULE_SOURCES_SET = \
   $(lib_libtunitas_scarpet_resolve_la_SOURCES) \
   $(lib_libwant_la_SOURCES) \
   $(end)
-module_SOURCE_SET = # NO NOT READY YET ---> $(lib_libtunitas_scarpet_la_MODULE_SOURCES_SET)
-module_BB_SOURCE_SET = \
-  $(warning module_BB_SOURCE_SET should be deprecating real soon now, move to use module_SOURCE_SET, whenever it is ready) \
+module_SOURCE_SET = \
   $(lib_libtunitas_scarpet_la_MODULE_SOURCES_SET) \
   $(end)
 
@@ -87,13 +89,23 @@ include src/app/signify/Makefrag.am
 include src/app/zonegen/Makefrag.am
 include src/autotools/autoconf/Makefrag.am
 include src/mod/scarpet/Makefrag.am
+include src/tests/Makefrag.am
 include src/tests/unit/Makefrag.am
+include src/tests/authgen/Makefrag.am
+include src/tests/diggity/Makefrag.am
+include src/tests/genesis/Makefrag.am
+include src/tests/publish/Makefrag.am
+include src/tests/scissor/Makefrag.am
+include src/tests/signify/Makefrag.am
+include src/tests/zonegen/Makefrag.am
+include src/tests/run/Makefrag.am
+include src/tunitas/scarpet/Makefrag.am
+include src/tunitas/scarpet/application/Makefrag.am
 include src/tunitas/scarpet/answer/Makefrag.am
 include src/tunitas/scarpet/compiler/Makefrag.am
 include src/tunitas/scarpet/did/Makefrag.am
 include src/tunitas/scarpet/dns/Makefrag.am
 include src/tunitas/scarpet/drrs/Makefrag.am
-include src/tunitas/scarpet/Makefrag.am
 include src/tunitas/scarpet/model/Makefrag.am
 include src/tunitas/scarpet/pki/Makefrag.am
 include src/tunitas/scarpet/resolve/Makefrag.am
@@ -121,17 +133,34 @@ noinst_LTLIBRARIES = \
   $(lib_libtunitas_scarpet_resolve_la) \
   $(lib_libwant_la) \
   $(lib_libapp_la) \
+  $(lib_libapp_authgen_la) \
+  $(lib_libapp_diggity_la) \
+  $(lib_libapp_genesis_la) \
+  $(lib_libapp_publish_la) \
+  $(lib_libapp_scissor_la) \
+  $(lib_libapp_signify_la) \
+  $(lib_libapp_zonegen_la) \
   $(end)
 # WATCHOUT - these MUST be listed in this order so that the sequential install rule will allow the linker to process.
 #            libtool linking of libmod_apanolio.la MUST see the installed libtunitas-apanolio.la in order to be "finished"
 lib_LTLIBRARIES = \
   $(lib_libtunitas_scarpet_la) \
+  $(lib_libtunitas_scarpet_application_la) \
   $(lib_libmod_scarpet_la) \
   $(end)
 check_PROGRAMS = \
   $(check_bin_unit) \
+  $(check_bin_authgen) \
+  $(check_bin_diggity) \
+  $(check_bin_genesis) \
+  $(check_bin_publish) \
+  $(check_bin_scissor) \
+  $(check_bin_signify) \
+  $(check_bin_zonegen) \
   $(end)
 check_LTLIBRARIES = \
+  $(check_lib_libtests_la) \
+  $(check_lib_libtests_run_la) \
   $(end)
 
 autotools_autoconf_DEPENDENT_OBJECTS_SET = \
@@ -154,16 +183,26 @@ autotools_autoconf_DEPENDENT_GENERATED_SET = \
   $(end)
 $(autotools_autoconf_DEPENDENT_OBJECTS_SET) : $(autotools_autoconf_DEPENDENT_GENERATED_SET)
 
-# alphabetical is fine
+# alphabetical (or any order) is fine
+include tests/unit/Makefrag.am
+# the executables (their options and argument parsing)
 include tests/authgen/Makefrag.am
 include tests/diggity/Makefrag.am
 include tests/genesis/Makefrag.am
 include tests/publish/Makefrag.am
 include tests/scissor/Makefrag.am
-include tests/scenarios/Makefrag.am
 include tests/signify/Makefrag.am
-include tests/unit/Makefrag.am
 include tests/zonegen/Makefrag.am
+# the run series
+include tests/run/authgen/Makefrag.am
+include tests/run/diggity/Makefrag.am
+include tests/run/genesis/Makefrag.am
+include tests/run/publish/Makefrag.am
+include tests/run/scissor/Makefrag.am
+include tests/run/signify/Makefrag.am
+include tests/run/zonegen/Makefrag.am
+#
+include tests/scenarios/Makefrag.am
 
 if ENABLE_SERVER_TESTS
 ENABLED_SERVER_TESTS = \
@@ -183,6 +222,13 @@ XFAIL_TESTS = \
   $(tests_scissor_XFAIL_TESTS) \
   $(tests_signify_XFAIL_TESTS) \
   $(tests_zonegen_XFAIL_TESTS) \
+  $(tests_run_genesis_XFAIL_TESTS) \
+  $(tests_run_authgen_XFAIL_TESTS) \
+  $(tests_run_publish_XFAIL_TESTS) \
+  $(tests_run_diggity_XFAIL_TESTS) \
+  $(tests_run_scissor_XFAIL_TESTS) \
+  $(tests_run_signify_XFAIL_TESTS) \
+  $(tests_run_zonegen_XFAIL_TESTS) \
   $(tests_scenarios_XFAIL_TESTS) \
   $(ENABLED_SERVER_XFAIL_TESTS)
   $(end)
@@ -195,6 +241,13 @@ TESTS = \
   $(tests_scissor_TESTS) \
   $(tests_signify_TESTS) \
   $(tests_zonegen_TESTS) \
+  $(tests_run_genesis_TESTS) \
+  $(tests_run_authgen_TESTS) \
+  $(tests_run_publish_TESTS) \
+  $(tests_run_diggity_TESTS) \
+  $(tests_run_scissor_TESTS) \
+  $(tests_run_signify_TESTS) \
+  $(tests_run_zonegen_TESTS) \
   $(tests_scenarios_TESTS) \
   $(ENABLED_SERVER_TESTS)
   $(end)
@@ -204,7 +257,7 @@ TESTS = \
 #install: check
 default: all
 
-# REMOVE WHEN: baleful_ballad:hypogeal-twilight-0.??.? has work that supercedes this
+# [[REMOVEWHEN]]: hypogeal-twilight has work that supercedes this (and when is that?  hypogeal-twilight >= 0.7000? when?
 Makefile_nonstd_PACKAGE_CPPFLAGS_SET = @nonstd_boost_CPPFLAGS@ @nonstd_gcc_CPPFLAGS@
 Makefile_nonstd_PACKAGE_CFLAGS_SET   = @nonstd_boost_CFLAGS@   @nonstd_gcc_CFLAGS@
 Makefile_nonstd_PACKAGE_CXXFLAGS_SET = @nonstd_boost_CXXFLAGS@ @nonstd_gcc_CXXFLAGS@
@@ -222,10 +275,17 @@ Makefile_PACKAGE_CPPFLAGS_SET  = @CPPFLAGS_httpd@ @CPPFLAGS_apr@ @CPPFLAGS_apreq
 Makefile_PACKAGE_CFLAGS_SET    =   @CFLAGS_httpd@   @CFLAGS_apr@   @CFLAGS_apreq@   @CFLAGS_uuid@
 Makefile_PACKAGE_CXXFLAGS_SET  = @CXXFLAGS_httpd@ @CXXFLAGS_apr@ @CXXFLAGS_apreq@ @CXXFLAGS_uuid@
 Makefile_PACKAGE_LDFLAGS_SET   =  @LDFLAGS_httpd@  @LDFLAGS_apr@  @LDFLAGS_apreq@  @LDFLAGS_uuid@
-Makefile_CHECK_CPPFLAGS_SET    = @CPPFLAGS_cppunit@
-Makefile_CHECK_CFLAGS_SET      =   @CFLAGS_cppunit@
-Makefile_CHECK_CXXFLAGS_SET    = @CXXFLAGS_cppunit@
-Makefile_CHECK_LDFLAGS_SET     =  @LDFLAGS_cppunit@
+
+#                                                  if    did not substitute away                      then use this
+#                                                  |           |                                      |            else use the substitution
+#                                                  |           |              @CPPFLAGS_no_install@   |            |
+#                                                  |           |              |                       |            |
+#                                                  |           |              |                       |            |
+#                                                  v           v              v                       v            v
+Makefile_CHECK_CPPFLAGS_SET = @CPPFLAGS_cppunit@ $(if $(filter %_no_install@, @CPPFLAGS_no_install@), $(empty),    @CPPFLAGS_no_install@)
+Makefile_CHECK_CFLAGS_SET   =   @CFLAGS_cppunit@ $(if $(filter %_no_install@, @CFLAGS_no_install@),   $(empty),    @CFLAGS_no_install@)
+Makefile_CHECK_CXXFLAGS_SET = @CXXFLAGS_cppunit@ $(if $(filter %_no_install@, @CXXFLAGS_no_install@), $(empty),    @CXXFLAGS_no_install@)
+Makefile_CHECK_LDFLAGS_SET  =  @LDFLAGS_cppunit@ $(if $(filter %_no_install@, @LDFLAGS_no_install@),  -no-install, @LDFLAGS_no_install@)
 
 # See the 'Usage' statement in @hypogeal_twilight_datadir@/mk/toolflags.mk
 # See the definitions and expected usage of

@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tunitas::scarpet::did::document::json {
   //
@@ -19,8 +20,8 @@ namespace tunitas::scarpet::did::document::json {
 #divert <hpp>
 #import tunitas.scarpet.did.document.json.Writer
 class tunitas::scarpet::did::document::json::Compact : public Writer {
-  using ancestor = Writer;
+  using Ancestor = Writer;
 public:
-  inline explicit Compact(std::ostream &outbound) : ancestor{outbound, Mode::COMPACT} { }
+  inline explicit Compact(std::ostream &outbound) : Ancestor{outbound, Mode::COMPACT} { }
 };
 #endiv

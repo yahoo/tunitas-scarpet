@@ -1,10 +1,11 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <hpp>
 #import app.authgen.Configuration
-#import sys.exits.Code
+#import app.exits.Code
 namespace app::authgen {
   //
   // Process ... generate the self-signed certificate, and its key.
@@ -13,7 +14,7 @@ namespace app::authgen {
   //
   //   ...oh come on...
   //
-  auto process(Configuration const &) -> sys::exits::Code;
+  auto process(Configuration const &) -> exits::Code;
 }
 #endiv
 #divert <cpp>
@@ -33,16 +34,16 @@ namespace app::authgen {
 #import std.error_code
 #import std.move
 #import std.error_code
-#import sys.exits.constants
-#import tunitas.scarpet.exception.Quitting
+#import app.exits.constants
+#import app.exception.Quitting
 #import want.stream.duo.Files
 #import want.stream.duo.gang
-auto app::authgen::process(Configuration const &cfg) -> sys::exits::Code try {
+auto app::authgen::process(Configuration const &cfg) -> exits::Code try {
   using namespace openssl;
   auto pkey = []() -> evp::PKey {
                 evp::PKey pkey;
                 pkey.assign(ec::generate(ec::group::Name::PRIME256V1));
-                return std::move(pkey);
+                return pkey;
               }();
   auto req = [&pkey, &cfg]() -> x509::Req {
                x509::Req req;
@@ -51,7 +52,7 @@ auto app::authgen::process(Configuration const &cfg) -> sys::exits::Code try {
                req.get_subject_name().add_entry_by_txt(cfg.fields); // <----------- Wowza is this slick!
                req.sign(pkey, EVP_sha256());
                std::cout << "DEBUG " << pem::to_string(req);
-               return std::move(req);
+               return req;
              }();
   auto crt = [&req, &pkey]() -> x509::Crt {
                 x509::Crt crt;
@@ -68,7 +69,7 @@ auto app::authgen::process(Configuration const &cfg) -> sys::exits::Code try {
                 crt.add_ext(x509::extension::config(NID_basic_constraints, "critical,CA:TRUE"));
                 // [[FIXTHIS]] A few more extensions here ... SKI, AKI, EU ... and all that.
                 crt.sign(pkey, EVP_sha256());
-                return std::move(crt);
+                return crt;
               }();
   using namespace want::stream::duo;
   Files out;
@@ -76,9 +77,9 @@ auto app::authgen::process(Configuration const &cfg) -> sys::exits::Code try {
   out.open(*cfg.private_side, *cfg.public_side);
   debug(cfg) << "also writing to " << *cfg.private_side << " and " << *cfg.public_side << '\n';
   out << gang(pem::to_string(pkey), pem::to_string(crt));
-  return sys::exits::OK;
+  return exits::OK;
 } catch (std::error_code const &ec) {
   error(cfg) << "failing because " << ec.message() << '\n';
-  throw exception::Quitting{cfg.NAME, sys::exits::FAIL};
+  throw exception::Quitting{cfg.NAME, exits::FAIL};
 }
 #endiv

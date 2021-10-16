@@ -1,0 +1,48 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+#import app
+namespace tests::unit::app {
+  namespace [[eponymous]] fixture {
+    class Fixture;
+    namespace library = ::app;
+  }
+  using fixture::Fixture;
+}
+#endiv
+#divert <hpp>
+struct tests::unit::app::Fixture : public cppunit::test::Fixture {
+  auto test_Program() -> void;
+  auto test_Configuration() -> void;
+  static auto suite() -> cppunit::Test *;
+protected:
+  struct Configuration;
+};
+#endiv
+#divert <cpp>
+#import tests.unit.app.Fixture.Configuration
+namespace tests::unit::app::fixture {
+  auto Fixture::test_Program() -> void {
+    auto program = library::Configuration::Program{"a.out"};
+    CPPUNIT_ASSERT(0 != program.size());
+  }
+  auto Fixture::test_Configuration() -> void {
+    auto program = library::Configuration::Program{"a.out"};
+    auto cfg = Configuration{program};
+    CPPUNIT_ASSERT(!cfg.debug_mode);
+    cfg.warning_mode = true;
+    CPPUNIT_ASSERT(cfg.warning_mode);
+  }
+  auto Fixture::suite() -> cppunit::Test * {
+    using namespace rigging::suite;
+    auto series = Stream{"app"};
+    series << call("Program", &Fixture::test_Program)
+           << call("Configuration", &Fixture::test_Configuration)
+           << END;
+    return finalize(series);
+  }
+}
+#endiv

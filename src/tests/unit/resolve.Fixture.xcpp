@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::resolve { class Fixture; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 #import tests.unit.resolve.aspect.Service
 #import autotools.autoconf.Config.tunitas.scarpet.CONFIG
 #import tunitas.scarpet.Club
@@ -84,25 +83,24 @@ auto tests::unit::resolve::Fixture::test_document_something() -> void {
 #import tests.unit.resolve.Document.FILE
 #import tests.unit.resolve.Document.REST
 #import tests.unit.resolve.Document.ZONE
-#import rigging.suite.io
 auto tests::unit::resolve::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"resolve"};
-  {
-    Stream some{"something"};
-    some << call("lookup", &Fixture::test_lookup_something)
-         << call("document", &Fixture::test_document_something)
-    ;
-    series << move(some);
-  }
   namespace testing = ::tests::unit::resolve;
   namespace subjecting = ::tunitas::scarpet::resolve;
-  series << add(testing::Lookup<subjecting::NA>::suite())
-         << add(testing::Lookup<subjecting::DA>::suite())
-         << add(testing::Document<subjecting::DRRS>::suite())
-         << add(testing::Document<subjecting::FILE>::suite())
-         << add(testing::Document<subjecting::REST>::suite())
-         << add(testing::Document<subjecting::ZONE>::suite())
+  series << []() {
+              Stream some{"something"};
+              some << call("lookup", &Fixture::test_lookup_something)
+                   << call("document", &Fixture::test_document_something)
+                ;
+              return move(some);
+            }()
+         << add<testing::Lookup<subjecting::NA>>()
+         << add<testing::Lookup<subjecting::DA>>()
+         << add<testing::Document<subjecting::DRRS>>()
+         << add<testing::Document<subjecting::FILE>>()
+         << add<testing::Document<subjecting::REST>>()
+         << add<testing::Document<subjecting::ZONE>>()
     ;
   return finalize(series);
 }

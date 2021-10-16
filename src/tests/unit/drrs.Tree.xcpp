@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::drrs { class Tree; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 #import tunitas.scarpet.drrs.Tree
 #import tunitas.scarpet.drrs.tree.Allocator
 class tests::unit::drrs::Tree : public cppunit::test::Fixture {
@@ -53,7 +52,7 @@ auto tests::unit::drrs::Tree::generate_something_interesting() -> Subject {
   Populator enpopulator;
   enpopulator.populate(apple);
   std::cerr << "populated jackass fqdn = " << view(jackass.fqdn()) << '\n';
-  return std::move(apple);
+  return apple;
 }
 auto tests::unit::drrs::Tree::test_constructor_top() -> void {
   auto subject = Subject{"www", Subject::top()};
@@ -117,24 +116,24 @@ auto tests::unit::drrs::Tree::test_records() -> void {
     std::visit(visitor, variant);
   }
 }
-#import rigging.suite.io
 auto tests::unit::drrs::Tree::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Tree"};
-  {
-    Stream con{"constructor"};
-    con << call("top", &Tree::test_constructor_top)
-        << call("ref", &Tree::test_constructor_ref)
-      ;
-    series << add(con.release());
-  } {
-    Stream nam{"name"};
-    nam << call("unqualified", &Tree::test_name_unqualified)
-        << call("fully-qualified", &Tree::test_name_fully_qualified)
-      ;
-    series << add(nam.release());
-  }
-  series << call("records", &Tree::test_records)
+  series << []() {
+              Stream con{"constructor"};
+              con << call("top", &Tree::test_constructor_top)
+                  << call("ref", &Tree::test_constructor_ref)
+                ;
+              return move(con);
+            }()
+         << []() {
+              Stream nam{"name"};
+              nam << call("unqualified", &Tree::test_name_unqualified)
+                  << call("fully-qualified", &Tree::test_name_fully_qualified)
+                ;
+              return move(nam);
+            }()
+         << call("records", &Tree::test_records)
          << call("children", &Tree::test_children)
     ;
   return finalize(series);

@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tunitas::scarpet::exception {
   //
@@ -9,7 +10,7 @@ namespace tunitas::scarpet::exception {
   //
   // Recall: whereas exception objects must have copy constructors that offer the nothrow guarantee,
   // The string argument must be copied in the constructor into indirect (readonly) storage which will not throw.
-  // Thus the constructor SHOULD take a reference argument because the string will be copied anyway in the ancestor.
+  // Thus the constructor SHOULD take a reference argument because the string will be copied anyway in the Ancestor.
   // Cite the verbiage on cppreference.com wherein that is elaborated.
   //
   // Usage:
@@ -17,21 +18,24 @@ namespace tunitas::scarpet::exception {
   //   throw exception::Runtime{};
   //   throw exception::Runtime{"the Sun rose in the West"};
   //
-  class Runtime;
+  class [[nodiscard]] Runtime;
 }
 #endiv
 #divert <hpp>
+#import nonstd.exception.Runtime
+#import tunitas.exception.Aspect
 #import tunitas.scarpet.exception.Aspect
-#import std.runtime_error
-#import std.string
-class tunitas::scarpet::exception::Runtime : public Aspect, public std::runtime_error {
-  struct ancestors {
-    using Aspect = scarpet::exception::Aspect;
-    using Exception = std::runtime_error;
+#import tunitas.string.View
+class tunitas::scarpet::exception::Runtime final : public tunitas::exception::Aspect,
+                                                   public scarpet::exception::Aspect,
+                                                   public nonstd::exception::Runtime<string::View> {
+  struct Ancestors {
+    struct Aspects { /*who cares*/ };
+    using Exception = nonstd::exception::Runtime<string::View>;
   };
 public:
   inline Runtime();
-  inline explicit Runtime(std::string const &reason);
+  inline explicit Runtime(string::View reason);
   auto what() const noexcept -> char const * override;
 };
 #endiv
@@ -40,15 +44,15 @@ namespace tunitas::scarpet::exception {
   Runtime::Runtime()
     : Runtime{"there was some problem"}
   { }
-  Runtime::Runtime(std::string const &reason)
-    : ancestors::Exception{reason}
+  Runtime::Runtime(string::View reason)
+    : Ancestors::Exception{reason}
   { }
 }
 #endiv
 #divert <cpp>
 namespace tunitas::scarpet::exception {
   auto Runtime::what() const noexcept -> char const * {
-    return ancestors::Exception::what();
+    return Ancestors::Exception::what();
   }
 }
 #endiv

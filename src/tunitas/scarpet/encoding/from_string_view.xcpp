@@ -1,0 +1,72 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <hpp>
+#import nonstd.required.Character
+#import nonstd.required.Character_Traits
+#import std.basic_istream
+#import std.nothrow_t
+#import tunitas.Outcome
+#import tunitas.string.View
+#import tunitas.scarpet.required // cascade the namespace required
+#import tunitas.scarpet.encoding.Encoding
+namespace tunitas::scarpet::encoding {
+  namespace detail::interface {
+    //
+    // The encoding schemes, inbound.
+    // ADL will find these here.
+    //
+    // Usage:
+    //
+    //   auto enc = Encoding::DER_BASE64URL;
+    //   auto enc = Encoding::PEM;
+    //   cin >> enc;
+    //   auto e = from_string_view(syntax);
+    //
+    template<required::Character CHAR, required::Character_Traits TRAITS> inline auto operator>>(std::basic_istream<CHAR, TRAITS> &, Encoding &) -> std::basic_istream<CHAR, TRAITS> &;
+    template<typename RESULT> auto from_string_view(string::View) -> RESULT = delete;
+    template<typename RESULT> auto from_string_view(std::nothrow_t, string::View) -> Outcome<RESULT> = delete;
+    template<> inline auto from_string_view<Encoding>(string::View) -> Encoding;
+    template<> inline auto from_string_view<Encoding>(std::nothrow_t, string::View) -> Outcome<Encoding>;
+  }
+  using detail::interface::from_string_view;
+}
+#endiv
+#divert <ipp>
+#import std.error_code
+#import tunitas.scarpet.error.Code
+#import tunitas.scarpet.exception.Range
+#import tunitas.string.Storage
+namespace tunitas::scarpet::encoding::detail {
+  template<required::Character CHAR, required::Character_Traits TRAITS> auto interface::operator>>(std::basic_istream<CHAR, TRAITS> &is, Encoding &en) -> std::basic_istream<CHAR, TRAITS> & {
+    string::Storage word;
+    if (is >> word) {
+      if ("pem"s == word) {
+        en = Encoding::PEM;
+      } else if ("der"s == word || "der+base64"s == word || "der+base64url"s == word) {
+        en = Encoding::DER_BASE64URL;
+      } else {
+        is.setstate(std::ios::failbit);
+      }
+    }
+    return is;
+  }
+  template<> auto interface::from_string_view<interface::Encoding>(string::View candidate) -> Encoding {
+    if (false) {
+    } else if ("pem"s == candidate) {
+      return Encoding::PEM;
+    } else if ("der"s == candidate || "der+base64"s == candidate || "der+base64url"s == candidate) {
+      return Encoding::DER_BASE64URL;
+    } else {
+      throw exception::Range{"tunitas::scarpet::Encoding"};
+    }
+  }
+  template<> auto interface::from_string_view<interface::Encoding>(std::nothrow_t, string::View candidate) -> Outcome<Encoding> try {
+    return from_string_view<Encoding>(candidate);
+  } catch (...) {
+    return std::error_code{error::Code::INVALID_ENCODING};
+  }
+}
+#endiv

@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tunitas.scarpet.resolve.document.declaration
 #endiv
@@ -49,7 +50,7 @@ namespace tunitas::scarpet::resolve {
 #import std.string
 #import std.system_error
 #import slurp.file.read
-#import sys.error.E
+#import sys.posix.E
 #import std.cerr
 namespace tunitas::scarpet::resolve {
   template<> auto document<FiLE>(Service &service, Method const &method, Identifier const &identifier, dns::Name const &qdn) -> Outcome<did::Document<did::DOME>> {
@@ -82,7 +83,7 @@ namespace tunitas::scarpet::resolve {
       std::cerr << "E::NOENT " << (sys::error::E::NOENT == ec) << '\n';
 #endif
       // WATCHOUT - we have to check both generic_category and system_category because you never know whcih you'll given.
-      if (std::errc::no_such_file_or_directory == ec || sys::error::E::NOENT == ec) {
+      if (std::errc::no_such_file_or_directory == ec || sys::posix::E::NOENT == ec) {
         return Result{std::error_code{error::Code::NOT_FOUND}};
       }
       throw exception::System{ec, "document"};

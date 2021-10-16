@@ -1,0 +1,64 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <hpp>
+#import nonstd.required.Character
+#import nonstd.required.Character_Traits
+#import std.basic_ostream
+#import tunitas.string.Storage
+#import tunitas.scarpet.required // cascade the namespace required
+#import tunitas.scarpet.encoding.Encoding
+namespace tunitas::scarpet::encoding {
+  namespace detail::interface {
+    //
+    // The encoding schemes, outbound.
+    // ADL will find these here.
+    //
+    // Usage:
+    //
+    //   auto enc = Encoding::DER_BASE64URL;
+    //   auto enc = Encoding::PEM;
+    //   cerr << enc;
+    //   auto s = to_string(enc);
+    //
+    template<required::Character CHAR, required::Character_Traits TRAITS> inline auto operator<<(std::basic_ostream<CHAR, TRAITS> &, Encoding) -> std::basic_ostream<CHAR, TRAITS> &;
+    inline auto to_string(Encoding) -> string::Storage;
+  }
+  using detail::interface::to_string;
+}
+#endiv
+#divert <ipp>
+#import std.ostringstream
+namespace tunitas::scarpet::encoding::detail {
+  template<required::Character CHAR, required::Character_Traits TRAITS> auto interface::operator<<(std::basic_ostream<CHAR, TRAITS> &os, Encoding en) -> std::basic_ostream<CHAR, TRAITS> & {
+    switch (en) {
+    case Encoding::PEM:
+    case Encoding::DER_BASE64URL:
+      os << codeword(en);
+      break;
+    default:
+      // Something is always printable, even if this is an invalid encoding
+      os << "Encoding-" << underlying(en);
+      break;
+    }
+    return os;
+  }
+  auto interface::to_string(Encoding en) -> string::Storage {
+    switch (en) {
+    case Encoding::PEM:
+    case Encoding::DER_BASE64URL:
+      return [word=codeword(en)]() -> string::Storage {
+               return {word.begin(), word.end()};
+             }();
+    default:
+      return [en]() {
+               auto buf = std::ostringstream{};
+               buf << en;
+               return buf.str();
+             }();
+    }
+  }
+}
+#endiv

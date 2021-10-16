@@ -1,19 +1,14 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
-#import std.string
-#import std.string_view
+#import app
 namespace app::publish { }
 #endiv
 #divert <hpp>
-#import std.string_literals
-#import std.string_view_literals
-#import std.cout
-#import std.cerr
 namespace app::publish {
-  using namespace std::literals;
-  inline auto NAME = "did-publish"s;
+  [[deprecated("instead use cfg.NAME which is nearby or else options::Program{...}")]] inline auto const NAME = "did-publish"s;
 }
 #endiv

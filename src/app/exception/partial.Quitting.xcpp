@@ -1,0 +1,92 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+namespace app::exception::partial {
+  //
+  // The partial assembly of a quitting exception.
+  // Descendants only.
+  //
+  // Specification:
+  //
+  //   Just add the REMAINING Aspects
+  //
+  //   Is distinguished from exception::Quitting by NOt being 'final'
+  //   Is unusual in that it partially binds some but not all of the aspects
+  //   Is unusual in that the Ancestors::Exception is bound early, leaving the Aspects to be bound late.
+  //
+  // Design:
+  //
+  //   Completes all the features and other acoutrements.
+  //   The partial binding of app::exception::Aspect will unify the what(), stream(), exit() and [[deprecated]] code()
+  //
+  // Usage:
+  //
+  //   By inheritance with the late-binding MI.
+  //
+  //   class my::Prlblem : options::exception::Aspect, public partial::Quitting {
+  //      ...more...
+  //     auto what() const noexcept -> Results::What { return Quitting::what(); }
+  //   };
+  //
+  //   auto NAME = std::string{...somehow...};
+  //   throw Problem{NAME, exits::FAIL};
+  //   throw Problem{NAME};
+  //
+  class Quitting;
+}
+#endiv
+#divert <hpp>
+#import app.exception.Aspect
+#import tunitas.application.exception.Aspect
+#import tunitas.application.exception.feature.Quitting
+#import tunitas.scarpet.application.exception.Aspect
+#import nonstd.exception.Quitting
+#import app.exits.Code
+#import app.exits.constants
+class app::exception::partial::Quitting : public tunitas::application::exception::feature::Quitting,
+                                          public ::app::exception::Aspect,
+                                          public tunitas::scarpet::application::exception::Aspect,
+                                          public tunitas::application::exception::Aspect,
+                                          public nonstd::exception::Quitting {
+  struct Ancestors {
+    struct Aspects {
+      using App = ::app::exception::Aspect;
+    };
+    struct Features {
+      // [[FIXTHIS]] this should be an pure feature (a pure abstract class)
+      // ... all the implementations are already within nonstd::exception::Quitting
+      using Quitting = tunitas::application::exception::feature::Quitting;
+    };
+    using Exception = nonstd::exception::Quitting;
+  };
+protected:
+  ~Quitting() = default;
+  // The constructor is public so the descendants can inherit it with convenience
+public:
+  using Results = Ancestors::Aspects::App::Results; // pick one, any one will do
+  inline explicit Quitting(std::string const &NAME, exits::Code = exits::FAIL);
+  auto what() const noexcept -> Results::What override;
+  auto stream() const noexcept -> Results::Stream override final;
+  auto exit() const noexcept -> Results::Exit override final;
+  auto code() const noexcept -> Results::Exit override final;
+};
+#endiv
+#divert <ipp>
+namespace app::exception::partial {
+  Quitting::Quitting(std::string const &NAME, exits::Code code)
+    : Ancestors::Features::Quitting{code} // [[FIXTHIS]] ibidem.
+    , Ancestors::Exception{NAME, code}
+  { }
+}
+#endiv
+#divert <cpp>
+namespace app::exception::partial {
+  auto Quitting::what() const noexcept -> Results::What     { return Ancestors::Exception::what(); }
+  auto Quitting::stream() const noexcept -> Results::Stream { return Ancestors::Exception::stream(); }
+  auto Quitting::exit() const noexcept -> Results::Exit     { return Ancestors::Exception::code(); }
+  auto Quitting::code() const noexcept -> Results::Exit     { return Ancestors::Exception::code(); }
+}
+#endiv

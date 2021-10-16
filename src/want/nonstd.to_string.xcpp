@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import nonstd
 namespace want::nonstd {
@@ -36,7 +37,7 @@ namespace want::nonstd {
 #import std.forward
 namespace want {
   auto nonstd::to_string(std::string const &s) -> std::string { return std::string{s.data(), s.size()}; }
-  auto nonstd::to_string(std::string &&s) -> std::string { return std::string{std::forward<std::string>(s)}; }
+  auto nonstd::to_string(std::string &&s) -> std::string { return std::string{forward<std::string>(s)}; }
   auto nonstd::to_string(std::string_view s) -> std::string { return std::string{s.data(), s.size()}; }
   auto nonstd::to_string(span<char const> s) -> std::string { return std::string{s.data(), s.size()}; }
   auto nonstd::to_string(const_dope<char> s) -> std::string { return std::string{s.data(), s.size()}; }

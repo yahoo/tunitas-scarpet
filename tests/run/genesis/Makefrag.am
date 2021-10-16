@@ -1,0 +1,40 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+
+tests_run_genesis_TESTS = \
+  tests/run/genesis/option.help.test \
+  tests/run/genesis/option.dry-run.test \
+  tests/run/genesis/option.dryrun.test \
+  tests/run/genesis/option.d.test \
+  tests/run/genesis/option.help.test \
+  tests/run/genesis/option.h.test \
+  tests/run/genesis/option.q.test \
+  tests/run/genesis/option.quiet.test \
+  tests/run/genesis/option.s.test \
+  tests/run/genesis/option.strip-armor.test \
+  tests/run/genesis/option.usage.test \
+  tests/run/genesis/option.verbose.test \
+  tests/run/genesis/option.version.test \
+  tests/run/genesis/option.v.test \
+  tests/run/genesis/option.V.test \
+  tests/run/genesis/option.warnings.test \
+  tests/run/genesis/option.warning.test \
+  tests/run/genesis/option.w.test \
+  tests/run/genesis/option.y.test \
+  \
+  tests/run/genesis/run.01.test \
+  tests/run/genesis/run.02.test \
+  tests/run/genesis/run.03.pem-keep.test \
+  tests/run/genesis/run.04.pem-strip.test \
+  tests/run/genesis/run.05.der.test \
+  tests/run/genesis/run.06.der+base64.test \
+  tests/run/genesis/run.07.der+base64url.test \
+  $(end)
+
+tests_run_genesis_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/run/genesis/*.test)
+tests_run_genesis_TESTS_SELFCHECK_EXPECTED = $(tests_run_genesis_TESTS)
+tests_run_genesis_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_run_genesis_TESTS_SELFCHECK_EXPECTED), $(tests_run_genesis_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_run_genesis_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_run_genesis_TESTS_SELFCHECK_ORPHANS)))

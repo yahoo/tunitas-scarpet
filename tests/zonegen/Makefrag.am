@@ -1,27 +1,11 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
 # Copyright Yahoo Inc. 2021
 # Licensed under the terms of the Apache-2.0 license.
-# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 
-tests_zonegen_TESTS = $(tests_zonegen_XFAIL_TESTS)
-tests_zonegen_XFAIL_TESTS = \
-  tests/zonegen/option.help.test \
-  tests/zonegen/option.dry-run.test \
-  tests/zonegen/option.dryrun.test \
-  tests/zonegen/option.d.test \
-  tests/zonegen/option.help.test \
-  tests/zonegen/option.h.test \
-  tests/zonegen/option.q.test \
-  tests/zonegen/option.quiet.test \
-  tests/zonegen/option.usage.test \
-  tests/zonegen/option.verbose.test \
-  tests/zonegen/option.version.test \
-  tests/zonegen/option.v.test \
-  tests/zonegen/option.V.test \
-  tests/zonegen/option.warnings.test \
-  tests/zonegen/option.warning.test \
-  tests/zonegen/option.w.test \
-  tests/zonegen/option.y.test \
+tests_zonegen_TESTS = \
+  tests/zonegen/all.test \
   $(end)
 
 tests_zonegen_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/zonegen/*.test)

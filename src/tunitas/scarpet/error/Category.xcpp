@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tunitas::scarpet::error {
   //
@@ -23,9 +24,9 @@ class tunitas::scarpet::error::Category : public std::error_category {
   friend auto error::category() -> Category const &;
   Category() = default;
 public:
-  auto name() const noexcept -> char const * final;
-  auto default_error_condition(int code) const noexcept -> std::error_condition final;
-  auto message(int code) const -> std::string final;
+  auto name() const noexcept -> char const * override final;
+  auto default_error_condition(int code) const noexcept -> std::error_condition override final;
+  auto message(int code) const -> std::string override final;
 };
 #endiv
 #divert <cpp>
@@ -58,6 +59,8 @@ namespace tunitas::scarpet::error {
       return "invalid_DID method syntax";
     case Code::INVALID_IDENTIFIER:
       return "invalid DID identifier syntax";
+    case Code::INVALID_ENCODING:
+      return "invalid encoding name";
     case Code::UNKNOWN_METHOD:
       return "unknown_DID method";
     case Code::NOT_FOUND:

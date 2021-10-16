@@ -1,15 +1,16 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
-namespace tunitas::scarpet::options {
+namespace tunitas::scarpet::application::options {
   //
   // The (word) options after the flags.
   // This container needs to support shaving off the first or (less frequently) final element.
   // So: works like a deque<string>.
   //
-  // c::argv is tunitas::app::options::Args
+  // c::argv is tunitas::application::options::Args
   // The Arguments (full word) is the std::string variant with a safe interface & managed storage.
   // The Args (terse word) is the char const *[] variant with no unsafe pointers, no storage.
   // The Arguments should work roughly like how c::argv{...} and c::rest(...) works.
@@ -24,15 +25,15 @@ namespace tunitas::scarpet::options {
 }
 #endiv
 #divert <hpp>
-#import tunitas.app.options.Args // is the c::argv type facility
-#import tunitas.app.words.Filepaths
-#import tunitas.app.words.Strings
-namespace tunitas::scarpet {
-  class options::Arguments : public tunitas::app::words::Strings {
-    using ancestor = tunitas::app::words::Strings;
+#import tunitas.application.options.Args // is the c::argv type facility
+#import tunitas.application.words.Filepaths
+#import tunitas.application.words.Strings
+namespace tunitas::scarpet::application {
+  class options::Arguments : public tunitas::application::words::Strings {
+    using Ancestor = tunitas::application::words::Strings;
   public:
     Arguments() = default;
-    using ancestor::deque;
+    using Ancestor::deque;
   };
 }
 #endiv

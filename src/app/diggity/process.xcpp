@@ -1,11 +1,12 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <hpp>
 #import app.diggity.Configuration
-#import sys.exits.Code
-#import tunitas.scarpet.options.Arguments
+#import app.exits.Code
+#import tunitas.scarpet.application.options.Arguments
 namespace app::diggity {
   //
   // Process ... perform the lookup (the digging)
@@ -17,8 +18,8 @@ namespace app::diggity {
   //   ...oh come on...
   //
   namespace packaging::process::function {
-    using tunitas::scarpet::options::Arguments;
-    auto process(Configuration const &, Arguments) -> sys::exits::Code;
+    using tunitas::scarpet::application::options::Arguments;
+    auto process(Configuration const &, Arguments) -> exits::Code;
   }
   using packaging::process::function::process;
 }
@@ -26,15 +27,15 @@ namespace app::diggity {
 #divert <cpp>
 #import nonstd.exception.Unimplemented
 #import std.cout
-#import sys.exits.constants
+#import app.exits.constants
 namespace app::diggity::packaging::process {
-  auto function::process(Configuration const &cfg, Arguments arguments) -> sys::exits::Code {
+  auto function::process(Configuration const &cfg, Arguments arguments) -> exits::Code {
     auto &outbound{std::cout};
     for (auto const &argument : arguments) {
       outbound << "did specimen: " << argument << '\n';
     }
     throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
-    return sys::exits::OK;
+    return exits::OK;
   }
 }
 #endiv

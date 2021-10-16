@@ -1,18 +1,19 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <hpp>
 #forward app.Configuration
 #import options.longish.Step
-#import tunitas.scarpet.exception
-#import tunitas.scarpet.options.Encoding
-#import tunitas.required.exception.app.Quitting
+#import tunitas.scarpet.application.exception
+#import tunitas.scarpet.Encoding
+#import tunitas.application.required.exception.Quitting
 namespace app::options {
   //
   // Get the encoding by its keyword
   // Follows the style (rhymes with)
-  // the "get_<thing>"(Configuration const &, Step) functions from tunitas::app::options
+  // the "get_<thing>"(Configuration const &, Step) functions from tunitas::application::options
   //
   // The Configuration is supplied to give ADL context towards the error reporting.
   // The recovered value is returned.
@@ -41,21 +42,22 @@ namespace app::options {
   //      break;
   //
   namespace packaging::get_encoding::function {
-    namespace exception = tunitas::scarpet::exception;
+    namespace exception = tunitas::scarpet::application::exception;
     using Step = ::options::longish::Step;
-    template<tunitas::required::exception::app::Quitting QUITTING> inline auto get_encoding(Configuration const &, Step const &) -> Encoding;
+    using namespace tunitas::scarpet::encoding;
+    template<tunitas::application::required::exception::Quitting QUITTING> inline auto get_encoding(Configuration const &, Step const &) -> Encoding;
   }
   using packaging::get_encoding::function::get_encoding;
 }
 #endiv
 #divert <ipp>
 #import app.Configuration
+#import app.exits.constants
 #import options.longish.Step
-#import tunitas.scarpet.exception.aspect.Exiting
-#import tunitas.scarpet.options.Encoding // from_string
-#import sys.exits.constants
+#import tunitas.application.exception.aspect.Quitting
+#import tunitas.scarpet.encoding.from_string
 namespace app::options::packaging::get_encoding {
-  template<tunitas::required::exception::app::Quitting QUITTING> auto function::get_encoding(Configuration const &cfg, Step const &step) -> Encoding try {
+  template<tunitas::application::required::exception::Quitting QUITTING> auto function::get_encoding(Configuration const &cfg, Step const &step) -> Encoding try {
     //
     // Either we get the Encoding or we don't.
     // If we don't then escalate that exception into QUITTING.
@@ -65,11 +67,11 @@ namespace app::options::packaging::get_encoding {
     error(cfg) << "cannot recover an encoding out of " << /*FIXTHIS format::q*/ required(step) << '\n';
     try {
       throw;
-    } catch (exception::aspect::Exiting const &) {
+    } catch (exception::aspect::Quitting const &) {
       throw;
     } catch (...) {
-      // throw exception::Quitting(cfg.NAME, sys::exits::CONFIG);
-      throw QUITTING(cfg.NAME, sys::exits::CONFIG);
+      // throw exception::Quitting(cfg.NAME, exits::CONFIG);
+      throw QUITTING(cfg.NAME, exits::CONFIG);
     }
   }
 }

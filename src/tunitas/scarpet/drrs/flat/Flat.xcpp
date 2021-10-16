@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tunitas::scarpet::drrs::flat { 
   //
@@ -18,20 +19,20 @@ namespace tunitas::scarpet::drrs::flat {
 #import tunitas.scarpet.drrs.flat.Variant
 #import std.list
 class tunitas::scarpet::drrs::flat::Flat : public std::list<Variant> {
-  using ancestor = std::list<Variant>;
+  using Ancestor = std::list<Variant>;
 public:
   Flat() = default;
   Flat(Flat const &) = delete;
   auto operator=(Flat const &) -> Flat & = delete;
   Flat(Flat &&) = default;
   auto operator=(Flat &&) -> Flat & = default;
-  using Value = ancestor::value_type; // New School
-  using ancestor::list;
-  using ancestor::const_iterator;
-  using ancestor::iterator;
-  using ancestor::begin;
-  using ancestor::end;
-  using ancestor::push_back;
-  using ancestor::emplace_back;
+  using Value = Ancestor::value_type; // New School
+  using Ancestor::list;
+  using Ancestor::const_iterator;
+  using Ancestor::iterator;
+  using Ancestor::begin;
+  using Ancestor::end;
+  using Ancestor::push_back;
+  using Ancestor::emplace_back;
 };
 #endiv

@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::did { class Fixture; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 class tests::unit::did::Fixture : public cppunit::test::Fixture {
 public:
   auto test_identifier_Name() -> void;
@@ -23,6 +22,45 @@ public:
 };
 #endiv
 #divert <cpp>
+#import tests.unit.did.Document.DOME
+#import tests.unit.did.Document.JSON
+#import tests.unit.did.Document.ZONE
+#import tests.unit.did.Parser
+auto tests::unit::did::Fixture::suite() -> cppunit::Test * {
+  using namespace rigging::suite;
+  Stream series{"did"};
+  series << []() {
+              Stream ide{"identifier"};
+              ide << call("Name", &Fixture::test_identifier_Name)
+                  << call("Identifier", &Fixture::test_identifier_Identifier)
+                  << call("Method", &Fixture::test_identifier_Method)
+                ;
+              return move(ide);
+            }()
+         << []() {
+              Stream par{"Parser"};
+              par << call("good", &Fixture::test_Parser_good)
+                  << call("bad", &Fixture::test_Parser_bad)
+                ;
+              return move(par);
+            }()
+         << []() {
+              Stream isa{"is_a_simple_word"};
+              isa << call("Method", &Fixture::test_is_a_simple_word_Method)
+                  << call("Identifier", &Fixture::test_is_a_simple_word_Identifier)
+                  << call("string_view", &Fixture::test_is_a_simple_word_string_view)
+                ;
+              return move(isa);
+            }()
+         << call("unparse", &Fixture::test_unparse)
+         << add<Parser>()
+    // namespace rigging is defined in module tunitas.scarpet.did.Document.declaration
+         << add<testing::Document<did::document::DOME>>()
+         << add<testing::Document<did::document::JSON>>()
+         << add<testing::Document<did::document::ZONE>>()
+         << END;
+  return finalize(series);
+}
 #import std.empty
 #import tunitas.scarpet.did.Name
 auto tests::unit::did::Fixture::test_identifier_Name() -> void {
@@ -117,46 +155,5 @@ auto tests::unit::did::Fixture::test_unparse() -> void {
   auto const actual = to_string(unparse(mmm, iii)); // ADL found them..
   auto const expected = "did:freegan:123456789abcdefghi"s;
   CPPUNIT_ASSERT_EQUAL(expected, actual);
-}
-#import tests.unit.did.Document.DOME
-#import tests.unit.did.Document.JSON
-#import tests.unit.did.Document.ZONE
-#import tests.unit.did.Parser
-#import unit.rigging.suite.Stream
-#import unit.rigging.suite.add
-#import unit.rigging.suite.call
-auto tests::unit::did::Fixture::suite() -> cppunit::Test * {
-  using namespace ::unit::rigging::suite;
-  Stream series{"did"};
-  {
-    Stream ide{"identifier"};
-    ide << call("Name", &Fixture::test_identifier_Name)
-        << call("Identifier", &Fixture::test_identifier_Identifier)
-        << call("Method", &Fixture::test_identifier_Method)
-      ;
-    series << add(ide.release());
-  } {
-    Stream par{"Parser"};
-    par << call("good", &Fixture::test_Parser_good)
-        << call("bad", &Fixture::test_Parser_bad)
-      ;
-    series << add(par.release());
-  } {
-    Stream isa{"is_a_simple_word"};
-    isa << call("Method", &Fixture::test_is_a_simple_word_Method)
-        << call("Identifier", &Fixture::test_is_a_simple_word_Identifier)
-        << call("string_view", &Fixture::test_is_a_simple_word_string_view)
-      ;
-    series << add(isa.release());
-  }
-  series << call("unparse", &Fixture::test_unparse)
-    ;
-  series << add(Parser::suite())
-    // namespace rigging is defined in module tunitas.scarpet.did.Document.declaration
-         << add(rigging::Document<did::document::DOME>::suite())
-         << add(rigging::Document<did::document::JSON>::suite())
-         << add(rigging::Document<did::document::ZONE>::suite())
-    ;
-  return series.release();
 }
 #endiv

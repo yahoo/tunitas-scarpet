@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace app::publish::options {
   //
@@ -19,7 +20,7 @@ namespace app::publish::options {
 #divert <hpp>
 #import app.options.Specification
 class app::publish::options::Specification : public app::options::Specification {
-  using ancestor = app::options::Specification;
+  using Ancestor = app::options::Specification;
 public:
   Specification();
 };
@@ -35,7 +36,7 @@ namespace app::publish::options {
     //          /-------------- enable MISSING processing
     //          |
     //          v
-    : ancestor{":hVwqvdyn:k:K:",
+    : Ancestor{":hVwqvdyn:k:K:",
                {{"usage", oa::NO, oi::USAGE_SUBCOMMAND},
                 {"help", oa::NO, oi::USAGE_SUBCOMMAND},
                 {"version", oa::NO, oi::VERSION_SUBCOMMAND},

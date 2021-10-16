@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import std.char_traits
 namespace tunitas::scarpet::did {
@@ -44,12 +45,12 @@ namespace tunitas::scarpet::did {
 #import std.forward
 namespace tunitas::scarpet {
   class did::Method : public std::basic_string<char, method::Traits> {
-    using ancestor = std::basic_string<char, method::Traits>;
+    using Ancestor = std::basic_string<char, method::Traits>;
   public:
     Method() = default;
-    using ancestor::basic_string;
-    inline explicit Method(ancestor const &a) : ancestor{a} { }
-    inline explicit Method(ancestor &&a) : ancestor{std::forward<ancestor>(a)} { }
+    using Ancestor::basic_string;
+    inline explicit Method(Ancestor const &a) : Ancestor{a} { }
+    inline explicit Method(Ancestor &&a) : Ancestor{forward<Ancestor>(a)} { }
   };
 }
 #endiv

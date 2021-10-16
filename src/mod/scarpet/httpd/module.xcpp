@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <hpp>
 #import apache.httpd // ............... n.b. - ::module is a C typedef in <httpd/http_config.h>
 extern ::module scarpet_module; // WATCHOUT - this has to be at global scope
@@ -56,7 +57,7 @@ namespace {
 
 // Define our module as an entity and assign a function for registering hooks
 // WATCHOUT - this has to be at global scope, otherwise the apache runtime DSO exploration won't find it.
-module AP_MODULE_DECLARE_DATA scarpet_module = {
+module_struct AP_MODULE_DECLARE_DATA scarpet_module = {
     STANDARD20_MODULE_STUFF,
     nullptr, //register_directory_config .... per-directory configuration handler
     nullptr, //register_directory_merge ..... merge for per-directory configurations

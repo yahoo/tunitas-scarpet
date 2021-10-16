@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::pki { class Algorithm; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 class tests::unit::pki::Algorithm : public cppunit::test::Fixture {
 public:
   auto test_SIGNATURE_Algorithm() -> void;
@@ -28,13 +27,12 @@ template<typename PURPOSE> auto tests::unit::pki::Algorithm::test_PURPOSE_Algori
   }
 }
 #divert <cpp>
-#import rigging.suite.io
 auto tests::unit::pki::Algorithm::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Algorithm"};
   namespace subject = ::tunitas::scarpet::pki;
-  series << call("something", &Algorithm::test_PURPOSE_Algorithm<subject::Purpose<subject::SIGNATURE>>)
-         << call("something", &Algorithm::test_PURPOSE_Algorithm<subject::Purpose<subject::VERIFICATION>>)
+  series << call("SIGNATURE", &Algorithm::test_PURPOSE_Algorithm<subject::Purpose<subject::SIGNATURE>>)
+         << call("VERIFICATION", &Algorithm::test_PURPOSE_Algorithm<subject::Purpose<subject::VERIFICATION>>)
     ;
   return finalize(series);
 }

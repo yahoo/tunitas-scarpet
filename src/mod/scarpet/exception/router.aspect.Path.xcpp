@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace mod::scarpet::exception::router::aspect {
   //
@@ -16,14 +17,14 @@ namespace mod::scarpet::exception::router::aspect {
   // Usage:
   //
   //   class my::Problem : public router::Aspect, public router::aspect::Path, public std::runtime_error {
-  //     struct ancestors {
+  //     struct Ancestors {
   //       using Aspect = scarpet::router::Aspect;
   //       using Path = scarpet::router::aspect::Path;
   //       using Exception = std::runtime_error;
   //   . };
   //   public:
   //     inline Problem(std::string const &reason, std::string const &path);
-  //     auto what() const noexcept -> char const * { return ancestors::Exception::what(); };
+  //     auto what() const noexcept -> char const * { return Ancestors::Exception::what(); };
   //   };
   // 
   class Path;

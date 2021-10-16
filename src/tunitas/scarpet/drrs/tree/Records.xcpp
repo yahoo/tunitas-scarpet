@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #include <hpp/tunitas.scarpet.dns.type.constants> // need those dns constants to name the Record<...> specializations
 namespace tunitas::scarpet::drrs::tree {
@@ -31,7 +32,7 @@ namespace tunitas::scarpet::drrs::tree {
 #forward tunitas.scarpet.drrs.tree.Tree
 #import tunitas.scarpet.drrs.tree.records.Variant
 class tunitas::scarpet::drrs::tree::Records : protected std::deque<records::Variant> {
-  using ancestor = std::deque<records::Variant>;
+  using Ancestor = std::deque<records::Variant>;
   friend class tree::Allocator;
   friend class tree::Tree;
 public:
@@ -40,12 +41,12 @@ public:
   auto operator=(Records const &) -> Records & = delete;
   Records(Records &&) = default;
   auto operator=(Records &&) -> Records & = default;
-  using ancestor::empty;
-  using ancestor::size; // constant, per std::deque since forever
-  using ancestor::const_iterator;
-  using ancestor::iterator;
-  using ancestor::begin;
-  using ancestor::end;
+  using Ancestor::empty;
+  using Ancestor::size; // constant, per std::deque since forever
+  using Ancestor::const_iterator;
+  using Ancestor::iterator;
+  using Ancestor::begin;
+  using Ancestor::end;
 };
 // Every user of tree::Records will need these sooner or later
 #import std.visit

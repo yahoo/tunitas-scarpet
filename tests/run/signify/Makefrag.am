@@ -1,0 +1,49 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+
+tests_run_signify_TESTS = \
+  tests/run/signify/option.authority-private-side.test \
+  tests/run/signify/option.authority-private-key.test \
+  tests/run/signify/option.authority-private.test \
+  tests/run/signify/option.public-certificate.test \
+  tests/run/signify/option.authority-public-side.test \
+  tests/run/signify/option.authority-public-crt.test \
+  tests/run/signify/option.authority-public.test \
+  tests/run/signify/option.certificate.test \
+  tests/run/signify/option.crt.test \
+  tests/run/signify/option.public-crt.test \
+  tests/run/signify/option.public-side.test \
+  tests/run/signify/option.public.test \
+  tests/run/signify/option.dry-run.test \
+  tests/run/signify/option.dryrun.test \
+  tests/run/signify/option.d.test \
+  tests/run/signify/option.help.test \
+  tests/run/signify/option.h.test \
+  tests/run/signify/option.help.test \
+  tests/run/signify/option.q.test \
+  tests/run/signify/option.quiet.test \
+  tests/run/signify/option.usage.test \
+  tests/run/signify/option.verbose.test \
+  tests/run/signify/option.version.test \
+  tests/run/signify/option.v.test \
+  tests/run/signify/option.V.test \
+  tests/run/signify/option.warnings.test \
+  tests/run/signify/option.warning.test \
+  tests/run/signify/option.w.test \
+  tests/run/signify/option.y.test \
+  \
+  tests/run/signify/run.01.test \
+  tests/run/signify/run.02.test \
+  $(end)
+local-clean:: local-clean/tests/run/signify
+	rm -f tests/scissor/*.csr.pem
+	rm -f tests/scissor/*.crt.pem
+	rm -f tests/scissor/*.key.pem
+
+tests_run_signify_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/run/signify/*.test)
+tests_run_signify_TESTS_SELFCHECK_EXPECTED = $(tests_run_signify_TESTS)
+tests_run_signify_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_run_signify_TESTS_SELFCHECK_EXPECTED), $(tests_run_signify_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_run_signify_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_run_signify_TESTS_SELFCHECK_ORPHANS)))

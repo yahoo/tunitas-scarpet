@@ -1,13 +1,14 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
-namespace app::exception {
+namespace app::options::exception {
   //
   // Bloffo ... all this does is create a new type, a new descendant of Quitting.
   //
-  // Transform the failure of tunitas::app::options::get_filepath<...>(...)
+  // Transform the failure of tunitas::application::options::get_filepath<...>(...)
   // into a well-known exception that the application { genesis, publish, etc. } can capture and redirect elsewhere.o
   //
   // In order to clear the template requirements for get_filepath<QUITTING>(...)
@@ -29,20 +30,19 @@ namespace app::exception {
   //     return Result{std:error_code{error::Code::OPTIONS}};
   //   }
   //
-  class Bad_Filepath;
+  class [[nodiscard]] Bad_Filepath;
 }
 #endiv
 #divert <hpp>
-#import tunitas.scarpet.exception.Quitting
-#import sys.exits.Code
-class app::exception::Bad_Filepath : public tunitas::scarpet::exception::Quitting {
-  using ancestor = tunitas::scarpet::exception::Quitting;
+#import app.exception.partial.Quitting
+#import app.options.exception.Aspect
+class app::options::exception::Bad_Filepath : public Aspect, public app::exception::partial::Quitting {
+  struct Ancestors {
+    using Aspect = options::exception::Aspect;
+    using Exception = app::exception::partial::Quitting;
+  };
 public:
-  inline explicit Bad_Filepath(std::string const &NAME, sys::exits::Code);
+  using Ancestors::Exception::Quitting;
+  auto what() const noexcept -> Results::What { return Ancestors::Exception::what(); }
 };
-#endiv
-#divert <ipp>
-app::exception::Bad_Filepath::Bad_Filepath(std::string const &NAME, sys::exits::Code code)
-  : ancestor{NAME, code}
-{ }
 #endiv

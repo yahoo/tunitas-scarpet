@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::resolve { class Service; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 #import tunitas.scarpet.resolve.Service
 class tests::unit::resolve::Service : public cppunit::test::Fixture {
 public:
@@ -29,7 +28,7 @@ auto tests::unit::resolve::Service::test_constructor_default() -> void {
 auto tests::unit::resolve::Service::test_constructor_directory() -> void {
   auto directory = std::filesystem::path{"/tmp"}; // this need not exist for this test to work
   auto subject = Subject{std::move(directory)};
-  CPPUNIT_ASSERT(subject.directory);
+  CPPUNIT_ASSERT((bool)subject.directory);
   CPPUNIT_ASSERT(!subject.channel);
 }
 #import ares.Channel
@@ -37,28 +36,28 @@ auto tests::unit::resolve::Service::test_constructor_channel() -> void {
   auto channel = ares::Channel{};
   auto subject = Subject{std::move(channel)};
   CPPUNIT_ASSERT(!subject.directory);
-  CPPUNIT_ASSERT(subject.channel);
+  CPPUNIT_ASSERT((bool)subject.channel);
 }
 auto tests::unit::resolve::Service::test_constructor_channel_directory() -> void {
   auto channel = ares::Channel{};
   auto directory = std::filesystem::path{"/tmp"}; // this need not exist for this test to work
   auto subject = Subject{std::move(channel), std::move(directory)};
-  CPPUNIT_ASSERT(subject.directory);
-  CPPUNIT_ASSERT(subject.channel);
+  CPPUNIT_ASSERT((bool)subject.directory);
+  CPPUNIT_ASSERT((bool)subject.channel);
 }
-#import rigging.suite.io
 auto tests::unit::resolve::Service::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Service"};
-  {
-    Stream con{"constructor"};
-    con << call("default", &Service::test_constructor_default)
-       << call("directory", &Service::test_constructor_directory)
-       << call("channel", &Service::test_constructor_channel)
-       << call("channel,directory", &Service::test_constructor_channel_directory)
+  series << []() {
+              Stream con{"constructor"};
+              con << call("default", &Service::test_constructor_default)
+                  << call("directory", &Service::test_constructor_directory)
+                  << call("channel", &Service::test_constructor_channel)
+                  << call("channel,directory", &Service::test_constructor_channel_directory)
+                ;
+              return move(con);
+            }()
     ;
-    series << add(con.release());
-  }
   return finalize(series);
 }
 #endiv

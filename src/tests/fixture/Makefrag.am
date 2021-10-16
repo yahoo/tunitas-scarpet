@@ -1,0 +1,11 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright Verizon Media
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+# For terms, see the LICENSE file at the top of this repository.
+#
+obj_src_tests_fixture_SUBSOURCES = \
+  obj/src/tests/fixture/namespace.cpp \
+  obj/src/tests/fixture/environment.cpp \
+  $(end)

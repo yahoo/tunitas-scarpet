@@ -1,0 +1,46 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+// For terms, see the LICENSE file at the top of this repository.
+#divert <fpp>
+#import rigging.suite.Fixture // ... v2-series
+#import rigging.test.Fixture // .... v2-series
+#endiv
+#divert <hpp>
+//
+// rigging::ASSERTION is an ADL anchor point
+//
+// Usage:
+//
+//   #import rigging.ASSERTION
+//   namespace tests::something {
+//     using rigging::ASSERTION;
+//   }
+//   ...
+//   ...some time later...
+//   ...
+//   namespace tests::something {
+//     auto test_something() -> void {
+//      require(ASSERTION< 0 != 1); ........................................ and ADL will find it.
+//     }
+//   }
+//
+#import rigging.ASSERTION // .............................. v2-series (see the commentariat above)
+#import rigging.suite.Fixture // .......................... v2-series
+#import rigging.Suite // .................................. ibidem.
+#import tests.cppunit.test.Fixture // ..................... v1-series compatibility
+#import tests.cppunit.Test // ............................. ibidem.
+#import tests.cppunit.ASSERT // ........................... ibidem
+//
+// And every fixture wants to say something
+//
+#import std.cerr
+#import std.clog
+#import std.cout
+#endiv
+#divert <ipp>
+#import rigging.io // ......... v2-series (prefer)
+#import rigging.suite.io // ... v1-series (allow ... but [[deprecating]])
+#endiv

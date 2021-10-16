@@ -1,12 +1,13 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tunitas::scarpet::exception {
   //
   // The Scarpet-flavored coding (encoding, decoding) exception
-  // How can something be "scarpet flavored" being that Scarpet is a mountain. Is it flavored like dirt?  Who discovered that?
+  // How can something be "scarpet flavored" being that Scarpet is a mountain? Is it flavored like dirt?  Who discovered that flavor?
   //
   // Encompases at least
   // - character set problems
@@ -15,36 +16,40 @@ namespace tunitas::scarpet::exception {
   // 
   // Usage:
   //
-  //   auto location = std::string{...};        location meaning something simpler __FUNCTION__
-  //   throw Coding{location}                   where reason is expected to be terse
+  //   auto reason = std::string{...};        reason meaning "encoding THIS" or "decoding THAT"
+  //   throw Coding{reason}                   where reason is expected to be terse
   //
-  class Coding;
+  class [[nodiscard]] Coding;
 }
 #endiv
 #divert <hpp>
+#import nonstd.exception.Runtime
+#import tunitas.exception.Aspect
 #import tunitas.scarpet.exception.Aspect
-#import std.runtime_error
-class tunitas::scarpet::exception::Coding : public Aspect, public std::runtime_error {
-  struct ancestors {
-    using Aspect = scarpet::exception::Aspect;
-    using Exception = std::runtime_error;
+#import tunitas.string.View
+class tunitas::scarpet::exception::Coding final : public tunitas::exception::Aspect,
+                                                  public scarpet::exception::Aspect,
+                                                  public nonstd::exception::Runtime<string::View> {
+  struct Ancestors {
+    struct Aspects { /*who cares*/ };
+    using Exception = nonstd::exception::Runtime<string::View>;
   };
 public:
-  inline explicit Coding(std::string const &location);
-  auto what() const noexcept -> char const * final;
+  inline explicit Coding(string::View reason);
+  auto what() const noexcept -> char const * override final;
 };
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::exception {
-  Coding::Coding(std::string const &location)
-    : ancestors::Exception{location}
+  Coding::Coding(string::View reason)
+    : Ancestors::Exception{reason}
   { }
 }
 #endiv
 #divert <cpp>
 namespace tunitas::scarpet::exception {
   auto Coding::what() const noexcept -> char const * {
-    return ancestors::Exception::what();
+    return Ancestors::Exception::what();
   }
 }
 #endiv

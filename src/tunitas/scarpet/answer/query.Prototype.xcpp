@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tunitas.scarpet.dns.Type
 #include <hpp/tunitas.scarpet.answer.processor.Prototype>
@@ -34,7 +35,7 @@ namespace tunitas::scarpet::answer::query {
   //   see the specializations Query<TYPE>
   //
   namespace required {
-    template<typename PROCESSOR> concept bool Processor = std::is_base_of<processor::Prototype, PROCESSOR>::value;
+    template<typename PROCESSOR> concept Processor = std::is_base_of<processor::Prototype, PROCESSOR>::value;
   }
   // RECORDATION = drrs::Records<DNS> for Stanzas<NAME>
   // RECORDATION = drrs::Record<DNS>  for PublicKey<NAME> Authentication<NAME>, Service<NAME>, Proof<NAME>
@@ -53,23 +54,11 @@ namespace tunitas::scarpet::answer {
     Response response;
     Processor processor; // e.g. processor::Stanza<ID>
     inline auto type() const { return DNS; }
-#if __GNUC__ < 9 // gcc-c++-8.2.1-5.fc29.x86_64
-  public:
-    // Why is this not a compiler bug?
-    // If this constructor is not public then descendants' default constructor is created as protected unless made manifest (user declared)
-    //
-    // Witness
-    // src/tests/unit/answer.Fields.STANZA.xcpp:39:14: error: ‘tunitas::scarpet::answer::query::Prototype<DNS, PROCESSOR, RECORDATION>::Prototype() [with __ns_type DNS = (__ns_type)256; PROCESSOR = tunitas::scarpet::answer::processor::Stanza<(tunitas::scarpet::answer::processor::stanza::Name)1>; RECORDATION = tunitas::scarpet::drrs::Records<(__ns_type)256>]’ is protected within this context
-    // Contexts{};
-    // ^
-    // src/tunitas/scarpet/answer/query.Prototype.xcpp:57:12: note: declared protected here
-    // inline Prototype() : records{}, response{records}, processor{response} { }
-    //
-#else
   protected:
-#endif
-    inline Prototype() : records{}, response{records}, processor{response} { }
     ~Prototype() = default;
+  public:
+    // public so it be  used as the implementation in a descendants constructor (with a 'using' declaration
+    inline Prototype() : records{}, response{records}, processor{response} { }
   };
 }
 #endiv

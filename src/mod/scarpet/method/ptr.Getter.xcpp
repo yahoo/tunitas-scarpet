@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace mod::scarpet::method::ptr {
   //
@@ -33,10 +34,10 @@ namespace mod::scarpet::method::ptr {
 #forward tunitas.scarpet.Club
 #import tunitas.Outcome
 class mod::scarpet::method::ptr::Getter : public method::Prototype {
-  using ancestor = Prototype;
+  using Ancestor = Prototype;
 protected:
   ~Getter() = default;
-  using ancestor::Prototype;
+  using Ancestor::Prototype;
   //
   // All the type aliases here make it easy to cut & past the idiom above into operator()() of the descendant
   // The type alias set approximates 'using namespace tunitas::scarpet' here within this structure.

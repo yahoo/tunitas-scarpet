@@ -1,7 +1,8 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
 # Copyright Yahoo Inc. 2021
 # Licensed under the terms of the Apache-2.0 license.
-# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 
 lib_libtunitas_scarpet_la = lib/libtunitas-scarpet.la
 lib_libtunitas_scarpet_la_LIBADD = \
@@ -14,7 +15,6 @@ lib_libtunitas_scarpet_la_LIBADD = \
   $(lib_libtunitas_scarpet_pki_la) \
   $(lib_libtunitas_scarpet_resolve_la) \
   $(lib_libwant_la) \
-  -ltunitas-app \
   -lares-module \
   -ljson-module \
   -lnonstd-module \
@@ -27,48 +27,28 @@ lib_libtunitas_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas
 lib_libtunitas_scarpet_la_SOURCES = \
   obj/src/tunitas/scarpet/namespace.cpp \
   obj/src/tunitas/scarpet/tracing.cpp \
-  obj/src/tunitas/scarpet/Configuration.cpp \
-  obj/src/tunitas/scarpet/Program.cpp \
   obj/src/tunitas/scarpet/Club.cpp \
   obj/src/tunitas/scarpet/Protocol.cpp \
-  \
-  obj/src/tunitas/scarpet/error/namespace.cpp \
-  obj/src/tunitas/scarpet/error/Condition.cpp \
-  obj/src/tunitas/scarpet/error/Code.cpp \
-  obj/src/tunitas/scarpet/error/Category.cpp \
-  obj/src/tunitas/scarpet/error/category.cpp \
-  \
-  obj/src/tunitas/scarpet/exception/namespace.cpp \
-  obj/src/tunitas/scarpet/exception/Aspect.cpp \
-  obj/src/tunitas/scarpet/exception/aspect.Exiting.cpp \
-  obj/src/tunitas/scarpet/exception/Coding.cpp \
-  obj/src/tunitas/scarpet/exception/Configuration.cpp \
-  obj/src/tunitas/scarpet/exception/Crypto.cpp \
-  obj/src/tunitas/scarpet/exception/Invariant.cpp \
-  obj/src/tunitas/scarpet/exception/Logic.cpp \
-  obj/src/tunitas/scarpet/exception/Options.cpp \
-  obj/src/tunitas/scarpet/exception/Quitting.cpp \
-  obj/src/tunitas/scarpet/exception/Runtime.cpp \
-  obj/src/tunitas/scarpet/exception/System.cpp \
-  obj/src/tunitas/scarpet/exception/Version.cpp \
-  \
-  obj/src/tunitas/scarpet/options/namespace.cpp \
-  obj/src/tunitas/scarpet/options/indicator.cpp \
-  obj/src/tunitas/scarpet/options/indicator.constants.cpp \
-  obj/src/tunitas/scarpet/options/Arguments.cpp \
-  obj/src/tunitas/scarpet/options/Encoding.cpp \
-  obj/src/tunitas/scarpet/options/Parser.cpp \
-  obj/src/tunitas/scarpet/options/parser.Result.cpp \
-  obj/src/tunitas/scarpet/options/Specification.cpp \
-  \
-  obj/src/tunitas/scarpet/url/namespace.cpp \
-  obj/src/tunitas/scarpet/url/Parser.cpp \
-  obj/src/tunitas/scarpet/url/Path.cpp \
+  $(obj_src_tunitas_scarpet_encoding_SUBSOURCES) \
+  $(obj_src_tunitas_scarpet_error_SUBSOURCES) \
+  $(obj_src_tunitas_scarpet_exception_SUBSOURCES) \
+  $(obj_src_tunitas_scarpet_required_SUBSOURCES) \
+  $(obj_src_tunitas_scarpet_url_SUBSOURCES) \
   $(end)
+#
+include src/tunitas/scarpet/encoding/Makefrag.am
+include src/tunitas/scarpet/error/Makefrag.am
+include src/tunitas/scarpet/exception/Makefrag.am
+include src/tunitas/scarpet/required/Makefrag.am
+include src/tunitas/scarpet/url/Makefrag.am
+#
+$(scold_cxxdir)/tunitas/scarpet/dependencies.mk: $(lib_libtunitas_scarpet_la_SOURCES)
+$(lib_libtunitas_scarpet_la_SOURCES) : obj/src/%.cpp : src/%.xcpp
+	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
+	$(TF_V_DUN) test -e $@
 $(scold_cxxdir)/tunitas/scarpet/dependencies.mk:
-	$(AM_V_BB1ST) $(call TF_DISAGGREGATE_COMPILE, $(lib_libtunitas_scarpet_la_SOURCES))
-	$(AM_V_BB2ND) $(call TF_DEPENDENCIES_COMPILE, $(lib_libtunitas_scarpet_la_SOURCES))
-	@test -e $@
+	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
+	$(TF_V_DUN) test -e $@
 include $(scold_cxxdir)/tunitas/scarpet/dependencies.mk
 clean-dependencies::
 	rm -f $(scold_cxxdir)/tunitas/scarpet/dependencies.mk

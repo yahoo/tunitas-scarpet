@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tunitas::scarpet::did::parser {
   //
@@ -38,11 +39,11 @@ namespace tunitas::scarpet::did::parser {
 }
 #import std.tuple
 class tunitas::scarpet::did::parser::Result : public std::tuple<bool, Method, Identifier> {
-  using ancestor = std::tuple<bool, Method, Identifier>;
+  using Ancestor = std::tuple<bool, Method, Identifier>;
 public:
-  using Tuple = ancestor;
+  using Tuple = Ancestor;
   Result() = default;
-  using ancestor::tuple;
+  using Ancestor::tuple;
 };
 #endiv
 #divert <ipp>
@@ -52,9 +53,9 @@ namespace tunitas::scarpet::did {
   auto parser::ok(Result const &u) -> bool { return std::get<0>(static_cast<Result::Tuple const &>(u)); }
   auto parser::method(Result const &u) -> Method const & { return std::get<1>(static_cast<Result::Tuple const &>(u)); }
   auto parser::method(Result &u) -> Method &             { return std::get<1>(static_cast<Result::Tuple &>(u)); }
-  auto parser::method(Result &&anon) -> Method           { return std::get<1>(std::forward<Result::Tuple>(anon)); }
+  auto parser::method(Result &&anon) -> Method           { return std::get<1>(forward<Result::Tuple>(anon)); }
   auto parser::identifier(Result const &u) -> Identifier const & { return std::get<2>(static_cast<Result::Tuple const &>(u)); }
   auto parser::identifier(Result &u) -> Identifier &             { return std::get<2>(static_cast<Result::Tuple &>(u)); }
-  auto parser::identifier(Result &&u) -> Identifier              { return std::get<2>(std::forward<Result::Tuple>(u)); }
+  auto parser::identifier(Result &&u) -> Identifier              { return std::get<2>(forward<Result::Tuple>(u)); }
 }
 #endiv

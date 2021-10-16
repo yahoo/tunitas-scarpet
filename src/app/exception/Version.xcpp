@@ -1,0 +1,87 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+namespace app::exception {
+  //
+  // The package version, as an application exception.
+  //
+  // Usage:
+  //
+  //   throw Version{"program"};
+  //
+  // Usage:
+  //
+  //   try {
+  //     ...
+  //     throw Version{"program"};
+  //     ...
+  //   } catch (tunitas::application::exception::Generic const &g) {
+  //     g.stream() << g << '\n';
+  //     return g.code();          ... equivalently ::exit(g.code());
+  //   }
+  //
+  class [[nodiscard]] Version;
+}
+#endiv
+#divert <hpp>
+#import app.exception.Aspect
+#import tunitas.application.exception.Aspect
+#import tunitas.application.exception.feature.Version
+#import tunitas.exception.feature.Messaging
+#import tunitas.exception.Aspect
+#import tunitas.scarpet.exception.Aspect
+#import std.string
+#import std.exception
+class app::exception::Version final : public Aspect,
+                                      public tunitas::application::exception::Aspect,
+                                      public tunitas::application::exception::feature::Version,
+                                      public tunitas::exception::feature::Messaging,
+                                      public tunitas::exception::Aspect,
+                                      public tunitas::scarpet::exception::Aspect,
+                                      public std::exception {
+  struct Ancestors {
+    struct Aspects {
+      using App = app::exception::Aspect;
+    };
+    struct Features {
+      using Version = tunitas::application::exception::feature::Version;
+      using Messaging = tunitas::exception::feature::Messaging;
+    };
+    using Exception = std::exception;
+  };
+public:
+  inline explicit Version(std::string const &NAME);
+  auto what() const noexcept -> char const * override final;
+  auto stream() const noexcept -> std::ostream & override final;
+  auto exit() const noexcept -> exits::Code override final;
+  auto code() const noexcept -> exits::Code override final;
+private:
+  static auto format(std::string const &NAME) -> std::string;
+};
+#endiv
+#divert <ipp>
+#import app.exits.constants
+namespace app::exception {
+  Version::Version(std::string const &NAME)
+    : Ancestors::Features::Messaging{format(NAME)}
+  { }
+}
+#endiv
+#divert <cpp>
+#import std.ostringstream
+#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
+namespace app::exception {
+  auto Version::format(std::string const &NAME) -> std::string {
+    std::ostringstream buf;
+    buf << "version: " << NAME << " " << autotools::autoconf::Config<tunitas::scarpet::CONFIG>::version();
+    return buf.str();
+  }
+  auto Version::what() const noexcept -> char const *     { return Ancestors::Features::Messaging::what(); }
+  auto Version::stream() const noexcept -> std::ostream & { return Ancestors::Features::Version::stream(); }
+  auto Version::exit() const noexcept -> exits::Code      { return Ancestors::Features::Version::code(); }
+  auto Version::code() const noexcept -> exits::Code      { return Ancestors::Features::Version::code(); }
+}
+#endiv

@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tunitas.scarpet.answer.processor.Stanza.declaration
 namespace tunitas::scarpet::answer::processor {
@@ -35,17 +36,17 @@ namespace tunitas::scarpet::answer::processor {
 #endiv
 #divert <hpp>
 class tunitas::scarpet::answer::processor::Pointers : public Prototype, public ares::function::Query<Response<drrs::Records<dns::PTR>>> {
-    using ancestor = ares::function::Query<Response<drrs::Records<dns::PTR>>>;
+    using Ancestor = ares::function::Query<Response<drrs::Records<dns::PTR>>>;
 protected:
   ~Pointers() = default;
 public:
   inline explicit Pointers(State &);
-  auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void final;
+  auto receive(error::Code<ARES>, Count timeouts, Buffer) -> void override final;
 };
 #endiv
 #divert <ipp>
 namespace tunitas::scarpet::answer::processor {
-  Pointers::Pointers(State &state) : ancestor{state} { }
+  Pointers::Pointers(State &state) : Ancestor{state} { }
 }
 #endiv
 #divert <cpp>

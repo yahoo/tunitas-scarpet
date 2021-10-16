@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import std.is_same
 #import std.string
@@ -27,9 +28,9 @@ namespace tunitas::scarpet::drrs::aspect {
   //   ancestry for Record<SRV>, Record<URI>
   //
   namespace required {
-    template<typename FIELD> concept bool Field = (std::is_same<std::string, FIELD>::value ||
-                                                   std::is_same<dns::Labels, FIELD>::value ||
-                                                   std::is_same<dns::Name, FIELD>::value);
+    template<typename FIELD> concept Field = (std::is_same<std::string, FIELD>::value ||
+                                              std::is_same<dns::Labels, FIELD>::value ||
+                                              std::is_same<dns::Name, FIELD>::value);
   }
   template<required::Field FIELD> class Endpoint;
 }
@@ -73,7 +74,7 @@ namespace tunitas::scarpet::drrs::aspect {
   template<aspect::required::Field _> Endpoint<_>::Endpoint(Priority priority, Weight weight, Field &&field)
     : priority{priority}
     , weight{weight}
-    , endpoint{std::forward<Field>(field)}
+    , endpoint{forward<Field>(field)}
   { }
 }
 #endiv

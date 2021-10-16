@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tunitas.scarpet.did.Document.declaration
 namespace tunitas::scarpet::did {
@@ -52,10 +53,10 @@ namespace tunitas::scarpet::did {
 #import tunitas.scarpet.dns.Name
 namespace tunitas::scarpet::did {
   template<> class Document<DOME> : public document::Prototype {
-    using ancestor = document::Prototype;
+    using Ancestor = document::Prototype;
   public:
     Document() = default;
-    auto dump(std::ostream &) const -> void final;
+    auto dump(std::ostream &) const -> void override final;
     Method method; // presumably we know our own method name, but ensure that it isn't const-coded
     Identifier identifier;
     dns::Name ddss;

@@ -1,7 +1,8 @@
 // This is -*- c++ -*- in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace app::scissor::exception {
   //
@@ -17,7 +18,7 @@ namespace app::scissor::exception {
   //     ...
   //     throw Usage{"program"};
   //     ...
-  //   } catch (tunitas::scarpet::exception::Aspect const &g) {
+  //   } catch (exception::aspect::Quitting const &g) {
   //     g.stream() << g << '\n';
   //     return g.code();          ... equivalently ::exit(g.code());
   //   }
@@ -26,102 +27,73 @@ namespace app::scissor::exception {
 }
 #endiv
 #divert <hpp>
-#import tunitas.app.exception.Usage
-#import tunitas.app.exception.Messaging
-#import tunitas.scarpet.exception.aspect.Exiting
-#import std.exception
-#import std.string
-class app::scissor::exception::Usage
-  : public tunitas::scarpet::exception::aspect::Exiting,
-    public tunitas::app::exception::Usage,
-    public tunitas::app::exception::Messaging,
-    public std::exception {
-  struct ancestors {
-    using Aspect = tunitas::scarpet::exception::aspect::Exiting;
-    using Usage = tunitas::app::exception::Usage;
-    using Messaging = tunitas::app::exception::Messaging;
-    using Exception = std::exception;
-  };
+#import app.exception.partial.Usage
+class app::scissor::exception::Usage final : public app::exception::partial::Usage {
+  using Ancestor = app::exception::partial::Usage;
 public:
-  inline explicit Usage(std::string const &NAME);
-  inline Usage(std::string const &NAME, sys::exits::Code);
-  auto what() const noexcept -> char const * final;
-  auto stream() const noexcept -> std::ostream & final;
-  auto code() const noexcept -> sys::exits::Code final;
+  inline explicit Usage(Arguments::Name);
+  inline explicit Usage(Arguments::Name, exits::Code);
 private:
-  static auto format(std::string const &NAME) -> std::string;
+  static auto format(Arguments::Name NAME) -> Arguments::Message;
 };
 #endiv
 #divert <ipp>
-#import sys.exits.constants
-app::scissor::exception::Usage::Usage(std::string const &NAME)
-  : Usage{NAME, sys::exits::OK}
-{ }
-app::scissor::exception::Usage::Usage(std::string const &NAME, sys::exits::Code code)
-  : ancestors::Usage{code}
-  , ancestors::Messaging{format(NAME)}
-  , ancestors::Exception{}
-{ }
+#import app.exits.constants
+namespace app::scissor::exception {
+  Usage::Usage(Arguments::Name NAME) : Usage{NAME, exits::OK} { }
+  Usage::Usage(Arguments::Name NAME, exits::Code code) : Ancestor{format(NAME), code} { }
+}
 #endiv
 #divert <cpp>
 #import std.ostringstream
 #import app.well_known
 namespace app::scissor::exception {
-  auto Usage::format(std::string const &NAME) -> std::string {
+  auto Usage::format(Arguments::Name NAME) -> Arguments::Message {
     std::ostringstream buf;
-    buf << "Generate a Certificate Signing Request (CSR) using the X.509 fields\n"
-        << "Generally, a Certificate Authority (CA) will only sign the minimum admissible statement (e.g. CN)\n"
-        << "Use " << well_known::SIGNIFY << " to execute the CSR locally or else use a remote signing service\n"
+    buf << "Generate a Certificate Signing Request (CSR) using the X.509 fields"
+        << "\nGenerally, a Certificate Authority (CA) will only sign the minimum admissible statement (e.g. CN)"
+        << "\nUse " << well_known::SIGNIFY << " to execute the CSR locally or else use a remote signing service"
         << '\n'
-        << "usage: " << NAME << " [...options...] [...fields...]\n"
+        << "\nusage: " << NAME << " [...options...] [...fields...]"
         << '\n'
-        << "X.509 Field Values:\n"
+        << "\nX.509 Field Values:"
         << '\n'
-        << "  C=country                        optional, ISO 3166-1 alpha-2)\n"
-        << "  ST=state                         optional, full name, do not abbreviate\n"
-        << "  L=locality                       optional, full name, do not abbreviate\n"
-        << "  O=organization                   optional, legal business name, should be canonical\n"
-        << "  OU=organizational unit           optional\n"
-        << "  CN=common name                   required, explicitly or use --generate-common-name\n"
+        << "\n  C=country                        optional, ISO 3166-1 alpha-2)"
+        << "\n  ST=state                         optional, full name, do not abbreviate"
+        << "\n  L=locality                       optional, full name, do not abbreviate"
+        << "\n  O=organization                   optional, legal business name, should be canonical"
+        << "\n  OU=organizational unit           optional"
+        << "\n  CN=common name                   required, explicitly or use --generate-common-name"
 #if 0
       // [[FIXTHIS]] not yet ... this is not yet a field in module-openssl <= 0.3.0-0.devel
-        << "  eA=email                         leave blank, this is not helpful in a Certificate Authority\n"
+        << "\n  eA=email                         leave blank, this is not helpful in a Certificate Authority"
 #endif
         << '\n'
-        << "Generation Options:\n"
+        << "\nGeneration Options:"
         << '\n'
-        << "--generate-common-name             generate the common name with 256 bits\n"
-        << "         --generate-cn             this option precludes the use of CN=name\n"
-        << "              --gen-cn             simpler\n"
-        << "               --gencn             simplest\n"
+        << "\n--generate-common-name             generate the common name with 256 bits"
+        << "\n         --generate-cn             this option precludes the use of CN=name"
+        << "\n              --gen-cn             simpler"
+        << "\n               --gencn             simplest"
         << '\n'
-        << "--private-side=FILEPATH            write the private key to the FILEPATH\n"
-        << " --private-key=FILEPATH            simpler\n"
-        << "     --private=FILEPATH            simplest\n"
+        << "\n--private-side=FILEPATH            write the private key to the FILEPATH"
+        << "\n --private-key=FILEPATH            simpler"
+        << "\n     --private=FILEPATH            simplest"
         << '\n'
-        << "--public-side=FILEPATH             write the public certificate to the FILEPATH\n"
-        << " --public-csr=FILEPATH             simpler\n"
-        << "     --public=FILEPATH             simplest\n"
+        << "\n--public-side=FILEPATH             write the public certificate to the FILEPATH"
+        << "\n --public-csr=FILEPATH             simpler"
+        << "\n     --public=FILEPATH             simplest"
         << '\n'
-        << "General Options:\n"
+        << "\nGeneral Options:"
         << '\n'
-        << "--usage, --help, -h                emit this message, and exit\n"
-        << "--version, -V                      emit the package version, and exit\n"
-        << "--dry-run, --dryrun, -y            dry run, do not start the server\n"
-        << "--warnings, --warning, -w          emit warnings\n"
-        << "--quiet, -q                        be quiet, emit no notices or warnings\n"
-        << "--verbose, -v                      be verbose (independent of --quiet)\n"
-        << "--debug, -d                        debug output (you should not need this)"; // no '\n'
+        << "\n--usage, --help, -h                emit this message, and exit"
+        << "\n--version, -V                      emit the package version, and exit"
+        << "\n--dry-run, --dryrun, -y            dry run, do not start the server"
+        << "\n--warnings, --warning, -w          emit warnings"
+        << "\n--quiet, -q                        be quiet, emit no notices or warnings"
+        << "\n--verbose, -v                      be verbose (independent of --quiet)"
+        << "\n--debug, -d                        debug output (you should not need this)";
     return buf.str();
-  }
-  auto Usage::what() const noexcept -> char const * {
-    return ancestors::Messaging::what();
-  }
-  auto Usage::stream() const noexcept -> std::ostream & {
-    return ancestors::Usage::stream();                                                         
-  }
-  auto Usage::code() const noexcept -> sys::exits::Code {
-    return ancestors::Usage::code();
   }
 }
 #endiv

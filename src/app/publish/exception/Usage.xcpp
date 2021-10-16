@@ -1,7 +1,8 @@
 // This is -*- c++ -*- in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace app::publish::exception {
   //
@@ -17,7 +18,7 @@ namespace app::publish::exception {
   //     ...
   //     throw Usage{"program"};
   //     ...
-  //   } catch (tunitas::scarpet::exception::Aspect const &g) {
+  //   } catch (exception::aspect::Quitting const &g) {
   //     g.stream() << g << '\n';
   //     return g.code();          ... equivalently ::exit(g.code());
   //   }
@@ -26,106 +27,77 @@ namespace app::publish::exception {
 }
 #endiv
 #divert <hpp>
-#import tunitas.app.exception.Usage
-#import tunitas.app.exception.Messaging
-#import tunitas.scarpet.exception.aspect.Exiting
-#import std.exception
-#import std.string
-class app::publish::exception::Usage
-  : public tunitas::scarpet::exception::aspect::Exiting,
-    public tunitas::app::exception::Usage,
-    public tunitas::app::exception::Messaging,
-    public std::exception {
-  struct ancestors {
-    using Aspect = tunitas::scarpet::exception::aspect::Exiting;
-    using Usage = tunitas::app::exception::Usage;
-    using Messaging = tunitas::app::exception::Messaging;
-    using Exception = std::exception;
-  };
+#import app.exception.partial.Usage
+class app::publish::exception::Usage final : public app::exception::partial::Usage {
+  using Ancestor = app::exception::partial::Usage;
 public:
-  inline explicit Usage(std::string const &NAME);
-  inline Usage(std::string const &NAME, sys::exits::Code);
-  auto what() const noexcept -> char const * final;
-  auto stream() const noexcept -> std::ostream & final;
-  auto code() const noexcept -> sys::exits::Code final;
+  inline explicit Usage(Arguments::Name);
+  inline explicit Usage(Arguments::Name, exits::Code);
 private:
-  static auto format(std::string const &NAME) -> std::string;
+  static auto format(Arguments::Name NAME) -> Arguments::Message;
 };
 #endiv
 #divert <ipp>
-#import sys.exits.constants
-app::publish::exception::Usage::Usage(std::string const &NAME)
-  : Usage{NAME, sys::exits::OK}
-{ }
-app::publish::exception::Usage::Usage(std::string const &NAME, sys::exits::Code code)
-  : ancestors::Usage{code}
-  , ancestors::Messaging{format(NAME)}
-  , ancestors::Exception{}
-{ }
+#import app.exits.constants
+namespace app::publish::exception {
+  Usage::Usage(Arguments::Name NAME) : Usage{NAME, exits::OK} { }
+  Usage::Usage(Arguments::Name NAME, exits::Code code) : Ancestor{format(NAME), code} { }
+}
 #endiv
 #divert <cpp>
 #import std.ostringstream
 #import app.publish.examples
 namespace app::publish::exception {
-  auto Usage::format(std::string const &NAME) -> std::string {
+  auto Usage::format(Arguments::Name NAME) -> Arguments::Message {
     std::ostringstream buf;
-    buf << "Publish the DID Document (DD) into the indicated DID Document Storage Service (DDSS).\n"
+    buf << "Publish the DID Document (DD) into the indicated DID Document Storage Service (DDSS)."
         << '\n'
-        << "usage: " << NAME << " [...options...]\n"
+        << "\nusage: " << NAME << " [...options...]"
         << "\n"
-        << "DID Document (DD) Options\n"
+        << "\nDID Document (DD) Options"
         << '\n'
-        << "--did-document=FILEPATH                      where GUESS is a filepath with a '.json' or a '.zone' suffix\n"
-        << "    --document=FILEPATH                      e.g. " << examples::DOCUMENT_JSON << '\n'
-        << "         --doc=FILEPATH                      or " << examples::DOCUMENT_ZONE << '\n'
+        << "\n--did-document=FILEPATH                      where GUESS is a filepath with a '.json' or a '.zone' suffix"
+        << "\n    --document=FILEPATH                      e.g. " << examples::DOCUMENT_JSON
+        << "\n         --doc=FILEPATH                      or " << examples::DOCUMENT_ZONE
         << '\n'
-        << "--did-document-json=FILEPATH                 the FILEPATH is the DID Document, it must contain DID-schema JSON\n"
-        << "    --document-json=FILEPATH                 e.g. " << examples::DOCUMENT_JSON << '\n'
-        << "             --json=FILEPATH\n"
+        << "\n--did-document-json=FILEPATH                 the FILEPATH is the DID Document, it must contain DID-schema JSON"
+        << "\n    --document-json=FILEPATH                 e.g. " << examples::DOCUMENT_JSON
+        << "\n             --json=FILEPATH"
         << '\n'
-        << "--did-document-zone=FILEPATH                 the FILEPATH is the DID Document, it must contain DID-schema ZONE\n"
-        << "    --document-zone=FILEPATH                 e.g. " << examples::DOCUMENT_ZONE << '\n'
-        << "             --zone=FILEPATH\n"
+        << "\n--did-document-zone=FILEPATH                 the FILEPATH is the DID Document, it must contain DID-schema ZONE"
+        << "\n    --document-zone=FILEPATH                 e.g. " << examples::DOCUMENT_ZONE
+        << "\n             --zone=FILEPATH"
         << '\n'
-        << "DID Document Storage Service (DDSS) Options\n"
+        << "\nDID Document Storage Service (DDSS) Options"
         << '\n'
-        << "--did-document-storage-service=FQDN          the FQDN into which the DID document is to be installed on the name server\n"
-        << "                        --ddss=FQDN          e.g. " << examples::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN << '\n'
-        << "                  --did-domain=FQDN          same thing\n"
-        << "                      --domain=FQDN          as such\n"                 
+        << "\n--did-document-storage-service=FQDN          the FQDN into which the DID document is to be installed on the name server"
+        << "\n                        --ddss=FQDN          e.g. " << examples::DID_DOCUMENT_STORAGE_SERVICE_DOMAIN
+        << "\n                  --did-domain=FQDN          same thing"
+        << "\n                      --domain=FQDN          as such"                 
         << '\n'
-        << "Name Server (NS) Options\n"
+        << "\nName Server (NS) Options"
         << '\n'
-        << "--name-server-update-tsig-secret=FILEPATH    the FILEPATH contains the secret secret that allows update of the name server\n"
-        << "     --name-server-update-secret=FILEPATH    e.g. " << examples::UPDATE_TSIG_PRIVATE_FILEPATH << '\n'
-        << "            --update-tsig-secret=FILEPATH    shorter\n"
-        << "                 --update-secret=FILEPATH    simpler\n"
-        << "                   --tsig-secret=FILEPATH    moreso\n"
-        << "                        --secret=FILEPATH    simplest\n"
+        << "\n--name-server-update-tsig-secret=FILEPATH    the FILEPATH contains the secret secret that allows update of the name server"
+        << "\n     --name-server-update-secret=FILEPATH    e.g. " << examples::UPDATE_TSIG_PRIVATE_FILEPATH
+        << "\n            --update-tsig-secret=FILEPATH    shorter"
+        << "\n                 --update-secret=FILEPATH    simpler"
+        << "\n                   --tsig-secret=FILEPATH    moreso"
+        << "\n                        --secret=FILEPATH    simplest"
         << '\n'
-        << "--name-server=HOSTNAME                       the name server into which the DID document will be updated\n"
-        << "     --server=HOSTNAME                       this server must be a primary mater for the zone\n"
-        << "         --ns=HOSTNAME                       e.g. " << examples::NAME_SERVER << '\n'
+        << "\n--name-server=HOSTNAME                       the name server into which the DID document will be updated"
+        << "\n     --server=HOSTNAME                       this server must be a primary mater for the zone"
+        << "\n         --ns=HOSTNAME                       e.g. " << examples::NAME_SERVER
         << '\n'
-        << "General Options:\n"
+        << "\nGeneral Options:"
         << '\n'
-        << "--usage, --help, -h                          emit this message, and exit\n"
-        << "--version, -  V                              emit the package version, and exit\n"
-        << "--dry-run, --dryrun, -y                      dry run, do not start the server\n"
-        << "--warnings, --warning, -w                    emit warnings\n"
-        << "--quiet, -q                                  be quiet, emit no notices or warnings\n"
-        << "--verbose, -v                                be verbose (independent of --quiet)\n"
-        << "--debug, -d                                  debug output (you should not need this)"; // no '\n'
+        << "\n--usage, --help, -h                          emit this message, and exit"
+        << "\n--version, -  V                              emit the package version, and exit"
+        << "\n--dry-run, --dryrun, -y                      dry run, do not start the server"
+        << "\n--warnings, --warning, -w                    emit warnings"
+        << "\n--quiet, -q                                  be quiet, emit no notices or warnings"
+        << "\n--verbose, -v                                be verbose (independent of --quiet)"
+        << "\n--debug, -d                                  debug output (you should not need this)";
     return buf.str();
-  }
-  auto Usage::what() const noexcept -> char const * {
-    return ancestors::Messaging::what();
-  }
-  auto Usage::stream() const noexcept -> std::ostream & {
-    return ancestors::Usage::stream();                                                         
-  }
-  auto Usage::code() const noexcept -> sys::exits::Code {
-    return ancestors::Usage::code();
   }
 }
 #endiv

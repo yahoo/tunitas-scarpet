@@ -1,10 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <cpp>
 #import rigging.bench.Main
 #import tests.unit.answer.Fixture
+#import tests.unit.app.Fixture
 #import tests.unit.compiler.Fixture
 #import tests.unit.did.Fixture
 #import tests.unit.dns.Fixture
@@ -25,6 +27,7 @@ auto main(int argc, char **argv) -> int {
   using namespace rigging::bench;
   namespace tu = tests::unit;
   Main remain(tu::answer::Fixture::suite(),
+              tu::app::Fixture::suite(),
               tu::compiler::Fixture::suite(),
               tu::did::Fixture::suite(),
               tu::dns::Fixture::suite(),

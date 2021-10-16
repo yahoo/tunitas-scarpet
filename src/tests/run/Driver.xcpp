@@ -1,0 +1,80 @@
+// This is -*- c++ -*- C++2a in the stylings of S.C.O.L.D. stylings that are so popular these days.
+// Copyright Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+// For terms, see the LICENSE file at the top of this repository.
+#divert <fpp>
+namespace tests::run {
+  //
+  // The fixture mixin for the in-process runnable tests.
+  // Descendants only.
+  // Expects to be incorporated by private inheritance.
+  //
+  // Usage:
+  //
+  //                                             /-------- the Configuration and main(...)
+  //                                             |
+  //                                             |
+  //   #import my.Configuration <----------------+
+  //   #import my.main <-------------------------/
+  //
+  //   struct my::Fixture : public cppunit::Fixture, private Driver<my::Configuration> {
+  //     Fixture();
+  //     auto test_success() -> void {
+  //       ...and everything is taken care of for you...
+  //       Driver::invoke(tests::authgen::main, ...args...);
+  //     }
+  //     auto test_failure() -> void {
+  //       ...and everything else is taken care of for you...
+  //       Driver::invoke(app::exits::FAIL, tests::authgen::main, ...args...);
+  //     }
+  //   };
+  //
+  template<typename CONFIGURATION> struct Driver;
+}
+#endiv
+#divert <hpp>
+#import tunitas.application.options.c.Args
+#import tunitas.application.Program
+#import tunitas.application.exits.Code
+#import tunitas.required.Stringable
+template<typename CONFIGURATION> class tests::run::Driver {
+protected:
+  virtual ~Driver() = default;
+public:
+  using Program = tunitas::application::Program;
+  using Configuration = CONFIGURATION;
+  using Args = tunitas::application::options::c::Args;
+  using Exit = tunitas::application::exits::Code;
+  using Main = Exit (*)(Configuration &, Args);
+  inline auto invoke(Main, Args) -> void;
+  auto invoke(Exit, Main, Args) -> void;
+  // here the args are argv[1]..argv[argc-1]] with the argv[0] being implicit and supplied within
+  template<typename... STRINGS> inline auto invoke(Main, STRINGS ...args) -> void requires (true && ... && tunitas::required::Stringable<STRINGS>);
+  template<typename... STRINGS> auto invoke(Exit, Main, STRINGS ...args) -> void requires (true && ... && tunitas::required::Stringable<STRINGS>);
+};
+#endiv
+#divert <ipp>
+#import app.exits.constants
+namespace tests::run {
+  template<typename _> template<typename... STRINGS> auto Driver<_>::invoke(Main main, STRINGS ...args) -> void requires (true && ... && tunitas::required::Stringable<STRINGS>) { invoke(app::exits::OK, main, std::move(args)...); }
+  template<typename _> auto Driver<_>::invoke(Main main, Args args) -> void { invoke(app::exits::OK, main, std::move(args)); }
+}
+#endiv
+#divert <tpp>
+#import tests.run.Collected
+namespace tests::run {
+  template<typename _> template<typename... STRINGS> auto Driver<_>::invoke(Exit expected, Main main, STRINGS ...args) -> void requires (true && ... && tunitas::required::Stringable<STRINGS>) {
+    auto collected = Collected{"a.out"s, std::move(args)...};
+    invoke(expected, main, std::move(collected));
+  }
+  template<typename _> auto Driver<_>::invoke(Exit expected, Main main, Args args) -> void {
+    auto const program = Program{"a.out"};
+    auto cfg = Configuration{program};
+    cfg.dry_run_mode = true;
+    auto const actual = main(cfg, std::move(args));
+    CPPUNIT_ASSERT_EQUAL(expected, actual);
+  }
+}
+#endiv

@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace app::authgen::options {
   //
@@ -26,16 +27,16 @@ namespace app::authgen::options {
 #endiv
 #divert <hpp>
 #import app.options.Parser
-#import tunitas.Success
 #import app.authgen.Configuration
-#import tunitas.app.options.Args
+#import tunitas.Success
+#import tunitas.application.options.c.Args
 class app::authgen::options::Parser : public app::options::Parser {
-  using ancestor = app::options::Parser;
+  using Ancestor = app::options::Parser;
 public:
   inline explicit Parser(Specification const &, Configuration &);
   Parser(Specification &&) = delete;
-  using Result = tunitas::Success; // not ancestor::Result
-  auto operator()(Args) -> Result;
+  using Result = tunitas::Success; // not Ancestor::Result
+  auto operator()(options::c::Args) -> Result;
 protected:
   Configuration &cfg;
 };
@@ -43,31 +44,30 @@ protected:
 #divert <ipp>
 namespace app::authgen::options {
   Parser::Parser(Specification const &spc, Configuration &cfg)
-    : ancestor{spc}
+    : Ancestor{spc}
     , cfg{cfg}
   { }
 }
 #endiv
 #divert <cpp>
-#import app.exception.Bad_Filepath
 #import app.authgen.defaults
 #import app.authgen.exception.Usage
 #import app.authgen.options.indicator.constants
 #import app.authgen.options.Specification
+#import app.exits.constants
+#import app.exception.Version
+#import app.options.exception.Bad_Filepath
 #import options.longish.Getter
 #import options.longish.Step
 #import std.error_code
-#import std.logic_error
-#import sys.exits.constants
-#import tunitas.app.options.get_filepath
+#import tunitas.application.options.exception.Unspecified
+#import tunitas.application.options.get_filepath
 #import tunitas.scarpet.error.Code
-#import tunitas.scarpet.exception.Version
 #import tunitas.scarpet.pki.cn.generate
-#import tunitas.scarpet.error.Code
 namespace app::authgen::options {
-  auto Parser::operator()(Args av) -> Result {
+  auto Parser::operator()(options::c::Args av) -> Result {
     namespace error = tunitas::scarpet::error;
-    // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::app::options
+    // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::application::options
     using ::options::longish::Getter;
     using ::options::longish::Step;
     Getter get{spc.shortish(), spc.longish(), av};
@@ -77,7 +77,7 @@ namespace app::authgen::options {
           namespace oi = options::indicator;
         case oi::CHR_h:
         case oi::USAGE_SUBCOMMAND:
-          throw exception::Usage{cfg.NAME, sys::exits::OK};
+          throw exception::Usage{cfg.NAME, exits::OK};
         case oi::CHR_V:
         case oi::VERSION_SUBCOMMAND:
           throw exception::Version{cfg.NAME};
@@ -120,7 +120,7 @@ namespace app::authgen::options {
           // This is a programmer error.
           // It means that the specification of the option parser is wider than this switch statement.
           // Someone (you) forgot to take care of some eventuality.
-          throw std::logic_error{"Specification"};
+          throw exception::Unspecified{NAME};
         }
       } catch (exception::Bad_Filepath const &e) {
         /* [[FIXTHIS]] ee(cfg) */ ::options::error(cfg) << "invalid file path " << /* [[FIXTHIS]] format::q(required(step)) */ required(step) << " value on --" << word(step) << 'n';

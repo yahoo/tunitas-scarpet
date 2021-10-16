@@ -1,15 +1,13 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::want { class Fixture; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
-class tests::unit::want::Fixture : public cppunit::test::Fixture {
-public:
+struct tests::unit::want::Fixture : public cppunit::test::Fixture {
   auto test_to_string_string() -> void;
   auto test_to_string_others() -> void;
   auto test_strftime() -> void;
@@ -62,18 +60,17 @@ auto tests::unit::want::Fixture::test_strftime() -> void {
   std::cerr << "now: " << now << '\n';
   CPPUNIT_ASSERT(!now.empty());
 }
-#import rigging.suite.io
 auto tests::unit::want::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"want"};
-  {
-    Stream tos{"to_string"};
-    tos << call("string", &Fixture::test_to_string_string)
-        << call("others", &Fixture::test_to_string_others)
-      ;
-    series << move(tos);
-  }
-  series << call("strftime", &Fixture::test_strftime)
+  series << []() {
+              Stream tos{"to_string"};
+              tos << call("string", &Fixture::test_to_string_string)
+                  << call("others", &Fixture::test_to_string_others)
+                ;
+              return move(tos);
+            }()
+         << call("strftime", &Fixture::test_strftime)
     ;
   return finalize(series);
 }

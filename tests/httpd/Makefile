@@ -1,7 +1,8 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright 2019-2019, Oath Inc.
+# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
 # Licensed under the terms of the Apache-2.0 license.
-# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 
 default:
 all:
@@ -30,8 +31,8 @@ httpd_OBJECTS = \
              $(httpd_SOURCES)) \
   $(end)
 
-# or /build/useful/apache-httpd-api/lib/.libs/libapache-httpd-module.so
-# or ../../external/apache-httpd-api/lib/.libs/libapache-httpd-module.so
+# or /build/useful/apache-httpd-api/lib/.libs/libapache-httpd++.so
+# or ../../external/apache-httpd-api/lib/.libs/libapache-httpd++.so
 # NOT NEEDED export LD_LIBRARY_PATH = ../../external/apache-httpd-api/lib/.libs
 
 BASELINE_MODULES = \

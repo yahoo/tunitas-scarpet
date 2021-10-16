@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace app::publish::options {
   //
@@ -28,13 +29,13 @@ namespace app::publish::options {
 #import app.options.Parser
 #import tunitas.Success
 #import app.publish.Configuration
-#import tunitas.app.options.Args
+#import tunitas.application.options.Args
 class app::publish::options::Parser : public app::options::Parser {
-  using ancestor = app::options::Parser;
+  using Ancestor = app::options::Parser;
 public:
   inline explicit Parser(Specification const &, Configuration &);
   Parser(Specification &&) = delete;
-  using Result = tunitas::Success; // not ancestor::Result
+  using Result = tunitas::Success; // not Ancestor::Result
   auto operator()(Args) -> Result;
 protected:
   Configuration &cfg;
@@ -43,15 +44,17 @@ protected:
 #divert <ipp>
 namespace app::publish::options {
   Parser::Parser(Specification const &spc, Configuration &cfg)
-    : ancestor{spc}
+    : Ancestor{spc}
     , cfg{cfg}
   { }
 }
 #endiv
 #divert <cpp>
-#import app.exception.Bad_Filepath
-#import app.exception.Bad_Domain
-#import app.exception.Bad_Secret
+#import app.exits.constants
+#import app.exception.Version
+#import app.options.exception.Bad_Filepath
+#import app.options.exception.Bad_Domain
+#import app.options.exception.Bad_Secret
 #import app.options.get_domain
 #import app.options.get_secret_literal
 #import app.publish.defaults
@@ -61,16 +64,13 @@ namespace app::publish::options {
 #import options.longish.Getter
 #import options.longish.Step
 #import std.error_code
-#import std.logic_error
-#import sys.exits.constants
-#import tunitas.app.options.get_filepath
-#import tunitas.scarpet.error.Code
-#import tunitas.scarpet.exception.Version
+#import tunitas.application.options.exception.Unspecified
+#import tunitas.application.options.get_filepath
 #import tunitas.scarpet.error.Code
 namespace app::publish::options {
   auto Parser::operator()(Args av) -> Result {
     namespace error = tunitas::scarpet::error;
-    // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::app::options
+    // WATCHOUT as of tunitas-basics <= 1.7.0, module-options' namespace options is not cascaded into tunitas::application::options
     using ::options::longish::Getter;
     using ::options::longish::Step;
     Getter get{spc.shortish(), spc.longish(), av};
@@ -80,7 +80,7 @@ namespace app::publish::options {
           namespace oi = options::indicator;
         case oi::CHR_h:
         case oi::USAGE_SUBCOMMAND:
-          throw exception::Usage{cfg.NAME, sys::exits::OK};
+          throw exception::Usage{cfg.NAME, exits::OK};
         case oi::CHR_V:
         case oi::VERSION_SUBCOMMAND:
           throw exception::Version{cfg.NAME};
@@ -153,7 +153,7 @@ namespace app::publish::options {
           // This is a programmer error.
           // It means that the specification of the option parser is wider than this switch statement.
           // Someone (you) forgot to take care of some eventuality.
-          throw std::logic_error{"Specification"};
+          throw exception::Unspecified{NAME};
         }
       } catch (exception::Bad_Domain const &e) {
         /* [[FIXTHIS ee(cfg)) */ ::options::error(cfg) << "invalid domain " << required(step) << " value on --" << word(step) << '\n';

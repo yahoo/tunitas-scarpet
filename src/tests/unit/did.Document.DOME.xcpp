@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tests.unit.did.Document.declaration
 #import tunitas.scarpet.did.Document.DOME
@@ -10,8 +11,6 @@ namespace tests::unit::did {
 }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 namespace tests::unit::did {
   template<> class Document<subjecting::Document<DOME>> : public cppunit::test::Fixture {
   public:
@@ -24,26 +23,26 @@ namespace tests::unit::did {
 #endiv
 #divert <cpp>
 namespace tests::unit::did {
-  auto rigging::Document<DOME>::test_case_01() -> void {
+  auto testing::Document<DOME>::test_case_01() -> void {
 #warning WRITETHIS auto Document<DOME>::test_case_01() -> void
     CPPUNIT_ASSERT(true);
   }
-  auto rigging::Document<DOME>::test_case_02() -> void {
+  auto testing::Document<DOME>::test_case_02() -> void {
 #warning WRITETHIS auto Document<DOME>::test_case_02() -> void
     CPPUNIT_ASSERT(true);
   }
 }
-#import rigging.suite.io
-auto tests::unit::did::rigging::Document<tests::unit::did::DOME>::suite() -> cppunit::Test * {
-  using namespace ::rigging::suite;
+auto tests::unit::did::testing::Document<tests::unit::did::DOME>::suite() -> cppunit::Test * {
+  using namespace rigging::suite;
   Stream series{"Document<DOME>"};
-  {
-    Stream cas{"case"};
-    cas << call("01", &Document::test_case_01)
-        << call("02", &Document::test_case_02)
-      ;
-    series << move(cas);
-  }
+  series << []() {
+              Stream cas{"case"};
+              cas << call("01", &Document::test_case_01)
+                  << call("02", &Document::test_case_02)
+                ;
+              return move(cas);
+            }()
+    ;
   return finalize(series);
 }
 #endiv

@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::compiler { class Fixture; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 class tests::unit::compiler::Fixture : public cppunit::test::Fixture {
 public:
   auto test_compile_DOME() -> void;
@@ -36,21 +35,20 @@ auto tests::unit::compiler::Fixture::test_compile_ZONE() -> void {
 #import tests.unit.compiler.Compile.DOME.JSON
 #import tests.unit.compiler.Compile.DOME.ZONE
 #import tests.unit.output.Fixture
-#import rigging.suite.io
 auto tests::unit::compiler::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"compiler"};
-  {
-    Stream com{"compile"};
-    com << call("DOME", &Fixture::test_compile_DOME)
-        << call("JSON", &Fixture::test_compile_JSON)
-        << call("ZONE", &Fixture::test_compile_ZONE)
-      ;
-    series << add(com.release());
-  }
-  series << add(compiler::Compile<compiler::answer_dome::Source, compiler::answer_dome::Destination>::suite())
-         << add(compiler::Compile<compiler::dome_json::Source, compiler::dome_json::Destination>::suite())
-         << add(compiler::Compile<compiler::dome_zone::Source, compiler::dome_zone::Destination>::suite())
+  series << []() {
+              Stream com{"compile"};
+              com << call("DOME", &Fixture::test_compile_DOME)
+                  << call("JSON", &Fixture::test_compile_JSON)
+                  << call("ZONE", &Fixture::test_compile_ZONE)
+                ;
+              return move(com);
+            }()
+         << add<compiler::Compile<compiler::answer_dome::Source, compiler::answer_dome::Destination>>()
+         << add<compiler::Compile<compiler::dome_json::Source, compiler::dome_json::Destination>>()
+         << add<compiler::Compile<compiler::dome_zone::Source, compiler::dome_zone::Destination>>()
     ;
   return finalize(series);
 }

@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::output { class Fixture; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 class tests::unit::output::Fixture : public cppunit::test::Fixture {
 public:
   auto test_Null() -> void;
@@ -84,15 +83,13 @@ auto tests::unit::output::Fixture::test_Counters() -> void {
   ++subject.errors;
   CPPUNIT_ASSERT(!ok(subject));
 }
-#import rigging.suite.io
 auto tests::unit::output::Fixture::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"output"};
   series << call("Null", &Fixture::test_Null)
          << call("List", &Fixture::test_List)
          << call("Stream", &Fixture::test_Stream)
-    ;
-  series << call("error", &Fixture::test_error)
+         << call("error", &Fixture::test_error)
          << call("warning", &Fixture::test_warning)
          << call("notice", &Fixture::test_notice)
          << call("verbose", &Fixture::test_verbose)

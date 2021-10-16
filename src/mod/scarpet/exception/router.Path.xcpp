@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace mod::scarpet::exception::router {
   //
@@ -29,7 +30,7 @@ class mod::scarpet::exception::router::Path :
   public mod::scarpet::exception::aspect::Router,
   public aspect::Path,
   public std::invalid_argument {
-  struct ancestors {
+  struct Ancestors {
     // recall: there is an 'exception' in the ancestry that occludes the nearby namespace
     struct aspects {
       using Aspect = tunitas::scarpet::exception::Aspect;
@@ -46,15 +47,15 @@ public:
 #divert <ipp>
 namespace mod::scarpet::exception::router {
   Path::Path(std::string const &reason, std::string const &path)
-    : ancestors::Path{path}
-    , ancestors::Exception{reason}
+    : Ancestors::Path{path}
+    , Ancestors::Exception{reason}
   { }
 }
 #endiv
 #divert <cpp>
 namespace mod::scarpet::exception::router {
   auto Path::what() const noexcept -> char const * {
-    return ancestors::Exception::what();
+    return Ancestors::Exception::what();
   }
 }
 #endiv

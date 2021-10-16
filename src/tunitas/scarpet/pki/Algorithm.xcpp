@@ -1,7 +1,8 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import std.is_same
 namespace tunitas::scarpet::pki {
@@ -19,7 +20,7 @@ namespace tunitas::scarpet::pki {
   // 
   enum class SIGNATURE { };
   enum class VERIFICATION { };
-  namespace required { template<typename PURPOSE> concept bool Purpose = std::is_same_v<PURPOSE, SIGNATURE> || std::is_same_v<PURPOSE, VERIFICATION>; }
+  namespace required { template<typename PURPOSE> concept Purpose = std::is_same_v<PURPOSE, SIGNATURE> || std::is_same_v<PURPOSE, VERIFICATION>; }
   template<required::Purpose> struct Purpose {
     enum class Algorithm {
         Ed25519_2018,

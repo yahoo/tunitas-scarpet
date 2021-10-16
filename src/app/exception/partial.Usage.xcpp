@@ -1,0 +1,97 @@
+// This is -*- c++ -*- in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+namespace app::exception::partial {
+  //
+  // A partial completion of the usage exception; they are all the same
+  // Descendants only.
+  //
+  // Specification:
+  //
+  //   The descendant must complete the (non-virtual) obligation of the constructor
+  //     which calls a private static auto format(string::View NAME) -> string::Storage
+  //
+  // Design:
+  // 
+  //   Descendants are expected to provide a constructor with a signature
+  //     explicit Descendant(string::View NAME);
+  //     explicit Descendant(string::View NAME, exits::Code);
+  //
+  // Usage: (of the final descendant)
+  //
+  //   throw Usage{"program"};
+  //
+  // Usage: (of the final descendant)
+  //
+  //   try {
+  //     ...
+  //     throw Usage{"program"};
+  //     ...
+  //   } catch (exception::aspect::Quitting const &g) {
+  //     g.stream() << g << '\n';
+  //     return g.code();          ... equivalently ::exit(g.code());
+  //   }
+  //
+  class [[nodiscard]] Usage;
+}
+#endiv
+#divert <hpp>
+#import tunitas.application.exception.feature.Usage
+#import tunitas.exception.feature.Messaging
+#import app.exception.Aspect
+#import std.exception
+#import tunitas.application.exception.Aspect
+#import tunitas.exception.Aspect
+#import tunitas.string.Storage
+#import tunitas.string.View
+class app::exception::partial::Usage : public app::exception::Aspect,
+                                       public tunitas::application::exception::Aspect,
+                                       public tunitas::exception::Aspect,
+                                       public tunitas::application::exception::feature::Usage,
+                                       public tunitas::exception::feature::Messaging,
+                                       public std::exception {
+  struct Ancestors {
+    struct Aspects { /*who cares*/ };
+    using Usage = tunitas::application::exception::feature::Usage;
+    using Messaging = tunitas::exception::feature::Messaging;
+    using Exception = std::exception;
+  };
+protected:
+  struct Arguments {
+    // To remind about the different arguments for the different constructors
+    using Message = tunitas::string::Storage;
+    using Name = tunitas::string::View;
+  };
+  ~Usage() = default;
+  // The constructor is protected because the descendants MUST not inherit it;
+  // Descendants are expected to have a DIFFERENT constructor signature & implementation.
+  inline explicit Usage(Arguments::Message message);
+  inline explicit Usage(Arguments::Message message, exits::Code);
+public:
+  auto what() const noexcept -> char const * override final;
+  auto stream() const noexcept -> std::ostream & override final;
+  auto exit() const noexcept -> exits::Code override final;
+  auto code() const noexcept -> exits::Code override final;
+};
+#endiv
+#divert <ipp>
+#import app.exits.constants
+namespace app::exception::partial {
+  Usage::Usage(Arguments::Message message) : Usage{move(message), exits::OK} { }
+  Usage::Usage(Arguments::Message message, exits::Code code)
+    : Ancestors::Usage{code}
+    , Ancestors::Messaging{move(message)}
+  { }
+}
+#endiv
+#divert <cpp>
+namespace app::exception::partial {
+  auto Usage::what() const noexcept -> char const *     { return Ancestors::Messaging::what(); }
+  auto Usage::stream() const noexcept -> std::ostream & { return Ancestors::Usage::stream(); }
+  auto Usage::exit() const noexcept -> exits::Code      { return Ancestors::Usage::code(); }
+  auto Usage::code() const noexcept -> exits::Code      { return Ancestors::Usage::code(); }
+}
+#endiv

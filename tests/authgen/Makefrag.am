@@ -1,43 +1,11 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
 # Copyright Yahoo Inc. 2021
 # Licensed under the terms of the Apache-2.0 license.
-# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 
 tests_authgen_TESTS = \
-  tests/authgen/option.help.test \
-  tests/authgen/option.dry-run.test \
-  tests/authgen/option.dryrun.test \
-  tests/authgen/option.d.test \
-  tests/authgen/option.generate-common-name.test \
-  tests/authgen/option.generate-cn.test \
-  tests/authgen/option.gen-cn.test \
-  tests/authgen/option.gencn.test \
-  tests/authgen/option.help.test \
-  tests/authgen/option.h.test \
-  tests/authgen/option.q.test \
-  tests/authgen/option.quiet.test \
-  tests/authgen/option.usage.test \
-  tests/authgen/option.verbose.test \
-  tests/authgen/option.version.test \
-  tests/authgen/option.v.test \
-  tests/authgen/option.V.test \
-  tests/authgen/option.warnings.test \
-  tests/authgen/option.warning.test \
-  tests/authgen/option.w.test \
-  tests/authgen/option.y.test \
-  \
-  tests/authgen/field.C.test \
-  tests/authgen/field.ST.test \
-  tests/authgen/field.L.test \
-  tests/authgen/field.O.test \
-  tests/authgen/field.OU.test \
-  tests/authgen/field.CN.test \
-  tests/authgen/field.all.test \
-  \
-  tests/authgen/error.CN+gencn.test \
-  \
-  tests/authgen/run.01.test \
-  tests/authgen/run.02.test \
+  tests/authgen/all.test \
   $(end)
 
 tests_authgen_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/authgen/*.test)

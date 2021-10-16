@@ -1,7 +1,8 @@
 #!/bin/bash
 # Copyright Yahoo Inc. 2021
 # Licensed under the terms of the Apache-2.0 license.
-# See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #
 # the full end-to-end build using the "nearby" development trees
 #
@@ -147,6 +148,14 @@ elif [[ no != ${with_scold_nearby} ]] ; then
 else
     set_all_defaults_no
 fi
+: ${with_nonstd_gcc:=/exp/gcc/11} # ... WATCHOUT you, the caller must ensure that PATH is set consistenly with this
+# check whether this is different than what PATH finds in the natural course.
+if type -p gcc 2>/dev/null ; then
+    exe=$(type -p gcc 2>/dev/null)
+    if [[ $exe != ${with_nonstd_gcc}/bin/gcc ]] ; then
+        echo "${0}, warning the explicit setting with_nonstd_gcc=${with_nonstd_gcc} is not consistent with $exe from PATH"
+    fi 1>&2
+fi
 : ${with_nonstd_libhttpserver:=/opt/nonstd/libhttpserver} # ... REQUIRED: at least nonstd-libhttpserver-0.9.0-8.1.ipv6+poll+regex
 : ${with_nonstd_half:=/opt/nonstd/half} # ..................... REQUIRED because there is no "standard half"
 # ${with_nonstd_jsoncpp:=/opt/nonstd/jsoncpp} # ............... OPTIONAL
@@ -165,6 +174,7 @@ eval \
     ${prefix:+--prefix=$prefix} \
     ${with_nearby:+--with-nearby=$with_nearby} ${with_external:+--with-external=$with_external} \
     ${with_submodules:+--with-submodules=$with_submodules} \
+    ${with_nonstd_gcc:+--with-nonstd-gcc=$with_nonstd_gcc} \
     ${with_hypogeal_twilight:+--with-hypogeal-twilight=$with_hypogeal_twilight} \
     ${with_temerarious_flagship:+--with-temerarious-flagship=$with_temerarious_flagship} \
     ${with_apache_httpd_api:+--with-apache-httpd-api=$with_apache_httpd_api} \

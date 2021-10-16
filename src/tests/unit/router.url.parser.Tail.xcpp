@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::router::url::parser { class Tail; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 #import mod.scarpet.router.url.parser.Tail
 class tests::unit::router::url::parser::Tail : public cppunit::test::Fixture {
 public:
@@ -81,24 +80,24 @@ auto tests::unit::router::url::parser::Tail::test_operator_call_throwing() -> vo
     CPPUNIT_ASSERT(!specimen.good); // if it failed then it threw
   }
 }
-#import rigging.suite.io
 auto tests::unit::router::url::parser::Tail::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Tail"};
-  {
-    Stream cal{"operator()"};
-    cal << call("returning", &Tail::test_operator_call_returning)
-      ;
-    {
-      Stream thr{"throwing()"};
-      thr << call("series", &Tail::test_operator_call_throwing)
-          << call("good", &Tail::test_operator_call_throwing_good)
-          << call("fail", &Tail::test_operator_call_throwing_fail)
-        ;
-      cal << add(thr.release());
-    }
-    series << add(cal.release());
-  }
+  series << []() {
+              Stream cal{"operator()"};
+              cal << call("returning", &Tail::test_operator_call_returning)
+                  << [] {
+                       Stream thr{"throwing()"};
+                       thr << call("series", &Tail::test_operator_call_throwing)
+                           << call("good", &Tail::test_operator_call_throwing_good)
+                           << call("fail", &Tail::test_operator_call_throwing_fail)
+                         ;
+                       return move(thr);
+                     }()
+                ;
+              return move(cal);
+            }()
+    ;
   return finalize(series);
 }
 #endiv

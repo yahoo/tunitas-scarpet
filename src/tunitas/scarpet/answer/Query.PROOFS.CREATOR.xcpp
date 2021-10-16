@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 #import tunitas.scarpet.answer.Query.declaration
 #import tunitas.scarpet.answer.processor.Stanza.PROOFS
@@ -15,6 +16,7 @@ namespace tunitas::scarpet::answer::packaging {
 #import tunitas.scarpet.drrs.Record.URI
 namespace tunitas::scarpet::answer::packaging {
   template<> struct Query<processor::Stanza<stanza::PROOFS>, processor::Proof<proof::CREATOR>> : public query::Prototype<dns::URI, processor::Proof<proof::CREATOR>, drrs::Record<dns::URI>> {
+    Query() = default;
     inline auto name() const -> dns::Label { return "creator"; }
   };
 }

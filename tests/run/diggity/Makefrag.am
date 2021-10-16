@@ -1,0 +1,40 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+
+tests_run_diggity_XFAIL_TESTS = \
+  tests/run/diggity/run.01.test \
+  tests/run/diggity/run.02.test \
+  $(end)
+tests_run_diggity_TESTS = \
+  tests/run/diggity/option.help.test \
+  tests/run/diggity/option.dry-run.test \
+  tests/run/diggity/option.dryrun.test \
+  tests/run/diggity/option.d.test \
+  tests/run/diggity/option.help.test \
+  tests/run/diggity/option.h.test \
+  tests/run/diggity/option.name-server.test \
+  tests/run/diggity/option.server.test \
+  tests/run/diggity/option.ns.test \
+  tests/run/diggity/option.n.test \
+  tests/run/diggity/option.q.test \
+  tests/run/diggity/option.quiet.test \
+  tests/run/diggity/option.usage.test \
+  tests/run/diggity/option.verbose.test \
+  tests/run/diggity/option.version.test \
+  tests/run/diggity/option.v.test \
+  tests/run/diggity/option.V.test \
+  tests/run/diggity/option.warnings.test \
+  tests/run/diggity/option.warning.test \
+  tests/run/diggity/option.w.test \
+  tests/run/diggity/option.y.test \
+  \
+  $(tests_run_diggity_XFAIL_TESTS) \
+  $(end)
+
+tests_run_diggity_TESTS_SELFCHECK_ACTUAL   = $(wildcard tests/run/diggity/*.test)
+tests_run_diggity_TESTS_SELFCHECK_EXPECTED = $(tests_run_diggity_TESTS)
+tests_run_diggity_TESTS_SELFCHECK_ORPHANS  = $(filter-out $(tests_run_diggity_TESTS_SELFCHECK_EXPECTED), $(tests_run_diggity_TESTS_SELFCHECK_ACTUAL))
+$(if $(tests_run_diggity_TESTS_SELFCHECK_ORPHANS),$(warning Orphaned tests: $(tests_run_diggity_TESTS_SELFCHECK_ORPHANS)))

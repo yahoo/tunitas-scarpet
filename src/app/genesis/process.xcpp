@@ -1,10 +1,11 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <hpp>
 #import app.genesis.Configuration
-#import sys.exits.Code
+#import app.exits.Code
 namespace app::genesis {
   //
   // Process ... generate that key pair
@@ -13,7 +14,7 @@ namespace app::genesis {
   //
   //   ...oh come on...
   //
-  auto process(Configuration const &) -> sys::exits::Code;
+  auto process(Configuration const &) -> exits::Code;
   namespace detail {
     auto strip(std::string) -> std::string;
   }
@@ -24,7 +25,7 @@ namespace app::genesis {
 #import openssl.ec.generate
 #import openssl.evp.PKey
 #import openssl.pem.to_string // includes pem::pub::to_string(...)
-#import sys.exits.constants
+#import app.exits.constants
 #import tunitas.scarpet.pki.key.generate
 #import tunitas.scarpet.pki.key.to_string
 #import tunitas.scarpet.pki.key.privat
@@ -33,14 +34,14 @@ namespace app::genesis {
 #import tunitas.scarpet.exception.Coding
 #import want.stream.duo.Files
 #import want.stream.duo.gang
-auto app::genesis::process(Configuration const &cfg) -> sys::exits::Code {
+auto app::genesis::process(Configuration const &cfg) -> exits::Code {
   using namespace want::stream::duo;
   Files out;
   out.exceptions(std::ios::badbit|std::ios::failbit);
   out.open(*cfg.private_side, *cfg.public_side);
   debug(cfg) << "also writing to " << *cfg.private_side << " and " << *cfg.public_side << '\n';
   switch (cfg.encoding.value_or(defaults::ENCODING)) {
-    using tunitas::scarpet::options::Encoding;
+    using tunitas::scarpet::Encoding;
   case Encoding::PEM:
     {
       using namespace openssl;
@@ -66,7 +67,7 @@ auto app::genesis::process(Configuration const &cfg) -> sys::exits::Code {
     // This is actually a programmer error; the options processing should have dealt with this previously.
     throw tunitas::scarpet::exception::Coding{"processs"};
   }
-  return sys::exits::OK;
+  return exits::OK;
 }
 #import std.regex
 #import std.smatch

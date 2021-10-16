@@ -1,13 +1,12 @@
 // This is -*- c++ -*- C++23 in the stylings of S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tests::unit::pki { class Encoding; }
 #endiv
 #divert <hpp>
-#import cppunit.Test
-#import cppunit.test.Fixture
 #import tunitas.scarpet.pki.Encoding
 class tests::unit::pki::Encoding : public cppunit::test::Fixture {
 public:
@@ -82,7 +81,6 @@ auto tests::unit::pki::Encoding::test_to_communityCamelCase_prefixed() -> void {
     CPPUNIT_ASSERT(!sss.empty());
   }
 }
-#import rigging.suite.io
 auto tests::unit::pki::Encoding::suite() -> cppunit::Test * {
   using namespace ::rigging::suite;
   Stream series{"Encoding"};
@@ -90,19 +88,22 @@ auto tests::unit::pki::Encoding::suite() -> cppunit::Test * {
          << call("to_string", &Encoding::test_to_string)
          << call("to_lowercase", &Encoding::test_to_lowercase)
          << call("to_UPPERCASE", &Encoding::test_to_UPPERCASE)
+         << []() {
+              Stream tos{"to_string"};
+              tos << call("simple", &Encoding::test_to_string_simple)
+                  << call("unprefixed", &Encoding::test_to_string_unprefixed)
+                  << call("prefixed", &Encoding::test_to_string_prefixed)
+                ;
+              return move(tos);
+            }()
+         << []() {
+              Stream tos{"to_communityCamelCase"};
+              tos << call("unprefixed", &Encoding::test_to_communityCamelCase_unprefixed)
+                  << call("prefixed", &Encoding::test_to_communityCamelCase_prefixed)
+                ;
+              return move(tos);
+            }()
     ;
-  {
-    Stream tos{"to_string"};
-    tos << call("simple", &Encoding::test_to_string_simple)
-        << call("unprefixed", &Encoding::test_to_string_unprefixed)
-        << call("prefixed", &Encoding::test_to_string_prefixed)
-      ;
-  } {
-    Stream tos{"to_communityCamelCase"};
-    tos << call("unprefixed", &Encoding::test_to_communityCamelCase_unprefixed)
-        << call("prefixed", &Encoding::test_to_communityCamelCase_prefixed)
-      ;
-  }
   return finalize(series);
 }
 #endiv

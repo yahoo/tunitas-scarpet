@@ -1,10 +1,11 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <hpp>
 #import app.scissor.Configuration
-#import sys.exits.Code
+#import app.exits.Code
 namespace app::scissor {
   //
   // Process ... generate the Certificate Signing Request (CSR) and the associated (private) key
@@ -13,10 +14,11 @@ namespace app::scissor {
   //
   //   ...oh come on...
   //
-  auto process(Configuration const &) -> sys::exits::Code;
+  auto process(Configuration const &) -> exits::Code;
 }
 #endiv
 #divert <cpp>
+#import app.exception.Quitting
 #import app.scissor.exception
 #import openssl.ec.generate
 #import openssl.evp.PKey
@@ -24,16 +26,15 @@ namespace app::scissor {
 #import openssl.x509.Req
 #import std.error_code
 #import std.move
-#import sys.exits.constants
-#import tunitas.scarpet.exception.Quitting
+#import app.exits.constants
 #import want.stream.duo.Files
 #import want.stream.duo.gang
-auto app::scissor::process(Configuration const &cfg) -> sys::exits::Code try {
+auto app::scissor::process(Configuration const &cfg) -> exits::Code try {
   using namespace openssl;
   auto pkey = []() -> evp::PKey {
                 evp::PKey pkey;
                 pkey.assign(ec::generate(ec::group::Name::PRIME256V1));
-                return std::move(pkey);
+                return pkey;
               }();
   auto req = [&pkey, &cfg]() -> x509::Req {
                x509::Req req;
@@ -41,7 +42,7 @@ auto app::scissor::process(Configuration const &cfg) -> sys::exits::Code try {
                // This is slick of course but it does throw std::error_code if openssl refuses the field values
                req.get_subject_name().add_entry_by_txt(cfg.fields); // <----------- Wowza is this slick!
                req.sign(pkey, EVP_sha256());
-               return std::move(req);
+               return req;
              }();
   using namespace want::stream::duo;
   Files out;
@@ -49,9 +50,9 @@ auto app::scissor::process(Configuration const &cfg) -> sys::exits::Code try {
   out.open(*cfg.private_side, *cfg.request_side);
   debug(cfg) << "also writing to " << *cfg.private_side << " and " << *cfg.request_side << '\n';
   out << gang(pem::to_string(pkey), pem::to_string(req));
-  return sys::exits::OK;
+  return exits::OK;
 } catch (std::error_code const &ec) {
   error(cfg) << "failing because " << ec.message() << '\n';
-  throw exception::Quitting{cfg.NAME, sys::exits::FAIL};
+  throw exception::Quitting{cfg.NAME, exits::FAIL};
 }
 #endiv

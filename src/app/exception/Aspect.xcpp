@@ -1,0 +1,63 @@
+// This is -*- c++ -*- nearly C++2a with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
+// Copyright Verizon Media
+// Licensed under the terms of the Apache-2.0 license.
+// For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+// For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#divert <fpp>
+namespace app::exception {
+  //
+  // The aspect of a application exception
+  // Descendants only.
+  // This is a mixin; it is not a complete class.
+  // It allows the normal exception taxonomy to be used while at the same time offering
+  // a dimension which is unique to the Tunitas Scarpet subsystem.
+  //
+  // It is HIGHLY LIKELY that you will also need to mixin tunitas::exception::Aspect
+  // Various schemes expect Tunitas-Aspect, Scarpet-Aspect and App-Aspect (which are all independent)
+  //
+  // Usage:
+  //
+  //   class my::Difficulty : public app::exception::Aspect,
+  //                          public std::runtime_error {
+  //   public:
+  //      Difficulty(std::string const &reason);
+  //      auto what() const noexcept -> char const * override;
+  //   };
+  //
+  //   class my::Problem : public app::exception::Aspect,
+  //                       public tunitas::scarpet::exception::Aspect,
+  //                       public std::runtime_error {
+  //   public:
+  //      Problem(std::string const &reason);
+  //      auto what() const noexcept -> char const * override;
+  //   };
+  //
+  //   try {
+  //     ...
+  //     throw Problem{...somehow...};
+  //     ...
+  //   } catch (Aspect const &e) {
+  //     ...complain...
+  //   }
+  //
+  class Aspect;
+}
+#endiv
+#divert <hpp>
+#import app.exits.Code
+#import std.ostream
+class app::exception::Aspect {
+protected:
+  [[key_method]] virtual ~Aspect() = default;
+public:
+  Aspect() = default;
+  struct Results {
+    using What = char const *;
+    using Stream = std::ostream &;
+    using Exit = exits::Code;
+  };
+  virtual auto what() const noexcept -> Results::What = 0;
+  virtual auto stream() const noexcept -> Results::Stream = 0;
+  virtual auto exit() const noexcept -> Results::Exit = 0; // WATCHOUT ... prefer "exit" instead of "code" in this case
+};
+#endiv

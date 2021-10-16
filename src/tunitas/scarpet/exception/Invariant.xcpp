@@ -1,7 +1,8 @@
 // This is -*- c++ -*- nearly C++23 with Modules TS but in the S.C.O.L.D. stylings that are so popular these days.
 // Copyright Yahoo Inc. 2021.
 // Licensed under the terms of the Apache-2.0 license.
-// See the LICENSE file in https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE for terms.
+// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #divert <fpp>
 namespace tunitas::scarpet::exception {
   //
@@ -13,21 +14,24 @@ namespace tunitas::scarpet::exception {
   //   throw exception::Invariant{};
   //   throw exception::Invariant{"inappropriate character"};
   //
-  class Invariant;
+  class [[nodiscard]] Invariant;
 }
 #endiv
 #divert <hpp>
+#import nonstd.exception.Invalid
+#import tunitas.exception.Aspect
 #import tunitas.scarpet.exception.Aspect
-#import std.invalid_argument
-#import std.string
-class tunitas::scarpet::exception::Invariant : public Aspect, public std::invalid_argument {
-  struct ancestors {
-    using Aspect = scarpet::exception::Aspect;
-    using Exception = std::invalid_argument;
+#import tunitas.string.View
+class tunitas::scarpet::exception::Invariant final : public tunitas::exception::Aspect,
+                                                     public scarpet::exception::Aspect,
+                                                     public nonstd::exception::Invalid<string::View> {
+  struct Ancestors {
+    struct Aspects { /*who cares*/ };
+    using Exception = nonstd::exception::Invalid<string::View>;
   };
 public:
   inline Invariant();
-  inline explicit Invariant(std::string const &reason);
+  inline explicit Invariant(string::View reason);
   auto what() const noexcept -> char const * override;
 };
 #endiv
@@ -36,15 +40,15 @@ namespace tunitas::scarpet::exception {
   Invariant::Invariant()
     : Invariant{"data invariant"}
   { }
-  Invariant::Invariant(std::string const &reason)
-    : ancestors::Exception{reason}
+  Invariant::Invariant(string::View reason)
+    : Ancestors::Exception{reason}
   { }
 }
 #endiv
 #divert <cpp>
 namespace tunitas::scarpet::exception {
   auto Invariant::what() const noexcept -> char const * {
-    return ancestors::Exception::what();
+    return Ancestors::Exception::what();
   }
 }
 #endiv

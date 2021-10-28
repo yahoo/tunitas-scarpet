@@ -94,20 +94,20 @@ auto tests::unit::model::Fixture::suite() -> cppunit::Test * {
                   << call("Keys", &Fixture::test_basic_Keys)
                   << call("Services", &Fixture::test_basic_Services)
                   << call("Proofs", &Fixture::test_basic_Proofs)
-                ;
-              return move(bas);
+                  << END;
+              return bas;
             }()
          << []() {
               Stream ser{"service"};
               ser << call("Definition", &Fixture::test_service_Definition)
-                ;
-              return move(ser);
+                  << END;
+              return ser;
             }()
          << []() {
               Stream pro{"proof"};
               pro << call("Definition", &Fixture::test_proof_Definition)
-                ;
-              return move(pro);
+                  << END;
+              return pro;
             }()
     ;
   return finalize(series);

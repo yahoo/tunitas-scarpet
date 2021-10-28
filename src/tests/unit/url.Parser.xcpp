@@ -203,8 +203,8 @@ auto tests::unit::url::Parser::suite() -> cppunit::Test * {
                   << call("04", &Parser::test_case_04)
                   << call("05", &Parser::test_case_05)
                   << call("06", &Parser::test_case_06)
-                ;
-              return move(cas);
+                  << END;
+              return cas;
             }()
     ;
   return finalize(series);

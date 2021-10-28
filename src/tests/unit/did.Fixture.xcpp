@@ -34,23 +34,23 @@ auto tests::unit::did::Fixture::suite() -> cppunit::Test * {
               ide << call("Name", &Fixture::test_identifier_Name)
                   << call("Identifier", &Fixture::test_identifier_Identifier)
                   << call("Method", &Fixture::test_identifier_Method)
-                ;
-              return move(ide);
+                  << END;
+              return ide;
             }()
          << []() {
               Stream par{"Parser"};
               par << call("good", &Fixture::test_Parser_good)
                   << call("bad", &Fixture::test_Parser_bad)
-                ;
-              return move(par);
+                  << END;
+              return par;
             }()
          << []() {
               Stream isa{"is_a_simple_word"};
               isa << call("Method", &Fixture::test_is_a_simple_word_Method)
                   << call("Identifier", &Fixture::test_is_a_simple_word_Identifier)
                   << call("string_view", &Fixture::test_is_a_simple_word_string_view)
-                ;
-              return move(isa);
+                  << END;
+              return isa;
             }()
          << call("unparse", &Fixture::test_unparse)
          << add<Parser>()

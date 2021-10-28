@@ -51,7 +51,7 @@ namespace tests::unit::scarpet::fixture {
                 use << call("Encoding", &Fixture::test_usage_Encoding)
                   // Club and Protocol are tested directly (no subfixture)
                     << END;
-                return move(use);
+                return use;
               }()
            << call("Club", &Fixture::test_Club)
            << call("Protocol", &Fixture::test_Protocol)

@@ -43,8 +43,8 @@ auto tests::unit::compiler::Fixture::suite() -> cppunit::Test * {
               com << call("DOME", &Fixture::test_compile_DOME)
                   << call("JSON", &Fixture::test_compile_JSON)
                   << call("ZONE", &Fixture::test_compile_ZONE)
-                ;
-              return move(com);
+                  << END;
+              return com;
             }()
          << add<compiler::Compile<compiler::answer_dome::Source, compiler::answer_dome::Destination>>()
          << add<compiler::Compile<compiler::dome_json::Source, compiler::dome_json::Destination>>()

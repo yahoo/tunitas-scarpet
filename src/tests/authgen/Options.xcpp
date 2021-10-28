@@ -53,15 +53,15 @@ auto tests::authgen::Options::suite() -> cppunit::Test * {
               use << call("-h", &Options::test_h)
                   << call("--help", &Options::test_help)
                   << call("--usage", &Options::test_usage)
-                ;
-              return move(use);
+                  << END;
+              return use;
             }()
          << []() {
               Stream ver{"version"};
               ver << call("-V", &Options::test_V)
                   << call("--version", &Options::test_version)
-                ;
-              return move(ver);
+                  << END;
+              return ver;
             }()
     ;
   return finalize(series);

@@ -154,15 +154,15 @@ auto tests::unit::drrs::Allocator::suite() -> cppunit::Test * {
                   << call("SRV", &Allocator::test_make_record<dns::SRV>)
                   << call("TXT", &Allocator::test_make_record<dns::TXT>)
                   << call("URI", &Allocator::test_make_record<dns::URI>)
-                ;
-              return move(rec);
+                  << END;
+              return rec;
             }()
          << []() {
               Stream exe{"exercise"};
               exe << call("01", &Allocator::test_exercise_01)
                   << call("02", &Allocator::test_exercise_02)
-                ;
-              return move(exe);
+                  << END;
+              return exe;
             }()
     ;
   return finalize(series);

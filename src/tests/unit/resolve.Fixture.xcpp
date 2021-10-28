@@ -92,8 +92,8 @@ auto tests::unit::resolve::Fixture::suite() -> cppunit::Test * {
               Stream some{"something"};
               some << call("lookup", &Fixture::test_lookup_something)
                    << call("document", &Fixture::test_document_something)
-                ;
-              return move(some);
+                   << END;
+              return some;
             }()
          << add<testing::Lookup<subjecting::NA>>()
          << add<testing::Lookup<subjecting::DA>>()

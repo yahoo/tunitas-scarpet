@@ -69,8 +69,8 @@ auto tests::unit::answer::Fixture::suite() -> cppunit::Test * {
                   << call("launch", &Fixture::test_trivial_launch)
                   << call("Query", &Fixture::test_trivial_Query)
                   << call("Response", &Fixture::test_trivial_Response)
-                ;
-              return move(tri);
+                  << END;
+              return tri;
             }()
          << add<answer::Document>()
          << add<answer::Fields<subject::Fields<fields::STANZA>>>()

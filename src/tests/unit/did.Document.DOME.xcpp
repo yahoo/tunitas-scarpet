@@ -39,8 +39,8 @@ auto tests::unit::did::testing::Document<tests::unit::did::DOME>::suite() -> cpp
               Stream cas{"case"};
               cas << call("01", &Document::test_case_01)
                   << call("02", &Document::test_case_02)
-                ;
-              return move(cas);
+                  << END;
+              return cas;
             }()
     ;
   return finalize(series);

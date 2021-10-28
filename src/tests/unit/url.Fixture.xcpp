@@ -88,11 +88,11 @@ auto tests::unit::url::Fixture::suite() -> cppunit::Test * {
               cas << [] {
                        Stream par{"parser"};
                        par << call("01", &Fixture::test_case_parser_01)
-                         ;
-                       return move(par);
+                           << END;
+                       return par;
                      }()
-                ;
-              return move(cas);
+                  << END;
+              return cas;
             }()
          << []() {
               Stream use{"usage"};
@@ -100,11 +100,11 @@ auto tests::unit::url::Fixture::suite() -> cppunit::Test * {
                        Stream par{"Parser"};
                        par << call("slash", &Fixture::test_usage_Parser_slash)
                            << call("slashprefix", &Fixture::test_usage_Parser_slashprefix)
-                         ;
-                       return move(par);
+                           << END;
+                       return par;
                      }()
-                ;
-              return move(use);
+                  << END;
+              return use;
             }()
          << add<Parser>()
     ;

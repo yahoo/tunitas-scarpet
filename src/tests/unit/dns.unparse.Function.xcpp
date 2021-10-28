@@ -188,15 +188,15 @@ auto tests::unit::dns::uunpparrsee::Function::suite() -> cppunit::Test * {
               Stream lab{"labels"};
               lab << call("copy", &Function::test_labels_copy)
                   << call("forward", &Function::test_labels_forward)
-                ;
-              return move(lab);
+                  << END;
+              return lab;
             }()
          << []() {
               Stream nam{"name"};
               nam << call("copy", &Function::test_name_copy)
                   << call("forward", &Function::test_name_forward)
-                ;
-              return move(nam);
+                  << END;
+              return nam;
             }()
          << []() {
               Stream lab{"label..."};
@@ -204,8 +204,8 @@ auto tests::unit::dns::uunpparrsee::Function::suite() -> cppunit::Test * {
                   << call("two", &Function::test_label_two)
                   << call("three", &Function::test_label_three)
                   << call("four", &Function::test_label_four)
-                ;
-              return move(lab);
+                  << END;
+              return lab;
             }()
          << []() {
               Stream lab{"label...labels"};
@@ -213,8 +213,8 @@ auto tests::unit::dns::uunpparrsee::Function::suite() -> cppunit::Test * {
                   << call("two", &Function::test_label_two_labels)
                   << call("three", &Function::test_label_three_labels)
                   << call("four", &Function::test_label_four_labels)
-                ;
-              return move(lab);
+                  << END;
+              return lab;
             }()
          << []() {
               Stream lab{"label...name"};
@@ -222,8 +222,8 @@ auto tests::unit::dns::uunpparrsee::Function::suite() -> cppunit::Test * {
                   << call("two", &Function::test_label_two_name)
                   << call("three", &Function::test_label_three_name)
                   << call("four", &Function::test_label_four_name)
-                ;
-              return move(lab);
+                  << END;
+              return lab;
             }()
     ;
   return finalize(series);

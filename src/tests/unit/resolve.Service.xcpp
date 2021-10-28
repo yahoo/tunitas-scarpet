@@ -54,8 +54,8 @@ auto tests::unit::resolve::Service::suite() -> cppunit::Test * {
                   << call("directory", &Service::test_constructor_directory)
                   << call("channel", &Service::test_constructor_channel)
                   << call("channel,directory", &Service::test_constructor_channel_directory)
-                ;
-              return move(con);
+                  << END;
+              return con;
             }()
     ;
   return finalize(series);

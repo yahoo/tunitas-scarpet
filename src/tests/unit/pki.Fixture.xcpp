@@ -29,8 +29,8 @@ auto tests::unit::pki::Fixture::suite() -> cppunit::Test * {
   series << []() {
               Stream cnn("cn");
               cnn << call("generate", &Fixture::test_cn_generate)
-                ;
-              return move(cnn);
+                  << END;
+              return cnn;
             }()
          << add<key::Fixture>()
          << add<Algorithm>()

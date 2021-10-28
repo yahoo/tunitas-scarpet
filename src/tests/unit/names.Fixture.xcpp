@@ -73,16 +73,16 @@ auto tests::unit::names::Fixture::suite() -> cppunit::Test * {
               Stream did{"did"};
               did << call("Method", &Fixture::test_generally<subjecting::did::Method>)
                   << call("Identifier", &Fixture::test_generally<subjecting::did::Identifier>)
-                ;
-              return move(did);
+                  << END;
+              return did;
             }()
          << []() {
               Stream dns{"dns"};
               dns << call("Labels", &Fixture::test_generally<subjecting::dns::Labels>)
                   << call("Label", &Fixture::test_generally<subjecting::dns::Label>)
                   << call("Name", &Fixture::test_generally<subjecting::dns::Name>)
-                ;
-              return move(dns);
+                  << END;
+              return dns;
             }()
     ;
   return finalize(series);

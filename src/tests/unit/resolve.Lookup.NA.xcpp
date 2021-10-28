@@ -64,8 +64,8 @@ auto tests::unit::resolve::Lookup<tests::unit::resolve::NA>::suite() -> cppunit:
               Stream cas{"case"};
               cas << call("01", &Lookup::test_case_01)
                   << call("02", &Lookup::test_case_02)
-                ;
-              return move(cas);
+                  << END;
+              return cas;
             }()
     ;
   return finalize(series);

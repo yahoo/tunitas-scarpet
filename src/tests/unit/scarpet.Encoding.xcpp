@@ -133,21 +133,21 @@ namespace tests::unit::scarpet::encoding {
                 ins << call("good", &Encoding::test_operator_insert_good)
                     << call("bad", &Encoding::test_operator_insert_bad)
                     << END;
-                return move(ins);
+                return ins;
               }()
            << []() {
                 auto ext = Stream{"operator>>"};
                 ext << call("good", &Encoding::test_operator_extract_good)
                     << call("bad", &Encoding::test_operator_extract_bad)
                     << END;
-                return move(ext);
+                return ext;
               }()
            << []() {
                 auto tos = Stream{"to_string"};
                 tos << call("good", &Encoding::test_to_string_good)
                     << call("bad", &Encoding::test_to_string_bad)
                     << END;
-                return move(tos);
+                return tos;
               }()
            << []() {
                 auto fro = Stream{"from_string"};
@@ -156,17 +156,17 @@ namespace tests::unit::scarpet::encoding {
                          thro << call("good", &Encoding::test_from_string_throwing_good)
                               << call("bad", &Encoding::test_from_string_throwing_bad)
                               << END;
-                         return move(thro);
+                         return thro;
                        }()
                     << []() {
                          auto noth = Stream{"nothrow"};
                          noth << call("good", &Encoding::test_from_string_nothrow_good)
                               << call("bad", &Encoding::test_from_string_nothrow_bad)
                               << END;
-                         return move(noth);
+                         return noth;
                        }()
                     << END;
-                return move(fro);
+                return fro;
               }()
            << END;
     return finalize(series);

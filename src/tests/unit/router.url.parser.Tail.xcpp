@@ -91,11 +91,11 @@ auto tests::unit::router::url::parser::Tail::suite() -> cppunit::Test * {
                        thr << call("series", &Tail::test_operator_call_throwing)
                            << call("good", &Tail::test_operator_call_throwing_good)
                            << call("fail", &Tail::test_operator_call_throwing_fail)
-                         ;
-                       return move(thr);
+                           << END;
+                       return thr;
                      }()
-                ;
-              return move(cal);
+                  << END;
+              return cal;
             }()
     ;
   return finalize(series);

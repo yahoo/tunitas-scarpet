@@ -128,21 +128,21 @@ auto tests::unit::dns::Fixture::suite() -> cppunit::Test * {
               Stream type{"type"};
               type << call("constants", &Fixture::test_type_constants)
                    << call("DAPTR", &Fixture::test_type_DAPTR)
-                ;
-              return move(type);
+                   << END;
+              return type;
             }()
          << []() {
               Stream use{"usage"};
               use << call("unparse", &Fixture::test_usage_unparse)
-                ;
-              return move(use);
+                  << END;
+              return use;
             }()
          << []() {
               Stream unp{"unparse"};
               unp << add<dns::uunpparrsee::Function>()
                   << add<dns::uunpparrsee::Template>()
-                ;
-              return move(unp);
+                  << END;
+              return unp;
             }()
     ;
   return finalize(series);

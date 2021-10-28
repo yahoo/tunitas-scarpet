@@ -93,15 +93,15 @@ auto tests::unit::pki::Encoding::suite() -> cppunit::Test * {
               tos << call("simple", &Encoding::test_to_string_simple)
                   << call("unprefixed", &Encoding::test_to_string_unprefixed)
                   << call("prefixed", &Encoding::test_to_string_prefixed)
-                ;
-              return move(tos);
+                  << END;
+              return tos;
             }()
          << []() {
               Stream tos{"to_communityCamelCase"};
               tos << call("unprefixed", &Encoding::test_to_communityCamelCase_unprefixed)
                   << call("prefixed", &Encoding::test_to_communityCamelCase_prefixed)
-                ;
-              return move(tos);
+                  << END;
+              return tos;
             }()
     ;
   return finalize(series);

@@ -81,11 +81,11 @@ auto tests::unit::drrs::Fixture::suite() -> cppunit::Test * {
                            << call("TXT", &Fixture::test_record<dns::TXT>)
                            << call("SRV", &Fixture::test_record<dns::SRV>)
                            << call("URI", &Fixture::test_record<dns::URI>)
-                         ;
-                       return move(rec);
+                           << END;
+                       return rec;
                      }()
-                ;
-              return move(use);
+                  << END;
+              return use;
             }()
          << add<Record<dns::DAPTR>>()
          << add<Record<dns::NAPTR>>()

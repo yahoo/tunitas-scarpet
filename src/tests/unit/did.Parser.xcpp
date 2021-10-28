@@ -188,8 +188,8 @@ auto tests::unit::did::Parser::suite() -> cppunit::Test * {
                    << call("02", &Parser::test_good_02)
                    << call("03", &Parser::test_good_03)
                    << call("04", &Parser::test_good_04)
-                ;
-              return move(good);
+                   << END;
+              return good;
             }()
          << []() {
               Stream fail("fail");
@@ -198,8 +198,8 @@ auto tests::unit::did::Parser::suite() -> cppunit::Test * {
                    << call("03", &Parser::test_fail_03)
                    << call("04", &Parser::test_fail_04)
                    << call("05", &Parser::test_fail_05)
-                ;
-              return move(fail);
+                   << END;
+              return fail;
             }()
          << []() {
               Stream cas("case");
@@ -209,8 +209,8 @@ auto tests::unit::did::Parser::suite() -> cppunit::Test * {
                   << call("04", &Parser::test_case_04)
                   << call("05", &Parser::test_case_05)
                   << call("06", &Parser::test_case_06)
-                ;
-              return move(cas);
+                  << END;
+              return cas;
             }()
     ;
   return finalize(series);

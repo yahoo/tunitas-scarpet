@@ -67,8 +67,8 @@ auto tests::unit::want::Fixture::suite() -> cppunit::Test * {
               Stream tos{"to_string"};
               tos << call("string", &Fixture::test_to_string_string)
                   << call("others", &Fixture::test_to_string_others)
-                ;
-              return move(tos);
+                  << END;
+              return tos;
             }()
          << call("strftime", &Fixture::test_strftime)
     ;

@@ -79,14 +79,14 @@ auto tests::unit::drrs::Flat::suite() -> cppunit::Test * {
               Stream con{"constructor"};
               con << call("default", &Flat::test_constructor_default)
                   << call("move", &Flat::test_constructor_move)
-                ;
-              return move(con);
+                  << END;
+              return con;
             }()
          << []() {
               Stream ass{"assignment"};
               ass << call("move", &Flat::test_assignment_move)
-                ;
-              return move(ass);
+                  << END;
+              return ass;
             }()
          << call("push_back", &Flat::test_push_back)
          << call("emplace_back", &Flat::test_emplace_back)
@@ -94,8 +94,8 @@ auto tests::unit::drrs::Flat::suite() -> cppunit::Test * {
               Stream exa{"example"};
               exa << call("01", &Flat::test_example_01)
                   << call("02", &Flat::test_example_02)
-                ;
-              return move(exa);
+                  << END;
+              return exa;
             }()
     ;
   return finalize(series);

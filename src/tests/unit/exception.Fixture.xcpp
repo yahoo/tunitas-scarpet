@@ -141,7 +141,7 @@ auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
               auto rou = Stream{"router"};
               rou << call("Path", &Fixture::test_router_Path)
                   << END;
-              return move(rou);
+              return rou;
             }()
          << []() {
               Stream asp{"Aspect"};
@@ -161,7 +161,7 @@ auto tests::unit::exception::Fixture::suite() -> cppunit::Test * {
                   << call("Options", &Fixture::test_Aspect<aoe::Options>)
                   << call("router:Path", &Fixture::test_Aspect<mse::router::Path>)
                   << END;
-              return move(asp);
+              return asp;
             }()
          << END;
   return finalize(series);

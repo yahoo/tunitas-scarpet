@@ -31,7 +31,7 @@ auto tests::unit::router::Fixture::suite() -> cppunit::Test * {
                        return par;
                      }()
                   << END;
-              return move(uuu);
+              return uuu;
             }()
          << END;
   return finalize(series);

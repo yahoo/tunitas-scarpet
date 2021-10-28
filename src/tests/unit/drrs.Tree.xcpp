@@ -123,15 +123,15 @@ auto tests::unit::drrs::Tree::suite() -> cppunit::Test * {
               Stream con{"constructor"};
               con << call("top", &Tree::test_constructor_top)
                   << call("ref", &Tree::test_constructor_ref)
-                ;
-              return move(con);
+                  << END;
+              return con;
             }()
          << []() {
               Stream nam{"name"};
               nam << call("unqualified", &Tree::test_name_unqualified)
                   << call("fully-qualified", &Tree::test_name_fully_qualified)
-                ;
-              return move(nam);
+                  << END;
+              return nam;
             }()
          << call("records", &Tree::test_records)
          << call("children", &Tree::test_children)

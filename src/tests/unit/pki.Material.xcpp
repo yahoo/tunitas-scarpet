@@ -122,18 +122,18 @@ auto tests::unit::pki::Material::suite() -> cppunit::Test * {
                        Stream ans{"Ancestor"};
                        ans << call("copy", &Material::test_constructor_Ancestor_copy)
                            << call("move", &Material::test_constructor_Ancestor_move)
-                         ;
-                       return move(ans);
+                           << END;
+                       return ans;
                      }()
-                ;
-              return move(con);
+                  << END;
+              return con;
             }()
          << []() {
               Stream ass{"assignment"};
               ass << call("copy", &Material::test_assignment_Ancestor_copy)
                   << call("move", &Material::test_assignment_Ancestor_move)
-                ;
-              return move(ass);
+                  << END;
+              return ass;
             }()
          << call("operator==", &Material::test_operator_eq)
          << call("operator=", &Material::test_operator_ne)
@@ -142,8 +142,8 @@ auto tests::unit::pki::Material::suite() -> cppunit::Test * {
               tos << call("none", &Material::test_to_string_none)
                   << call("passthru", &Material::test_to_string_passthru)
                   << call("foreach", &Material::test_to_string_foreach)
-                ;
-              return move(tos);
+                  << END;
+              return tos;
             }()
     ;
   return finalize(series);

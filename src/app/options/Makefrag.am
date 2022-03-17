@@ -1,18 +1,18 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+# Copyright Yahoo Inc. 2021.
 # Licensed under the terms of the Apache-2.0 license.
 # For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 # For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
 #
-obj_src_app_options_SUBSOURCES = \
-  obj/src/app/options/namespace.cpp \
-  obj/src/app/options/get_domain.cpp \
-  obj/src/app/options/get_encoding.cpp \
-  obj/src/app/options/get_secret_literal.cpp \
-  obj/src/app/options/indicator.cpp \
-  obj/src/app/options/indicator.constants.cpp \
-  obj/src/app/options/Parser.cpp \
-  obj/src/app/options/Specification.cpp \
-  $(obj_src_app_options_exception_SUBSOURCES) \
+app_options_SUBSOURCES = \
+  noinst/obj/src/app/options/namespace.cpp \
+  noinst/obj/src/app/options/get_domain.cpp \
+  noinst/obj/src/app/options/get_encoding.cpp \
+  noinst/obj/src/app/options/get_secret_literal.cpp \
+  noinst/obj/src/app/options/indicator.cpp \
+  noinst/obj/src/app/options/indicator.constants.cpp \
+  noinst/obj/src/app/options/Parser.cpp \
+  noinst/obj/src/app/options/Specification.cpp \
+  $(app_options_exception_SUBSOURCES) \
   $(end)
 include src/app/options/exception/Makefrag.am

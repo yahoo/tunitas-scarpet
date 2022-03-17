@@ -1,44 +1,23 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright Yahoo Inc. 2021
+# Copyright Yahoo Inc. 2022.
 # Licensed under the terms of the Apache-2.0 license.
 # For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 # For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-
-bin_did_diggity = bin/did-diggity
-bin_did_diggity_LDADD = $(lib_libapp_diggity_la)
-bin_did_diggity_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
-bin_did_diggity_MODULES = $(call TF_SOURCEStoMODULES, $(bin_did_diggity_SOURCES))
-bin_did_diggity_SOURCES = obj/src/app/diggity/c.main.cpp
 #
-lib_libapp_diggity_la = lib/libapp-diggity.la
-lib_libapp_diggity_la_LIBADD = $(lib_libapp_la)
-lib_libapp_diggity_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
-lib_libapp_diggity_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libapp_diggity_la_SOURCES))
-lib_libapp_diggity_la_SOURCES = \
-  obj/src/app/diggity/namespace.cpp \
-  obj/src/app/diggity/main.cpp \
-  obj/src/app/diggity/defaults.cpp \
-  obj/src/app/diggity/examples.cpp \
-  obj/src/app/diggity/Configuration.cpp \
-  obj/src/app/diggity/process.cpp \
+app_diggity_SUBSOURCES = \
+  noinst/obj/src/app/diggity/namespace.cpp \
+  noinst/obj/src/app/diggity/main.cpp \
+  noinst/obj/src/app/diggity/defaults.cpp \
+  noinst/obj/src/app/diggity/examples.cpp \
+  noinst/obj/src/app/diggity/Configuration.cpp \
+  noinst/obj/src/app/diggity/process.cpp \
   \
-  obj/src/app/diggity/exception/namespace.cpp \
-  obj/src/app/diggity/exception/Usage.cpp \
+  noinst/obj/src/app/diggity/exception/namespace.cpp \
+  noinst/obj/src/app/diggity/exception/Usage.cpp \
   \
-  obj/src/app/diggity/options/namespace.cpp \
-  obj/src/app/diggity/options/indicator.constants.cpp \
-  obj/src/app/diggity/options/indicator.cpp \
-  obj/src/app/diggity/options/Parser.cpp \
-  obj/src/app/diggity/options/Specification.cpp \
+  noinst/obj/src/app/diggity/options/namespace.cpp \
+  noinst/obj/src/app/diggity/options/indicator.constants.cpp \
+  noinst/obj/src/app/diggity/options/indicator.cpp \
+  noinst/obj/src/app/diggity/options/Parser.cpp \
+  noinst/obj/src/app/diggity/options/Specification.cpp \
   $(end)
-#
-$(scold_cxxdir)/app/diggity/dependencies.mk: $(lib_libapp_diggity_la_SOURCES) $(bin_did_diggity_SOURCES)
-$(lib_libapp_diggity_la_SOURCES) $(bin_did_diggity_SOURCES) : obj/src/%.cpp : src/%.xcpp
-	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
-	$(TF_V_DUN) test -e $@
-$(scold_cxxdir)/app/diggity/dependencies.mk:
-	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
-	$(TF_V_DUN) test -e $@
-include $(scold_cxxdir)/app/diggity/dependencies.mk
-clean-dependencies::
-	rm -f $(scold_cxxdir)/app/diggity/dependencies.mk

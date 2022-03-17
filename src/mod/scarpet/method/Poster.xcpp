@@ -71,12 +71,12 @@ auto mod::scarpet::method::Poster::operator()() -> apache::httpd::status::Code {
 #endif
 }
 #import apache.httpd.io.keywords
-#import autotools.autoconf.Config.mod.scarpet.CONFIG
+#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
 auto mod::scarpet::method::Poster::banner_failure() -> void {
   using namespace io::keywords;
   ap_set_content_type(this->req, "text/html"); // [[FIXTHIS]] as ap::set_content_type(...)
   rs << html << br
-     << head << autotools::autoconf::Config<CONFIG>::package_name() << _head << br
+     << head << autotools::autoconf::Config<tunitas::scarpet::CONFIG>::package_name() << _head << br
      << body << p << "the POST fails"
     // with no reason stated
      << _p << _body

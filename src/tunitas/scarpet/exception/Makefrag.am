@@ -1,9 +1,9 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright 2019, Oath Inc.; Copyright 2020, Verizon Media
+# Copyright Yahoo Inc. 2021.
 # Licensed under the terms of the Apache-2.0 license.
 # For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 # For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-obj_src_tunitas_scarpet_exception_SUBSOURCES = \
+tunitas_scarpet_exception_SUBSOURCES = \
   obj/src/tunitas/scarpet/exception/namespace.cpp \
   obj/src/tunitas/scarpet/exception/Aspect.cpp \
   obj/src/tunitas/scarpet/exception/Coding.cpp \

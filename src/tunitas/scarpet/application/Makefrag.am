@@ -1,38 +1,18 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright Verizon Media
+# Copyright Yahoo Inc. 2021.
 # Licensed under the terms of the Apache-2.0 license.
 # For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 # For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-
-lib_libtunitas_scarpet_application_la = lib/libtunitas-scarpet-application.la
-lib_libtunitas_scarpet_application_la_LIBADD = \
-  $(lib_libtunitas_scarpet_la) \
-  -ltunitas-application \
-  -loptions-module \
-  -lnonstd-module \
-  $(end)
-lib_libtunitas_scarpet_application_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
-lib_libtunitas_scarpet_application_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_application_la_SOURCES))
-lib_libtunitas_scarpet_application_la_SOURCES = \
+#
+tunitas_scarpet_application_SUBSOURCES = \
   obj/src/tunitas/scarpet/application/namespace.cpp \
   obj/src/tunitas/scarpet/application/Configuration.cpp \
   obj/src/tunitas/scarpet/application/Program.cpp \
-  $(obj_src_tunitas_scarpet_application_exception_SUBSOURCES) \
-  $(obj_src_tunitas_scarpet_application_options_SUBSOURCES) \
-  $(obj_src_tunitas_scarpet_application_required_SUBSOURCES) \
+  $(tunitas_scarpet_application_exception_SUBSOURCES) \
+  $(tunitas_scarpet_application_options_SUBSOURCES) \
+  $(tunitas_scarpet_application_required_SUBSOURCES) \
   $(end)
 #
 include src/tunitas/scarpet/application/exception/Makefrag.am
 include src/tunitas/scarpet/application/options/Makefrag.am
 include src/tunitas/scarpet/application/required/Makefrag.am
-#
-$(scold_cxxdir)/tunitas/scarpet/application/dependencies.mk: $(lib_libtunitas_scarpet_application_la_SOURCES)
-$(lib_libtunitas_scarpet_application_la_SOURCES) : obj/src/%.cpp : src/%.xcpp
-	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
-	$(TF_V_DUN) test -e $@
-$(scold_cxxdir)/tunitas/scarpet/application/dependencies.mk:
-	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
-	$(TF_V_DUN) test -e $@
-include $(scold_cxxdir)/tunitas/scarpet/application/dependencies.mk
-clean-dependencies::
-	rm -f $(scold_cxxdir)/tunitas/scarpet/application/dependencies.mk

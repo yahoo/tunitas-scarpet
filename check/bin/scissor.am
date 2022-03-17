@@ -1,0 +1,26 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright Yahoo Inc. 2022.
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+# For terms, see the LICENSE file at the top of this repository.
+#
+check_bin_scissor = check/bin/scissor$(error REMOVE)
+check_bin_scissor_CPPFLAGS = $(CHECK_CPPFLAGS_SET)
+check_bin_scissor_CXXFLAGS = $(CHECK_CXXFLAGS_SET)
+check_bin_scissor_LDFLAGS = $(CHECK_LDFLAGS_SET)
+check_bin_scissor_LDADD = noinst/lib/libapp-scissor.la check/lib/libtests.la -lrigging++ 
+check_bin_scissor_SOURCES = $(tests_scissor_SUBSOURCES)
+include src/tests/scissor/Makefrag.am
+#
+$(check_bin_scissor_SOURCES) : disco_objdir=check/obj
+$(check_bin_scissor_SOURCES) : scold_objdir=$(disco_objdir)
+$(check_bin_scissor_SOURCES) : check/obj/src/%.cpp : src/%.xcpp
+	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
+	$(TF_V_DUN) test -e $@
+$(tf_check_mkdir)/scissor.mk: $(check_bin_scissor_SOURCES)
+$(tf_check_mkdir)/scissor.mk:
+	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
+	$(TF_V_DUN) test -e $@
+include $(tf_check_mkdir)/scissor.mk
+clean-dependencies:: ; rm -f $(tf_check_mkdir)/scissor.mk

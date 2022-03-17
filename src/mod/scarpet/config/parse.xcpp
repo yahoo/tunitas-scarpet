@@ -64,13 +64,14 @@ auto mod::scarpet::config::parse(httpd::cmd_parms *cmd, void */*???*/, char cons
   }
 
   while (parser.get_line() && ! parser.at_end()) {
-    std::cerr << "DEBUG line: q(" << parser.buffer.data() << ")\n";
+    std::cerr << "DEBUG line: length=" << parser.buffer.size() << " q(" << parser.buffer.data() << ")\n";
     if (parser.ignorable()) {
       continue;
     }
 
     auto tokens = parser.split_line();
     if (2 != tokens.size()) {
+      // At this point buffer should not be empty because parser.ignorable avoided empty lines
       return parser.pstrcat("bad directive [", parser.buffer.data(), "], expected two space-separated tokens, but found ", boost::lexical_cast<std::string>(tokens.size()));
     }
         

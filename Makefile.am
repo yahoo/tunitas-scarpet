@@ -1,5 +1,5 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright Yahoo Inc. 2021
+# Copyright Yahoo Inc. 2021.
 # Licensed under the terms of the Apache-2.0 license.
 # For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 # For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
@@ -9,48 +9,40 @@
 AUTOMAKE_OPTIONS = no-define subdir-objects foreign
 ACLOCAL_AMFLAGS = -I m4
 
-plusplus = ++
-_module = -module
-
 LOCAL_ServerRoot = ./httpd
 
 default:
+include tests/Makefrag.am
 include @temerarious_flagship_datadir@/am/build.am
 # configure.ac:  HGTW_CONFIG_SUBMODULES([submodules], [ ...list...])
 # Makefile.am    SUBDIRS = @subdirs@
 
+plusplus = ++$(error REMOVE)
+_module = -module$(error REMOVE)
+
 DEVELOPMENT_AREAS = \
   $(apache_httpd_api_prefix) \
+  $(deprecated_DEVELOPMENT_AREAS) \
   $(module_ares_prefix) \
-  $(module_boost_prefix) \
-  $(module_c_prefix) \
-  $(module_format_prefix) \
-  $(module_ip_prefix) \
+  $(module_cli_core_prefix) \
+  $(module_cli_shell_prefix) \
   $(module_json_prefix) \
   $(module_nonstd_prefix) \
   $(module_openssl_prefix) \
-  $(module_options_prefix) \
-  $(module_posix_prefix) \
-  $(module_shell_prefix) \
-  $(module_slurp_prefix) \
   $(module_sqlite_prefix) \
-  $(module_std_prefix) \
-  $(module_string_prefix) \
   $(module_sys_prefix) \
-  $(module_uuid_prefix) \
   $(tunitas_basics_prefix) \
   $(tunitas_butano_prefix) \
   $(end)
 TESTING_AREAS = \
-  $(module_cppunit_prefix) \
-  $(module_rigging_prefix) \
+  $(module_rigging_core_prefix) \
+  $(deprecated_TESTING_AREAS) \
   $(end)
 INSTALLATION_AREAS = \
-  $(nonstd_boost_prefix) \
-  $(nonstd_cppunit_prefix) \
   $(nonstd_gcc_prefix) \
   $(nonstd_sqlite_prefix) \
   $(std_scold_prefix) \
+  $(deprecated_INSTALLATION_AREAS) \
   $(end)
 
 #
@@ -79,177 +71,104 @@ module_SOURCE_SET = \
   $(lib_libtunitas_scarpet_la_MODULE_SOURCES_SET) \
   $(end)
 
-include src/app/Makefrag.am
-include src/app/authgen/Makefrag.am
-include src/app/diggity/Makefrag.am
-include src/app/genesis/Makefrag.am
-include src/app/publish/Makefrag.am
-include src/app/scissor/Makefrag.am
-include src/app/signify/Makefrag.am
-include src/app/zonegen/Makefrag.am
-include src/autotools/autoconf/Makefrag.am
-include src/mod/scarpet/Makefrag.am
-include src/tests/Makefrag.am
-include src/tests/unit/Makefrag.am
-include src/tests/authgen/Makefrag.am
-include src/tests/diggity/Makefrag.am
-include src/tests/genesis/Makefrag.am
-include src/tests/publish/Makefrag.am
-include src/tests/scissor/Makefrag.am
-include src/tests/signify/Makefrag.am
-include src/tests/zonegen/Makefrag.am
-include src/tests/run/Makefrag.am
-include src/tunitas/scarpet/Makefrag.am
-include src/tunitas/scarpet/application/Makefrag.am
-include src/tunitas/scarpet/answer/Makefrag.am
-include src/tunitas/scarpet/compiler/Makefrag.am
-include src/tunitas/scarpet/did/Makefrag.am
-include src/tunitas/scarpet/dns/Makefrag.am
-include src/tunitas/scarpet/drrs/Makefrag.am
-include src/tunitas/scarpet/model/Makefrag.am
-include src/tunitas/scarpet/pki/Makefrag.am
-include src/tunitas/scarpet/resolve/Makefrag.am
-include src/want/Makefrag.am
+include noinst/lib/libapp.am
+include noinst/lib/libapp-authgen.am
+include bin/did-authgen.am
+include noinst/lib/libapp-diggity.am
+include bin/did-diggity.am
+include noinst/lib/libapp-genesis.am
+include bin/did-genesis.am
+include noinst/lib/libapp-publish.am
+include bin/did-publish.am
+include noinst/lib/libapp-scissor.am
+include bin/did-scissor.am
+include noinst/lib/libapp-signify.am
+include bin/did-signify.am
+include noinst/lib/libapp-zonegen.am
+include bin/did-zonegen.am
+
+include check/bin/authgen.am
+include check/bin/diggity.am
+include check/bin/genesis.am
+include check/bin/publish.am
+include check/bin/scissor.am
+include check/bin/signify.am
+include check/bin/zonegen.am
+include check/bin/unit.am
+
+include noinst/lib/libautotools-autoconf+tunitas-scarpet.am
+
+include noinst/lib/libmod_scarpet.am
+include lib/libmod_scarpet.am
+include lib/libtunitas-scarpet.am
+include noinst/lib/libtunitas-scarpet.am
+include noinst/lib/libwant.am
+include lib/libtunitas-scarpet-application.am
+include noinst/lib/libtunitas-scarpet-application.am
+include check/lib/libtests.am
+include check/lib/libtests-run.am
+
+include noinst/lib/libtunitas-scarpet-answer.am
+include noinst/lib/libtunitas-scarpet-compiler.am
+include noinst/lib/libtunitas-scarpet-did.am
+include noinst/lib/libtunitas-scarpet-dns.am
+include noinst/lib/libtunitas-scarpet-drrs.am
+include noinst/lib/libtunitas-scarpet-model.am
+include noinst/lib/libtunitas-scarpet-pki.am
+include noinst/lib/libtunitas-scarpet-resolve.am
 
 bin_PROGRAMS = \
-  $(bin_did_authgen) \
-  $(bin_did_diggity) \
-  $(bin_did_genesis) \
-  $(bin_did_publish) \
-  $(bin_did_scissor) \
-  $(bin_did_signify) \
-  $(bin_did_zonegen) \
+  bin/did-authgen \
+  bin/did-diggity \
+  bin/did-genesis \
+  bin/did-publish \
+  bin/did-scissor \
+  bin/did-signify \
+  bin/did-zonegen \
   $(end)
 noinst_LTLIBRARIES = \
-  $(lib_libautotools_autoconf_la) \
-  $(lib_libautotools_autoconf_a_b_la) \
-  $(lib_libtunitas_scarpet_answer_la) \
-  $(lib_libtunitas_scarpet_compiler_la) \
-  $(lib_libtunitas_scarpet_did_la) \
-  $(lib_libtunitas_scarpet_dns_la) \
-  $(lib_libtunitas_scarpet_drrs_la) \
-  $(lib_libtunitas_scarpet_model_la) \
-  $(lib_libtunitas_scarpet_pki_la) \
-  $(lib_libtunitas_scarpet_resolve_la) \
-  $(lib_libwant_la) \
-  $(lib_libapp_la) \
-  $(lib_libapp_authgen_la) \
-  $(lib_libapp_diggity_la) \
-  $(lib_libapp_genesis_la) \
-  $(lib_libapp_publish_la) \
-  $(lib_libapp_scissor_la) \
-  $(lib_libapp_signify_la) \
-  $(lib_libapp_zonegen_la) \
+  noinst/lib/libautotools-autoconf+tunitas-scarpet.la \
+  noinst/lib/libtunitas-scarpet-application.la \
+  noinst/lib/libtunitas-scarpet.la \
+  noinst/lib/libtunitas-scarpet-answer.la \
+  noinst/lib/libtunitas-scarpet-compiler.la \
+  noinst/lib/libtunitas-scarpet-did.la \
+  noinst/lib/libtunitas-scarpet-dns.la \
+  noinst/lib/libtunitas-scarpet-drrs.la \
+  noinst/lib/libtunitas-scarpet-model.la \
+  noinst/lib/libtunitas-scarpet-pki.la \
+  noinst/lib/libtunitas-scarpet-resolve.la \
+  noinst/lib/libmod_scarpet.la \
+  noinst/lib/libwant.la \
+  noinst/lib/libapp.la \
+  noinst/lib/libapp-authgen.la \
+  noinst/lib/libapp-diggity.la \
+  noinst/lib/libapp-genesis.la \
+  noinst/lib/libapp-publish.la \
+  noinst/lib/libapp-scissor.la \
+  noinst/lib/libapp-signify.la \
+  noinst/lib/libapp-zonegen.la \
   $(end)
 # WATCHOUT - these MUST be listed in this order so that the sequential install rule will allow the linker to process.
 #            libtool linking of libmod_apanolio.la MUST see the installed libtunitas-apanolio.la in order to be "finished"
 lib_LTLIBRARIES = \
-  $(lib_libtunitas_scarpet_la) \
-  $(lib_libtunitas_scarpet_application_la) \
-  $(lib_libmod_scarpet_la) \
+  lib/libtunitas-scarpet.la \
+  lib/libtunitas-scarpet-application.la \
+  lib/libmod_scarpet.la \
   $(end)
 check_PROGRAMS = \
-  $(check_bin_unit) \
-  $(check_bin_authgen) \
-  $(check_bin_diggity) \
-  $(check_bin_genesis) \
-  $(check_bin_publish) \
-  $(check_bin_scissor) \
-  $(check_bin_signify) \
-  $(check_bin_zonegen) \
+  check/bin/unit \
+  check/bin/authgen \
+  check/bin/diggity \
+  check/bin/genesis \
+  check/bin/publish \
+  check/bin/scissor \
+  check/bin/signify \
+  check/bin/zonegen \
   $(end)
 check_LTLIBRARIES = \
-  $(check_lib_libtests_la) \
-  $(check_lib_libtests_run_la) \
-  $(end)
-
-autotools_autoconf_DEPENDENT_OBJECTS_SET = \
-  $(lib_libtunitas_scarpet_la_OBJECTS) \
-  $(lib_libwant_la_OBJECTS) \
-  $(bin_unit_OBJECTS) \
-  $(end)
-autotools_autoconf_DEPENDENT_MODULES_SET = \
-  $(lib_libtunitas_scarpet_la_MODULES) \
-  $(lib_libwant_la_MODULES) \
-  $(end)
-$(autotools_autoconf_DEPENDENT_OBJECTS_SET) : $(autotools_autoconf_DEPENDENT_MODULES_SET)
-autotools_autoconf_DEPENDENT_GENERATED_SET = \
-  $(scold_cxxdir)/autotools/autoconf/Config/tunitas/scarpet/CONFIG.cpp \
-  $(scold_cxx_modulesdir)/autotools.autoconf.Config.tunitas.scarpet.CONFIG \
-  \
-  $(scold_cxxdir)/autotools/autoconf/Config/mod/scarpet/CONFIG.cpp \
-  $(scold_cxx_modulesdir)/autotools.autoconf.Config.mod.scarpet.CONFIG \
-  $(end)
-  $(end)
-$(autotools_autoconf_DEPENDENT_OBJECTS_SET) : $(autotools_autoconf_DEPENDENT_GENERATED_SET)
-
-# alphabetical (or any order) is fine
-include tests/unit/Makefrag.am
-# the executables (their options and argument parsing)
-include tests/authgen/Makefrag.am
-include tests/diggity/Makefrag.am
-include tests/genesis/Makefrag.am
-include tests/publish/Makefrag.am
-include tests/scissor/Makefrag.am
-include tests/signify/Makefrag.am
-include tests/zonegen/Makefrag.am
-# the run series
-include tests/run/authgen/Makefrag.am
-include tests/run/diggity/Makefrag.am
-include tests/run/genesis/Makefrag.am
-include tests/run/publish/Makefrag.am
-include tests/run/scissor/Makefrag.am
-include tests/run/signify/Makefrag.am
-include tests/run/zonegen/Makefrag.am
-#
-include tests/scenarios/Makefrag.am
-
-if ENABLE_SERVER_TESTS
-ENABLED_SERVER_TESTS = \
-  tests/start-contact-stop.test \
-  $(end)
-else
-ENABLED_SERVER_TESTS = 
-endif
-
-# ordered by complexity of the tests
-XFAIL_TESTS = \
-  $(tests_unit_XFAIL_TESTS) \
-  $(tests_genesis_XFAIL_TESTS) \
-  $(tests_authgen_XFAIL_TESTS) \
-  $(tests_publish_XFAIL_TESTS) \
-  $(tests_diggity_XFAIL_TESTS) \
-  $(tests_scissor_XFAIL_TESTS) \
-  $(tests_signify_XFAIL_TESTS) \
-  $(tests_zonegen_XFAIL_TESTS) \
-  $(tests_run_genesis_XFAIL_TESTS) \
-  $(tests_run_authgen_XFAIL_TESTS) \
-  $(tests_run_publish_XFAIL_TESTS) \
-  $(tests_run_diggity_XFAIL_TESTS) \
-  $(tests_run_scissor_XFAIL_TESTS) \
-  $(tests_run_signify_XFAIL_TESTS) \
-  $(tests_run_zonegen_XFAIL_TESTS) \
-  $(tests_scenarios_XFAIL_TESTS) \
-  $(ENABLED_SERVER_XFAIL_TESTS)
-  $(end)
-TESTS = \
-  $(tests_unit_TESTS) \
-  $(tests_genesis_TESTS) \
-  $(tests_authgen_TESTS) \
-  $(tests_publish_TESTS) \
-  $(tests_diggity_TESTS) \
-  $(tests_scissor_TESTS) \
-  $(tests_signify_TESTS) \
-  $(tests_zonegen_TESTS) \
-  $(tests_run_genesis_TESTS) \
-  $(tests_run_authgen_TESTS) \
-  $(tests_run_publish_TESTS) \
-  $(tests_run_diggity_TESTS) \
-  $(tests_run_scissor_TESTS) \
-  $(tests_run_signify_TESTS) \
-  $(tests_run_zonegen_TESTS) \
-  $(tests_scenarios_TESTS) \
-  $(ENABLED_SERVER_TESTS)
+  check/lib/libtests.la \
+  check/lib/libtests-run.la \
   $(end)
 
 # NOPE ... you can't say install depends upon check because
@@ -296,4 +215,25 @@ AM_CPPFLAGS = $(PACKAGE_CPPFLAGS_SET)
 AM_CFLAGS   = $(PACKAGE_CFLAGS_SET)
 AM_CXXFLAGS = $(PACKAGE_CXXFLAGS_SET)
 AM_LDFLAGS  = $(warning AM_LDFLAGS is not used by automake Makefile final-link invocations) $(PACKAGE_LDFLAGS_SET)
-# end
+#
+deprecated_DEVELOPMENT_AREAS = \
+  $(module_boost_prefix) \
+  $(module_c_prefix) \
+  $(module_format_prefix) \
+  $(module_ip_prefix) \
+  $(module_options_prefix) \
+  $(module_posix_prefix) \
+  $(module_shell_prefix) \
+  $(module_slurp_prefix) \
+  $(module_std_prefix) \
+  $(module_string_prefix) \
+  $(module_uuid_prefix) \
+  $(end)
+deprecated_TESTING_AREAS = \
+  $(module_cppunit_prefix) \
+  $(module_rigging_prefix) \
+  $(end)
+deprecated_INSTALLATION_AREAS = \
+  $(nonstd_boost_prefix) \
+  $(nonstd_cppunit_prefix) \
+  $(end)

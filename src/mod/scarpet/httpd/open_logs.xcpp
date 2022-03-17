@@ -52,7 +52,6 @@ namespace mod::scarpet::httpd {
 //
 #import apache.httpd.log // APLOG_MARK is from <httpd/http_log.h>
 #import apache.httpd.module_config.get
-#import autotools.autoconf.Config.mod.scarpet.CONFIG
 #import mod.scarpet.httpd.module
 #import mod.scarpet.server.State
 #import std.exception

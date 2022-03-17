@@ -1,22 +1,10 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright Yahoo Inc. 2021
+# Copyright Yahoo Inc. 2021.
 # Licensed under the terms of the Apache-2.0 license.
 # For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 # For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-
-lib_libmod_scarpet_la = lib/libmod_scarpet.la
-lib_libmod_scarpet_la_LIBADD = \
-  $(lib_libtunitas_scarpet_la) \
-  $(lib_libautotools_autoconf_la) \
-  $(lib_libwant_la) \
-  -lapache-httpd$(plusplus) \
-  -lares$(plusplus) \
-  -lsys$(plusplus)-posix \
-  $(end)
-lib_libmod_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
-$(lib_libmod_scarpet_la_OBJECTS) : CXXFLAGS+=-Wno-invalid-offsetof
-lib_libmod_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libmod_scarpet_la_SOURCES))
-lib_libmod_scarpet_la_SOURCES = \
+#
+mod_scarpet_SUBSOURCES = \
   obj/src/mod/scarpet/namespace.cpp \
   \
   obj/src/mod/scarpet/httpd/namespace.cpp \
@@ -32,7 +20,6 @@ lib_libmod_scarpet_la_SOURCES = \
   obj/src/mod/scarpet/dns/namespace.cpp \
   obj/src/mod/scarpet/dns/Channel.cpp \
   obj/src/mod/scarpet/dns/library.cpp \
-  \
   \
   obj/src/mod/scarpet/exception/namespace.cpp \
   obj/src/mod/scarpet/exception/aspect.Router.cpp \
@@ -57,14 +44,3 @@ lib_libmod_scarpet_la_SOURCES = \
   obj/src/mod/scarpet/server/namespace.cpp \
   obj/src/mod/scarpet/server/State.cpp \
   $(end)
-#
-$(scold_cxxdir)/mod/scarpet/dependencies.mk: $(lib_libmod_scarpet_la_SOURCES)
-$(lib_libmod_scarpet_la_SOURCES) : obj/src/%.cpp : src/%.xcpp
-	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
-	$(TF_V_DUN) test -e $@
-$(scold_cxxdir)/mod/scarpet/dependencies.mk:
-	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
-	$(TF_V_DUN) test -e $@
-include $(scold_cxxdir)/mod/scarpet/dependencies.mk
-clean-dependencies::
-	rm -f $(scold_cxxdir)/mod/scarpet/dependencies.mk

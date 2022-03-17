@@ -99,9 +99,9 @@ namespace apache::httpd::config::detail {
 }
 #endiv
 #divert <cpp>
-#import autotools.autoconf.Config.mod.scarpet.CONFIG
+#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
 mod::scarpet::config::Specification::Specification()
-  : did_method_name(autotools::autoconf::Config<CONFIG>::did_method_name())
+  : did_method_name(autotools::autoconf::Config<tunitas::scarpet::CONFIG>::did_method_name())
   , location_prefix("/") {
   ;
 }

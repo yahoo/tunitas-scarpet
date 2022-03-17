@@ -1,39 +1,19 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright Yahoo Inc. 2021
+# Copyright Yahoo Inc. 2021.
 # Licensed under the terms of the Apache-2.0 license.
 # For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 # For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-
-lib_libtunitas_scarpet_la = lib/libtunitas-scarpet.la
-lib_libtunitas_scarpet_la_LIBADD = \
-  $(lib_libtunitas_scarpet_answer_la) \
-  $(lib_libtunitas_scarpet_compiler_la) \
-  $(lib_libtunitas_scarpet_did_la) \
-  $(lib_libtunitas_scarpet_dns_la) \
-  $(lib_libtunitas_scarpet_drrs_la) \
-  $(lib_libtunitas_scarpet_model_la) \
-  $(lib_libtunitas_scarpet_pki_la) \
-  $(lib_libtunitas_scarpet_resolve_la) \
-  $(lib_libwant_la) \
-  -lares-module \
-  -ljson-module \
-  -lnonstd-module \
-  -lopenssl-module \
-  -lshell-module \
-  -lslurp-module \
-  $(end)
-lib_libtunitas_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
-lib_libtunitas_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libtunitas_scarpet_la_SOURCES))
-lib_libtunitas_scarpet_la_SOURCES = \
+#
+tunitas_scarpet_SUBSOURCES = \
   obj/src/tunitas/scarpet/namespace.cpp \
   obj/src/tunitas/scarpet/tracing.cpp \
   obj/src/tunitas/scarpet/Club.cpp \
   obj/src/tunitas/scarpet/Protocol.cpp \
-  $(obj_src_tunitas_scarpet_encoding_SUBSOURCES) \
-  $(obj_src_tunitas_scarpet_error_SUBSOURCES) \
-  $(obj_src_tunitas_scarpet_exception_SUBSOURCES) \
-  $(obj_src_tunitas_scarpet_required_SUBSOURCES) \
-  $(obj_src_tunitas_scarpet_url_SUBSOURCES) \
+  $(tunitas_scarpet_encoding_SUBSOURCES) \
+  $(tunitas_scarpet_error_SUBSOURCES) \
+  $(tunitas_scarpet_exception_SUBSOURCES) \
+  $(tunitas_scarpet_required_SUBSOURCES) \
+  $(tunitas_scarpet_url_SUBSOURCES) \
   $(end)
 #
 include src/tunitas/scarpet/encoding/Makefrag.am
@@ -41,14 +21,3 @@ include src/tunitas/scarpet/error/Makefrag.am
 include src/tunitas/scarpet/exception/Makefrag.am
 include src/tunitas/scarpet/required/Makefrag.am
 include src/tunitas/scarpet/url/Makefrag.am
-#
-$(scold_cxxdir)/tunitas/scarpet/dependencies.mk: $(lib_libtunitas_scarpet_la_SOURCES)
-$(lib_libtunitas_scarpet_la_SOURCES) : obj/src/%.cpp : src/%.xcpp
-	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
-	$(TF_V_DUN) test -e $@
-$(scold_cxxdir)/tunitas/scarpet/dependencies.mk:
-	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
-	$(TF_V_DUN) test -e $@
-include $(scold_cxxdir)/tunitas/scarpet/dependencies.mk
-clean-dependencies::
-	rm -f $(scold_cxxdir)/tunitas/scarpet/dependencies.mk

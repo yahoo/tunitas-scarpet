@@ -1,0 +1,24 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright Yahoo Inc. 2022.
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#
+bin_did_genesis = bin/did-genesis$(error REMOVE)
+bin_did_genesis_CPPFLAGS = $(PACKAGE_CPPFLAGS_SET)
+bin_did_genesis_CXXFLAGS = $(PACKAGE_CXXFLAGS_SET)
+bin_did_genesis_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+bin_did_genesis_LDADD = noinst/lib/libapp-genesis.la
+bin_did_genesis_SOURCES = noinst/obj/src/app/genesis/c.main.cpp 
+#
+$(bin_did_genesis_SOURCES) : disco_objdir=noinst/obj
+$(bin_did_genesis_SOURCES) : scold_objdir=$(disco_objdir)
+$(bin_did_genesis_SOURCES) : noinst/obj/src/%.cpp : src/%.xcpp
+	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
+	$(TF_V_DUN) test -e $@
+$(tf_noinst_mkdir)/did-genesis.mk: $(bin_did_genesis_SOURCES)
+$(tf_noinst_mkdir)/did-genesis.mk:
+	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
+	$(TF_V_DUN) test -e $@
+include $(tf_noinst_mkdir)/did-genesis.mk
+clean-dependencies:: ; rm -f $(tf_noinst_mkdir)/did-genesis.mk

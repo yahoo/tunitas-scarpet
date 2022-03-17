@@ -51,13 +51,13 @@ auto mod::scarpet::method::Putter::operator()() -> apache::httpd::status::Code {
   }
   throw nonstd::exception::Unimplemented{__FUNCTION__, __FILE__, __LINE__};
 }
-#import autotools.autoconf.Config.mod.scarpet.CONFIG
+#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
 #import apache.httpd.io.keywords
 auto mod::scarpet::method::Putter::banner_failure() -> void {
   ap_set_content_type(this->req, "text/html"); // [[FIXTHIS]] as ap::set_content_type(...)
   using namespace io::keywords;
   rs << html << br
-     << head << autotools::autoconf::Config<CONFIG>::package_name() << _head << br
+     << head << autotools::autoconf::Config<tunitas::scarpet::CONFIG>::package_name() << _head << br
      << body << p << "the PUT fails"
     // with no reason stated
      << _p << _body
@@ -67,7 +67,7 @@ auto mod::scarpet::method::Putter::banner_failure_no_such_resource() -> void {
   ap_set_content_type(this->req, "text/html"); // [[FIXTHIS]] ibidem
   using namespace io::keywords;
   rs << html << br
-     << head << autotools::autoconf::Config<CONFIG>::package_name() << _head << br
+     << head << autotools::autoconf::Config<tunitas::scarpet::CONFIG>::package_name() << _head << br
      << body << p
      << "the PUT fails because "
      << "there is no such resource"

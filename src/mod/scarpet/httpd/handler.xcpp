@@ -28,7 +28,7 @@ namespace mod::scarpet::httpd {
 #define __trace__ ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "line %d", __LINE__);
 #import apache.httpd.io.Stream
 #import apache.httpd.module_config.get
-#import autotools.autoconf.Config.mod.scarpet.CONFIG
+#import autotools.autoconf.Config.tunitas.scarpet.CONFIG
 #import mod.scarpet.httpd.module
 #import mod.scarpet.method.Getter
 #import mod.scarpet.method.Poster
@@ -59,7 +59,7 @@ namespace mod::scarpet::httpd::packaging::handler {
     //     APLOG_DECLARE_MODULE(scarpet);
     //     APLOG_USE_MODULE(scarpet);
     //
-    char const *const HANDLER_NAME = autotools::autoconf::Config<CONFIG>::module_name();
+    char const *const HANDLER_NAME = autotools::autoconf::Config<tunitas::scarpet::CONFIG>::module_name();
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, /*status*/ 0, r, "%s (trying %s)", HANDLER_NAME, r->uri);
     if (nullptr == r || nullptr == r->handler || 0 != strcmp(r->handler, HANDLER_NAME)) {
       return HANDLER::DECLINED;
@@ -166,7 +166,7 @@ namespace mod::scarpet::httpd::packaging::handler {
     using namespace want;
     ap_set_content_type(r, "text/html"); // [[FIXME]] as apache::httpd::set_content_type(...)
     rs << html << br
-       << head << autotools::autoconf::Config<CONFIG>::module_name() << _head << br
+       << head << autotools::autoconf::Config<tunitas::scarpet::CONFIG>::module_name() << _head << br
        << body << p << null_maybe(r->method) << ' ' << null_maybe(r->uri) << " is not supported" << _p << _body
        << _html;
   }

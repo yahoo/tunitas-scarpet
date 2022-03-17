@@ -1,128 +1,104 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright Yahoo Inc. 2021
+# Copyright Yahoo Inc. 2021.
 # Licensed under the terms of the Apache-2.0 license.
 # For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 # For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-
-check_bin_unit = check/bin/unit
-check_bin_unit_LDADD = \
-  $(lib_libapp_la) \
-  $(lib_libmod_scarpet_la) \
-  $(lib_libtunitas_scarpet_la) \
-  -lrigging-httpd-module \
-  -lrigging-bench-module \
-  $(end)
-$(check_bin_unit_OBJECTS): AM_CPPFLAGS+=$(AND_CHECK_CPPFLAGS_SET)
-$(check_bin_unit_OBJECTS): AM_CXXFLAGS+=$(AND_CHECK_CXXFLAGS_SET) -Wno-deprecated-declarations
-# reminder: autotools does not put $(AM_LDFLAGS) into check_bin_unit_LDFLAGS, like it does with CPPFLAGS and CXXFLAGS
-check_bin_unit_LDFLAGS = $(CHECK_LDFLAGS_SET)
-check_bin_unit_MODULES = $(call TF_SOURCEStoMODULES, $(check_bin_unit_SOURCES))
-check_bin_unit_SOURCES = \
-  obj/src/tests/unit/namespace.cpp \
-  obj/src/tests/unit/main.cpp \
-  \
-  obj/src/tests/unit/answer.Fixture.cpp \
-  obj/src/tests/unit/answer.Document.cpp \
-  obj/src/tests/unit/answer.Fields.declaration.cpp \
-  obj/src/tests/unit/answer.Fields.STANZA.cpp \
-  obj/src/tests/unit/answer.Fields.PUBLICKEY.cpp \
-  obj/src/tests/unit/answer.Fields.AUTHENTICATION.cpp \
-  obj/src/tests/unit/answer.Fields.SERVICE.cpp \
-  obj/src/tests/unit/answer.Fields.PROOF.cpp \
-  obj/src/tests/unit/answer.Fields.cpp \
-  \
-  obj/src/tests/unit/app.Fixture.cpp \
-  obj/src/tests/unit/app.Fixture.Configuration.cpp \
-  \
-  obj/src/tests/unit/compiler.Fixture.cpp \
-  obj/src/tests/unit/compiler.Compile.declaration.cpp \
-  obj/src/tests/unit/compiler.Compile.ANSWER.DOME.cpp \
-  obj/src/tests/unit/compiler.Compile.DOME.JSON.cpp \
-  obj/src/tests/unit/compiler.Compile.DOME.ZONE.cpp \
-  obj/src/tests/unit/compiler.Compile.cpp \
-  \
-  obj/src/tests/unit/did.Fixture.cpp \
-  obj/src/tests/unit/did.Parser.cpp \
-  obj/src/tests/unit/did.Document.declaration.cpp \
-  obj/src/tests/unit/did.Document.DOME.cpp \
-  obj/src/tests/unit/did.Document.JSON.cpp \
-  obj/src/tests/unit/did.Document.ZONE.cpp \
-  \
-  obj/src/tests/unit/dns.Fixture.cpp \
-  obj/src/tests/unit/dns.unparse.Function.cpp \
-  obj/src/tests/unit/dns.unparse.Template.cpp \
-  \
-  obj/src/tests/unit/drrs.Fixture.cpp \
-  obj/src/tests/unit/drrs.Allocator.cpp \
-  obj/src/tests/unit/drrs.Flat.cpp \
-  obj/src/tests/unit/drrs.Flat.Populator.cpp \
-  obj/src/tests/unit/drrs.Record.declaration.cpp \
-  obj/src/tests/unit/drrs.Record.DAPTR.cpp \
-  obj/src/tests/unit/drrs.Record.NAPTR.cpp \
-  obj/src/tests/unit/drrs.Record.PTR.cpp \
-  obj/src/tests/unit/drrs.Record.SRV.cpp \
-  obj/src/tests/unit/drrs.Record.TXT.cpp \
-  obj/src/tests/unit/drrs.Record.URI.cpp \
-  obj/src/tests/unit/drrs.Record.cpp \
-  obj/src/tests/unit/drrs.Tree.cpp \
-  obj/src/tests/unit/drrs.Tree.Populator.cpp \
-  \
-  obj/src/tests/unit/error.Fixture.cpp \
-  obj/src/tests/unit/error.Category.cpp \
-  \
-  obj/src/tests/unit/exception.Fixture.cpp \
-  obj/src/tests/unit/exception.Fixture.Thrower.cpp \
-  \
-  obj/src/tests/unit/model.Fixture.cpp \
-  obj/src/tests/unit/names.Fixture.cpp \
-  \
-  obj/src/tests/unit/options.Fixture.cpp \
-  obj/src/tests/unit/options.Fixture.Parser.cpp \
-  obj/src/tests/unit/options.Fixture.Specification.cpp \
-  \
-  obj/src/tests/unit/output.Fixture.cpp \
-  obj/src/tests/unit/pki.Fixture.cpp \
-  obj/src/tests/unit/pki.Algorithm.cpp \
-  obj/src/tests/unit/pki.Encoding.cpp \
-  obj/src/tests/unit/pki.Material.cpp \
-  obj/src/tests/unit/pki.key.Fixture.cpp \
-  obj/src/tests/unit/pki.key.Activated.cpp \
-  obj/src/tests/unit/pki.key.Pair.cpp \
-  obj/src/tests/unit/pki.key.Privat.cpp \
-  obj/src/tests/unit/pki.key.Publik.cpp \
-  \
-  obj/src/tests/unit/resolve.aspect.Configuration.cpp \
-  obj/src/tests/unit/resolve.aspect.Service.cpp \
-  obj/src/tests/unit/resolve.Fixture.cpp \
-  obj/src/tests/unit/resolve.Service.cpp \
-  obj/src/tests/unit/resolve.Document.declaration.cpp \
-  obj/src/tests/unit/resolve.Document.DRRS.cpp \
-  obj/src/tests/unit/resolve.Document.FILE.cpp \
-  obj/src/tests/unit/resolve.Document.REST.cpp \
-  obj/src/tests/unit/resolve.Document.ZONE.cpp \
-  obj/src/tests/unit/resolve.Lookup.declaration.cpp \
-  obj/src/tests/unit/resolve.Lookup.DA.cpp \
-  obj/src/tests/unit/resolve.Lookup.NA.cpp \
-  \
-  obj/src/tests/unit/router.Fixture.cpp \
-  obj/src/tests/unit/router.url.parser.Tail.cpp \
-  \
-  obj/src/tests/unit/scarpet.Fixture.cpp \
-  obj/src/tests/unit/scarpet.Encoding.cpp \
-  \
-  obj/src/tests/unit/url.Fixture.cpp \
-  obj/src/tests/unit/url.Parser.cpp \
-  \
-  obj/src/tests/unit/want.Fixture.cpp \
-  $(end)
 #
-$(scold_cxxdir)/tests/unit/dependencies.mk: $(check_bin_unit_SOURCES)
-$(check_bin_unit_SOURCES) : obj/src/%.cpp : src/%.xcpp
-	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
-	$(TF_V_DUN) test -e $@
-$(scold_cxxdir)/tests/unit/dependencies.mk:
-	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
-	$(TF_V_DUN) test -e $@
-include $(scold_cxxdir)/tests/unit/dependencies.mk
-clean-dependencies::
-	rm -f $(scold_cxxdir)/tests/unit/dependencies.mk
+tests_unit_SUBSOURCES = \
+  check/obj/src/tests/unit/namespace.cpp \
+  check/obj/src/tests/unit/main.cpp \
+  \
+  check/obj/src/tests/unit/answer.Fixture.cpp \
+  check/obj/src/tests/unit/answer.Document.cpp \
+  check/obj/src/tests/unit/answer.Fields.declaration.cpp \
+  check/obj/src/tests/unit/answer.Fields.STANZA.cpp \
+  check/obj/src/tests/unit/answer.Fields.PUBLICKEY.cpp \
+  check/obj/src/tests/unit/answer.Fields.AUTHENTICATION.cpp \
+  check/obj/src/tests/unit/answer.Fields.SERVICE.cpp \
+  check/obj/src/tests/unit/answer.Fields.PROOF.cpp \
+  check/obj/src/tests/unit/answer.Fields.cpp \
+  \
+  check/obj/src/tests/unit/app.Fixture.cpp \
+  check/obj/src/tests/unit/app.Fixture.Configuration.cpp \
+  \
+  check/obj/src/tests/unit/compiler.Fixture.cpp \
+  check/obj/src/tests/unit/compiler.Compile.declaration.cpp \
+  check/obj/src/tests/unit/compiler.Compile.ANSWER.DOME.cpp \
+  check/obj/src/tests/unit/compiler.Compile.DOME.JSON.cpp \
+  check/obj/src/tests/unit/compiler.Compile.DOME.ZONE.cpp \
+  check/obj/src/tests/unit/compiler.Compile.cpp \
+  \
+  check/obj/src/tests/unit/did.Fixture.cpp \
+  check/obj/src/tests/unit/did.Parser.cpp \
+  check/obj/src/tests/unit/did.Document.declaration.cpp \
+  check/obj/src/tests/unit/did.Document.DOME.cpp \
+  check/obj/src/tests/unit/did.Document.JSON.cpp \
+  check/obj/src/tests/unit/did.Document.ZONE.cpp \
+  \
+  check/obj/src/tests/unit/dns.Fixture.cpp \
+  check/obj/src/tests/unit/dns.unparse.Function.cpp \
+  check/obj/src/tests/unit/dns.unparse.Template.cpp \
+  \
+  check/obj/src/tests/unit/drrs.Fixture.cpp \
+  check/obj/src/tests/unit/drrs.Allocator.cpp \
+  check/obj/src/tests/unit/drrs.Flat.cpp \
+  check/obj/src/tests/unit/drrs.Flat.Populator.cpp \
+  check/obj/src/tests/unit/drrs.Record.declaration.cpp \
+  check/obj/src/tests/unit/drrs.Record.DAPTR.cpp \
+  check/obj/src/tests/unit/drrs.Record.NAPTR.cpp \
+  check/obj/src/tests/unit/drrs.Record.PTR.cpp \
+  check/obj/src/tests/unit/drrs.Record.SRV.cpp \
+  check/obj/src/tests/unit/drrs.Record.TXT.cpp \
+  check/obj/src/tests/unit/drrs.Record.URI.cpp \
+  check/obj/src/tests/unit/drrs.Record.cpp \
+  check/obj/src/tests/unit/drrs.Tree.cpp \
+  check/obj/src/tests/unit/drrs.Tree.Populator.cpp \
+  \
+  check/obj/src/tests/unit/error.Fixture.cpp \
+  check/obj/src/tests/unit/error.Category.cpp \
+  \
+  check/obj/src/tests/unit/exception.Fixture.cpp \
+  check/obj/src/tests/unit/exception.Fixture.Thrower.cpp \
+  \
+  check/obj/src/tests/unit/model.Fixture.cpp \
+  check/obj/src/tests/unit/names.Fixture.cpp \
+  \
+  check/obj/src/tests/unit/options.Fixture.cpp \
+  check/obj/src/tests/unit/options.Fixture.Parser.cpp \
+  check/obj/src/tests/unit/options.Fixture.Specification.cpp \
+  \
+  check/obj/src/tests/unit/output.Fixture.cpp \
+  check/obj/src/tests/unit/pki.Fixture.cpp \
+  check/obj/src/tests/unit/pki.Algorithm.cpp \
+  check/obj/src/tests/unit/pki.Encoding.cpp \
+  check/obj/src/tests/unit/pki.Material.cpp \
+  check/obj/src/tests/unit/pki.key.Fixture.cpp \
+  check/obj/src/tests/unit/pki.key.Activated.cpp \
+  check/obj/src/tests/unit/pki.key.Pair.cpp \
+  check/obj/src/tests/unit/pki.key.Privat.cpp \
+  check/obj/src/tests/unit/pki.key.Publik.cpp \
+  \
+  check/obj/src/tests/unit/resolve.aspect.Configuration.cpp \
+  check/obj/src/tests/unit/resolve.aspect.Service.cpp \
+  check/obj/src/tests/unit/resolve.Fixture.cpp \
+  check/obj/src/tests/unit/resolve.Service.cpp \
+  check/obj/src/tests/unit/resolve.Document.declaration.cpp \
+  check/obj/src/tests/unit/resolve.Document.DRRS.cpp \
+  check/obj/src/tests/unit/resolve.Document.FILE.cpp \
+  check/obj/src/tests/unit/resolve.Document.REST.cpp \
+  check/obj/src/tests/unit/resolve.Document.ZONE.cpp \
+  check/obj/src/tests/unit/resolve.Lookup.declaration.cpp \
+  check/obj/src/tests/unit/resolve.Lookup.DA.cpp \
+  check/obj/src/tests/unit/resolve.Lookup.NA.cpp \
+  \
+  check/obj/src/tests/unit/router.Fixture.cpp \
+  check/obj/src/tests/unit/router.url.parser.Tail.cpp \
+  \
+  check/obj/src/tests/unit/scarpet.Fixture.cpp \
+  check/obj/src/tests/unit/scarpet.Encoding.cpp \
+  \
+  check/obj/src/tests/unit/url.Fixture.cpp \
+  check/obj/src/tests/unit/url.Parser.cpp \
+  \
+  check/obj/src/tests/unit/want.Fixture.cpp \
+  $(end)

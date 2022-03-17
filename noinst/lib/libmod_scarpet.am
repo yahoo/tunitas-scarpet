@@ -1,0 +1,29 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright Yahoo Inc. 2022.
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#
+noinst_lib_libmod_scarpet_la_CPPFLAGS = $(PACKAGE_CPPFLAGS_SET)
+noinst_lib_libmod_scarpet_la_CXXFLAGS = $(PACKAGE_CXXFLAGS_SET) -Wno-invalid-offsetof
+noinst_lib_libmod_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+noinst_lib_libmod_scarpet_la_LIBADD = \
+  lib/libtunitas-scarpet.la \
+  -lapache-httpd++ \
+  -lares++ \
+  -lsys++-posix \
+  -lnonstd++ \
+  $(end)
+noinst_lib_libmod_scarpet_la_MODULES = $(call TF_SOURCEStoMODULES, $(noinst_lib_libmod_scarpet_la_SOURCES))
+noinst_lib_libmod_scarpet_la_SOURCES = $(mod_scarpet_SUBSOURCES)
+include src/mod/scarpet/Makefrag.am
+#
+$(noinst_lib_libmod_scarpet_la_SOURCES) : obj/src/%.cpp : src/%.xcpp
+	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
+	$(TF_V_DUN) test -e $@
+$(scold_cxxdir)/libmod_scarpet.mk: $(noinst_lib_libmod_scarpet_la_SOURCES)
+$(scold_cxxdir)/libmod_scarpet.mk:
+	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
+	$(TF_V_DUN) test -e $@
+include $(scold_cxxdir)/libmod_scarpet.mk
+clean-dependencies:: ; rm -f $(scold_cxxdir)/libmod_scarpet.mk

@@ -1,0 +1,93 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright Yahoo Inc. 2022
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+#
+if ENABLE_SERVER_TESTS
+ENABLED_SERVER_TESTS = \
+  tests/start-contact-stop.test \
+  $(end)
+else
+ENABLED_SERVER_TESTS = 
+endif
+#
+# ordered by complexity of the tests
+TESTS = \
+  $(tests_unit_TESTS) \
+  $(tests_genesis_TESTS) \
+  $(tests_authgen_TESTS) \
+  $(tests_publish_TESTS) \
+  $(tests_diggity_TESTS) \
+  $(tests_scissor_TESTS) \
+  $(tests_signify_TESTS) \
+  $(tests_zonegen_TESTS) \
+  $(tests_run_genesis_TESTS) \
+  $(tests_run_authgen_TESTS) \
+  $(tests_run_publish_TESTS) \
+  $(tests_run_diggity_TESTS) \
+  $(tests_run_scissor_TESTS) \
+  $(tests_run_signify_TESTS) \
+  $(tests_run_zonegen_TESTS) \
+  $(tests_scenarios_TESTS) \
+  $(ENABLED_SERVER_TESTS)
+  $(end)
+XFAIL_TESTS = \
+  $(tests_unit_XFAIL_TESTS) \
+  $(tests_genesis_XFAIL_TESTS) \
+  $(tests_authgen_XFAIL_TESTS) \
+  $(tests_publish_XFAIL_TESTS) \
+  $(tests_diggity_XFAIL_TESTS) \
+  $(tests_scissor_XFAIL_TESTS) \
+  $(tests_signify_XFAIL_TESTS) \
+  $(tests_zonegen_XFAIL_TESTS) \
+  $(tests_run_genesis_XFAIL_TESTS) \
+  $(tests_run_authgen_XFAIL_TESTS) \
+  $(tests_run_publish_XFAIL_TESTS) \
+  $(tests_run_diggity_XFAIL_TESTS) \
+  $(tests_run_scissor_XFAIL_TESTS) \
+  $(tests_run_signify_XFAIL_TESTS) \
+  $(tests_run_zonegen_XFAIL_TESTS) \
+  $(tests_scenarios_XFAIL_TESTS) \
+  $(ENABLED_SERVER_XFAIL_TESTS)
+  $(end)
+XGOOD_TESTS = \
+  $(tests_unit_XGOOD_TESTS) \
+  $(tests_genesis_XGOOD_TESTS) \
+  $(tests_authgen_XGOOD_TESTS) \
+  $(tests_publish_XGOOD_TESTS) \
+  $(tests_diggity_XGOOD_TESTS) \
+  $(tests_scissor_XGOOD_TESTS) \
+  $(tests_signify_XGOOD_TESTS) \
+  $(tests_zonegen_XGOOD_TESTS) \
+  $(tests_run_genesis_XGOOD_TESTS) \
+  $(tests_run_authgen_XGOOD_TESTS) \
+  $(tests_run_publish_XGOOD_TESTS) \
+  $(tests_run_diggity_XGOOD_TESTS) \
+  $(tests_run_scissor_XGOOD_TESTS) \
+  $(tests_run_signify_XGOOD_TESTS) \
+  $(tests_run_zonegen_XGOOD_TESTS) \
+  $(tests_scenarios_XGOOD_TESTS) \
+  $(ENABLED_SERVER_XGOOD_TESTS)
+  $(end)
+#
+# alphabetical (or any order) is fine
+include tests/unit/Makefrag.am
+# the executables (their options and argument parsing)
+include tests/authgen/Makefrag.am
+include tests/diggity/Makefrag.am
+include tests/genesis/Makefrag.am
+include tests/publish/Makefrag.am
+include tests/scissor/Makefrag.am
+include tests/signify/Makefrag.am
+include tests/zonegen/Makefrag.am
+# the run series
+include tests/run/authgen/Makefrag.am
+include tests/run/diggity/Makefrag.am
+include tests/run/genesis/Makefrag.am
+include tests/run/publish/Makefrag.am
+include tests/run/scissor/Makefrag.am
+include tests/run/signify/Makefrag.am
+include tests/run/zonegen/Makefrag.am
+#
+include tests/scenarios/Makefrag.am

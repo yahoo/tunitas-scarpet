@@ -1,26 +1,31 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright Yahoo Inc. 2021
+# Copyright Yahoo Inc. 2021.
 # Licensed under the terms of the Apache-2.0 license.
 # For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
-# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-
-# WATCHOUT - this is an ugly hack
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE (when available)
+# For terms, see the LICENSE file at the top of this repository.
 #
-# It was not envisioned that there would be a desire to have *two* copies of a two-word configuration.
-# So what we're doing here is dubious; it uses the older and newer generations together (Makefrag.mk a.b.Makefrag.mk)
-# with the implicit understanding that they don't clash in the hidden Makefile rules underneath.
+autotools_autoconf_SUBSOURCES_xcpp = \
+  noinst/obj/src/autotools/autoconf/Config/tunitas/scarpet/CONFIG.xcpp \
+  $(end)
 #
-# These both surface the same definitions, so having two available is just vanity in the name of small-minded consistency
+# Else you will experience
 #
-#   autotools.autoconf.Config.tunitas.scarpet.CONFIG  autotools::autoconf::Config<tunitas::scarpet::CONFIG>
-#   autotools.autoconf.Config.mod.scarpet.CONFIG>     autotools::autoconf::Config<mod::scarpet::CONFIG>
+#   noinst/obj/modules/fpp/autotools.autoconf.Config.tunitas.scarpet.CONFIG:3:10: fatal error: autotools.autoconf.Config.tunitas.scarpet: No such file or directory
+#     3 | #include <autotools.autoconf.Config.tunitas.httpd>
+#       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   compilation terminated.
 #
-# [[TODO]] [[FIXTHIS]] another hack is to make one of these be defined in terms of the other (hint: use inheritance in the C++)
-#
-lib_libautotools_autoconf_la_TAG = tunitas::scarpet::CONFIG
-lib_libautotools_autoconf_la_IMPORT = tunitas.scarpet
-include @hypogeal_twilight_datadir@/mk/autotools/autoconf/Makefrag.mk 
-
-lib_libautotools_autoconf_la_NAME_a = mod
-lib_libautotools_autoconf_la_NAME_b = scarpet
-include @hypogeal_twilight_datadir@/mk/autotools/autoconf/a.b.Makefrag.mk 
+autotools_autoconf_SUBSOURCES_cpp = $(patsubst %.xcpp, %.cpp, $(autotools_autoconf_SUBSOURCES_xcpp))
+$(autotools_autoconf_SUBSOURCES_cpp) : DISCOFLAGS+=--no-insert-namespace
+autotools_autoconf_PERSONALITY_of = $(patsubst noinst/obj/src/autotools/autoconf/Config/%/CONFIG.xcpp,%,$1)
+autotools_autoconf_IMPORT_of = $(subst /,.,$(call autotools_autoconf_PERSONALITY_of,$1))
+autotools_autoconf_TAG_of = $(addsuffix ::CONFIG, $(subst /,::,$(call autotools_autoconf_PERSONALITY_of,$1)))
+include $(hypogeal_twilight_datadir)/mk/autotools/autoconf/definitions.mk # provides $(htGC)
+$(if $(htGC),$(ok),$(error htGC is undefined))
+$(autotools_autoconf_SUBSOURCES_xcpp) : % : config.h
+	$(V_HTGC) mkdir -p $(@D) && $(htGC) \
+	    --tag=$(call autotools_autoconf_TAG_of,$@) \
+	    --import=$(call autotools_autoconf_IMPORT_of,$@) \
+	    $< $@
+	@test -f $@

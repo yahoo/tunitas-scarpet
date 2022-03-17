@@ -1,15 +1,10 @@
 # This is a GNU -*- Makefile -*- fragment that is included by Automake
-# Copyright Yahoo Inc. 2021
+# Copyright Yahoo Inc. 2021.
 # Licensed under the terms of the Apache-2.0 license.
-# For terms, see the LICatSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
-// See the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
 # For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
-
-lib_libwant_la = lib/libwant.la
-lib_libwant_la_LIBADD = -lopenssl-module -lnonstd-module
-lib_libwant_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
-lib_libwant_la_MODULES = $(call TF_SOURCEStoMODULES, $(lib_libwant_la_SOURCES))
-lib_libwant_la_SOURCES = \
+#
+want_SUBSOURCES = \
   obj/src/want/namespace.cpp \
   \
   obj/src/want/nonstd.to_string.cpp \
@@ -20,15 +15,3 @@ lib_libwant_la_SOURCES = \
   obj/src/want/stream.duo.Files.cpp \
   obj/src/want/stream.duo.gang.cpp \
   $(end)
-#
-$(scold_cxxdir)/want/dependencies.mk: $(lib_libwant_la_SOURCES)
-$(lib_libwant_la_SOURCES) : obj/src/%.cpp : src/%.xcpp
-	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
-	$(TF_V_DUN) test -e $@
-$(scold_cxxdir)/want/dependencies.mk:
-	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
-	$(TF_V_DUN) test -e $@
-include $(scold_cxxdir)/want/dependencies.mk
-clean-dependencies::
-	rm -f $(scold_cxxdir)/want/dependencies.mk
-#end

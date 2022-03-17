@@ -1,0 +1,28 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# For terms and provenance see the LICENSE file at the top of this repository.
+#
+noinst_lib_libautotools_autoconf_tunitas_scarpet_la_CPPFLAGS = $(PACKAGE_CPPFLAGS_SET)
+noinst_lib_libautotools_autoconf_tunitas_scarpet_la_CXXFLAGS = $(PACKAGE_CXXFLAGS_SET)
+noinst_lib_libautotools_autoconf_tunitas_scarpet_la_LDFLAGS = $(PACKAGE_LDFLAGS_SET)
+noinst_lib_libautotools_autoconf_tunitas_scarpet_la_LIBADD = $(none)
+noinst_lib_libautotools_autoconf_tunitas_scarpet_la_MODULES = $(call HT_SOURCEStoMODULES, $(noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES))
+noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES = noinst/obj/src/autotools/autoconf/Config/tunitas/scarpet/CONFIG.cpp
+include src/autotools/autoconf/Makefrag.am
+#
+$(noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES) : DISCOFLAGS+=--no-insert-namespace
+$(noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES) : DC_FLAGS+=$(DISCOFLAGS)
+$(noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES) : bbDC_FLAGS+=$(DISCOFLAGS)
+#
+$(noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES) : disco_objdir=$(tf_noinst_objdir)
+$(noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES) : disco_srcdir=$(tf_noinst_cxx_srcdir)
+# NO NEED --> $(noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES) : scold_objdir=$(disco_objdir)# [[REMOVEWHEN]] temerarious-flagship >= 2.0
+# NO NEED --> $(noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES) : scold_srcdir=$(disco_srcdir)# [[REMOVEWHEN]] temerarious-flagship >= 2.0
+$(noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES) : %.cpp : %.xcpp
+	$(HT_DISCO)
+	@test -e $@
+$(scold_noinst_mkdir)/libautotools-autoconf+tunitas.scarpet.mk: $(noinst_lib_libautotools_autoconf_tunitas_scarpet_la_SOURCES)
+$(scold_noinst_mkdir)/libautotools-autoconf+tunitas.scarpet.mk:
+	$(V_BOTH) $(call HT_DEPENDENCIES, $^)
+	@test -e $@
+include $(scold_noinst_mkdir)/libautotools-autoconf+tunitas.scarpet.mk
+clean-dependencies:: ; rm -f $(scold_noinst_mkdir)/libautotools-autoconf+tunitas.scarpet.mk

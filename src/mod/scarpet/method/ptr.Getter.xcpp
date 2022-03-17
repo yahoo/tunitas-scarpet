@@ -65,7 +65,6 @@ private:
 };
 #endiv
 #divert <tpp>
-#import autotools.autoconf.Config.mod.scarpet.CONFIG
 #import c.str
 #import mod.scarpet.server.State
 #import mod.scarpet.httpd.module

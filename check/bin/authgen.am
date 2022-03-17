@@ -1,0 +1,26 @@
+# This is a GNU -*- Makefile -*- fragment that is included by Automake
+# Copyright Yahoo Inc. 2022.
+# Licensed under the terms of the Apache-2.0 license.
+# For terms, see the LICENSE file at https://github.com/yahoo/tunitas-scarpet/blob/master/LICENSE
+# For terms, see the LICENSE file at https://git.tunitas.technology/all/services/scarpet/tree/LICENSE
+# For terms, see the LICENSE file at the top of this repository.
+#
+check_bin_authgen = check/bin/authgen$(error REMOVE)
+check_bin_authgen_CPPFLAGS = $(CHECK_CPPFLAGS_SET)
+check_bin_authgen_CXXFLAGS = $(CHECK_CXXFLAGS_SET)
+check_bin_authgen_LDFLAGS = $(CHECK_LDFLAGS_SET)
+check_bin_authgen_LDADD = noinst/lib/libapp-authgen.la check/lib/libtests.la -lrigging++ 
+check_bin_authgen_SOURCES = $(tests_authgen_SUBSOURCES)
+include src/tests/authgen/Makefrag.am
+#
+$(check_bin_authgen_SOURCES) : disco_objdir=check/obj
+$(check_bin_authgen_SOURCES) : scold_objdir=$(disco_objdir)
+$(check_bin_authgen_SOURCES) : check/obj/src/%.cpp : src/%.xcpp
+	$(TF_V_DIS) $(call TF_XCPP2CPP, $<)
+	$(TF_V_DUN) test -e $@
+$(tf_check_mkdir)/authgen.mk: $(check_bin_authgen_SOURCES)
+$(tf_check_mkdir)/authgen.mk:
+	$(TF_V_COM) $(call TF_DEPENDENCIES, $^)
+	$(TF_V_DUN) test -e $@
+include $(tf_check_mkdir)/authgen.mk
+clean-dependencies:: ; rm -f $(tf_check_mkdir)/authgen.mk

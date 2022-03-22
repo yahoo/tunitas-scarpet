@@ -3,11 +3,7 @@ First, thanks for taking the time to contribute to our project! The following in
 
 ## Code of Conduct
 
-<<<<<<< HEAD
 By participating in this project, you agree to abide by the [Yahoo Code of Conduct](Code-of-Conduct.md). Everyone is welcome to submit a pull request or open an issue to improve the documentation, add improvements, or report bugs.
-=======
-By participating in this project, you agree to abide by the [Verizon Media Code of Conduct](Code-of-Conduct.md). Everyone is welcome to submit a pull request or open an issue to improve the documentation, add improvements, or report bugs.
->>>>>>> feature/v0.1.0-1.03.gnarled-manzanita
 
 ## How to Ask a Question
 
